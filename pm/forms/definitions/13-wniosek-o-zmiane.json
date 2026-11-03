@@ -1,0 +1,155 @@
+{
+  "slug": "13-wniosek-o-zmiane",
+  "title": "Wniosek o zmiane (Change Request)",
+  "phase": "4. Kontrola",
+  "when": "Powstaje po zatwierdzeniu planu bazowego, gdy istnieje propozycja modyfikacji zakresu, harmonogramu, kosztu lub jakosci.",
+  "sections": [
+    {
+      "type": "fields",
+      "key": "metryka",
+      "title": "1. Metryka wniosku",
+      "fields": [
+        {
+          "key": "numer",
+          "label": "Numer wniosku (CR-###)",
+          "type": "text"
+        },
+        {
+          "key": "data",
+          "label": "Data",
+          "type": "date"
+        },
+        {
+          "key": "wnioskodawca",
+          "label": "Wnioskodawca / rola",
+          "type": "text"
+        },
+        {
+          "key": "projekt_pakiet",
+          "label": "Projekt / pakiet WBS",
+          "type": "text"
+        },
+        {
+          "key": "priorytet",
+          "label": "Priorytet",
+          "type": "select",
+          "options": [
+            "Niski",
+            "Sredni",
+            "Wysoki",
+            "Krytyczny"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "narrative",
+      "key": "opis",
+      "title": "2. Opis zmiany",
+      "blocks": [
+        {
+          "key": "co_sie_zmieni",
+          "label": "Co ma sie zmienic"
+        },
+        {
+          "key": "uzasadnienie",
+          "label": "Powod / uzasadnienie biznesowe"
+        },
+        {
+          "key": "konsekwencje",
+          "label": "Konsekwencje braku zmiany"
+        }
+      ]
+    },
+    {
+      "type": "fields",
+      "key": "wplyw",
+      "title": "3. Ocena wplywu",
+      "fields": [
+        {
+          "key": "zakres",
+          "label": "Zakres",
+          "type": "textarea"
+        },
+        {
+          "key": "harmonogram",
+          "label": "Harmonogram",
+          "type": "text"
+        },
+        {
+          "key": "koszt",
+          "label": "Koszt / budzet",
+          "type": "number"
+        },
+        {
+          "key": "zasoby",
+          "label": "Zasoby",
+          "type": "text"
+        },
+        {
+          "key": "jakosc_ryzyko",
+          "label": "Jakosc / ryzyko",
+          "type": "textarea"
+        },
+        {
+          "key": "npv_roi",
+          "label": "Wartosc biznesowa (NPV/ROI)",
+          "type": "text"
+        },
+        {
+          "key": "wplyw_eac",
+          "label": "Szacunek wplywu na EVM (EAC)",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "fields",
+      "key": "decyzja",
+      "title": "4. Ocena i decyzja",
+      "fields": [
+        {
+          "key": "rekomendacja",
+          "label": "Rekomendacja PM",
+          "type": "select",
+          "options": [
+            "Akceptuj",
+            "Odrzuc",
+            "Czesciowo",
+            "Odrocz"
+          ]
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "type": "select",
+          "options": [
+            "Zatwierdzono",
+            "Odrzucono",
+            "Delegowano do Komitetu",
+            "Odroczono"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "podpisy",
+      "title": "5. Podpisy decyzyjne",
+      "roles": [
+        {
+          "key": "kierownik_projektu",
+          "label": "Kierownik Projektu"
+        },
+        {
+          "key": "sponsor",
+          "label": "Sponsor"
+        },
+        {
+          "key": "wnioskodawca",
+          "label": "Wnioskodawca"
+        }
+      ]
+    }
+  ]
+}

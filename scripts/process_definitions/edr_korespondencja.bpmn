@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:flowable="http://flowable.org/bpmn"
+  xmlns:spiffworkflow="https://spiffworkflow.org/schema/bpmn"
+  id="def_edr_korespondencja" targetNamespace="urn:galwork:edr">
+  <bpmn:process id="edr_korespondencja" name="Korespondencja e-Doreczenia" isExecutable="true">
+    <bpmn:startEvent id="start_1" name="Nowa wiadomosc EDR"/>
+    <bpmn:sequenceFlow id="flow_1" sourceRef="start_1" targetRef="task_przeglad"/>
+    <bpmn:userTask id="task_przeglad" name="Przeglad korespondencji" flowable:candidateGroups="kancelaria">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="przeglad.json"/>
+          <spiffworkflow:property name="formUiSchemaFilename" value="przeglad.uischema.json"/>
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="flow_2" sourceRef="task_przeglad" targetRef="end_1"/>
+    <bpmn:endEvent id="end_1" name="Sprawa obsluzona"/>
+  </bpmn:process>
+</bpmn:definitions>

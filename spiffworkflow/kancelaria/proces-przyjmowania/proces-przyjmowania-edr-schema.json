@@ -1,0 +1,448 @@
+{
+  "title": "Proces przyjmowania-EDR",
+  "description": "Proces: EDR - e-Doręczenia; Obieg: Proces przyjmowania; Typ dokumentu: EDR - Przyjmowanie  EDR",
+  "type": "object",
+  "properties": {
+    "Temat": {
+      "type": "string",
+      "title": "Temat",
+      "x-permissions": {
+        "Nowa przesyłka": "editable",
+        "Rejestr otrzymanych": "readonly",
+        "Kosz": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Adres tradycyjny": {
+      "type": "string",
+      "title": "Adres tradycyjny",
+      "readOnly": true,
+      "x-permissions": {
+        "Nowa przesyłka": "none",
+        "Rejestr otrzymanych": "none",
+        "Kosz": "none",
+        "Archiwum": "none"
+      }
+    },
+    "Wybór spółki": {
+      "type": "string",
+      "title": "Wybór spółki",
+      "x-permissions": {
+        "Nowa przesyłka": "editable",
+        "Rejestr otrzymanych": "editable",
+        "Kosz": "editable",
+        "Archiwum": "editable"
+      }
+    },
+    "Nadawca": {
+      "type": "object",
+      "properties": {
+        "Nadawca": {
+          "type": "string",
+          "title": "Nadawca",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "editable",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Adres Nadawcy": {
+          "type": "string",
+          "title": "Adres Nadawcy",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Imię": {
+          "type": "string",
+          "title": "Imię",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Nazwisko": {
+          "type": "string",
+          "title": "Nazwisko",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Firma": {
+          "type": "string",
+          "title": "Firma",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Nadawca",
+      "x-permissions": {
+        "Nowa przesyłka": "editable",
+        "Rejestr otrzymanych": "editable",
+        "Kosz": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Odbiorca": {
+      "type": "object",
+      "properties": {
+        "Odbiorca": {
+          "type": "string",
+          "title": "Odbiorca",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Adres odbiorcy": {
+          "type": "string",
+          "title": "Adres odbiorcy",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Imię": {
+          "type": "string",
+          "title": "Imię",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Nazwisko": {
+          "type": "string",
+          "title": "Nazwisko",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Firma": {
+          "type": "string",
+          "title": "Firma",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Odbiorca",
+      "x-permissions": {
+        "Nowa przesyłka": "editable",
+        "Rejestr otrzymanych": "readonly",
+        "Kosz": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Powiązania": {
+      "type": "object",
+      "properties": {
+        "Gdzie zlecono wysyłanie": {
+          "type": "string",
+          "title": "Gdzie zlecono wysyłanie",
+          "readOnly": true,
+          "x-permissions": {
+            "Nowa przesyłka": "none",
+            "Rejestr otrzymanych": "none",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "student": {
+          "type": "string",
+          "title": "student",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "editable",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Do kogo przekazać pismo przychodząace": {
+          "type": "string",
+          "title": "Do kogo przekazać pismo przychodząace",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "editable",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Powiązania",
+      "x-permissions": {
+        "Nowa przesyłka": "editable",
+        "Rejestr otrzymanych": "editable",
+        "Kosz": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Treść wiadomości": {
+      "type": "string",
+      "title": "Treść wiadomości",
+      "x-permissions": {
+        "Nowa przesyłka": "editable",
+        "Rejestr otrzymanych": "readonly",
+        "Kosz": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "rest_odpowiedź": {
+      "type": "string",
+      "title": "rest_odpowiedź",
+      "readOnly": true,
+      "x-permissions": {
+        "Nowa przesyłka": "none",
+        "Rejestr otrzymanych": "none",
+        "Kosz": "none",
+        "Archiwum": "none"
+      }
+    },
+    "cssPreview": {
+      "type": "string",
+      "title": "cssPreview",
+      "readOnly": true,
+      "x-permissions": {
+        "Nowa przesyłka": "none",
+        "Rejestr otrzymanych": "none",
+        "Kosz": "none",
+        "Archiwum": "none"
+      }
+    },
+    "Metadane Przesyłki": {
+      "type": "object",
+      "properties": {
+        "id. przesyłki": {
+          "type": "string",
+          "title": "id. przesyłki",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "sposób doręczenia": {
+          "type": "string",
+          "title": "sposób doręczenia",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Wątek (id)": {
+          "type": "string",
+          "title": "Wątek (id)",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "znacznik czasu": {
+          "type": "string",
+          "title": "znacznik czasu",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Metadane Przesyłki",
+      "x-permissions": {
+        "Nowa przesyłka": "editable",
+        "Rejestr otrzymanych": "readonly",
+        "Kosz": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Dane Kontrolne": {
+      "type": "object",
+      "properties": {
+        "Rodzaj przesyłki": {
+          "type": "string",
+          "title": "Rodzaj przesyłki",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "etykiety": {
+          "type": "string",
+          "title": "etykiety",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "otwarte": {
+          "type": "string",
+          "title": "otwarte",
+          "x-permissions": {
+            "Nowa przesyłka": "editable",
+            "Rejestr otrzymanych": "readonly",
+            "Kosz": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Dane Kontrolne",
+      "x-permissions": {
+        "Nowa przesyłka": "editable",
+        "Rejestr otrzymanych": "readonly",
+        "Kosz": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "poświadczenia": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id.wiadomości": {
+            "type": "string",
+            "title": "id.wiadomości",
+            "x-permissions": {
+              "Nowa przesyłka": "editable",
+              "Rejestr otrzymanych": "editable",
+              "Kosz": "readonly",
+              "Archiwum": "readonly"
+            }
+          },
+          "data zdarzenia": {
+            "type": "string",
+            "format": "date-time",
+            "title": "data zdarzenia",
+            "x-permissions": {
+              "Nowa przesyłka": "editable",
+              "Rejestr otrzymanych": "editable",
+              "Kosz": "readonly",
+              "Archiwum": "readonly"
+            }
+          },
+          "ADE Odbiorcy": {
+            "type": "string",
+            "title": "ADE Odbiorcy",
+            "x-permissions": {
+              "Nowa przesyłka": "editable",
+              "Rejestr otrzymanych": "editable",
+              "Kosz": "readonly",
+              "Archiwum": "readonly"
+            }
+          },
+          "typ": {
+            "type": "string",
+            "title": "typ",
+            "x-permissions": {
+              "Nowa przesyłka": "editable",
+              "Rejestr otrzymanych": "editable",
+              "Kosz": "readonly",
+              "Archiwum": "readonly"
+            }
+          },
+          "ADE Nadawcy": {
+            "type": "string",
+            "title": "ADE Nadawcy",
+            "x-permissions": {
+              "Nowa przesyłka": "editable",
+              "Rejestr otrzymanych": "editable",
+              "Kosz": "readonly",
+              "Archiwum": "readonly"
+            }
+          },
+          "id.poświadczenia": {
+            "type": "string",
+            "title": "id.poświadczenia",
+            "x-permissions": {
+              "Nowa przesyłka": "editable",
+              "Rejestr otrzymanych": "editable",
+              "Kosz": "readonly",
+              "Archiwum": "readonly"
+            }
+          },
+          "szczegóły": {
+            "type": "string",
+            "title": "szczegóły",
+            "x-permissions": {
+              "Nowa przesyłka": "editable",
+              "Rejestr otrzymanych": "editable",
+              "Kosz": "readonly",
+              "Archiwum": "readonly"
+            }
+          },
+          "pobrane": {
+            "type": "boolean",
+            "title": "pobrane",
+            "x-permissions": {
+              "Nowa przesyłka": "editable",
+              "Rejestr otrzymanych": "editable",
+              "Kosz": "readonly",
+              "Archiwum": "readonly"
+            }
+          },
+          "data utworzenia": {
+            "type": "string",
+            "format": "date-time",
+            "title": "data utworzenia",
+            "x-permissions": {
+              "Nowa przesyłka": "editable",
+              "Rejestr otrzymanych": "editable",
+              "Kosz": "readonly",
+              "Archiwum": "readonly"
+            }
+          },
+          "externalData": {
+            "type": "string",
+            "title": "externalData",
+            "x-permissions": {
+              "Nowa przesyłka": "editable",
+              "Rejestr otrzymanych": "editable",
+              "Kosz": "readonly",
+              "Archiwum": "readonly"
+            }
+          }
+        }
+      },
+      "title": "poświadczenia",
+      "x-permissions": {
+        "Nowa przesyłka": "editable",
+        "Rejestr otrzymanych": "readonly",
+        "Kosz": "readonly",
+        "Archiwum": "readonly"
+      }
+    }
+  }
+}

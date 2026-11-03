@@ -1,0 +1,9 @@
+{
+  "ui:order": ["decyzja", "notatka"],
+  "decyzja": {
+    "ui:widget": "radio"
+  },
+  "notatka": {
+    "ui:widget": "textarea"
+  }
+}

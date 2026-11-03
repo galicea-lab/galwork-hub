@@ -1,0 +1,22 @@
+# Root importów = katalog galwork-hub (np. `from schemas.user_schemas import ...`,
+# `from bcs.models.enums import ...`). Moduły dołączane (wf, pm, bcs) importujemy
+# pełną ścieżką od roota - bez dodatkowych source rootów w IDE ani PYTHONPATH.
+
+# `version` to wersja wydania - release.yml sprawdza, czy tag
+# v<version> się z nią zgadza. Projekt nie jest instalowany jako pakiet.
+[project]
+name = "galwork-hub"
+version = "0.0.1"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+# minimalny zestaw reguł wymuszany w CI - błędy składni
+# i niezdefiniowane nazwy. Rozszerzamy stopniowo, osobnymi PR.
+[tool.ruff]
+extend-exclude = [".venv", "dev", "backlog"]
+
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]

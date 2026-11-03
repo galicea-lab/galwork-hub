@@ -1,0 +1,295 @@
+[app]
+frontend_url=https://example.com
+# adres dokumentacji API pokazywany w OpenAPI (router.py).
+docs_url=https://galwork.example.com
+
+# FastAPI debug=True (main.py) pokazuje pełne tracebacki w
+# odpowiedziach błędów - OK lokalnie, nigdy na produkcji. Nadpisywalne
+# zmienną APP_DEBUG=false.
+debug=false
+
+# zob. main.py
+# dopisz tu każdy nowy frontend dev server.
+cors_origins=http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001
+cors_allow_credentials=true
+
+[webcon]
+dev=false
+db_no=1
+base_url=https://webcon.example.com/api/data/v5.0/db/
+login_url=https://webcon.example.com/api/oauth2/token
+client_id=xxxxxxxx-xxxxxxxxxx
+client_secret=
+dev_base_url=https://dev.example.com/api/data/v5.0/db/
+dev_login_url=https://dev.example.com/api/login
+dev_client_id=xxxxxxxxxxx-xxxxxxxxxx
+dev_client_secret=
+sprawy_workflow=2
+sprawy_processid=3
+formlarze_nieaktywne=16,19,23,24
+
+# [db] - connection string - z tych parametrów korzysta db/session.py, alembic/env.py 
+[db]
+driver=postgresql+psycopg2
+name=galwork
+host=localhost
+port=5432
+user=
+password=
+echo=false
+
+[db-test]
+driver=sqlite
+name=cm_msqlite.db
+host=localhost
+port=5432
+user=
+password=
+echo=false
+
+[logging]
+level=DEBUG
+file=ds.log
+
+[keycloak]
+certs_url=https://login.example.com/realms/example/protocol/openid-connect/certs
+audience=account
+client_id=example
+client_secret=xxxxxxxxxxxxxxxxxxxx
+admin=jurekw
+admin_password=xxxxxxxxxx
+server_url=https://login.example.com
+
+# grupy Keycloak uprawnione do zarządzania
+admin_groups=wf-admin,galwork-admin
+realm_name=example
+
+[Ms365]
+TENANT_ID=xxxxxxx
+CLIENT_ID=xxxxxxxxxxxxxxxxxxxx
+CLIENT_SECRET=
+CLIENT2ID=22222222-xxxx
+CLIENT2SECRET=xxxxxxxxxxxxxxxxxxxxxxxxx
+CLIENT_W_ID=xxxxxxxxx
+CLIENT_W_SECRET=xxxxxxxxxxxxxxxxx
+
+[AzureClient]
+TENANT_ID=xxxxxxxx-xxxxxxxxxxxxxxxxxxx
+CLIENT_ID=xxxxxxxxx-xxxxxxxxxxxxxxxxxxxxx
+CLIENT_SECRET=Oxxxxxxxxxxxxxxxxxx
+AUTHENTICATION_MODE=serviceprincipal
+SCOPE=https://graph.microsoft.com/.default
+SCOPE_API=api://xxxxxxxxxxxxxxxxxxxx/.default
+AUTHORITY_BASE=https://login.microsoftonline.com/
+# AUTHORITY=AUTHORITY_BASE+TENANT_ID
+CACHE=/tmp/cert_cache.bin
+
+# konektor connector/signius/connector.py (BaseConnector).
+[signius]
+p12_file=
+p12_password=
+base_url=https://professional.signius.eu:8900
+timeout=30
+verify_tls=false
+
+[mailing]
+server=xxxxx
+port=587
+login=xxxxxxxxxx
+password=oxxxxxx
+sender=xxxxx<xxxxx@xxxxxxxxxx.pl>
+
+[mls]
+keystore_file=keystore-2026-02-12.p12
+keystore_password=xxxxxxxxxxx
+api_url=https://external-api.institution.api.mobywatel.pro.coi.gov.pl
+api_client_id=university-xxxxxxxxx
+api_client_secret=xxxxxxxxxxxxxxxxxxxxx
+
+[edr]
+test_db=false
+# adresy usług e-Doręczeń i dane rejestracyjne systemu
+address=AE:PL-xxxxxxxxxx
+key=secret/edr/edr_key.pem
+cert=secret/edr/edr_cert.pem
+# tryb testowy (EdrConnector(test=True)) - adres ADE i plik
+# klucza prywatnego systemu testowego
+test_address=AE:PL-91325-95053-SWFEJ-37
+test_system_name=TEST123
+test_key=secret/edr/edr_test_key.pem
+url=https://ow.edoreczenia.gov.pl
+realm=EDOR
+# nazwa systemu w tokenie RFC7523 oraz nazwa aplikacji używana
+# przez wf/routers/edr_api.py::get_access_token
+system_name=TEST123
+application_name=GALWORK
+# bazowy adres webhooków e-Delivery (dopisywane są /messageCallback itd.)
+callback_base_url=https://galwork.example.com/v1/edr
+pp_url=https://uaapi-ow.poczta-polska.pl/api/v1
+beuis_url=https://edoreczenia.gov.pl/api/beuis/v2
+# dane trybu testowego EdrConnector(test=True)
+process_model_key=edr-korespondencja
+CSubject=CN = AE:PL-xxxxxxxxxF-29.SYSTEM.GALWORK, O = UNIV, organizationIdentifier = AE:PL-xxxxxxxxx-29, C = PL, ST = PODKARPACKIE, L = NN, postalCode = 99-999, street = xxxxxxxxxxxxxxxx, houseIdentifier = 6
+
+[polon]
+polon_user=it@univ.pl
+polon_password=xxxxxxxxxxxxxx
+polon_institution=xxxxxxxxxxxxxx
+
+[redmine]
+url=https://redmine.example.com
+user=admin
+password=xxxxxxxxxxxxxxxxxxxxx
+
+[erpnext]
+base_url=https://erp.example.com
+api_key=xxxxxxxxxxxxxxxxxxxx
+api_secret=xxxxxxxxxxxxxxxxxxxx
+# widget "Faktury do zatwierdzenia" (wf/services/erpnext_invoice_service.py) -
+# nazwy stanu/akcji workflow są w ERPNext konfigurowalne per-instalacja
+invoice_doctype=Purchase Invoice
+invoice_workflow_field=workflow_state
+invoice_pending_states=Pending Approval
+invoice_approve_action=Zatwierdź
+# grupa Keycloak uprawniona do POST .../approve (zob.
+# wf/routers/erpnext_invoice_api.py::require_invoice_approver); dopasowanie
+# po leściu ścieżki grupy, jak [keycloak] admin_groups. Puste = nikt.
+approver_groups=faktury_zakupu
+
+# reguły akceptacji wniosku zakupowego (wf/services/
+# purchase_request_service.py, - progi i flaga PZP są per-instalacja
+[zakupy]
+# kwota (w walucie `domyslna_waluta`), od której wymagana jest dodatkowa
+# akceptacja decydenta budżetowego - niezależnie od rodzaju wydatku.
+prog_dodatkowej_akceptacji=10000
+# czy organizacja podlega Prawu zamówień publicznych (jednostki sektora
+# publicznego) - false dla firmy prywatnej wyłącza cały podobieg "Zamówienie
+# publiczne" niezależnie od kwoty (zob. zakupy.md, warunkowość tego obiegu).
+pzp_wlaczone=true
+# próg PZP (ustawowy dla jednostek sektora publicznego - domyślnie taki sam
+# jak prog_dodatkowej_akceptacji, ale to dwa niezależne progi: organizacja
+# może chcieć dodatkowej akceptacji przy niższej kwocie niż ustawowy PZP).
+prog_pzp=10000
+domyslna_waluta=PLN
+
+[n8n]
+base_url=https://n8n.example.com
+api_key=xxxxxxxxxxxxxxxxxxxx
+
+# konektor do Frappe Education (connector/frappe_education) -
+# dziekanat prowadzony we Frappe  Education (../education w tym samym katalogu nadrzędnym).
+# Osobna sekcja od [erpnext], bo Education może stać na innym site/hoście
+# niż ERPNext (ten sam framework Frappe, różne instalacje). Token API
+# (api_key:api_secret) - https://frappeframework.com/docs/user/en/api/rest.
+# HASŁA CELOWO PUSTE - zmienne środowiskowe: FRAPPE_EDUCATION_BASE_URL,
+# FRAPPE_EDUCATION_API_KEY, FRAPPE_EDUCATION_API_SECRET, FRAPPE_EDUCATION_TIMEOUT.
+[frappe_education]
+base_url=
+api_key=
+api_secret=
+timeout=30
+
+# magazyn dokumentów Paperless-ngx (connector/paperless/
+# connector.py) - alternatywa dla WEBCON w obsłudze e-Doręczeń, zob.
+# connector/edoreczenia/edr_paperless.py. `token` to
+# token API Paperless-ngx (Django REST Framework), NIE to samo, co SSO
+# Keycloak do interfejsu Paperless dla ludzi. `staging_dir` to katalog na
+# pliki czekające na wysyłkę (DocumentVersion.staging_path) - musi być
+# zapisywalny przez proces huba/crona. `api_version` (opcjonalnie) -
+# numer wersji API wysyłany w nagłówku `Accept` - zostaw puste, żeby nie
+# przypinać wersji (serwer użyje swojej domyślnej); ustaw, jeśli trzeba
+# wymusić konkretną wersję wspieraną przez dany serwer Paperless-ngx.
+# Zmienne środowiskowe: PAPERLESS_BASE_URL, PAPERLESS_TOKEN,
+# PAPERLESS_TIMEOUT, PAPERLESS_VERIFY_TLS, PAPERLESS_STAGING_DIR,
+# PAPERLESS_API_VERSION.
+[paperless]
+base_url=
+token=
+timeout=30
+verify_tls=true
+staging_dir=data/paperless_staging
+api_version=
+
+# baza U10 (MS SQL Server) - Uczelnia10. Konektor czyta te
+# parametry przez connector/u10/connector.py (BaseConnector.load_ini_section).
+# KLIUCZE DOTYCHCZASOWE U10_DBHOST/DBUSER/DBPASSWORD/DATABASE -> host/user/
+# password/database; stare nazwy działają tylko jako zmienne środowiskowe.
+# HASŁA CELOWO PUSTE - wpisuj je w pliku (nie w repo) albo w zmiennych
+# środowiskowych: U10_HOST, U10_USER, U10_PASSWORD, U10_DATABASE, U10_PORT,
+# U10_TIMEOUT, U10_CHARSET, U10_APPNAME.
+[u10]
+host=
+port=1433
+user=
+password=
+database=
+timeout=15
+charset=UTF-8
+
+# Baza MSSQL z tabelą `edoreczenia` (connector/webcon/db.py).
+# Poświadczenia celowo puste; zmienne środowiskowe: 
+# EDR_DB_HOST/EDR_DB_USER/EDR_DB_PASSWORD/EDR_DB_DATABASE.
+[edr_db]
+edr_db_host=
+edr_db_user=
+edr_db_password=
+edr_db_database=
+
+# Baza legitymacji OptiCamp (connector/mlegitymacje/opticamp_db.py).
+# Zmienne środowiskowe: OPTICAMP_DBHOST/DBUSER/DBPASSWORD/DATABASE.
+[opticamp]
+DBHOST=
+DBUSER=
+DBPASSWORD=
+DATABASE=
+
+# Baza Programu Płatnika ZUS (connector/optima/zus.py).
+# Konfiguracja jest w tym pliku lub w ENV: ZUS_HOST,
+# ZUS_SERVER, ZUS_USER, ZUS_PASSWORD, ZUS_DATABASE, ZUS_PORT.
+[zus]
+host=
+server=
+user=
+password=
+database=
+port=
+login_timeout=15
+appname=hub-zus
+
+# Cache Redis dla skompilowanych formularzy zadań (core/redis_cache.py) -
+# GET /v1/wf/tasks/{id}/form filtruje JSON Schema/UI Schema wg macierzy
+# `x-permissions` (migracja Webcon -> RJSF, zob. rjsf.md/x-webcon.md) i
+# trzyma wynik w Redis (wf/services/process_service.py::task_form), żeby nie
+# przeliczać go przy każdym wejściu w zadanie. W przeciwieństwie do innych
+# konektorów ma sensowne wartości domyślne - brak tej sekcji/offline Redis
+# NIE blokuje huba, tylko wyłącza cache (liczymy formularz za każdym razem).
+# Zmienne środowiskowe: REDIS_HOST, REDIS_PORT, REDIS_DB, REDIS_PASSWORD,
+# REDIS_TTL.
+[redis]
+host=localhost
+port=6379
+db=0
+password=
+ttl=86400
+
+# baza CDN/Optima (connector/optima/optima.py),
+# Konfiguracja może być w zmiennych środowiskowych:
+# OPTIMA_HOST, OPTIMA_PORT, OPTIMA_DATABASE, OPTIMA_USER,
+# OPTIMA_PASSWORD, OPTIMA_SERVER.
+[optima]
+host=
+port=
+database=
+user=
+password=
+server=
+# Konektor do e-Talar (connector/etalar/etalar.py). Dzisiejsze M2M API
+# (issue/deposit/charge/consent) + miejsce na przyszłe /v3/settlement/*
+# z barter.md rozdz. 11-12, kiedy e-Talar je dostanie.
+# HASŁA CELOWO PUSTE - zmienne środowiskowe: ETALAR_BASE_URL, ETALAR_API_KEY,
+# ETALAR_API_SECRET, ETALAR_TIMEOUT.
+[etalar]
+base_url=
+api_key=
+api_secret=
+timeout=30

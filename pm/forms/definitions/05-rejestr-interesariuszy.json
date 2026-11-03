@@ -1,0 +1,155 @@
+{
+  "slug": "05-rejestr-interesariuszy",
+  "title": "Rejestr Interesariuszy + Macierz Wplyw / Zainteresowanie",
+  "phase": "1. Inicjacja",
+  "when": "Powstaje w Fazie 1 - Inicjacja, aktualizowany w calym cyklu zycia. Wypelnia Kierownik Projektu we wspolpracy ze Sponsorem.",
+  "sections": [
+    {
+      "type": "table",
+      "key": "interesariusze",
+      "title": "1. Lista interesariuszy",
+      "columns": [
+        {
+          "key": "nazwa",
+          "label": "Interesariusz",
+          "type": "text"
+        },
+        {
+          "key": "rola",
+          "label": "Rola w projekcie",
+          "type": "text"
+        },
+        {
+          "key": "zainteresowanie",
+          "label": "Zainteresowanie (1-5)",
+          "type": "number"
+        },
+        {
+          "key": "wplyw",
+          "label": "Wplyw (1-5)",
+          "type": "number"
+        },
+        {
+          "key": "oczekiwania",
+          "label": "Oczekiwania",
+          "type": "textarea"
+        },
+        {
+          "key": "strategia",
+          "label": "Strategia",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "fields",
+      "key": "macierz",
+      "title": "2. Macierz Wplyw / Zainteresowanie (numery interesariuszy)",
+      "fields": [
+        {
+          "key": "wysoki_wysokie",
+          "label": "Wysoki wplyw / wysokie zainteresowanie",
+          "type": "text"
+        },
+        {
+          "key": "wysoki_niskie",
+          "label": "Wysoki wplyw / niskie zainteresowanie",
+          "type": "text"
+        },
+        {
+          "key": "niski_wysokie",
+          "label": "Niski wplyw / wysokie zainteresowanie",
+          "type": "text"
+        },
+        {
+          "key": "niski_niskie",
+          "label": "Niski wplyw / niskie zainteresowanie",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "fields",
+      "key": "champion",
+      "title": "3. Projekt Champion",
+      "fields": [
+        {
+          "key": "powolano",
+          "label": "Czy powolano promotora/championa?",
+          "type": "checkbox"
+        },
+        {
+          "key": "kto",
+          "label": "Kto nim jest",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "plan_komunikacji",
+      "title": "4. Plan komunikacji z interesariuszami",
+      "columns": [
+        {
+          "key": "interesariusz",
+          "label": "Interesariusz",
+          "type": "text"
+        },
+        {
+          "key": "kanal",
+          "label": "Kanal",
+          "type": "text"
+        },
+        {
+          "key": "czestotliwosc",
+          "label": "Czestotliwosc",
+          "type": "text"
+        },
+        {
+          "key": "wlasciciel",
+          "label": "Wlasciciel",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "table",
+      "key": "przeglad",
+      "title": "5. Przeglad i aktualizacja",
+      "columns": [
+        {
+          "key": "data",
+          "label": "Data przegladu",
+          "type": "date"
+        },
+        {
+          "key": "osoba",
+          "label": "Osoba",
+          "type": "text"
+        },
+        {
+          "key": "zmiany",
+          "label": "Zmiany",
+          "type": "textarea"
+        },
+        {
+          "key": "podpis",
+          "label": "Podpis",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "ui:order": [
+    "Wybór spółki",
+    "Identyfikacja",
+    "Generowanie kartoteki kontrahenta",
+    "Adres ADE",
+    "Nr telefonu",
+    "Dane kontrahenta",
+    "Weryfikacja sankcyjna",
+    "Optima",
+    "Kontakty",
+    "Uwaga!",
+    "Faktury",
+    "Uwaga! 2",
+    "Umowy",
+    "regon",
+    "krs",
+    "status VAT",
+    "Ewidencja VAT",
+    "Informacje systemowe"
+  ],
+  "Identyfikacja": {
+    "ui:order": [
+      "Firma lub skrót nazwy",
+      "NIP",
+      "Email"
+    ],
+    "Firma lub skrót nazwy": {
+      "ui:readonly": true
+    }
+  },
+  "Generowanie kartoteki kontrahenta": {
+    "ui:order": [
+      "z systemu ERP (Optima)",
+      "na podstawie NIP",
+      "na podstawie ADE",
+      "Firma / Skrót nazwy"
+    ],
+    "na podstawie ADE": {
+      "ui:help": "Adres doręczeń elektronicznych"
+    },
+    "z systemu ERP (Optima)": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/k-kontrahenci",
+        "sourceName": "[K] Kontrahenci",
+        "sourceType": "REST Web Service"
+      }
+    }
+  },
+  "Adres ADE": {
+    "ui:help": "Adres Doręczeń Elektronicznych",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/adres-e-doreczen",
+      "sourceName": "Adres e-Doręczeń"
+    }
+  },
+  "Dane kontrahenta": {
+    "ui:order": [
+      "Osoba fizyczna",
+      "Nazwa firmy",
+      "Adres siedziby",
+      "Adres prowadzenia dziełalności",
+      "pesel"
+    ],
+    "Adres siedziby": {
+      "ui:widget": "textarea"
+    },
+    "Adres prowadzenia dziełalności": {
+      "ui:widget": "textarea"
+    }
+  },
+  "Weryfikacja sankcyjna": {
+    "ui:order": [
+      "Wynik weryfikacji",
+      "Termin ważności weryfikacji"
+    ]
+  },
+  "Optima": {
+    "ui:order": [
+      "Konto w Optimie",
+      "link"
+    ],
+    "Konto w Optimie": {
+      "ui:help": "Konto w systemie ERP",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/konta-kontrahentow",
+        "sourceName": "Konta kontrahentów"
+      }
+    },
+    "link": {
+      "ui:help": "link do konta w systemie ERP",
+      "ui:readonly": true
+    }
+  },
+  "Kontakty": {
+    "items": {
+      "ui:order": [
+        "telefon",
+        "Imię i nazwisko",
+        "Rodzaj kontaktu",
+        "uwagi",
+        "email"
+      ]
+    },
+    "ui:options": {
+      "addable": true
+    }
+  },
+  "Faktury": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Umowy": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Ewidencja VAT": {
+    "ui:order": [
+      "data rejestracji",
+      "data usunięcia z ewidencji",
+      "data przywrócenia"
+    ]
+  },
+  "Informacje systemowe": {
+    "ui:order": [
+      "Kod",
+      "komunikat"
+    ],
+    "Kod": {
+      "ui:readonly": true
+    },
+    "komunikat": {
+      "ui:widget": "textarea",
+      "ui:readonly": true
+    }
+  },
+  "Wybór spółki": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/companies"
+    }
+  },
+  "Uwaga!": {
+    "ui:widget": "richtext"
+  },
+  "Uwaga! 2": {
+    "ui:widget": "richtext"
+  }
+}

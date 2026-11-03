@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   id="defs_Process_Terminarz"
+                   targetNamespace="http://bpmn">
+
+<bpmn:process id="Process_Terminarz" name="Terminarz" isExecutable="true">
+<bpmn:startEvent id="StartEvent_main" name="Start" />
+<bpmn:userTask id="Task_01" name="Definicja terminarza" />
+<bpmn:userTask id="Task_02" name="Aktywne terminarze" />
+<bpmn:userTask id="Task_03" name="Archiwum terminarzy" />
+<bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_main" targetRef="Task_01" />
+<bpmn:sequenceFlow id="Flow_2" sourceRef="Task_01" targetRef="Task_02" name="Udostępnij" />
+<bpmn:exclusiveGateway id="Gateway_01" name="Wybór ścieżki (Aktywne terminarze)" default="Flow_3" />
+<bpmn:sequenceFlow id="Flow_4" sourceRef="Task_02" targetRef="Gateway_01" />
+<bpmn:sequenceFlow id="Flow_5" sourceRef="Gateway_01" targetRef="Task_02" name="Dodatkowe osoby">
+<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_5'</bpmn:conditionExpression>
+</bpmn:sequenceFlow>
+<bpmn:sequenceFlow id="Flow_3" sourceRef="Gateway_01" targetRef="Task_03" name="Do archiwum" />
+<bpmn:sequenceFlow id="Flow_6" sourceRef="Task_03" targetRef="EndEvent_1" />
+<bpmn:endEvent id="EndEvent_1" name="Koniec" />
+</bpmn:process>
+<bpmndi:BPMNDiagram id="Diagram_Process_Terminarz">
+<bpmndi:BPMNPlane id="Plane_Process_Terminarz" bpmnElement="Process_Terminarz">
+<bpmndi:BPMNShape id="Shape_StartEvent_main" bpmnElement="StartEvent_main"><dc:Bounds x="60" y="82" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_01" bpmnElement="Task_01"><dc:Bounds x="280" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_02" bpmnElement="Task_02"><dc:Bounds x="500" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_03" bpmnElement="Task_03"><dc:Bounds x="720" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Gateway_01" bpmnElement="Gateway_01"><dc:Bounds x="500" y="75" width="50" height="50" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_EndEvent_1" bpmnElement="EndEvent_1"><dc:Bounds x="880" y="82" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1"><di:waypoint x="96" y="100" /><di:waypoint x="280" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_2" bpmnElement="Flow_2"><di:waypoint x="380" y="100" /><di:waypoint x="500" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_4" bpmnElement="Flow_4"><di:waypoint x="600" y="100" /><di:waypoint x="500" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_5" bpmnElement="Flow_5"><di:waypoint x="550" y="100" /><di:waypoint x="500" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_3" bpmnElement="Flow_3"><di:waypoint x="550" y="100" /><di:waypoint x="720" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_6" bpmnElement="Flow_6"><di:waypoint x="820" y="100" /><di:waypoint x="880" y="100" /></bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane>
+</bpmndi:BPMNDiagram>
+</bpmn:definitions>

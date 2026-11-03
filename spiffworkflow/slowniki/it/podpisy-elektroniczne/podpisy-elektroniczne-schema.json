@@ -1,0 +1,70 @@
+{
+  "title": "Podpisy Elektroniczne",
+  "description": "Proces: Podpisy Elektroniczne (ID: 177); Obieg: SIGN - Podpisy elektroniczne (ID: 196); Typ dokumentu: D-SIGN - Definicja podpisu (ID: 191)",
+  "type": "object",
+  "properties": {
+    "ID": {
+      "type": "string",
+      "title": "ID",
+      "readOnly": true,
+      "x-permissions": {
+        "Krok słownikowy": "readonly"
+      }
+    },
+    "Nazwa": {
+      "type": "string",
+      "title": "Nazwa",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      },
+      "x-required-in-steps": [
+        "Krok słownikowy"
+      ]
+    },
+    "Opis": {
+      "type": "string",
+      "title": "Opis",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "Aktywny": {
+      "type": "boolean",
+      "title": "Aktywny",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "provider": {
+      "type": "string",
+      "title": "provider",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "katalog": {
+      "type": "string",
+      "title": "katalog",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "email": {
+      "type": "string",
+      "title": "email",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "telefon": {
+      "type": "string",
+      "title": "telefon",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    }
+  },
+  "required": [
+    "Nazwa"
+  ]
+}

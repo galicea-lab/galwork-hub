@@ -1,0 +1,162 @@
+{
+  "slug": "03-business-case",
+  "title": "Uzasadnienie Biznesowe (Business Case) + ROI / NPV",
+  "phase": "1. Inicjacja",
+  "when": "Powstaje w Fazie 1 - Inicjacja, po checklisci 6W, przed Karta Projektu. 'Zywy' dokument aktualizowany na kazdej bramce decyzyjnej. Wypelnia Sponsor / analityk biznesowy, zatwierdza Komitet Sterujacy.",
+  "sections": [
+    {
+      "type": "fields",
+      "key": "streszczenie",
+      "title": "1. Streszczenie",
+      "fields": [
+        {
+          "key": "nazwa_projektu",
+          "label": "Identyfikator / nazwa projektu",
+          "type": "text"
+        },
+        {
+          "key": "inicjator",
+          "label": "Inicjator / Sponsor",
+          "type": "text"
+        },
+        {
+          "key": "data",
+          "label": "Data sporzadzenia",
+          "type": "date"
+        },
+        {
+          "key": "wersja",
+          "label": "Wersja",
+          "type": "text"
+        },
+        {
+          "key": "budzet_capex",
+          "label": "Budzet (CAPEX) [zl]",
+          "type": "number"
+        },
+        {
+          "key": "okres_realizacji",
+          "label": "Okres realizacji",
+          "type": "text"
+        },
+        {
+          "key": "decyzja",
+          "label": "Decyzja rekomendowana",
+          "type": "select",
+          "options": [
+            "Uruchom",
+            "Odloz",
+            "Odrzuc"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "narrative",
+      "key": "opis",
+      "title": "2. Opis potrzeby i wariantow",
+      "blocks": [
+        {
+          "key": "problem",
+          "label": "Problem / szansa"
+        },
+        {
+          "key": "warianty",
+          "label": "Rozwazane warianty (0 / A / B)"
+        },
+        {
+          "key": "rekomendacja",
+          "label": "Rekomendacja i uzasadnienie"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "warianty_przeplywy",
+      "title": "3. Warianty - przeplywy pieniezne netto per rok (rok 0 = inwestycja)",
+      "columns": [
+        {
+          "key": "variant_name",
+          "label": "Wariant",
+          "type": "text"
+        },
+        {
+          "key": "discount_rate",
+          "label": "Stopa dyskonta (np. 0.08)",
+          "type": "number"
+        },
+        {
+          "key": "cashflows",
+          "label": "Przeplywy netto per rok (lista po przecinku, rok0..n)",
+          "type": "number_list"
+        }
+      ],
+      "data_source": "business_case_variants",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "calc",
+      "key": "wskazniki",
+      "title": "4. Wskazniki finansowe (NPV / ROI / payback)",
+      "calculator": "roi_npv",
+      "source_key": "warianty_przeplywy",
+      "extra_fields": []
+    },
+    {
+      "type": "checklist",
+      "key": "ryzyka_uniewazniajace",
+      "title": "5. Ryzyka uniewazniajace Business Case",
+      "items": [
+        {
+          "key": "ryzyka_uniewazniajace_0",
+          "label": "Czy istnieje zdarzenie, ktorego zajscie calkowicie pozbawi projekt sensu?"
+        },
+        {
+          "key": "ryzyka_uniewazniajace_1",
+          "label": "Czy szacowanie korzysci oparto na miarodajnych zrodlach?"
+        },
+        {
+          "key": "ryzyka_uniewazniajace_2",
+          "label": "Czy projekt wymaga decyzji Kill przy przekroczeniu progu {X zl}?"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "bramki",
+      "title": "6. Akceptacja / rewizja na bramkach",
+      "columns": [
+        {
+          "key": "bramka",
+          "label": "Bramka",
+          "type": "text"
+        },
+        {
+          "key": "data",
+          "label": "Data",
+          "type": "date"
+        },
+        {
+          "key": "status",
+          "label": "Status uzasadnienia",
+          "type": "select",
+          "options": [
+            "wazny",
+            "odwolany"
+          ]
+        },
+        {
+          "key": "podpis",
+          "label": "Podpis Komitetu",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    }
+  ]
+}

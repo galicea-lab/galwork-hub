@@ -1,0 +1,192 @@
+{
+  "ui:order": [
+    "Tytuł",
+    "Rok/sprawa",
+    "Wybór spółki",
+    "Zakres",
+    "Systemowe",
+    "Listy terminów",
+    "Nowa lista terminów",
+    "Terminy"
+  ],
+  "Tytuł": {
+    "ui:readonly": true
+  },
+  "Rok/sprawa": {
+    "ui:order": [
+      "Rok",
+      "Sprawa",
+      "Nazwa terminarza"
+    ],
+    "Sprawa": {
+      "ui:help": "Terminy można grupować według spraw / wątków.",
+      "ui:readonly": true
+    }
+  },
+  "Zakres": {
+    "ui:order": [
+      "Terminarz osobisty?",
+      "Osoba",
+      "Terminarz semestralny?",
+      "Rok akademicki",
+      "Semestr zimowy/letni",
+      "Grupa osób?",
+      "Grupa",
+      "Wybrany Dział?",
+      "Dział",
+      "Kierownik Działu",
+      "Pracownicy działu",
+      "Wszyscy Kierownicy?",
+      "Kierownicy",
+      "Dodatkowe osoby?",
+      "Dodatkowe osoby",
+      "Wszyscy użytkownicy"
+    ],
+    "Terminarz osobisty?": {
+      "ui:help": "Prywatny terminarz."
+    },
+    "Terminarz semestralny?": {
+      "ui:help": "Początek, koniec, dni wolne"
+    },
+    "Grupa osób?": {
+      "ui:help": "Wcześniej zdefiniowana grupa pracowników"
+    },
+    "Wybrany Dział?": {
+      "ui:help": "Kierownik wybranego Działu + jego pracownicy"
+    },
+    "Dział": {
+      "ui:help": "Działy uczelni",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/api/dictionaries/dzialy",
+        "sourceName": "Działy"
+      }
+    },
+    "Dodatkowe osoby?": {
+      "ui:help": "Inne osoby, które mają widzieć terminy"
+    },
+    "Wszyscy użytkownicy": {
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/api/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Osoba": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/api/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Rok akademicki": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/api/dictionaries/rok-akademicki",
+        "sourceName": "rok akademicki",
+        "sourceType": "REST Web Service"
+      }
+    },
+    "Grupa": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/api/users",
+        "sourceName": "Grupy osób",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Kierownik Działu": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/api/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Pracownicy działu": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/api/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Kierownicy": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/api/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Dodatkowe osoby": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/api/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "Systemowe": {
+    "ui:order": [
+      "Lista kierowników"
+    ],
+    "Lista kierowników": {
+      "items": {
+        "ui:order": [
+          "Kierownik"
+        ]
+      },
+      "ui:options": {
+        "addable": true
+      }
+    }
+  },
+  "Listy terminów": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:help": "Dodatkowe listy terminów (poza wprowadzanymi wprost na terminarzu)._x000d_\nElementy typu \"Terminy\".",
+    "ui:readonly": true
+  },
+  "Terminy": {
+    "items": {
+      "ui:order": [
+        "Opis",
+        "nazwa",
+        "Źródło /rodzaj",
+        "aktualny",
+        "ID",
+        "Termin do",
+        "Termin od",
+        "url",
+        "app",
+        "Wykonane w dniu",
+        "Data"
+      ],
+      "ID": {
+        "ui:readonly": true
+      },
+      "app": {
+        "ui:readonly": true
+      }
+    },
+    "ui:options": {
+      "addable": true
+    }
+  },
+  "Wybór spółki": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/api/dictionaries/companies"
+    }
+  },
+  "Nowa lista terminów": {
+    "ui:widget": "richtext"
+  }
+}

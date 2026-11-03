@@ -1,0 +1,132 @@
+{
+  "slug": "16-retrospektywa-lessons-learned",
+  "title": "Retrospektywa / Wnioski z Doswiadczen (Lessons Learned)",
+  "phase": "5. Zamkniecie",
+  "when": "Powstaje na koncu Fazy 5 - Zamkniecie oraz cyklicznie w projektach zwinnych (po kazdym sprincie). Zasada 'blameless': koncentracja na procesach, nie na osobach.",
+  "sections": [
+    {
+      "type": "fields",
+      "key": "metryka",
+      "title": "1. Metryka",
+      "fields": [
+        {
+          "key": "projekt_sprint",
+          "label": "Projekt / sprint",
+          "type": "text"
+        },
+        {
+          "key": "data",
+          "label": "Data",
+          "type": "date"
+        },
+        {
+          "key": "uczestnicy",
+          "label": "Uczestnicy (role)",
+          "type": "textarea"
+        },
+        {
+          "key": "moderator",
+          "label": "Moderator",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "narrative",
+      "key": "retrospektywa",
+      "title": "2-4. Retrospektywa",
+      "blocks": [
+        {
+          "key": "dobrze",
+          "label": "Co poszlo dobrze?"
+        },
+        {
+          "key": "zle",
+          "label": "Co poszlo zle?"
+        },
+        {
+          "key": "przyczyny",
+          "label": "Dlaczego? (analiza przyczyn)"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "dzialania",
+      "title": "5. Dzialania poprawiajace",
+      "columns": [
+        {
+          "key": "dzialanie",
+          "label": "Dzialanie",
+          "type": "text"
+        },
+        {
+          "key": "wlasciciel",
+          "label": "Wlasciciel",
+          "type": "text"
+        },
+        {
+          "key": "termin",
+          "label": "Termin",
+          "type": "date"
+        },
+        {
+          "key": "miernik",
+          "label": "Miernik skutecznosci",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "fields",
+      "key": "kategoryzacja",
+      "title": "6. Kategoryzacja do bazy wiedzy",
+      "fields": [
+        {
+          "key": "metodyka",
+          "label": "Metodyka / proces",
+          "type": "textarea"
+        },
+        {
+          "key": "narzedzia",
+          "label": "Narzedzia (Taiga/Jira/Git/n8n)",
+          "type": "textarea"
+        },
+        {
+          "key": "zespol",
+          "label": "Zespol / komunikacja",
+          "type": "textarea"
+        },
+        {
+          "key": "ryzyko_dostawcy",
+          "label": "Ryzyko / dostawcy",
+          "type": "textarea"
+        },
+        {
+          "key": "klient",
+          "label": "Klient / interesariusze",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "podpisy",
+      "title": "7. Podpisy",
+      "roles": [
+        {
+          "key": "moderator",
+          "label": "Moderator"
+        },
+        {
+          "key": "przedstawiciel_zespolu",
+          "label": "Przedstawiciel zespolu"
+        }
+      ]
+    }
+  ]
+}

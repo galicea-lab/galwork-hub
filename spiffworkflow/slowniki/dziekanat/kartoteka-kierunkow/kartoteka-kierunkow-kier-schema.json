@@ -1,0 +1,146 @@
+{
+  "title": "Kartoteka kierunków-KIER",
+  "description": "Proces: KIER - Kierunki; Obieg: KIER - Kartoteka kierunków; Typ dokumentu: KIER - Kierunek studiów",
+  "type": "object",
+  "properties": {
+    "ID": {
+      "type": "string",
+      "title": "ID",
+      "readOnly": true,
+      "x-permissions": {
+        "Krok słownikowy": "none"
+      }
+    },
+    "Skrót": {
+      "type": "string",
+      "title": "Skrót",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "Nazwa": {
+      "type": "string",
+      "title": "Nazwa",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "Wydział": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "1",
+          "title": "Wydział 1"
+        },
+        {
+          "const": "2",
+          "title": "Wydział 2"
+        }
+      ],
+      "title": "Wydział",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "Instytut": {
+      "type": "string",
+      "title": "Instytut",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "Dyrektor Instytutu": {
+      "type": "string",
+      "title": "Dyrektor Instytutu",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "Sekretariat": {
+      "type": "string",
+      "title": "Sekretariat",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "Dziekan": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "1",
+          "title": "Dziekan Wydziału 1"
+        },
+        {
+          "const": "2",
+          "title": "Dziekan Wydziału 2"
+        }
+      ],
+      "title": "Dziekan",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "Rok I": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Rok I",
+      "readOnly": true,
+      "x-permissions": {
+        "Krok słownikowy": "readonly"
+      }
+    },
+    "Rok II": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Rok II",
+      "readOnly": true,
+      "x-permissions": {
+        "Krok słownikowy": "readonly"
+      }
+    },
+    "Rok III": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Rok III",
+      "readOnly": true,
+      "x-permissions": {
+        "Krok słownikowy": "readonly"
+      }
+    },
+    "Rok IV": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Rok IV",
+      "readOnly": true,
+      "x-permissions": {
+        "Krok słownikowy": "readonly"
+      }
+    },
+    "Opis": {
+      "type": "string",
+      "title": "Opis",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "Aktywny": {
+      "type": "boolean",
+      "title": "Aktywny",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    }
+  }
+}

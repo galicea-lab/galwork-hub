@@ -1,0 +1,23 @@
+{
+  "ui:order": [
+    "tytul",
+    "dostawca",
+    "kwota_szacowana",
+    "waluta",
+    "projekt_mpk",
+    "uzasadnienie",
+    "requires_investment_approval",
+    "requires_project_owner_approval",
+    "requires_additional_approval",
+    "requires_tender",
+    "requires_warehouse_receipt"
+  ],
+  "uzasadnienie": {
+    "ui:widget": "textarea"
+  },
+  "requires_investment_approval": { "ui:widget": "hidden" },
+  "requires_project_owner_approval": { "ui:widget": "hidden" },
+  "requires_additional_approval": { "ui:widget": "hidden" },
+  "requires_tender": { "ui:widget": "hidden" },
+  "requires_warehouse_receipt": { "ui:widget": "hidden" }
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   id="defs_Process_Powiadomienia_e-doreczen"
+                   targetNamespace="http://bpmn"
+                   xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core">
+
+<bpmn:process id="Process_Powiadomienia_e-doreczen" name="Powiadomienia e-doreczen" isExecutable="true">
+<bpmn:startEvent id="StartEvent_main" name="Start" />
+<bpmn:userTask id="Task_01" name="Start" ><spiffworkflow:property name="formJsonSchemaFilename" value="powiadomienia-e-doreczen-pedr-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="powiadomienia-e-doreczen-pedr-uischema.json" /></bpmn:userTask>
+<bpmn:userTask id="Task_02" name="Aktywne" ><spiffworkflow:property name="formJsonSchemaFilename" value="powiadomienia-e-doreczen-pedr-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="powiadomienia-e-doreczen-pedr-uischema.json" /></bpmn:userTask>
+<bpmn:userTask id="Task_03" name="Końcowy (pozytywny)" ><spiffworkflow:property name="formJsonSchemaFilename" value="powiadomienia-e-doreczen-pedr-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="powiadomienia-e-doreczen-pedr-uischema.json" /></bpmn:userTask>
+<bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_main" targetRef="Task_01" />
+<bpmn:sequenceFlow id="Flow_2" sourceRef="Task_01" targetRef="Task_02" name="Nowe powiadomienie" />
+<bpmn:sequenceFlow id="Flow_3" sourceRef="Task_02" targetRef="Task_03" name="Do archiwum" />
+<bpmn:endEvent id="EndEvent_1" name="Koniec" />
+<bpmn:sequenceFlow id="Flow_4" sourceRef="Task_03" targetRef="EndEvent_1" />
+</bpmn:process>
+<bpmndi:BPMNDiagram id="Diagram_Process_Powiadomienia_e-doreczen">
+<bpmndi:BPMNPlane id="Plane_Process_Powiadomienia_e-doreczen" bpmnElement="Process_Powiadomienia_e-doreczen">
+<bpmndi:BPMNShape id="Shape_StartEvent_main" bpmnElement="StartEvent_main"><dc:Bounds x="60" y="82" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_01" bpmnElement="Task_01"><dc:Bounds x="280" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_02" bpmnElement="Task_02"><dc:Bounds x="500" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_03" bpmnElement="Task_03"><dc:Bounds x="720" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_EndEvent_1" bpmnElement="EndEvent_1"><dc:Bounds x="940" y="82" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1"><di:waypoint x="96" y="100" /><di:waypoint x="280" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_2" bpmnElement="Flow_2"><di:waypoint x="380" y="100" /><di:waypoint x="500" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_3" bpmnElement="Flow_3"><di:waypoint x="600" y="100" /><di:waypoint x="720" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_4" bpmnElement="Flow_4"><di:waypoint x="820" y="100" /><di:waypoint x="940" y="100" /></bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane>
+</bpmndi:BPMNDiagram>
+</bpmn:definitions>

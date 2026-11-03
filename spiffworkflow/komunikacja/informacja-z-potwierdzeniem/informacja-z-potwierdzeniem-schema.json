@@ -1,0 +1,213 @@
+{
+  "title": "Informacja z potwierdzeni",
+  "description": "Proces: WPP - Polecenie z potwierdzeniem; Obieg: WPP1 - Informacja z potwierdzeniem; Typ dokumentu: Informacja z Potwierdzeniem",
+  "type": "object",
+  "properties": {
+    "Nazwa": {
+      "type": "string",
+      "title": "Nazwa",
+      "x-permissions": {
+        "Start": "editable",
+        "Potwierdź": "readonly",
+        "Wykonane": "readonly",
+        "Archiwum": "none"
+      },
+      "x-required-in-steps": [
+        "Start"
+      ]
+    },
+    "Informacja:": {
+      "type": "string",
+      "title": "Informacja:",
+      "x-permissions": {
+        "Start": "editable",
+        "Potwierdź": "readonly",
+        "Wykonane": "readonly",
+        "Archiwum": "none"
+      }
+    },
+    "Do kogo": {
+      "type": "object",
+      "properties": {
+        "Adresaci: (Użytkownicy Systemu)": {
+          "type": "string",
+          "title": "Adresaci: (Użytkownicy Systemu)",
+          "x-permissions": {
+            "Start": "editable",
+            "Potwierdź": "editable",
+            "Wykonane": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Adresaci: (grupy)": {
+          "type": "string",
+          "title": "Adresaci: (grupy)",
+          "x-permissions": {
+            "Start": "editable",
+            "Potwierdź": "editable",
+            "Wykonane": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Do kogo",
+      "x-permissions": {
+        "Start": "editable",
+        "Potwierdź": "editable",
+        "Wykonane": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Wymagany podpis załącznika": {
+      "type": "boolean",
+      "title": "Wymagany podpis załącznika",
+      "description": "W obecnej wersji nie używane",
+      "x-permissions": {
+        "Start": "editable",
+        "Potwierdź": "readonly",
+        "Wykonane": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Wymagane potwierdzenie": {
+      "type": "boolean",
+      "title": "Wymagane potwierdzenie",
+      "description": "W obecnej wersji nie używane",
+      "x-permissions": {
+        "Start": "editable",
+        "Potwierdź": "readonly",
+        "Wykonane": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Potwierdzam że:": {
+      "type": "string",
+      "title": "Potwierdzam że:",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "none",
+        "Potwierdź": "readonly",
+        "Wykonane": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Potwierdzam": {
+      "type": "boolean",
+      "title": "Potwierdzam",
+      "x-permissions": {
+        "Start": "none",
+        "Potwierdź": "editable",
+        "Wykonane": "readonly",
+        "Archiwum": "readonly"
+      },
+      "x-required-in-steps": [
+        "Potwierdź"
+      ]
+    },
+    "Lista": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Lista",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Potwierdź": "readonly",
+        "Wykonane": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Lista 2": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Lista",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Potwierdź": "readonly",
+        "Wykonane": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Wybór spółki": {
+      "type": "string",
+      "title": "Wybór spółki",
+      "x-permissions": {
+        "Start": "editable",
+        "Potwierdź": "editable",
+        "Wykonane": "editable",
+        "Archiwum": "editable"
+      }
+    },
+    "termin": {
+      "type": "string",
+      "format": "date-time",
+      "title": "termin",
+      "x-permissions": {
+        "Start": "editable",
+        "Potwierdź": "readonly",
+        "Wykonane": "readonly",
+        "Archiwum": "none"
+      }
+    },
+    "Listy realizacj widoczne dla:": {
+      "type": "string",
+      "title": "Listy realizacj widoczne dla:",
+      "x-permissions": {
+        "Start": "editable",
+        "Potwierdź": "readonly",
+        "Wykonane": "readonly",
+        "Archiwum": "readonly"
+      },
+      "x-required-in-steps": [
+        "Start"
+      ]
+    },
+    "Dodatkowy Link": {
+      "type": "string",
+      "title": "Dodatkowy Link",
+      "x-permissions": {
+        "Start": "editable",
+        "Potwierdź": "readonly",
+        "Wykonane": "readonly",
+        "Archiwum": "none"
+      }
+    },
+    "Metryka": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Metryka",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "none",
+        "Potwierdź": "none",
+        "Wykonane": "none",
+        "Archiwum": "none"
+      }
+    },
+    "Uwagi": {
+      "type": "string",
+      "title": "Uwagi",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "none",
+        "Potwierdź": "readonly",
+        "Wykonane": "readonly",
+        "Archiwum": "none"
+      }
+    }
+  },
+  "required": [
+    "Nazwa",
+    "Potwierdzam",
+    "Listy realizacj widoczne dla:"
+  ]
+}

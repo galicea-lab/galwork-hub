@@ -1,0 +1,154 @@
+{
+  "ui:order": [
+    "Wybór spółki",
+    "Tytuł",
+    "Terminy",
+    "Terminy kalendarza osobistego?",
+    "Powiązany terminarz",
+    "Rok/sprawa",
+    "Systemowe"
+  ],
+  "Terminy": {
+    "items": {
+      "ui:order": [
+        "Opis",
+        "nazwa",
+        "Źródło /rodzaj",
+        "aktualny",
+        "ID",
+        "Termin do",
+        "Termin od",
+        "url",
+        "app",
+        "Wykonane w dniu",
+        "Data"
+      ]
+    },
+    "ui:options": {
+      "addable": true
+    }
+  },
+  "Terminy kalendarza osobistego?": {
+    "ui:help": "Po zaznaceniu tego pola wybór terminarza nie ma znaczenia."
+  },
+  "Rok/sprawa": {
+    "ui:order": [
+      "Rok",
+      "Sprawa"
+    ],
+    "Sprawa": {
+      "ui:help": "Terminy można grupować według spraw / wątków."
+    }
+  },
+  "Systemowe": {
+    "ui:order": [
+      "Lista kierowników",
+      "[tech] Semestr zimowy/letni",
+      "[tech] Wybór semestr zimowy / letni",
+      "[tech] Osoba",
+      "[tech] Rok akademicki",
+      "[tech] Kierownik Działu",
+      "[tech] Pracownicy działu",
+      "[tech] Kierownicy",
+      "[tech] Dodatkowe osoby",
+      "[tech] Grupa"
+    ],
+    "Lista kierowników": {
+      "items": {
+        "ui:order": [
+          "Kierownik"
+        ],
+        "Kierownik": {
+          "ui:readonly": true
+        }
+      },
+      "ui:options": {
+        "addable": true
+      },
+      "ui:readonly": true
+    },
+    "[tech] Semestr zimowy/letni": {
+      "ui:readonly": true
+    },
+    "[tech] Wybór semestr zimowy / letni": {
+      "ui:readonly": true
+    },
+    "[tech] Osoba": {
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "[tech] Rok akademicki": {
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/rok-akademicki",
+        "sourceName": "rok akademicki",
+        "sourceType": "REST Web Service"
+      }
+    },
+    "[tech] Kierownik Działu": {
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "[tech] Pracownicy działu": {
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "[tech] Kierownicy": {
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "[tech] Dodatkowe osoby": {
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "[tech] Grupa": {
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "Grupy osób",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "Wybór spółki": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/companies"
+    }
+  },
+  "Powiązany terminarz": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/trm-terminarze",
+      "sourceName": "[TRM] Terminarze",
+      "sourceType": "Widok z bazy"
+    }
+  }
+}

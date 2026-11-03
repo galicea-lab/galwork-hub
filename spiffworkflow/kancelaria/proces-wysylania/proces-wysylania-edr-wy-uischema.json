@@ -1,0 +1,130 @@
+{
+  "ui:order": [
+    "Adres tradycyjny",
+    "Temat",
+    "Wybór spółki",
+    "Powiązania",
+    "Nadawca",
+    "Odbiorca",
+    "Treść wiadomości",
+    "Metadane Przesyłki",
+    "Dane Kontrolne",
+    "rest_odpowiedź",
+    "poświadczenia",
+    "cssPreview"
+  ],
+  "Powiązania": {
+    "ui:order": [
+      "Gdzie zlecono wysyłanie",
+      "student",
+      "Do kogo przekazać pismo przychodząace"
+    ],
+    "Gdzie zlecono wysyłanie": {
+      "ui:help": "ID obiegu, który zlecił wysłanie"
+    },
+    "student": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/studenci",
+        "sourceName": "Studenci",
+        "sourceType": "Baza MSSQL"
+      }
+    },
+    "Do kogo przekazać pismo przychodząace": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "Nadawca": {
+    "ui:order": [
+      "Nadawca",
+      "Adres Nadawcy",
+      "Imię",
+      "Nazwisko",
+      "Firma"
+    ],
+    "Nadawca": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/adres-e-doreczen",
+        "sourceName": "Adres e-Doręczeń"
+      }
+    }
+  },
+  "Odbiorca": {
+    "ui:order": [
+      "Odbiorca",
+      "Adres odbiorcy",
+      "Imię",
+      "Nazwisko",
+      "Firma"
+    ],
+    "Odbiorca": {
+      "ui:help": "to:eDeliveryAddress",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/adres-e-doreczen",
+        "sourceName": "Adres e-Doręczeń"
+      }
+    },
+    "Adres odbiorcy": {
+      "ui:help": "to:eDeliveryAddress"
+    }
+  },
+  "Treść wiadomości": {
+    "ui:widget": "textarea"
+  },
+  "Metadane Przesyłki": {
+    "ui:order": [
+      "id. przesyłki",
+      "sposób doręczenia",
+      "Wątek (id)",
+      "znacznik czasu"
+    ],
+    "id. przesyłki": {
+      "ui:help": "Identyfikator przesyłki we-Doręczeniach"
+    }
+  },
+  "Dane Kontrolne": {
+    "ui:order": [
+      "Rodzaj przesyłki",
+      "etykiety",
+      "otwarte"
+    ],
+    "Rodzaj przesyłki": {
+      "ui:help": "Rodzaj - standardowo \"Message\""
+    }
+  },
+  "poświadczenia": {
+    "items": {
+      "ui:order": [
+        "id.wiadomości",
+        "data zdarzenia",
+        "ADE Odbiorcy",
+        "typ",
+        "ADE Nadawcy",
+        "id.poświadczenia",
+        "szczegóły",
+        "pobrane",
+        "data utworzenia",
+        "externalData"
+      ]
+    },
+    "ui:options": {
+      "addable": true
+    }
+  },
+  "Wybór spółki": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/companies"
+    }
+  },
+  "cssPreview": {
+    "ui:widget": "richtext"
+  }
+}

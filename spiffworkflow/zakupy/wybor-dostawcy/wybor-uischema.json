@@ -1,0 +1,6 @@
+{
+  "ui:order": ["wniosek_zakupowy_id", "oferty", "wybrany_dostawca", "uzasadnienie_wyboru"],
+  "uzasadnienie_wyboru": {
+    "ui:widget": "textarea"
+  }
+}

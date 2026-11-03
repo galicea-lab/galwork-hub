@@ -1,0 +1,208 @@
+{
+  "title": "Skany-SKAN",
+  "description": "Proces: KANC - Pisma przychodzące (ID: 191); Obieg: SKAN - Skany (ID: 226); Typ dokumentu: SKAN - Skany (ID: 257)",
+  "type": "object",
+  "properties": {
+    "Wybór spółki": {
+      "type": "string",
+      "title": "Wybór spółki",
+      "x-permissions": {
+        "Rejestracja": "editable",
+        "Weryfikacja": "editable",
+        "Pisma przychodzące": "editable",
+        "Kosz": "editable",
+        "OCR": "editable",
+        "Uchwały i zarządzenia": "editable",
+        "Pisma i sprawy": "editable"
+      }
+    },
+    "Temat": {
+      "type": "string",
+      "title": "Temat",
+      "readOnly": true,
+      "x-permissions": {
+        "Rejestracja": "none",
+        "Weryfikacja": "none",
+        "Pisma przychodzące": "none",
+        "Kosz": "none",
+        "OCR": "none",
+        "Uchwały i zarządzenia": "none",
+        "Pisma i sprawy": "none"
+      }
+    },
+    "Treść": {
+      "type": "string",
+      "title": "Treść",
+      "readOnly": true,
+      "x-permissions": {
+        "Rejestracja": "none",
+        "Weryfikacja": "none",
+        "Pisma przychodzące": "none",
+        "Kosz": "none",
+        "OCR": "none",
+        "Uchwały i zarządzenia": "none",
+        "Pisma i sprawy": "none"
+      }
+    },
+    "Kogo dotyczy": {
+      "type": "object",
+      "properties": {},
+      "title": "Kogo dotyczy",
+      "readOnly": true,
+      "x-permissions": {
+        "Rejestracja": "none",
+        "Weryfikacja": "none",
+        "Pisma przychodzące": "none",
+        "Kosz": "none",
+        "OCR": "none",
+        "Uchwały i zarządzenia": "none",
+        "Pisma i sprawy": "none"
+      }
+    },
+    "Nadawca": {
+      "type": "object",
+      "properties": {
+        "Adres pocztowy": {
+          "type": "string",
+          "title": "Adres pocztowy",
+          "x-permissions": {
+            "Rejestracja": "editable",
+            "Weryfikacja": "readonly",
+            "Pisma przychodzące": "readonly",
+            "Kosz": "readonly",
+            "OCR": "none",
+            "Uchwały i zarządzenia": "none",
+            "Pisma i sprawy": "none"
+          }
+        },
+        "Numer telefonu": {
+          "type": "string",
+          "title": "Numer telefonu",
+          "x-permissions": {
+            "Rejestracja": "editable",
+            "Weryfikacja": "readonly",
+            "Pisma przychodzące": "readonly",
+            "Kosz": "readonly",
+            "OCR": "none",
+            "Uchwały i zarządzenia": "none",
+            "Pisma i sprawy": "none"
+          }
+        }
+      },
+      "title": "Nadawca",
+      "x-permissions": {
+        "Rejestracja": "editable",
+        "Weryfikacja": "editable",
+        "Pisma przychodzące": "editable",
+        "Kosz": "editable",
+        "OCR": "none",
+        "Uchwały i zarządzenia": "none",
+        "Pisma i sprawy": "none"
+      }
+    },
+    "Teczka": {
+      "type": "object",
+      "properties": {
+        "Teczka Sprawy": {
+          "type": "string",
+          "title": "Teczka Sprawy",
+          "readOnly": true,
+          "x-permissions": {
+            "Rejestracja": "none",
+            "Weryfikacja": "none",
+            "Pisma przychodzące": "none",
+            "Kosz": "none",
+            "OCR": "none",
+            "Uchwały i zarządzenia": "none",
+            "Pisma i sprawy": "none"
+          }
+        },
+        "link": {
+          "type": "string",
+          "title": "link",
+          "readOnly": true,
+          "x-permissions": {
+            "Rejestracja": "none",
+            "Weryfikacja": "none",
+            "Pisma przychodzące": "none",
+            "Kosz": "none",
+            "OCR": "none",
+            "Uchwały i zarządzenia": "none",
+            "Pisma i sprawy": "none"
+          }
+        },
+        "kolejny nr w teczce": {
+          "type": "string",
+          "title": "kolejny nr w teczce",
+          "readOnly": true,
+          "x-permissions": {
+            "Rejestracja": "none",
+            "Weryfikacja": "none",
+            "Pisma przychodzące": "none",
+            "Kosz": "none",
+            "OCR": "none",
+            "Uchwały i zarządzenia": "none",
+            "Pisma i sprawy": "none"
+          }
+        },
+        "Sygnatura dokumentu wg instrukcji kancelaryjnej": {
+          "type": "string",
+          "title": "Sygnatura dokumentu wg instrukcji kancelaryjnej",
+          "readOnly": true,
+          "x-permissions": {
+            "Rejestracja": "none",
+            "Weryfikacja": "none",
+            "Pisma przychodzące": "none",
+            "Kosz": "none",
+            "OCR": "none",
+            "Uchwały i zarządzenia": "none",
+            "Pisma i sprawy": "none"
+          }
+        },
+        "[tech]włożone": {
+          "type": "boolean",
+          "title": "[tech]włożone",
+          "readOnly": true,
+          "x-permissions": {
+            "Rejestracja": "none",
+            "Weryfikacja": "none",
+            "Pisma przychodzące": "none",
+            "Kosz": "none",
+            "OCR": "none",
+            "Uchwały i zarządzenia": "none",
+            "Pisma i sprawy": "none"
+          }
+        }
+      },
+      "title": "Teczka",
+      "readOnly": true,
+      "x-permissions": {
+        "Rejestracja": "none",
+        "Weryfikacja": "none",
+        "Pisma przychodzące": "none",
+        "Kosz": "none",
+        "OCR": "none",
+        "Uchwały i zarządzenia": "none",
+        "Pisma i sprawy": "none"
+      }
+    },
+    "Metryka": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Metryka",
+      "readOnly": true,
+      "x-permissions": {
+        "Rejestracja": "none",
+        "Weryfikacja": "none",
+        "Pisma przychodzące": "none",
+        "Kosz": "none",
+        "OCR": "none",
+        "Uchwały i zarządzenia": "none",
+        "Pisma i sprawy": "none"
+      }
+    }
+  }
+}

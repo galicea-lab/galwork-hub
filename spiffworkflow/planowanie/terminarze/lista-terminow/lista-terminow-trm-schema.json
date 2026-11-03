@@ -1,0 +1,488 @@
+{
+  "title": "Lista terminów-TRM",
+  "description": "Proces: SCHD - Terminarz (ID: 286); Obieg: TRM - Lista terminów (ID: 320); Typ dokumentu: TRM - Lista terminów (ID: 431)",
+  "type": "object",
+  "properties": {
+    "Wybór spółki": {
+      "type": "string",
+      "title": "Wybór spółki",
+      "x-permissions": {
+        "Wybór terminarza": "editable",
+        "Rejestracja terminów": "editable",
+        "Zarejestrowane terminy": "editable",
+        "Aktualny semestr": "editable",
+        "Następny semestr": "editable",
+        "Archiwalne semestry": "editable",
+        "Odrzucone": "editable"
+      }
+    },
+    "Tytuł": {
+      "type": "string",
+      "title": "Tytuł",
+      "x-permissions": {
+        "Wybór terminarza": "editable",
+        "Rejestracja terminów": "readonly",
+        "Zarejestrowane terminy": "readonly",
+        "Aktualny semestr": "readonly",
+        "Następny semestr": "readonly",
+        "Archiwalne semestry": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Terminy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Opis": {
+            "type": "string",
+            "title": "Opis",
+            "x-permissions": {
+              "Wybór terminarza": "editable",
+              "Rejestracja terminów": "editable",
+              "Zarejestrowane terminy": "editable",
+              "Aktualny semestr": "editable",
+              "Następny semestr": "editable",
+              "Archiwalne semestry": "readonly",
+              "Odrzucone": "readonly"
+            }
+          },
+          "nazwa": {
+            "type": "string",
+            "title": "nazwa",
+            "x-permissions": {
+              "Wybór terminarza": "editable",
+              "Rejestracja terminów": "editable",
+              "Zarejestrowane terminy": "editable",
+              "Aktualny semestr": "editable",
+              "Następny semestr": "editable",
+              "Archiwalne semestry": "readonly",
+              "Odrzucone": "readonly"
+            }
+          },
+          "Źródło /rodzaj": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "0",
+                "title": "Kalendarz wydarzeń"
+              },
+              {
+                "const": "1",
+                "title": "Terminy sprawozdań"
+              },
+              {
+                "const": "2",
+                "title": "Terminy wykonania zadań"
+              },
+              {
+                "const": "3",
+                "title": "Licencje, subskrypcje, gwarancje"
+              },
+              {
+                "const": "4",
+                "title": "Terminy wynikające z umów"
+              },
+              {
+                "const": "5",
+                "title": "Kamienie milowe, sprinty"
+              },
+              {
+                "const": "6",
+                "title": "Spotkania onlne"
+              },
+              {
+                "const": "7",
+                "title": "Rozkład zajęć"
+              },
+              {
+                "const": "9",
+                "title": "Terminarz osobisty"
+              }
+            ],
+            "title": "Źródło /rodzaj",
+            "x-permissions": {
+              "Wybór terminarza": "editable",
+              "Rejestracja terminów": "editable",
+              "Zarejestrowane terminy": "editable",
+              "Aktualny semestr": "editable",
+              "Następny semestr": "editable",
+              "Archiwalne semestry": "readonly",
+              "Odrzucone": "readonly"
+            }
+          },
+          "aktualny": {
+            "type": "boolean",
+            "title": "aktualny",
+            "x-permissions": {
+              "Wybór terminarza": "editable",
+              "Rejestracja terminów": "editable",
+              "Zarejestrowane terminy": "editable",
+              "Aktualny semestr": "editable",
+              "Następny semestr": "editable",
+              "Archiwalne semestry": "readonly",
+              "Odrzucone": "readonly"
+            }
+          },
+          "ID": {
+            "type": "string",
+            "title": "ID",
+            "x-permissions": {
+              "Wybór terminarza": "editable",
+              "Rejestracja terminów": "editable",
+              "Zarejestrowane terminy": "editable",
+              "Aktualny semestr": "editable",
+              "Następny semestr": "editable",
+              "Archiwalne semestry": "readonly",
+              "Odrzucone": "readonly"
+            }
+          },
+          "Termin do": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Termin do",
+            "x-permissions": {
+              "Wybór terminarza": "editable",
+              "Rejestracja terminów": "editable",
+              "Zarejestrowane terminy": "editable",
+              "Aktualny semestr": "editable",
+              "Następny semestr": "editable",
+              "Archiwalne semestry": "readonly",
+              "Odrzucone": "readonly"
+            }
+          },
+          "Termin od": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Termin od",
+            "x-permissions": {
+              "Wybór terminarza": "editable",
+              "Rejestracja terminów": "editable",
+              "Zarejestrowane terminy": "editable",
+              "Aktualny semestr": "editable",
+              "Następny semestr": "editable",
+              "Archiwalne semestry": "readonly",
+              "Odrzucone": "readonly"
+            }
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "title": "url",
+            "x-permissions": {
+              "Wybór terminarza": "editable",
+              "Rejestracja terminów": "editable",
+              "Zarejestrowane terminy": "editable",
+              "Aktualny semestr": "editable",
+              "Następny semestr": "editable",
+              "Archiwalne semestry": "editable",
+              "Odrzucone": "editable"
+            }
+          },
+          "app": {
+            "type": "string",
+            "title": "app",
+            "x-permissions": {
+              "Wybór terminarza": "editable",
+              "Rejestracja terminów": "editable",
+              "Zarejestrowane terminy": "editable",
+              "Aktualny semestr": "editable",
+              "Następny semestr": "editable",
+              "Archiwalne semestry": "readonly",
+              "Odrzucone": "readonly"
+            }
+          },
+          "Wykonane w dniu": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Wykonane w dniu",
+            "x-permissions": {
+              "Wybór terminarza": "editable",
+              "Rejestracja terminów": "editable",
+              "Zarejestrowane terminy": "editable",
+              "Aktualny semestr": "editable",
+              "Następny semestr": "editable",
+              "Archiwalne semestry": "readonly",
+              "Odrzucone": "readonly"
+            }
+          },
+          "Data": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Data",
+            "x-permissions": {
+              "Wybór terminarza": "editable",
+              "Rejestracja terminów": "editable",
+              "Zarejestrowane terminy": "editable",
+              "Aktualny semestr": "editable",
+              "Następny semestr": "editable",
+              "Archiwalne semestry": "readonly",
+              "Odrzucone": "readonly"
+            }
+          }
+        }
+      },
+      "title": "Terminy",
+      "x-permissions": {
+        "Wybór terminarza": "none",
+        "Rejestracja terminów": "editable",
+        "Zarejestrowane terminy": "editable",
+        "Aktualny semestr": "editable",
+        "Następny semestr": "editable",
+        "Archiwalne semestry": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Terminy kalendarza osobistego?": {
+      "type": "boolean",
+      "title": "Terminy kalendarza osobistego?",
+      "x-permissions": {
+        "Wybór terminarza": "editable",
+        "Rejestracja terminów": "readonly",
+        "Zarejestrowane terminy": "readonly",
+        "Aktualny semestr": "readonly",
+        "Następny semestr": "readonly",
+        "Archiwalne semestry": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Powiązany terminarz": {
+      "type": "string",
+      "title": "Powiązany terminarz",
+      "x-permissions": {
+        "Wybór terminarza": "editable",
+        "Rejestracja terminów": "readonly",
+        "Zarejestrowane terminy": "readonly",
+        "Aktualny semestr": "readonly",
+        "Następny semestr": "readonly",
+        "Archiwalne semestry": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Rok/sprawa": {
+      "type": "object",
+      "properties": {
+        "Rok": {
+          "type": "integer",
+          "title": "Rok",
+          "x-permissions": {
+            "Wybór terminarza": "editable",
+            "Rejestracja terminów": "readonly",
+            "Zarejestrowane terminy": "readonly",
+            "Aktualny semestr": "readonly",
+            "Następny semestr": "readonly",
+            "Archiwalne semestry": "readonly",
+            "Odrzucone": "readonly"
+          }
+        },
+        "Sprawa": {
+          "type": "string",
+          "title": "Sprawa",
+          "x-permissions": {
+            "Wybór terminarza": "editable",
+            "Rejestracja terminów": "readonly",
+            "Zarejestrowane terminy": "readonly",
+            "Aktualny semestr": "readonly",
+            "Następny semestr": "readonly",
+            "Archiwalne semestry": "readonly",
+            "Odrzucone": "readonly"
+          }
+        }
+      },
+      "title": "Rok/sprawa",
+      "x-permissions": {
+        "Wybór terminarza": "editable",
+        "Rejestracja terminów": "editable",
+        "Zarejestrowane terminy": "editable",
+        "Aktualny semestr": "editable",
+        "Następny semestr": "editable",
+        "Archiwalne semestry": "editable",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Systemowe": {
+      "type": "object",
+      "properties": {
+        "Lista kierowników": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Kierownik": {
+                "type": "string",
+                "title": "Kierownik",
+                "readOnly": true,
+                "x-permissions": {
+                  "Wybór terminarza": "none",
+                  "Rejestracja terminów": "none",
+                  "Zarejestrowane terminy": "none",
+                  "Aktualny semestr": "none",
+                  "Następny semestr": "none",
+                  "Archiwalne semestry": "none",
+                  "Odrzucone": "readonly"
+                }
+              }
+            }
+          },
+          "title": "Lista kierowników",
+          "readOnly": true,
+          "x-permissions": {
+            "Wybór terminarza": "none",
+            "Rejestracja terminów": "none",
+            "Zarejestrowane terminy": "none",
+            "Aktualny semestr": "none",
+            "Następny semestr": "none",
+            "Archiwalne semestry": "none",
+            "Odrzucone": "readonly"
+          }
+        },
+        "[tech] Semestr zimowy/letni": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "0",
+              "title": "Zimowy"
+            },
+            {
+              "const": "1",
+              "title": "Letni"
+            }
+          ],
+          "title": "[tech] Semestr zimowy/letni",
+          "readOnly": true,
+          "x-permissions": {
+            "Wybór terminarza": "readonly",
+            "Rejestracja terminów": "readonly",
+            "Zarejestrowane terminy": "readonly",
+            "Aktualny semestr": "readonly",
+            "Następny semestr": "readonly",
+            "Archiwalne semestry": "readonly",
+            "Odrzucone": "readonly"
+          }
+        },
+        "[tech] Wybór semestr zimowy / letni": {
+          "type": "boolean",
+          "title": "[tech] Wybór semestr zimowy / letni",
+          "readOnly": true,
+          "x-permissions": {
+            "Wybór terminarza": "readonly",
+            "Rejestracja terminów": "readonly",
+            "Zarejestrowane terminy": "readonly",
+            "Aktualny semestr": "readonly",
+            "Następny semestr": "readonly",
+            "Archiwalne semestry": "readonly",
+            "Odrzucone": "readonly"
+          }
+        },
+        "[tech] Osoba": {
+          "type": "string",
+          "title": "[tech] Osoba",
+          "readOnly": true,
+          "x-permissions": {
+            "Wybór terminarza": "readonly",
+            "Rejestracja terminów": "readonly",
+            "Zarejestrowane terminy": "readonly",
+            "Aktualny semestr": "readonly",
+            "Następny semestr": "readonly",
+            "Archiwalne semestry": "readonly",
+            "Odrzucone": "readonly"
+          }
+        },
+        "[tech] Rok akademicki": {
+          "type": "string",
+          "title": "[tech] Rok akademicki",
+          "readOnly": true,
+          "x-permissions": {
+            "Wybór terminarza": "readonly",
+            "Rejestracja terminów": "readonly",
+            "Zarejestrowane terminy": "readonly",
+            "Aktualny semestr": "readonly",
+            "Następny semestr": "readonly",
+            "Archiwalne semestry": "readonly",
+            "Odrzucone": "readonly"
+          }
+        },
+        "[tech] Kierownik Działu": {
+          "type": "string",
+          "title": "[tech] Kierownik Działu",
+          "readOnly": true,
+          "x-permissions": {
+            "Wybór terminarza": "readonly",
+            "Rejestracja terminów": "readonly",
+            "Zarejestrowane terminy": "readonly",
+            "Aktualny semestr": "readonly",
+            "Następny semestr": "readonly",
+            "Archiwalne semestry": "readonly",
+            "Odrzucone": "readonly"
+          }
+        },
+        "[tech] Pracownicy działu": {
+          "type": "string",
+          "title": "[tech] Pracownicy działu",
+          "readOnly": true,
+          "x-permissions": {
+            "Wybór terminarza": "readonly",
+            "Rejestracja terminów": "readonly",
+            "Zarejestrowane terminy": "readonly",
+            "Aktualny semestr": "readonly",
+            "Następny semestr": "readonly",
+            "Archiwalne semestry": "readonly",
+            "Odrzucone": "readonly"
+          }
+        },
+        "[tech] Kierownicy": {
+          "type": "string",
+          "title": "[tech] Kierownicy",
+          "readOnly": true,
+          "x-permissions": {
+            "Wybór terminarza": "readonly",
+            "Rejestracja terminów": "readonly",
+            "Zarejestrowane terminy": "readonly",
+            "Aktualny semestr": "readonly",
+            "Następny semestr": "readonly",
+            "Archiwalne semestry": "readonly",
+            "Odrzucone": "readonly"
+          }
+        },
+        "[tech] Dodatkowe osoby": {
+          "type": "string",
+          "title": "[tech] Dodatkowe osoby",
+          "readOnly": true,
+          "x-permissions": {
+            "Wybór terminarza": "readonly",
+            "Rejestracja terminów": "readonly",
+            "Zarejestrowane terminy": "readonly",
+            "Aktualny semestr": "readonly",
+            "Następny semestr": "readonly",
+            "Archiwalne semestry": "readonly",
+            "Odrzucone": "readonly"
+          }
+        },
+        "[tech] Grupa": {
+          "type": "string",
+          "title": "[tech] Grupa",
+          "readOnly": true,
+          "x-permissions": {
+            "Wybór terminarza": "readonly",
+            "Rejestracja terminów": "readonly",
+            "Zarejestrowane terminy": "readonly",
+            "Aktualny semestr": "readonly",
+            "Następny semestr": "readonly",
+            "Archiwalne semestry": "readonly",
+            "Odrzucone": "readonly"
+          }
+        }
+      },
+      "title": "Systemowe",
+      "x-permissions": {
+        "Wybór terminarza": "editable",
+        "Rejestracja terminów": "editable",
+        "Zarejestrowane terminy": "editable",
+        "Aktualny semestr": "editable",
+        "Następny semestr": "editable",
+        "Archiwalne semestry": "editable",
+        "Odrzucone": "readonly"
+      }
+    }
+  }
+}

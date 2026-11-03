@@ -1,0 +1,57 @@
+{
+  "ui:order": [
+    "Wybór spółki",
+    "Tytuł informacji (wybór z wcześniej używanych)",
+    "Tytuł informacji (dowolny)",
+    "Treść informacji",
+    "Metryka",
+    "Do kogo"
+  ],
+  "Treść informacji": {
+    "ui:widget": "textarea"
+  },
+  "Metryka": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Do kogo": {
+    "ui:order": [
+      "Adresaci: (Użytkownicy Systemu)",
+      "Adresaci: (grupy)"
+    ],
+    "Adresaci: (Użytkownicy Systemu)": {
+      "ui:help": "Wskaż do kogo przekazać informację",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "Użytkownicy Systemu",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Adresaci: (grupy)": {
+      "ui:help": "Wskaż do kogo przekazać informację",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "Grupy osób",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "Wybór spółki": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/companies"
+    }
+  },
+  "Tytuł informacji (wybór z wcześniej używanych)": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/slownik-tematow",
+      "sourceName": "Słownik tematów"
+    }
+  }
+}

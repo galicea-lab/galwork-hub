@@ -1,0 +1,4 @@
+{
+  "ui:order": ["tytul", "oferty", "wybrany_dostawca", "uzasadnienie"],
+  "uzasadnienie": { "ui:widget": "textarea" }
+}

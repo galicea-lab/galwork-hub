@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" id="defs_Process_EOD" targetNamespace="http://bpmn" exporter="Camunda Modeler" exporterVersion="5.40.0">
+  <bpmn:process id="Process_EOD" name="EOD" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_main" name="Start" />
+    <bpmn:userTask id="Task_01" name="Nowa przesyłka">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="eod-eod-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="eod-eod-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_02" name="Redagowanie" />
+    <bpmn:userTask id="Task_03" name="EOD" />
+    <bpmn:userTask id="Task_04" name="Archiwum" />
+    <bpmn:userTask id="Task_05" name="Kosz" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_main" targetRef="Task_01" />
+    <bpmn:sequenceFlow id="Flow_2" name="Zapisz -&#62; redagowanie treści" sourceRef="Task_01" targetRef="Task_02" />
+    <bpmn:sequenceFlow id="Flow_3" name="Wyślij" sourceRef="Task_02" targetRef="Task_03" />
+    <bpmn:exclusiveGateway id="Gateway_01" name="Wybór ścieżki (EOD)" default="Flow_4" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_03" targetRef="Gateway_01" />
+    <bpmn:sequenceFlow id="Flow_4" name="Prześlij dalej" sourceRef="Gateway_01" targetRef="Task_03" />
+    <bpmn:sequenceFlow id="Flow_6" name="Przeczytane -&#62; do archiwum" sourceRef="Gateway_01" targetRef="Task_04">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_6'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_7" name="Do kosza" sourceRef="Gateway_01" targetRef="Task_05">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_7'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_8" name="Przywróć do redagowania" sourceRef="Task_04" targetRef="Task_02" />
+    <bpmn:endEvent id="EndEvent_1" name="Koniec" />
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Task_05" targetRef="EndEvent_1" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_Process_EOD">
+    <bpmndi:BPMNPlane id="Plane_Process_EOD" bpmnElement="Process_EOD">
+      <bpmndi:BPMNShape id="Shape_StartEvent_main" bpmnElement="StartEvent_main">
+        <dc:Bounds x="132" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="138" y="268" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_01" bpmnElement="Task_01">
+        <dc:Bounds x="280" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_02" bpmnElement="Task_02">
+        <dc:Bounds x="250" y="410" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_03" bpmnElement="Task_03">
+        <dc:Bounds x="530" y="480" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_04" bpmnElement="Task_04">
+        <dc:Bounds x="940" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_05" bpmnElement="Task_05">
+        <dc:Bounds x="920" y="410" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_01" bpmnElement="Gateway_01" isMarkerVisible="true">
+        <dc:Bounds x="720" y="225" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="711" y="187.5" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_1" bpmnElement="EndEvent_1">
+        <dc:Bounds x="1132" y="432" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1133" y="468" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1">
+        <di:waypoint x="168" y="250" />
+        <di:waypoint x="280" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_2" bpmnElement="Flow_2">
+        <di:waypoint x="330" y="290" />
+        <di:waypoint x="330" y="350" />
+        <di:waypoint x="300" y="350" />
+        <di:waypoint x="300" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="261" y="361" width="87" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_3" bpmnElement="Flow_3">
+        <di:waypoint x="300" y="490" />
+        <di:waypoint x="300" y="520" />
+        <di:waypoint x="530" y="520" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="300" y="511" width="29" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_5" bpmnElement="Flow_5">
+        <di:waypoint x="630" y="520" />
+        <di:waypoint x="745" y="520" />
+        <di:waypoint x="745" y="275" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_4" bpmnElement="Flow_4">
+        <di:waypoint x="720" y="250" />
+        <di:waypoint x="710" y="250" />
+        <di:waypoint x="710" y="460" />
+        <di:waypoint x="580" y="460" />
+        <di:waypoint x="580" y="480" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="614" y="435" width="62" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_6" bpmnElement="Flow_6">
+        <di:waypoint x="770" y="250" />
+        <di:waypoint x="940" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="817" y="225" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_7" bpmnElement="Flow_7">
+        <di:waypoint x="750" y="270" />
+        <di:waypoint x="850" y="270" />
+        <di:waypoint x="850" y="450" />
+        <di:waypoint x="920" y="450" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="858" y="430" width="46" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_8" bpmnElement="Flow_8">
+        <di:waypoint x="990" y="210" />
+        <di:waypoint x="990" y="80" />
+        <di:waypoint x="645" y="80" />
+        <di:waypoint x="645" y="430" />
+        <di:waypoint x="350" y="430" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="466" y="405" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_9" bpmnElement="Flow_9">
+        <di:waypoint x="1020" y="450" />
+        <di:waypoint x="1132" y="450" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

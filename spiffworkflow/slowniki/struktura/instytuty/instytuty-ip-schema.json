@@ -1,0 +1,49 @@
+{
+  "title": "Instytuty",
+  "description": "Formularz – Proces: IP - Instytuty Uczelni (ID: 242); Obieg: Instytuty Uczelni (ID: 275); Typ dokumentu: IP - Instytuty Uczelni (ID: 379)",
+  "type": "object",
+  "properties": {
+    "ID": {
+      "type": "string",
+      "title": "ID",
+      "readOnly": true,
+      "x-permissions": {
+        "Krok słownikowy": "readonly"
+      }
+    },
+    "Nazwa": {
+      "type": "string",
+      "title": "Nazwa",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      },
+      "x-required-in-steps": [
+        "Krok słownikowy"
+      ]
+    },
+    "Dyrektor Instytutu": {
+      "type": "string",
+      "title": "Dyrektor Instytutu",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "Aktywny": {
+      "type": "boolean",
+      "title": "Aktywny",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    },
+    "email Dyrektora": {
+      "type": "string",
+      "title": "email Dyrektora",
+      "x-permissions": {
+        "Krok słownikowy": "editable"
+      }
+    }
+  },
+  "required": [
+    "Nazwa"
+  ]
+}

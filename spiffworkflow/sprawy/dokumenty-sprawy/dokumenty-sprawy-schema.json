@@ -1,0 +1,374 @@
+{
+  "title": "Dokumenty Sprawy",
+  "description": "Proces: Dokument; Obieg: DD - Dokumenty Sprawy; Typ dokumentu: Dokumenty Działu",
+  "type": "object",
+  "properties": {
+    "Wybór spółki": {
+      "type": "string",
+      "title": "Wybór spółki",
+      "x-permissions": {
+        "Nowy Dokument": "none",
+        "Przypisanie teczki": "editable",
+        "Redagowanie": "editable",
+        "Zmiana teczki": "editable",
+        "Prośba o informacje / decyzje": "none",
+        "e-Doręczenia": "none",
+        "Obsługa doręczania": "none",
+        "Archiwum": "none"
+      }
+    },
+    "Temat": {
+      "type": "string",
+      "title": "Temat",
+      "x-permissions": {
+        "Nowy Dokument": "editable",
+        "Przypisanie teczki": "editable",
+        "Redagowanie": "editable",
+        "Zmiana teczki": "readonly",
+        "Prośba o informacje / decyzje": "readonly",
+        "e-Doręczenia": "readonly",
+        "Obsługa doręczania": "readonly",
+        "Archiwum": "readonly"
+      },
+      "x-required-in-steps": [
+        "Nowy Dokument",
+        "Przypisanie teczki",
+        "Redagowanie"
+      ]
+    },
+    "Dział": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "0",
+          "title": "-"
+        },
+        {
+          "const": "1",
+          "title": "DZ1"
+        },
+        {
+          "const": "2",
+          "title": "DZ2"
+        },
+        {
+          "const": "3",
+          "title": "DZ3"
+        }
+      ],
+      "title": "Dział",
+      "x-permissions": {
+        "Nowy Dokument": "editable",
+        "Przypisanie teczki": "editable",
+        "Redagowanie": "readonly",
+        "Zmiana teczki": "readonly",
+        "Prośba o informacje / decyzje": "readonly",
+        "e-Doręczenia": "readonly",
+        "Obsługa doręczania": "readonly",
+        "Archiwum": "readonly"
+      },
+      "x-required-in-steps": [
+        "Nowy Dokument",
+        "Przypisanie teczki"
+      ]
+    },
+    "Kategorie": {
+      "type": "string",
+      "title": "Kategorie",
+      "x-permissions": {
+        "Nowy Dokument": "editable",
+        "Przypisanie teczki": "editable",
+        "Redagowanie": "editable",
+        "Zmiana teczki": "none",
+        "Prośba o informacje / decyzje": "readonly",
+        "e-Doręczenia": "readonly",
+        "Obsługa doręczania": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Data rejestracji": {
+      "type": "string",
+      "format": "date",
+      "title": "Data rejestracji",
+      "x-permissions": {
+        "Nowy Dokument": "editable",
+        "Przypisanie teczki": "editable",
+        "Redagowanie": "editable",
+        "Zmiana teczki": "readonly",
+        "Prośba o informacje / decyzje": "readonly",
+        "e-Doręczenia": "readonly",
+        "Obsługa doręczania": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Autor dokumentu": {
+      "type": "string",
+      "title": "Autor dokumentu",
+      "readOnly": true,
+      "x-permissions": {
+        "Nowy Dokument": "readonly",
+        "Przypisanie teczki": "readonly",
+        "Redagowanie": "readonly",
+        "Zmiana teczki": "none",
+        "Prośba o informacje / decyzje": "readonly",
+        "e-Doręczenia": "readonly",
+        "Obsługa doręczania": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Komu przekazać": {
+      "type": "string",
+      "title": "Komu przekazać",
+      "x-permissions": {
+        "Nowy Dokument": "none",
+        "Przypisanie teczki": "none",
+        "Redagowanie": "editable",
+        "Zmiana teczki": "none",
+        "Prośba o informacje / decyzje": "editable",
+        "e-Doręczenia": "readonly",
+        "Obsługa doręczania": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Doręczenie": {
+      "type": "object",
+      "properties": {
+        "Z książki adresowej": {
+          "type": "string",
+          "title": "Z książki adresowej",
+          "x-permissions": {
+            "Nowy Dokument": "none",
+            "Przypisanie teczki": "none",
+            "Redagowanie": "editable",
+            "Zmiana teczki": "none",
+            "Prośba o informacje / decyzje": "editable",
+            "e-Doręczenia": "readonly",
+            "Obsługa doręczania": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Podobieg doręczenia": {
+          "type": "string",
+          "title": "Podobieg doręczenia",
+          "readOnly": true,
+          "x-permissions": {
+            "Nowy Dokument": "none",
+            "Przypisanie teczki": "none",
+            "Redagowanie": "readonly",
+            "Zmiana teczki": "none",
+            "Prośba o informacje / decyzje": "readonly",
+            "e-Doręczenia": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Adres tradycyjny": {
+          "type": "string",
+          "title": "Adres tradycyjny",
+          "x-permissions": {
+            "Nowy Dokument": "none",
+            "Przypisanie teczki": "none",
+            "Redagowanie": "editable",
+            "Zmiana teczki": "none",
+            "Prośba o informacje / decyzje": "none",
+            "e-Doręczenia": "editable",
+            "Obsługa doręczania": "editable",
+            "Archiwum": "editable"
+          }
+        },
+        "Proces doręczania": {
+          "type": "string",
+          "title": "Proces doręczania",
+          "x-permissions": {
+            "Nowy Dokument": "none",
+            "Przypisanie teczki": "none",
+            "Redagowanie": "editable",
+            "Zmiana teczki": "none",
+            "Prośba o informacje / decyzje": "none",
+            "e-Doręczenia": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "ade Odbiorcy": {
+          "type": "string",
+          "title": "ade Odbiorcy",
+          "x-permissions": {
+            "Nowy Dokument": "none",
+            "Przypisanie teczki": "none",
+            "Redagowanie": "editable",
+            "Zmiana teczki": "none",
+            "Prośba o informacje / decyzje": "none",
+            "e-Doręczenia": "editable",
+            "Obsługa doręczania": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Doręczenie",
+      "x-permissions": {
+        "Nowy Dokument": "none",
+        "Przypisanie teczki": "none",
+        "Redagowanie": "editable",
+        "Zmiana teczki": "none",
+        "Prośba o informacje / decyzje": "editable",
+        "e-Doręczenia": "readonly",
+        "Obsługa doręczania": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Krótki opis / treść": {
+      "type": "string",
+      "title": "Krótki opis / treść",
+      "x-permissions": {
+        "Nowy Dokument": "editable",
+        "Przypisanie teczki": "editable",
+        "Redagowanie": "editable",
+        "Zmiana teczki": "readonly",
+        "Prośba o informacje / decyzje": "readonly",
+        "e-Doręczenia": "readonly",
+        "Obsługa doręczania": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Teczka": {
+      "type": "object",
+      "properties": {
+        "Teczka Sprawy": {
+          "type": "string",
+          "title": "Teczka Sprawy",
+          "x-permissions": {
+            "Nowy Dokument": "none",
+            "Przypisanie teczki": "editable",
+            "Redagowanie": "readonly",
+            "Zmiana teczki": "editable",
+            "Prośba o informacje / decyzje": "readonly",
+            "e-Doręczenia": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "link": {
+          "type": "string",
+          "title": "link",
+          "readOnly": true,
+          "x-permissions": {
+            "Nowy Dokument": "none",
+            "Przypisanie teczki": "readonly",
+            "Redagowanie": "readonly",
+            "Zmiana teczki": "readonly",
+            "Prośba o informacje / decyzje": "readonly",
+            "e-Doręczenia": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "kolejny nr w teczce": {
+          "type": "string",
+          "title": "kolejny nr w teczce",
+          "readOnly": true,
+          "x-permissions": {
+            "Nowy Dokument": "none",
+            "Przypisanie teczki": "readonly",
+            "Redagowanie": "readonly",
+            "Zmiana teczki": "readonly",
+            "Prośba o informacje / decyzje": "readonly",
+            "e-Doręczenia": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Sygnatura dokumentu wg instrukcji kancelaryjnej": {
+          "type": "string",
+          "title": "Sygnatura dokumentu wg instrukcji kancelaryjnej",
+          "readOnly": true,
+          "x-permissions": {
+            "Nowy Dokument": "none",
+            "Przypisanie teczki": "readonly",
+            "Redagowanie": "readonly",
+            "Zmiana teczki": "readonly",
+            "Prośba o informacje / decyzje": "readonly",
+            "e-Doręczenia": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Teczka",
+      "x-permissions": {
+        "Nowy Dokument": "none",
+        "Przypisanie teczki": "editable",
+        "Redagowanie": "editable",
+        "Zmiana teczki": "editable",
+        "Prośba o informacje / decyzje": "editable",
+        "e-Doręczenia": "editable",
+        "Obsługa doręczania": "editable",
+        "Archiwum": "editable"
+      }
+    },
+    "Systemowe": {
+      "type": "object",
+      "properties": {
+        "Bieżący rok": {
+          "type": "string",
+          "title": "Bieżący rok",
+          "x-permissions": {
+            "Nowy Dokument": "editable",
+            "Przypisanie teczki": "editable",
+            "Redagowanie": "editable",
+            "Zmiana teczki": "editable",
+            "Prośba o informacje / decyzje": "none",
+            "e-Doręczenia": "none",
+            "Obsługa doręczania": "none",
+            "Archiwum": "none"
+          }
+        },
+        "prefix numeru teczki": {
+          "type": "string",
+          "title": "prefix numeru teczki",
+          "readOnly": true,
+          "x-permissions": {
+            "Nowy Dokument": "readonly",
+            "Przypisanie teczki": "readonly",
+            "Redagowanie": "readonly",
+            "Zmiana teczki": "readonly",
+            "Prośba o informacje / decyzje": "none",
+            "e-Doręczenia": "none",
+            "Obsługa doręczania": "none",
+            "Archiwum": "none"
+          }
+        },
+        "środek numeru teczki": {
+          "type": "string",
+          "title": "środek numeru teczki",
+          "readOnly": true,
+          "x-permissions": {
+            "Nowy Dokument": "readonly",
+            "Przypisanie teczki": "readonly",
+            "Redagowanie": "readonly",
+            "Zmiana teczki": "readonly",
+            "Prośba o informacje / decyzje": "none",
+            "e-Doręczenia": "none",
+            "Obsługa doręczania": "none",
+            "Archiwum": "none"
+          }
+        }
+      },
+      "title": "Systemowe",
+      "x-permissions": {
+        "Nowy Dokument": "editable",
+        "Przypisanie teczki": "editable",
+        "Redagowanie": "editable",
+        "Zmiana teczki": "editable",
+        "Prośba o informacje / decyzje": "none",
+        "e-Doręczenia": "none",
+        "Obsługa doręczania": "none",
+        "Archiwum": "none"
+      }
+    }
+  },
+  "required": [
+    "Temat",
+    "Dział"
+  ]
+}

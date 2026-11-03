@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   id="defs_Process_Lista_terminow"
+                   targetNamespace="http://bpmn">
+
+<bpmn:process id="Process_Lista_terminow" name="Lista terminów" isExecutable="true">
+<bpmn:startEvent id="StartEvent_main" name="Start" />
+<bpmn:userTask id="Task_01" name="Wybór terminarza" ><spiffworkflow:property name="formJsonSchemaFilename" value="lista-terminow-trm-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="lista-terminow-trm-uischema.json" /></bpmn:userTask>
+<bpmn:userTask id="Task_03" name="Rejestracja terminów" ><spiffworkflow:property name="formJsonSchemaFilename" value="lista-terminow-trm-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="lista-terminow-trm-uischema.json" /></bpmn:userTask>
+<bpmn:userTask id="Task_04" name="Zarejestrowane terminy" ><spiffworkflow:property name="formJsonSchemaFilename" value="lista-terminow-trm-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="lista-terminow-trm-uischema.json" /></bpmn:userTask>
+<bpmn:userTask id="Task_02" name="Osobisty?" ><spiffworkflow:property name="formJsonSchemaFilename" value="lista-terminow-trm-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="lista-terminow-trm-uischema.json" /></bpmn:userTask>
+<bpmn:userTask id="Task_06" name="Aktualny semestr" ><spiffworkflow:property name="formJsonSchemaFilename" value="lista-terminow-trm-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="lista-terminow-trm-uischema.json" /></bpmn:userTask>
+<bpmn:userTask id="Task_08" name="Następny semestr" ><spiffworkflow:property name="formJsonSchemaFilename" value="lista-terminow-trm-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="lista-terminow-trm-uischema.json" /></bpmn:userTask>
+<bpmn:userTask id="Task_07" name="Archiwalne semestry" ><spiffworkflow:property name="formJsonSchemaFilename" value="lista-terminow-trm-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="lista-terminow-trm-uischema.json" /></bpmn:userTask>
+<bpmn:userTask id="Task_05" name="Odrzucone" ><spiffworkflow:property name="formJsonSchemaFilename" value="lista-terminow-trm-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="lista-terminow-trm-uischema.json" /></bpmn:userTask>
+<bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_main" targetRef="Task_01" />
+<bpmn:sequenceFlow id="Flow_2" sourceRef="Task_01" targetRef="Task_02" name="Rejestruj terminy" />
+<bpmn:exclusiveGateway id="Gateway_02" name="Wybór ścieżki (Rejestracja terminów)" default="Flow_3" />
+<bpmn:sequenceFlow id="Flow_4" sourceRef="Task_03" targetRef="Gateway_02" />
+<bpmn:sequenceFlow id="Flow_3" sourceRef="Gateway_02" targetRef="Task_04" name="Gotowe" />
+<bpmn:sequenceFlow id="Flow_5" sourceRef="Gateway_02" targetRef="Task_05" name="Odrzucenie">
+<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_5'</bpmn:conditionExpression>
+</bpmn:sequenceFlow>
+<bpmn:sequenceFlow id="Flow_6" sourceRef="Gateway_02" targetRef="Task_06" name="Semestr aktualny">
+<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_6'</bpmn:conditionExpression>
+</bpmn:sequenceFlow>
+<bpmn:sequenceFlow id="Flow_7" sourceRef="Gateway_02" targetRef="Task_08" name="Semestr przygotowywany">
+<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_7'</bpmn:conditionExpression>
+</bpmn:sequenceFlow>
+<bpmn:sequenceFlow id="Flow_8" sourceRef="Task_04" targetRef="Task_03" name="Wróć do rejestracji" />
+<bpmn:exclusiveGateway id="Gateway_01" name="Wybór ścieżki (Osobisty?)" default="Flow_9" />
+<bpmn:sequenceFlow id="Flow_10" sourceRef="Task_02" targetRef="Gateway_01" />
+<bpmn:sequenceFlow id="Flow_11" sourceRef="Gateway_01" targetRef="Task_03" name="Rejestruj terminy">
+<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_11'</bpmn:conditionExpression>
+</bpmn:sequenceFlow>
+<bpmn:sequenceFlow id="Flow_9" sourceRef="Gateway_01" targetRef="Task_03" name="Rejestruj w terminarzu osobistym" />
+<bpmn:exclusiveGateway id="Gateway_03" name="Wybór ścieżki (Aktualny semestr)" default="Flow_12" />
+<bpmn:sequenceFlow id="Flow_13" sourceRef="Task_06" targetRef="Gateway_03" />
+<bpmn:sequenceFlow id="Flow_14" sourceRef="Gateway_03" targetRef="Task_03" name="Powrót">
+<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_14'</bpmn:conditionExpression>
+</bpmn:sequenceFlow>
+<bpmn:sequenceFlow id="Flow_12" sourceRef="Gateway_03" targetRef="Task_07" name="Do archiwum" />
+<bpmn:exclusiveGateway id="Gateway_04" name="Wybór ścieżki (Następny semestr)" default="Flow_15" />
+<bpmn:sequenceFlow id="Flow_16" sourceRef="Task_08" targetRef="Gateway_04" />
+<bpmn:sequenceFlow id="Flow_15" sourceRef="Gateway_04" targetRef="Task_06" name="Ustaw jako aktualny" />
+<bpmn:sequenceFlow id="Flow_17" sourceRef="Gateway_04" targetRef="Task_07" name="Do archiwum">
+<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_17'</bpmn:conditionExpression>
+</bpmn:sequenceFlow>
+<bpmn:endEvent id="EndEvent_1" name="Koniec" />
+<bpmn:sequenceFlow id="Flow_18" sourceRef="Task_07" targetRef="EndEvent_1" />
+<bpmn:endEvent id="EndEvent_2" name="Koniec" />
+<bpmn:sequenceFlow id="Flow_19" sourceRef="Task_05" targetRef="EndEvent_2" />
+</bpmn:process>
+<bpmndi:BPMNDiagram id="Diagram_Process_Lista_terminow">
+<bpmndi:BPMNPlane id="Plane_Process_Lista_terminow" bpmnElement="Process_Lista_terminow">
+<bpmndi:BPMNShape id="Shape_StartEvent_main" bpmnElement="StartEvent_main"><dc:Bounds x="60" y="82" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_01" bpmnElement="Task_01"><dc:Bounds x="280" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_03" bpmnElement="Task_03"><dc:Bounds x="720" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_04" bpmnElement="Task_04"><dc:Bounds x="940" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_02" bpmnElement="Task_02"><dc:Bounds x="500" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_06" bpmnElement="Task_06"><dc:Bounds x="940" y="220" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_08" bpmnElement="Task_08"><dc:Bounds x="940" y="380" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_07" bpmnElement="Task_07"><dc:Bounds x="1160" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_05" bpmnElement="Task_05"><dc:Bounds x="940" y="540" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Gateway_02" bpmnElement="Gateway_02"><dc:Bounds x="720" y="75" width="50" height="50" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Gateway_01" bpmnElement="Gateway_01"><dc:Bounds x="500" y="75" width="50" height="50" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Gateway_03" bpmnElement="Gateway_03"><dc:Bounds x="940" y="235" width="50" height="50" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Gateway_04" bpmnElement="Gateway_04"><dc:Bounds x="940" y="395" width="50" height="50" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_EndEvent_1" bpmnElement="EndEvent_1"><dc:Bounds x="1380" y="82" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_EndEvent_2" bpmnElement="EndEvent_2"><dc:Bounds x="1160" y="562" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1"><di:waypoint x="96" y="100" /><di:waypoint x="280" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_2" bpmnElement="Flow_2"><di:waypoint x="380" y="100" /><di:waypoint x="500" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_4" bpmnElement="Flow_4"><di:waypoint x="820" y="100" /><di:waypoint x="720" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_3" bpmnElement="Flow_3"><di:waypoint x="770" y="100" /><di:waypoint x="940" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_5" bpmnElement="Flow_5"><di:waypoint x="770" y="100" /><di:waypoint x="940" y="580" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_6" bpmnElement="Flow_6"><di:waypoint x="770" y="100" /><di:waypoint x="940" y="260" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_7" bpmnElement="Flow_7"><di:waypoint x="770" y="100" /><di:waypoint x="940" y="420" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_8" bpmnElement="Flow_8"><di:waypoint x="1040" y="100" /><di:waypoint x="720" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_10" bpmnElement="Flow_10"><di:waypoint x="600" y="100" /><di:waypoint x="500" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_11" bpmnElement="Flow_11"><di:waypoint x="550" y="100" /><di:waypoint x="720" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_9" bpmnElement="Flow_9"><di:waypoint x="550" y="100" /><di:waypoint x="720" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_13" bpmnElement="Flow_13"><di:waypoint x="1040" y="260" /><di:waypoint x="940" y="260" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_14" bpmnElement="Flow_14"><di:waypoint x="990" y="260" /><di:waypoint x="720" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_12" bpmnElement="Flow_12"><di:waypoint x="990" y="260" /><di:waypoint x="1160" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_16" bpmnElement="Flow_16"><di:waypoint x="1040" y="420" /><di:waypoint x="940" y="420" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_15" bpmnElement="Flow_15"><di:waypoint x="990" y="420" /><di:waypoint x="940" y="260" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_17" bpmnElement="Flow_17"><di:waypoint x="990" y="420" /><di:waypoint x="1160" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_18" bpmnElement="Flow_18"><di:waypoint x="1260" y="100" /><di:waypoint x="1380" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_19" bpmnElement="Flow_19"><di:waypoint x="1040" y="580" /><di:waypoint x="1160" y="580" /></bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane>
+</bpmndi:BPMNDiagram>
+</bpmn:definitions>

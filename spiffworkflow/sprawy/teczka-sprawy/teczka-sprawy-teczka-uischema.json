@@ -1,0 +1,169 @@
+{
+  "ui:order": [
+    "Wybór spółki",
+    "Krótki opis  sprawy",
+    "Dział",
+    "Kategoria spraw",
+    "Dane teczki",
+    "Kogo dotyczy",
+    "Dane adresowe",
+    "Podobieg",
+    "Nr teczki",
+    "Termin realizacji",
+    "Terminarz",
+    "Systemowe",
+    "Zawartość teczki"
+  ],
+  "Dział": {
+    "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/api/dictionaries/dzialy",
+        "sourceName": "Działy" 
+    }
+  },
+  "Kategoria spraw": {
+    "ui:help": "Kategoria sprawy",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/kategorie-spraw",
+      "sourceName": "Kategorie spraw"
+    }
+  },
+  "Dane teczki": {
+    "ui:order": [
+      "JRWA",
+      "Symbol wg JRWA",
+      "Kategoria archiwizacji",
+      "Data założenia",
+      "Osoba rejestrująca"
+    ],
+    "Symbol wg JRWA": {
+      "ui:readonly": true
+    },
+    "Osoba rejestrująca": {
+      "ui:readonly": true
+    },
+    "JRWA": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/ezd-jrwa",
+        "sourceName": "[EZD] JRWA",
+        "sourceType": "Baza MSSQL"
+      }
+    },
+    "Kategoria archiwizacji": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/ezd-kategoria-archiwizacji",
+        "sourceName": "[EZD] Kategoria archiwizacji",
+        "sourceType": "Baza MSSQL"
+      }
+    }
+  },
+  "Kogo dotyczy": {
+    "ui:order": [
+      "Firma",
+      "Wydział",
+      "Instytut",
+      "Kierunek",
+      "Student(ka)",
+      "Numer albumu"
+    ],
+    "Firma": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/umowy-karta-kontrahenta",
+        "sourceName": "[Umowy] Karta kontrahenta",
+        "sourceType": "Widok z bazy"
+      }
+    },
+    "Instytut": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/instytuty",
+        "sourceName": "instytuty",
+        "sourceType": "REST Web Service"
+      }
+    },
+    "Kierunek": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    },
+    "Student(ka)": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/studenci",
+        "sourceName": "Studenci",
+        "sourceType": "Baza MSSQL"
+      }
+    }
+  },
+  "Dane adresowe": {
+    "ui:order": [
+      "Adres zamieszkania",
+      "Email"
+    ],
+    "Adres zamieszkania": {
+      "ui:readonly": true
+    },
+    "Email": {
+      "ui:readonly": true
+    },
+    "ui:readonly": true
+  },
+  "Podobieg": {
+    "ui:order": [
+      "Formularz dokumentu",
+      "Podobieg doręczenia zawiadomienia"
+    ],
+    "Podobieg doręczenia zawiadomienia": {
+      "ui:readonly": true
+    },
+    "ui:readonly": true
+  },
+  "Nr teczki": {
+    "ui:readonly": true
+  },
+  "Systemowe": {
+    "ui:order": [
+      "Bieżący rok",
+      "prefix numeru teczki",
+      "środek numeru teczki",
+      "kolejny nr w teczce",
+      "Nowy dokument"
+    ],
+    "prefix numeru teczki": {
+      "ui:readonly": true
+    },
+    "kolejny nr w teczce": {
+      "ui:readonly": true
+    },
+    "Nowy dokument": {
+      "ui:readonly": true
+    }
+  },
+  "Zawartość teczki": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Wybór spółki": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/companies"
+    }
+  },
+  "Terminarz": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/trm-terminarze",
+      "sourceName": "[TRM] Terminarze",
+      "sourceType": "Baza MSSQL"
+    }
+  }
+}

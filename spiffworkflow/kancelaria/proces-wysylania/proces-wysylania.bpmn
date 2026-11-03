@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" id="defs_Process_Proces_wysylania" targetNamespace="http://bpmn" exporter="Camunda Modeler" exporterVersion="5.40.0">
+  <bpmn:process id="Process_Proces_wysylania" name="Proces wysyłania" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_main" name="Start" />
+    <bpmn:userTask id="Task_01" name="Rejestruj przesyłkę" ><spiffworkflow:property name="formJsonSchemaFilename" value="proces-wysylania-edr-wy-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="proces-wysylania-edr-wy-uischema.json" /></bpmn:userTask>
+    <bpmn:userTask id="Task_02" name="Weryfikacja adresów" ><spiffworkflow:property name="formJsonSchemaFilename" value="proces-wysylania-edr-wy-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="proces-wysylania-edr-wy-uischema.json" /></bpmn:userTask>
+    <bpmn:userTask id="Task_04" name="Zarządzanie Wysyłką" ><spiffworkflow:property name="formJsonSchemaFilename" value="proces-wysylania-edr-wy-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="proces-wysylania-edr-wy-uischema.json" /></bpmn:userTask>
+    <bpmn:userTask id="Task_08" name="Kolejka do wysłania" ><spiffworkflow:property name="formJsonSchemaFilename" value="proces-wysylania-edr-wy-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="proces-wysylania-edr-wy-uischema.json" /></bpmn:userTask>
+    <bpmn:userTask id="Task_03" name="Wysyłka EDR" ><spiffworkflow:property name="formJsonSchemaFilename" value="proces-wysylania-edr-wy-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="proces-wysylania-edr-wy-uischema.json" /></bpmn:userTask>
+    <bpmn:userTask id="Task_07" name="Odczyt poświadczeń EDR" ><spiffworkflow:property name="formJsonSchemaFilename" value="proces-wysylania-edr-wy-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="proces-wysylania-edr-wy-uischema.json" /></bpmn:userTask>
+    <bpmn:userTask id="Task_06" name="Sukces" ><spiffworkflow:property name="formJsonSchemaFilename" value="proces-wysylania-edr-wy-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="proces-wysylania-edr-wy-uischema.json" /></bpmn:userTask>
+    <bpmn:userTask id="Task_05" name="Problem z wysłaniem" ><spiffworkflow:property name="formJsonSchemaFilename" value="proces-wysylania-edr-wy-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="proces-wysylania-edr-wy-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_main" targetRef="Task_01" />
+    <bpmn:sequenceFlow id="Flow_2" name="Gotowe do wysłania" sourceRef="Task_01" targetRef="Task_02" />
+    <bpmn:exclusiveGateway id="Gateway_01" name="Wybór ścieżki (Weryfikacja adresów)" default="Flow_3" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_02" targetRef="Gateway_01" />
+    <bpmn:sequenceFlow id="Flow_3" name="Wyślij natychmiast" sourceRef="Gateway_01" targetRef="Task_03" />
+    <bpmn:sequenceFlow id="Flow_5" name="Nie wysłano" sourceRef="Gateway_01" targetRef="Task_05">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_5'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_6" name="Do kolejki" sourceRef="Gateway_01" targetRef="Task_08">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_6'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_03" name="Wybór ścieżki (Zarządzanie Wysyłką)" default="Flow_7" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Task_04" targetRef="Gateway_03" />
+    <bpmn:sequenceFlow id="Flow_9" name="Nie udało się wysłać" sourceRef="Gateway_03" targetRef="Task_05">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_9'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_10" name="Zwróć" sourceRef="Gateway_03" targetRef="Task_02">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_10'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_7" name="Ponów wysyłanie" sourceRef="Gateway_03" targetRef="Task_03" />
+    <bpmn:sequenceFlow id="Flow_11" name="Sukces" sourceRef="Gateway_03" targetRef="Task_06">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_11'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_12" name="Odbiór poświadczeń" sourceRef="Gateway_03" targetRef="Task_07">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_12'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_05" name="Wybór ścieżki (Kolejka do wysłania)" default="Flow_13" />
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="Task_08" targetRef="Gateway_05" />
+    <bpmn:sequenceFlow id="Flow_13" name="Wynik pozytywny" sourceRef="Gateway_05" targetRef="Task_07" />
+    <bpmn:sequenceFlow id="Flow_15" name="Wynik negatywny" sourceRef="Gateway_05" targetRef="Task_04">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_15'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_02" name="Wybór ścieżki (Wysyłka EDR)" default="Flow_16" />
+    <bpmn:sequenceFlow id="Flow_17" sourceRef="Task_03" targetRef="Gateway_02" />
+    <bpmn:sequenceFlow id="Flow_18" name="Wynik negatywny" sourceRef="Gateway_02" targetRef="Task_04">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_18'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_16" name="Wynik pozytywny" sourceRef="Gateway_02" targetRef="Task_07" />
+    <bpmn:exclusiveGateway id="Gateway_04" name="Wybór ścieżki (Odczyt poświadczeń EDR)" default="Flow_19" />
+    <bpmn:sequenceFlow id="Flow_20" sourceRef="Task_07" targetRef="Gateway_04" />
+    <bpmn:sequenceFlow id="Flow_19" name="Nie odczytano wszystkiego?" sourceRef="Gateway_04" targetRef="Task_04" />
+    <bpmn:sequenceFlow id="Flow_21" name="Uzyskano poświadczenia" sourceRef="Gateway_04" targetRef="Task_06">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_21'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="EndEvent_1" name="Koniec" />
+    <bpmn:sequenceFlow id="Flow_22" sourceRef="Task_06" targetRef="EndEvent_1" />
+    <bpmn:endEvent id="EndEvent_2" name="Koniec" />
+    <bpmn:sequenceFlow id="Flow_23" sourceRef="Task_05" targetRef="EndEvent_2" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_Process_Proces_wysylania">
+    <bpmndi:BPMNPlane id="Plane_Process_Proces_wysylania" bpmnElement="Process_Proces_wysylania">
+      <bpmndi:BPMNShape id="Shape_StartEvent_main" bpmnElement="StartEvent_main">
+        <dc:Bounds x="160" y="442" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="166" y="478" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_01" bpmnElement="Task_01">
+        <dc:Bounds x="380" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_02" bpmnElement="Task_02">
+        <dc:Bounds x="600" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_05" bpmnElement="Task_05">
+        <dc:Bounds x="820" y="740" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_02" bpmnElement="Gateway_02" isMarkerVisible="true">
+        <dc:Bounds x="820" y="595" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="734.5" y="606" width="75" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_03" bpmnElement="Task_03">
+        <dc:Bounds x="640" y="690" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_03" bpmnElement="Gateway_03" isMarkerVisible="true">
+        <dc:Bounds x="1115" y="365" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1175" y="370" width="68" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_2" bpmnElement="EndEvent_2">
+        <dc:Bounds x="1040" y="802" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1041" y="838" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_08" bpmnElement="Task_08">
+        <dc:Bounds x="690" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_05" bpmnElement="Gateway_05" isMarkerVisible="true">
+        <dc:Bounds x="725" y="115" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="647" y="120" width="68" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_07" bpmnElement="Task_07">
+        <dc:Bounds x="1270" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_06" bpmnElement="Task_06">
+        <dc:Bounds x="1250" y="670" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_04" bpmnElement="Task_04">
+        <dc:Bounds x="1090" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_04" bpmnElement="Gateway_04" isMarkerVisible="true">
+        <dc:Bounds x="1435" y="295" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1495" y="293" width="68" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_1" bpmnElement="EndEvent_1">
+        <dc:Bounds x="1442" y="682" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1443" y="718" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_01" bpmnElement="Gateway_01" isMarkerVisible="true">
+        <dc:Bounds x="485" y="635" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="407" y="640" width="68" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1">
+        <di:waypoint x="196" y="460" />
+        <di:waypoint x="380" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_2" bpmnElement="Flow_2">
+        <di:waypoint x="480" y="460" />
+        <di:waypoint x="600" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="513" y="435" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_4" bpmnElement="Flow_4">
+        <di:waypoint x="600" y="460" />
+        <di:waypoint x="510" y="460" />
+        <di:waypoint x="510" y="635" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_3" bpmnElement="Flow_3">
+        <di:waypoint x="535" y="660" />
+        <di:waypoint x="690" y="660" />
+        <di:waypoint x="690" y="690" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="579" y="637" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_5" bpmnElement="Flow_5">
+        <di:waypoint x="510" y="685" />
+        <di:waypoint x="510" y="780" />
+        <di:waypoint x="820" y="780" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="488" y="721" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_6" bpmnElement="Flow_6">
+        <di:waypoint x="510" y="635" />
+        <di:waypoint x="510" y="280" />
+        <di:waypoint x="690" y="280" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="468" y="452" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_8" bpmnElement="Flow_8">
+        <di:waypoint x="1140" y="290" />
+        <di:waypoint x="1140" y="365" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_9" bpmnElement="Flow_9">
+        <di:waypoint x="1131" y="406" />
+        <di:waypoint x="1060" y="440" />
+        <di:waypoint x="1060" y="720" />
+        <di:waypoint x="880" y="720" />
+        <di:waypoint x="880" y="740" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1035" y="560" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_10" bpmnElement="Flow_10">
+        <di:waypoint x="1115" y="390" />
+        <di:waypoint x="650" y="390" />
+        <di:waypoint x="650" y="420" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="872" y="365" width="31" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_7" bpmnElement="Flow_7">
+        <di:waypoint x="1140" y="415" />
+        <di:waypoint x="1140" y="700" />
+        <di:waypoint x="740" y="700" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="910" y="678" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_11" bpmnElement="Flow_11">
+        <di:waypoint x="1160" y="395" />
+        <di:waypoint x="1160" y="710" />
+        <di:waypoint x="1250" y="710" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1187" y="685" width="37" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_12" bpmnElement="Flow_12">
+        <di:waypoint x="1165" y="390" />
+        <di:waypoint x="1220" y="390" />
+        <di:waypoint x="1220" y="460" />
+        <di:waypoint x="1270" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1191" y="407" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_14" bpmnElement="Flow_14">
+        <di:waypoint x="740" y="240" />
+        <di:waypoint x="740" y="203" />
+        <di:waypoint x="750" y="203" />
+        <di:waypoint x="750" y="165" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_13" bpmnElement="Flow_13">
+        <di:waypoint x="750" y="115" />
+        <di:waypoint x="750" y="80" />
+        <di:waypoint x="1320" y="80" />
+        <di:waypoint x="1320" y="420" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1291" y="227" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_15" bpmnElement="Flow_15">
+        <di:waypoint x="775" y="140" />
+        <di:waypoint x="1140" y="140" />
+        <di:waypoint x="1140" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="915" y="115" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_17" bpmnElement="Flow_17">
+        <di:waypoint x="740" y="730" />
+        <di:waypoint x="845" y="730" />
+        <di:waypoint x="845" y="645" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_18" bpmnElement="Flow_18">
+        <di:waypoint x="845" y="595" />
+        <di:waypoint x="845" y="230" />
+        <di:waypoint x="1090" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="938" y="210" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_16" bpmnElement="Flow_16">
+        <di:waypoint x="870" y="620" />
+        <di:waypoint x="950" y="620" />
+        <di:waypoint x="950" y="480" />
+        <di:waypoint x="1270" y="480" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1069" y="455" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_20" bpmnElement="Flow_20">
+        <di:waypoint x="1370" y="440" />
+        <di:waypoint x="1390" y="440" />
+        <di:waypoint x="1390" y="320" />
+        <di:waypoint x="1435" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_19" bpmnElement="Flow_19">
+        <di:waypoint x="1460" y="295" />
+        <di:waypoint x="1460" y="250" />
+        <di:waypoint x="1190" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1422" y="255" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_21" bpmnElement="Flow_21">
+        <di:waypoint x="1460" y="345" />
+        <di:waypoint x="1460" y="550" />
+        <di:waypoint x="1300" y="550" />
+        <di:waypoint x="1300" y="663" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1270" y="597" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_22" bpmnElement="Flow_22">
+        <di:waypoint x="1350" y="710" />
+        <di:waypoint x="1410" y="710" />
+        <di:waypoint x="1410" y="700" />
+        <di:waypoint x="1442" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_23" bpmnElement="Flow_23">
+        <di:waypoint x="920" y="780" />
+        <di:waypoint x="1058" y="780" />
+        <di:waypoint x="1058" y="802" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

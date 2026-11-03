@@ -1,0 +1,12 @@
+{
+  "ui:order": [
+    "ID",
+    "Nazwa",
+    "Dyrektor Instytutu",
+    "Aktywny",
+    "email Dyrektora"
+  ],
+  "ID": {
+    "ui:readonly": true
+  }
+}

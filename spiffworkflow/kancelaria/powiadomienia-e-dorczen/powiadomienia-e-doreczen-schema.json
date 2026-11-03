@@ -1,0 +1,87 @@
+{
+  "title": "Powiadomienia e-doreczen",
+  "description": "Proces: KANC - Pisma przychodzące; Obieg: Powiadomienia e-doreczen; Typ dokumentu: PEDR - Powiadomienie e-doręczeń",
+  "type": "object",
+  "properties": {
+    "Wybór spółki": {
+      "type": "string",
+      "title": "Wybór spółki",
+      "x-permissions": {
+        "Start": "editable",
+        "Aktywne": "editable",
+        "Końcowy (pozytywny)": "editable"
+      }
+    },
+    "Data": {
+      "type": "string",
+      "format": "date",
+      "title": "Data",
+      "x-permissions": {
+        "Start": "editable",
+        "Aktywne": "readonly",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    },
+    "Temat": {
+      "type": "string",
+      "title": "Temat",
+      "x-permissions": {
+        "Start": "editable",
+        "Aktywne": "editable",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    },
+    "Nadawca": {
+      "type": "object",
+      "properties": {
+        "Nazwa nadawcy": {
+          "type": "string",
+          "title": "Nazwa nadawcy",
+          "x-permissions": {
+            "Start": "editable",
+            "Aktywne": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "x-permissions": {
+            "Start": "editable",
+            "Aktywne": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        }
+      },
+      "title": "Nadawca",
+      "x-permissions": {
+        "Start": "editable",
+        "Aktywne": "readonly",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    },
+    "Treść": {
+      "type": "string",
+      "title": "Treść",
+      "x-permissions": {
+        "Start": "editable",
+        "Aktywne": "editable",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    },
+    "Metryka": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Metryka",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Aktywne": "readonly",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    }
+  }
+}

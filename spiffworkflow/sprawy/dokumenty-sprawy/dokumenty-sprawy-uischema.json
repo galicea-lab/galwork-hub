@@ -1,0 +1,108 @@
+{
+  "ui:order": [
+    "Wybór spółki",
+    "Temat",
+    "Dział",
+    "Kategorie",
+    "Data rejestracji",
+    "Autor dokumentu",
+    "Komu przekazać",
+    "Doręczenie",
+    "Krótki opis / treść",
+    "Teczka",
+    "Systemowe"
+  ],
+  "Autor dokumentu": {
+    "ui:readonly": true,
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/users",
+      "sourceName": "<Użytkownicy i grupy>",
+      "sourceType": "Kartoteka Użytkowników"
+    }
+  },
+  "Komu przekazać": {
+    "ui:help": "Osoby w dziale lub Uczelni do których kierujemy dokument",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/users",
+      "sourceName": "<Użytkownicy i grupy>",
+      "sourceType": "Kartoteka Użytkowników"
+    }
+  },
+  "Doręczenie": {
+    "ui:order": [
+      "Z książki adresowej",
+      "Podobieg doręczenia",
+      "Adres tradycyjny",
+      "Proces doręczania",
+      "ade Odbiorcy"
+    ],
+    "Podobieg doręczenia": {
+      "ui:readonly": true
+    },
+    "Z książki adresowej": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/adres-e-doreczen",
+        "sourceName": "Adres e-Doręczeń"
+      }
+    }
+  },
+  "Krótki opis / treść": {
+    "ui:widget": "textarea"
+  },
+  "Teczka": {
+    "ui:order": [
+      "Teczka Sprawy",
+      "link",
+      "kolejny nr w teczce",
+      "Sygnatura dokumentu wg instrukcji kancelaryjnej"
+    ],
+    "Teczka Sprawy": {
+      "ui:help": "Wybierz teczkę, lub załóż nową",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/teczki-spraw",
+        "sourceName": "Teczki Spraw",
+        "sourceType": "Baza MSSQL"
+      }
+    },
+    "link": {
+      "ui:help": "Link do teczki",
+      "ui:readonly": true
+    },
+    "kolejny nr w teczce": {
+      "ui:readonly": true
+    },
+    "Sygnatura dokumentu wg instrukcji kancelaryjnej": {
+      "ui:readonly": true
+    }
+  },
+  "Systemowe": {
+    "ui:order": [
+      "Bieżący rok",
+      "prefix numeru teczki",
+      "środek numeru teczki"
+    ],
+    "prefix numeru teczki": {
+      "ui:readonly": true
+    },
+    "środek numeru teczki": {
+      "ui:readonly": true
+    }
+  },
+  "Wybór spółki": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/companies"
+    }
+  },
+  "Kategorie": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/kategorie-spraw",
+      "sourceName": "Kategorie spraw"
+    }
+  }
+}

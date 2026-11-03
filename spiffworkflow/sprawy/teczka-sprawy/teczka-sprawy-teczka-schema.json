@@ -1,0 +1,449 @@
+{
+  "title": "Teczka sprawy-TECZKA",
+  "description": "Proces: TS - Teczki  spraw (ID: 213); Obieg: Teczka sprawy (ID: 254); Typ dokumentu: TECZKA - Konfiguracja  teczki (ID: 356)",
+  "type": "object",
+  "properties": {
+    "Wybór spółki": {
+      "type": "string",
+      "title": "Wybór spółki",
+      "x-permissions": {
+        "Założenie teczki": "none",
+        "Teczka Otwarta": "none",
+        "Redagowanie Parametrów Teczki": "editable",
+        "Archiwum": "editable",
+        "Anulowane": "none"
+      }
+    },
+    "Krótki opis  sprawy": {
+      "type": "string",
+      "title": "Krótki opis  sprawy",
+      "x-permissions": {
+        "Założenie teczki": "editable",
+        "Teczka Otwarta": "editable",
+        "Redagowanie Parametrów Teczki": "none",
+        "Archiwum": "none",
+        "Anulowane": "readonly"
+      },
+      "x-required-in-steps": [
+        "Założenie teczki"
+      ]
+    },
+    "Dział": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "0",
+          "title": "-"
+        },
+        {
+          "const": "1",
+          "title": "DZ1"
+        },
+        {
+          "const": "2",
+          "title": "DZ2"
+        },
+        {
+          "const": "3",
+          "title": "DZ3"
+        }
+      ],
+      "title": "Dział",
+      "x-permissions": {
+        "Założenie teczki": "editable",
+        "Teczka Otwarta": "readonly",
+        "Redagowanie Parametrów Teczki": "editable",
+        "Archiwum": "readonly",
+        "Anulowane": "readonly"
+      },
+      "x-required-in-steps": [
+        "Założenie teczki"
+      ]
+    },
+    "Kategoria spraw": {
+      "type": "string",
+      "title": "Kategoria spraw",
+      "x-permissions": {
+        "Założenie teczki": "editable",
+        "Teczka Otwarta": "readonly",
+        "Redagowanie Parametrów Teczki": "editable",
+        "Archiwum": "readonly",
+        "Anulowane": "readonly"
+      }
+    },
+    "Dane teczki": {
+      "type": "object",
+      "properties": {
+        "JRWA": {
+          "type": "string",
+          "title": "JRWA",
+          "x-permissions": {
+            "Założenie teczki": "editable",
+            "Teczka Otwarta": "readonly",
+            "Redagowanie Parametrów Teczki": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          },
+          "x-required-in-steps": [
+            "Założenie teczki"
+          ]
+        },
+        "Symbol wg JRWA": {
+          "type": "string",
+          "title": "Symbol wg JRWA",
+          "readOnly": true,
+          "x-permissions": {
+            "Założenie teczki": "readonly",
+            "Teczka Otwarta": "readonly",
+            "Redagowanie Parametrów Teczki": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "Kategoria archiwizacji": {
+          "type": "string",
+          "title": "Kategoria archiwizacji",
+          "x-permissions": {
+            "Założenie teczki": "editable",
+            "Teczka Otwarta": "readonly",
+            "Redagowanie Parametrów Teczki": "editable",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "Data założenia": {
+          "type": "string",
+          "format": "date",
+          "title": "Data założenia",
+          "x-permissions": {
+            "Założenie teczki": "editable",
+            "Teczka Otwarta": "readonly",
+            "Redagowanie Parametrów Teczki": "editable",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "Osoba rejestrująca": {
+          "type": "string",
+          "title": "Osoba rejestrująca",
+          "readOnly": true,
+          "x-permissions": {
+            "Założenie teczki": "readonly",
+            "Teczka Otwarta": "readonly",
+            "Redagowanie Parametrów Teczki": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        }
+      },
+      "required": [
+        "JRWA"
+      ],
+      "title": "Dane teczki",
+      "x-permissions": {
+        "Założenie teczki": "editable",
+        "Teczka Otwarta": "readonly",
+        "Redagowanie Parametrów Teczki": "editable",
+        "Archiwum": "readonly",
+        "Anulowane": "editable"
+      }
+    },
+    "Kogo dotyczy": {
+      "type": "object",
+      "properties": {
+        "Firma": {
+          "type": "string",
+          "title": "Firma",
+          "x-permissions": {
+            "Założenie teczki": "editable",
+            "Teczka Otwarta": "editable",
+            "Redagowanie Parametrów Teczki": "editable",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "Wydział": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wydział 1"
+            },
+            {
+              "const": "2",
+              "title": "Wydział 2"
+            }
+          ],
+          "title": "Wydział",
+          "x-permissions": {
+            "Założenie teczki": "editable",
+            "Teczka Otwarta": "editable",
+            "Redagowanie Parametrów Teczki": "editable",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "Instytut": {
+          "type": "string",
+          "title": "Instytut",
+          "x-permissions": {
+            "Założenie teczki": "editable",
+            "Teczka Otwarta": "editable",
+            "Redagowanie Parametrów Teczki": "editable",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "Kierunek": {
+          "type": "string",
+          "title": "Kierunek",
+          "x-permissions": {
+            "Założenie teczki": "editable",
+            "Teczka Otwarta": "editable",
+            "Redagowanie Parametrów Teczki": "editable",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "Student(ka)": {
+          "type": "string",
+          "title": "Student(ka)",
+          "x-permissions": {
+            "Założenie teczki": "editable",
+            "Teczka Otwarta": "editable",
+            "Redagowanie Parametrów Teczki": "editable",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "Numer albumu": {
+          "type": "string",
+          "title": "Numer albumu",
+          "x-permissions": {
+            "Założenie teczki": "editable",
+            "Teczka Otwarta": "editable",
+            "Redagowanie Parametrów Teczki": "editable",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        }
+      },
+      "title": "Kogo dotyczy",
+      "x-permissions": {
+        "Założenie teczki": "editable",
+        "Teczka Otwarta": "editable",
+        "Redagowanie Parametrów Teczki": "editable",
+        "Archiwum": "readonly",
+        "Anulowane": "readonly"
+      }
+    },
+    "Dane adresowe": {
+      "type": "object",
+      "properties": {
+        "Adres zamieszkania": {
+          "type": "string",
+          "title": "Adres zamieszkania",
+          "readOnly": true,
+          "x-permissions": {
+            "Założenie teczki": "none",
+            "Teczka Otwarta": "none",
+            "Redagowanie Parametrów Teczki": "none",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "readOnly": true,
+          "x-permissions": {
+            "Założenie teczki": "none",
+            "Teczka Otwarta": "none",
+            "Redagowanie Parametrów Teczki": "none",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        }
+      },
+      "title": "Dane adresowe",
+      "readOnly": true,
+      "x-permissions": {
+        "Założenie teczki": "none",
+        "Teczka Otwarta": "none",
+        "Redagowanie Parametrów Teczki": "none",
+        "Archiwum": "readonly",
+        "Anulowane": "readonly"
+      }
+    },
+    "Podobieg": {
+      "type": "object",
+      "properties": {
+        "Formularz dokumentu": {
+          "type": "string",
+          "title": "Formularz dokumentu",
+          "x-permissions": {
+            "Założenie teczki": "editable",
+            "Teczka Otwarta": "readonly",
+            "Redagowanie Parametrów Teczki": "none",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "Podobieg doręczenia zawiadomienia": {
+          "type": "string",
+          "title": "Podobieg doręczenia zawiadomienia",
+          "readOnly": true,
+          "x-permissions": {
+            "Założenie teczki": "none",
+            "Teczka Otwarta": "readonly",
+            "Redagowanie Parametrów Teczki": "none",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        }
+      },
+      "title": "Podobieg",
+      "readOnly": true,
+      "x-permissions": {
+        "Założenie teczki": "none",
+        "Teczka Otwarta": "none",
+        "Redagowanie Parametrów Teczki": "none",
+        "Archiwum": "readonly",
+        "Anulowane": "readonly"
+      }
+    },
+    "Nr teczki": {
+      "type": "string",
+      "title": "Nr teczki",
+      "readOnly": true,
+      "x-permissions": {
+        "Założenie teczki": "readonly",
+        "Teczka Otwarta": "readonly",
+        "Redagowanie Parametrów Teczki": "none",
+        "Archiwum": "readonly",
+        "Anulowane": "readonly"
+      }
+    },
+    "Termin realizacji": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Termin realizacji",
+      "x-permissions": {
+        "Założenie teczki": "editable",
+        "Teczka Otwarta": "editable",
+        "Redagowanie Parametrów Teczki": "none",
+        "Archiwum": "readonly",
+        "Anulowane": "readonly"
+      }
+    },
+    "Terminarz": {
+      "type": "string",
+      "title": "Terminarz",
+      "x-permissions": {
+        "Założenie teczki": "editable",
+        "Teczka Otwarta": "editable",
+        "Redagowanie Parametrów Teczki": "none",
+        "Archiwum": "readonly",
+        "Anulowane": "readonly"
+      }
+    },
+    "Systemowe": {
+      "type": "object",
+      "properties": {
+        "Bieżący rok": {
+          "type": "string",
+          "title": "Bieżący rok",
+          "x-permissions": {
+            "Założenie teczki": "editable",
+            "Teczka Otwarta": "readonly",
+            "Redagowanie Parametrów Teczki": "none",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          },
+          "x-required-in-steps": [
+            "Założenie teczki"
+          ]
+        },
+        "prefix numeru teczki": {
+          "type": "string",
+          "title": "prefix numeru teczki",
+          "readOnly": true,
+          "x-permissions": {
+            "Założenie teczki": "readonly",
+            "Teczka Otwarta": "readonly",
+            "Redagowanie Parametrów Teczki": "none",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "środek numeru teczki": {
+          "type": "string",
+          "title": "środek numeru teczki",
+          "x-permissions": {
+            "Założenie teczki": "editable",
+            "Teczka Otwarta": "readonly",
+            "Redagowanie Parametrów Teczki": "none",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "kolejny nr w teczce": {
+          "type": "string",
+          "title": "kolejny nr w teczce",
+          "readOnly": true,
+          "x-permissions": {
+            "Założenie teczki": "readonly",
+            "Teczka Otwarta": "readonly",
+            "Redagowanie Parametrów Teczki": "none",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        },
+        "Nowy dokument": {
+          "type": "string",
+          "title": "Nowy dokument",
+          "description": "Do pola wpisywany jest ID obiegu noowego dokumentu w teczce.",
+          "readOnly": true,
+          "x-permissions": {
+            "Założenie teczki": "none",
+            "Teczka Otwarta": "readonly",
+            "Redagowanie Parametrów Teczki": "none",
+            "Archiwum": "readonly",
+            "Anulowane": "readonly"
+          }
+        }
+      },
+      "required": [
+        "Bieżący rok"
+      ],
+      "title": "Systemowe",
+      "x-permissions": {
+        "Założenie teczki": "editable",
+        "Teczka Otwarta": "readonly",
+        "Redagowanie Parametrów Teczki": "none",
+        "Archiwum": "readonly",
+        "Anulowane": "readonly"
+      }
+    },
+    "Zawartość teczki": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Zawartość teczki",
+      "readOnly": true,
+      "x-permissions": {
+        "Założenie teczki": "none",
+        "Teczka Otwarta": "readonly",
+        "Redagowanie Parametrów Teczki": "none",
+        "Archiwum": "none",
+        "Anulowane": "none"
+      }
+    }
+  },
+  "required": [
+    "Krótki opis  sprawy",
+    "Dział"
+  ]
+}

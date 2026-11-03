@@ -1,0 +1,206 @@
+{
+  "slug": "06-profilowanie-projektu",
+  "title": "Profilowanie projektu (DPCI / Shenhar-Dvir / Stacey)",
+  "phase": "1. Inicjacja",
+  "when": "Powstaje na koncu Fazy 1 - Inicjacja, po ustaleniu zakresu, przed wyborem metodyki. Odpowiada na pytanie: jakim projektem zarzadzamy i jak go prowadzic?",
+  "sections": [
+    {
+      "type": "table",
+      "key": "dpci_scores",
+      "title": "1. DPCI (Darnall-Preston Complexity Index) - oceny atrybutow (1-5)",
+      "columns": [
+        {
+          "key": "category",
+          "label": "Kategoria",
+          "type": "text",
+          "readonly": true
+        },
+        {
+          "key": "attribute",
+          "label": "Atrybut",
+          "type": "text",
+          "readonly": true
+        },
+        {
+          "key": "score",
+          "label": "Ocena (1-5)",
+          "type": "number"
+        }
+      ],
+      "data_source": "dpci_scores",
+      "fixed_rows": true,
+      "default_rows": [
+        {
+          "category": "Zewnetrzne (External)",
+          "attribute": "Rozmiar"
+        },
+        {
+          "category": "Zewnetrzne (External)",
+          "attribute": "Czas trwania"
+        },
+        {
+          "category": "Zewnetrzne (External)",
+          "attribute": "Dostepnosc zasobow"
+        },
+        {
+          "category": "Wewnetrzne (Internal)",
+          "attribute": "Jasnosc celow"
+        },
+        {
+          "category": "Wewnetrzne (Internal)",
+          "attribute": "Jasnosc zakresu"
+        },
+        {
+          "category": "Wewnetrzne (Internal)",
+          "attribute": "Zlozonosc organizacyjna"
+        },
+        {
+          "category": "Wewnetrzne (Internal)",
+          "attribute": "Zgoda interesariuszy"
+        },
+        {
+          "category": "Technologiczne (Technological)",
+          "attribute": "Nowosc technologii"
+        },
+        {
+          "category": "Technologiczne (Technological)",
+          "attribute": "Znajomosc przez zespol"
+        },
+        {
+          "category": "Srodowiskowe (Environmental)",
+          "attribute": "Prawne (RODO/NIS2/DORA)"
+        },
+        {
+          "category": "Srodowiskowe (Environmental)",
+          "attribute": "Kulturowe"
+        },
+        {
+          "category": "Srodowiskowe (Environmental)",
+          "attribute": "Polityczne (wplyw zarzadu)"
+        },
+        {
+          "category": "Srodowiskowe (Environmental)",
+          "attribute": "Ekologiczne (Green IT)"
+        }
+      ],
+      "mode": "replace"
+    },
+    {
+      "type": "calc",
+      "key": "dpci_wynik",
+      "title": "Uzyskany kod DPCI",
+      "calculator": "dpci",
+      "source_key": "dpci_scores",
+      "extra_fields": []
+    },
+    {
+      "type": "fields",
+      "key": "nctp",
+      "title": "2. Model Shenhara i Dvira (NCTP)",
+      "fields": [
+        {
+          "key": "niepewnosc_tech",
+          "label": "Niepewnosc technologiczna",
+          "type": "select",
+          "options": [
+            "Low-Tech",
+            "Medium-Tech",
+            "High-Tech",
+            "Super High-Tech"
+          ]
+        },
+        {
+          "key": "zlozonosc",
+          "label": "Zlozonosc / zasieg systemu",
+          "type": "select",
+          "options": [
+            "Assembly",
+            "System",
+            "Array"
+          ]
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "type": "select",
+          "options": [
+            "Regular",
+            "Fast",
+            "Blitz",
+            "Critical"
+          ]
+        },
+        {
+          "key": "nowosc",
+          "label": "Nowosc / zakres (pace)",
+          "type": "select",
+          "options": [
+            "Derivative",
+            "Platform",
+            "Breakthrough"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "fields",
+      "key": "stacey",
+      "title": "3. Macierz Stacey (wybor metodyki)",
+      "fields": [
+        {
+          "key": "pewnosc_wymagan",
+          "label": "Pewnosc wymagan",
+          "type": "select",
+          "options": [
+            "wysoka",
+            "srednia",
+            "niska",
+            "bardzo niska"
+          ]
+        },
+        {
+          "key": "pewnosc_technologii",
+          "label": "Pewnosc technologii",
+          "type": "select",
+          "options": [
+            "wysoka",
+            "srednia",
+            "niska/srednia",
+            "bardzo niska"
+          ]
+        },
+        {
+          "key": "metodyka",
+          "label": "Wybrana metodyka prowadzenia",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "narrative",
+      "key": "profil_pm",
+      "title": "4. Profil kompetencyjny Kierownika Projektu",
+      "blocks": [
+        {
+          "key": "rekomendowany_profil",
+          "label": "Rekomendowany profil PM"
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "akceptacja",
+      "title": "5. Akceptacja",
+      "roles": [
+        {
+          "key": "kierownik_projektu",
+          "label": "Kierownik Projektu"
+        },
+        {
+          "key": "sponsor",
+          "label": "Sponsor"
+        }
+      ]
+    }
+  ]
+}

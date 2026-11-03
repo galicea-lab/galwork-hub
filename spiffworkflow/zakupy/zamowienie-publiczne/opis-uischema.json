@@ -1,0 +1,4 @@
+{
+  "ui:order": ["wniosek_zakupowy_id", "tytul", "opis", "wartosc_szacunkowa"],
+  "opis": { "ui:widget": "textarea" }
+}

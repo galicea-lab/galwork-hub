@@ -1,0 +1,93 @@
+{
+  "ui:order": [
+    "Nazwa",
+    "Informacja:",
+    "Do kogo",
+    "Wymagany podpis załącznika",
+    "Wymagane potwierdzenie",
+    "Potwierdzam że:",
+    "Potwierdzam",
+    "Lista",
+    "Lista 2",
+    "Wybór spółki",
+    "termin",
+    "Listy realizacj widoczne dla:",
+    "Dodatkowy Link",
+    "Metryka",
+    "Uwagi"
+  ],
+  "Informacja:": {
+    "ui:widget": "textarea"
+  },
+  "Do kogo": {
+    "ui:order": [
+      "Adresaci: (Użytkownicy Systemu)",
+      "Adresaci: (grupy)"
+    ],
+    "Adresaci: (Użytkownicy Systemu)": {
+      "ui:help": "Wskaż do kogo przekazać informację",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "Użytkownicy Systemu",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Adresaci: (grupy)": {
+      "ui:help": "Wskaż do kogo przekazać informację",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "Grupy osób",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "Potwierdzam że:": {
+    "ui:widget": "textarea",
+    "ui:help": "Potwierdzenie wykonania",
+    "ui:readonly": true
+  },
+  "Potwierdzam": {
+    "ui:help": "Potwierdzenie wykonania"
+  },
+  "Lista": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Lista 2": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Metryka": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Uwagi": {
+    "ui:widget": "textarea",
+    "ui:readonly": true
+  },
+  "Wybór spółki": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/companies"
+    }
+  },
+  "Listy realizacj widoczne dla:": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/users",
+      "sourceName": "<Użytkownicy i grupy>",
+      "sourceType": "Kartoteka Użytkowników"
+    }
+  }
+}

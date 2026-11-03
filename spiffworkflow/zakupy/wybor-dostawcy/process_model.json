@@ -1,0 +1,10 @@
+{
+    "description": "Wybór dostawcy (oferty) - zob. galwork-book, czesc-3-obszary/dzialy/zakupy.md",
+    "display_name": "Wybór dostawcy",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "wybor-dostawcy.bpmn",
+    "primary_process_id": "Process_Wybor_dostawcy",
+    "key": "wybor-dostawcy"
+}

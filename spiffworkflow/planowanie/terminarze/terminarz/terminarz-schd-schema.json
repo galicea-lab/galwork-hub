@@ -1,0 +1,452 @@
+{
+  "title": "Terminarz-SCHD",
+  "description": "Proces: SCHD - Terminarz (ID: 286); Obieg: Terminarz (ID: 321); Typ dokumentu: SCHD - Terminarz (ID: 430)",
+  "type": "object",
+  "properties": {
+    "Tytuł": {
+      "type": "string",
+      "title": "Tytuł",
+      "readOnly": true,
+      "x-permissions": {
+        "Definicja terminarza": "none",
+        "Aktywne terminarze": "none",
+        "Archiwum terminarzy": "none"
+      }
+    },
+    "Rok/sprawa": {
+      "type": "object",
+      "properties": {
+        "Rok": {
+          "type": "integer",
+          "title": "Rok",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          },
+          "x-required-in-steps": [
+            "Definicja terminarza"
+          ]
+        },
+        "Sprawa": {
+          "type": "string",
+          "title": "Sprawa",
+          "readOnly": true,
+          "x-permissions": {
+            "Definicja terminarza": "none",
+            "Aktywne terminarze": "none",
+            "Archiwum terminarzy": "none"
+          }
+        },
+        "Nazwa terminarza": {
+          "type": "string",
+          "title": "Nazwa terminarza",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        }
+      },
+      "required": [
+        "Rok"
+      ],
+      "title": "Rok/sprawa",
+      "x-permissions": {
+        "Definicja terminarza": "editable",
+        "Aktywne terminarze": "editable",
+        "Archiwum terminarzy": "editable"
+      }
+    },
+    "Wybór spółki": {
+      "type": "string",
+      "title": "Wybór spółki",
+      "x-permissions": {
+        "Definicja terminarza": "editable",
+        "Aktywne terminarze": "editable",
+        "Archiwum terminarzy": "editable"
+      }
+    },
+    "Zakres": {
+      "type": "object",
+      "properties": {
+        "Terminarz osobisty?": {
+          "type": "boolean",
+          "title": "Terminarz osobisty?",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "editable",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Osoba": {
+          "type": "string",
+          "title": "Osoba",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Terminarz semestralny?": {
+          "type": "boolean",
+          "title": "Terminarz semestralny?",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Rok akademicki": {
+          "type": "string",
+          "title": "Rok akademicki",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Semestr zimowy/letni": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "0",
+              "title": "Zimowy"
+            },
+            {
+              "const": "1",
+              "title": "Letni"
+            }
+          ],
+          "title": "Semestr zimowy/letni",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Grupa osób?": {
+          "type": "boolean",
+          "title": "Grupa osób?",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Grupa": {
+          "type": "string",
+          "title": "Grupa",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Wybrany Dział?": {
+          "type": "boolean",
+          "title": "Wybrany Dział?",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Dział": {
+          "type": "string",
+          "title": "Dział",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Kierownik Działu": {
+          "type": "string",
+          "title": "Kierownik Działu",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Pracownicy działu": {
+          "type": "string",
+          "title": "Pracownicy działu",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Wszyscy Kierownicy?": {
+          "type": "boolean",
+          "title": "Wszyscy Kierownicy?",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Kierownicy": {
+          "type": "string",
+          "title": "Kierownicy",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Dodatkowe osoby?": {
+          "type": "boolean",
+          "title": "Dodatkowe osoby?",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "editable",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Dodatkowe osoby": {
+          "type": "string",
+          "title": "Dodatkowe osoby",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "editable",
+            "Archiwum terminarzy": "readonly"
+          }
+        },
+        "Wszyscy użytkownicy": {
+          "type": "string",
+          "title": "Wszyscy użytkownicy",
+          "readOnly": true,
+          "x-permissions": {
+            "Definicja terminarza": "readonly",
+            "Aktywne terminarze": "readonly",
+            "Archiwum terminarzy": "readonly"
+          }
+        }
+      },
+      "title": "Zakres",
+      "x-permissions": {
+        "Definicja terminarza": "editable",
+        "Aktywne terminarze": "editable",
+        "Archiwum terminarzy": "readonly"
+      }
+    },
+    "Systemowe": {
+      "type": "object",
+      "properties": {
+        "Lista kierowników": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Kierownik": {
+                "type": "string",
+                "title": "Kierownik",
+                "x-permissions": {
+                  "Definicja terminarza": "editable",
+                  "Aktywne terminarze": "editable",
+                  "Archiwum terminarzy": "readonly"
+                }
+              }
+            }
+          },
+          "title": "Lista kierowników",
+          "x-permissions": {
+            "Definicja terminarza": "editable",
+            "Aktywne terminarze": "editable",
+            "Archiwum terminarzy": "readonly"
+          }
+        }
+      },
+      "title": "Systemowe",
+      "x-permissions": {
+        "Definicja terminarza": "editable",
+        "Aktywne terminarze": "editable",
+        "Archiwum terminarzy": "readonly"
+      }
+    },
+    "Listy terminów": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Listy terminów",
+      "readOnly": true,
+      "x-permissions": {
+        "Definicja terminarza": "none",
+        "Aktywne terminarze": "readonly",
+        "Archiwum terminarzy": "readonly"
+      }
+    },
+    "Nowa lista terminów": {
+      "type": "string",
+      "title": "Nowa lista terminów",
+      "x-permissions": {
+        "Definicja terminarza": "none",
+        "Aktywne terminarze": "editable",
+        "Archiwum terminarzy": "editable"
+      }
+    },
+    "Terminy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Opis": {
+            "type": "string",
+            "title": "Opis",
+            "x-permissions": {
+              "Definicja terminarza": "none",
+              "Aktywne terminarze": "editable",
+              "Archiwum terminarzy": "readonly"
+            }
+          },
+          "nazwa": {
+            "type": "string",
+            "title": "nazwa",
+            "x-permissions": {
+              "Definicja terminarza": "none",
+              "Aktywne terminarze": "editable",
+              "Archiwum terminarzy": "readonly"
+            }
+          },
+          "Źródło /rodzaj": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "0",
+                "title": "Kalendarz wydarzeń"
+              },
+              {
+                "const": "1",
+                "title": "Terminy sprawozdań"
+              },
+              {
+                "const": "2",
+                "title": "Terminy wykonania zadań"
+              },
+              {
+                "const": "3",
+                "title": "Licencje, subskrypcje, gwarancje"
+              },
+              {
+                "const": "4",
+                "title": "Terminy wynikające z umów"
+              },
+              {
+                "const": "5",
+                "title": "Kamienie milowe, sprinty"
+              },
+              {
+                "const": "6",
+                "title": "Spotkania onlne"
+              },
+              {
+                "const": "7",
+                "title": "Rozkład zajęć"
+              },
+              {
+                "const": "9",
+                "title": "Terminarz osobisty"
+              }
+            ],
+            "title": "Źródło /rodzaj",
+            "x-permissions": {
+              "Definicja terminarza": "none",
+              "Aktywne terminarze": "editable",
+              "Archiwum terminarzy": "readonly"
+            }
+          },
+          "aktualny": {
+            "type": "boolean",
+            "title": "aktualny",
+            "x-permissions": {
+              "Definicja terminarza": "none",
+              "Aktywne terminarze": "editable",
+              "Archiwum terminarzy": "readonly"
+            }
+          },
+          "ID": {
+            "type": "string",
+            "title": "ID",
+            "readOnly": true,
+            "x-permissions": {
+              "Definicja terminarza": "none",
+              "Aktywne terminarze": "readonly",
+              "Archiwum terminarzy": "readonly"
+            }
+          },
+          "Termin do": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Termin do",
+            "x-permissions": {
+              "Definicja terminarza": "none",
+              "Aktywne terminarze": "editable",
+              "Archiwum terminarzy": "readonly"
+            }
+          },
+          "Termin od": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Termin od",
+            "x-permissions": {
+              "Definicja terminarza": "none",
+              "Aktywne terminarze": "editable",
+              "Archiwum terminarzy": "readonly"
+            }
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "title": "url",
+            "x-permissions": {
+              "Definicja terminarza": "none",
+              "Aktywne terminarze": "editable",
+              "Archiwum terminarzy": "editable"
+            }
+          },
+          "app": {
+            "type": "string",
+            "title": "app",
+            "readOnly": true,
+            "x-permissions": {
+              "Definicja terminarza": "none",
+              "Aktywne terminarze": "readonly",
+              "Archiwum terminarzy": "readonly"
+            }
+          },
+          "Wykonane w dniu": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Wykonane w dniu",
+            "x-permissions": {
+              "Definicja terminarza": "none",
+              "Aktywne terminarze": "editable",
+              "Archiwum terminarzy": "readonly"
+            }
+          },
+          "Data": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Data",
+            "x-permissions": {
+              "Definicja terminarza": "none",
+              "Aktywne terminarze": "editable",
+              "Archiwum terminarzy": "readonly"
+            }
+          }
+        }
+      },
+      "title": "Terminy",
+      "x-permissions": {
+        "Definicja terminarza": "none",
+        "Aktywne terminarze": "editable",
+        "Archiwum terminarzy": "readonly"
+      }
+    }
+  }
+}

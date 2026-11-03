@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="defs_Process_Wniosek_zakupowy" targetNamespace="http://bpmn" exporter="" exporterVersion="1.0">
+  <bpmn:process id="Process_Wniosek_zakupowy" name="Wniosek zakupowy" isExecutable="true">
+    <bpmn:documentation>Nowy projekt (nie migracja WEBCON) - zob. galwork-book,
+czesc-3-obszary/dzialy/zakupy.md. Flagi requires_* są wyliczone PRZEZ SERWIS
+(wf/services/purchase_request_service.py) przy złożeniu wniosku, nie wyborem
+użytkownika - gatewaye "Czy ..." czytają je bezpośrednio z danych zadania, a
+nie przez chosen_path (zob. wf/decisions.py: chosen_path uruchamia
+AUTOMATYCZNE wstrzyknięcie pola wyboru do formularza poprzedniego zadania -
+tu to by był błąd, bo decyzja ma być automatyczna). Każdy formularz zadania
+na ścieżce (wniosek-review-schema.json, realizacja-schema.json) niesie te
+flagi jako pola `ui:widget: hidden` - to NIE jest kosmetyka: bez tego
+`task.data` kolejnego gatewaya by ich nie widziało (potwierdzone testem na
+żywym silniku - `workflow.data` ze startu procesu nie jest tym samym, co
+`task.data` czytane przez conditionExpression; zob. docstring modułu
+purchase_request_service.py).
+
+Uwaga: candidateGroups na "Akceptacja kierownika jednostki" / "...inwestycji"
+/ "...projektu" / "...budżetowa" to PLACEHOLDERY (grupy ogólne, nie
+"kierownik TEGO konkretnego zamawiającego") - silnik w tym hubie nie ma
+scriptTasków, więc nie może sam wyliczyć "kto jest przełożonym tej osoby" z
+OrgUnit/OrgMembership per instancja. Realny per-osobowy routing wymaga
+dynamicznego przypisania (poza zakresem tej wersji - zob. zakupy.md,
+"Otwarte decyzje"). "Realizacja zamówienia"/"Potwierdzenie odbioru" są
+WIARYGODNIE routowane - candidateGroups wskazuje keycloak_group OrgUnit
+"Dział zamówień" (zob. scripts/seed_zakupy.py), zgodnie z rekomendacją
+"Routing zadań do działu zamówień" w zakupy.md.</bpmn:documentation>
+    <bpmn:startEvent id="StartEvent_main" name="Start" />
+    <bpmn:sequenceFlow id="Flow_Start" sourceRef="StartEvent_main" targetRef="Task_Kierownik" />
+
+    <bpmn:userTask id="Task_Kierownik" name="Akceptacja kierownika jednostki" camunda:candidateGroups="kierownicy_jednostek"><spiffworkflow:property name="formJsonSchemaFilename" value="wniosek-review-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="wniosek-review-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_K_do_gw" sourceRef="Task_Kierownik" targetRef="GW_Kierownik_Decyzja" />
+    <bpmn:exclusiveGateway id="GW_Kierownik_Decyzja" name="Decyzja kierownika" default="Flow_K_ok" />
+    <bpmn:sequenceFlow id="Flow_K_ok" name="Zatwierdź" sourceRef="GW_Kierownik_Decyzja" targetRef="GW_Check_Inwestycja" />
+    <bpmn:sequenceFlow id="Flow_K_odrzuc" name="Odrzuć" sourceRef="GW_Kierownik_Decyzja" targetRef="End_Odrzucony">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_K_odrzuc'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:exclusiveGateway id="GW_Check_Inwestycja" name="Czy inwestycja?" default="Flow_SkipInw" />
+    <bpmn:sequenceFlow id="Flow_SkipInw" sourceRef="GW_Check_Inwestycja" targetRef="GW_Check_Projekt" />
+    <bpmn:sequenceFlow id="Flow_ToInw" name="Wymaga akceptacji inwestycyjnej" sourceRef="GW_Check_Inwestycja" targetRef="Task_Inwestycja">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">requires_investment_approval == True</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:userTask id="Task_Inwestycja" name="Akceptacja inwestycji" camunda:candidateGroups="zarzad_inwestycje"><spiffworkflow:property name="formJsonSchemaFilename" value="wniosek-review-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="wniosek-review-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Inw_do_gw" sourceRef="Task_Inwestycja" targetRef="GW_Inwestycja_Decyzja" />
+    <bpmn:exclusiveGateway id="GW_Inwestycja_Decyzja" name="Decyzja: inwestycja" default="Flow_Inw_ok" />
+    <bpmn:sequenceFlow id="Flow_Inw_ok" name="Zatwierdź" sourceRef="GW_Inwestycja_Decyzja" targetRef="GW_Check_Projekt" />
+    <bpmn:sequenceFlow id="Flow_Inw_odrzuc" name="Odrzuć" sourceRef="GW_Inwestycja_Decyzja" targetRef="End_Odrzucony">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Inw_odrzuc'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:exclusiveGateway id="GW_Check_Projekt" name="Czy przypisano projekt/MPK?" default="Flow_SkipProj" />
+    <bpmn:sequenceFlow id="Flow_SkipProj" sourceRef="GW_Check_Projekt" targetRef="GW_Check_Budzet" />
+    <bpmn:sequenceFlow id="Flow_ToProj" name="Wymaga akceptacji właściciela projektu/MPK" sourceRef="GW_Check_Projekt" targetRef="Task_Projekt">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">requires_project_owner_approval == True</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:userTask id="Task_Projekt" name="Akceptacja właściciela projektu/MPK" camunda:candidateGroups="wlasciciele_projektow"><spiffworkflow:property name="formJsonSchemaFilename" value="wniosek-review-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="wniosek-review-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Proj_do_gw" sourceRef="Task_Projekt" targetRef="GW_Projekt_Decyzja" />
+    <bpmn:exclusiveGateway id="GW_Projekt_Decyzja" name="Decyzja: projekt/MPK" default="Flow_Proj_ok" />
+    <bpmn:sequenceFlow id="Flow_Proj_ok" name="Zatwierdź" sourceRef="GW_Projekt_Decyzja" targetRef="GW_Check_Budzet" />
+    <bpmn:sequenceFlow id="Flow_Proj_odrzuc" name="Odrzuć" sourceRef="GW_Projekt_Decyzja" targetRef="End_Odrzucony">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Proj_odrzuc'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:exclusiveGateway id="GW_Check_Budzet" name="Czy kwota przekracza próg?" default="Flow_SkipBudzet" />
+    <bpmn:sequenceFlow id="Flow_SkipBudzet" sourceRef="GW_Check_Budzet" targetRef="GW_Check_Pzp" />
+    <bpmn:sequenceFlow id="Flow_ToBudzet" name="Wymaga dodatkowej akceptacji budżetowej" sourceRef="GW_Check_Budzet" targetRef="Task_Budzet">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">requires_additional_approval == True</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:userTask id="Task_Budzet" name="Akceptacja decydenta budżetowego" camunda:candidateGroups="decydent_budzetowy"><spiffworkflow:property name="formJsonSchemaFilename" value="wniosek-review-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="wniosek-review-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Budz_do_gw" sourceRef="Task_Budzet" targetRef="GW_Budzet_Decyzja" />
+    <bpmn:exclusiveGateway id="GW_Budzet_Decyzja" name="Decyzja: budżet" default="Flow_Budz_ok" />
+    <bpmn:sequenceFlow id="Flow_Budz_ok" name="Zatwierdź" sourceRef="GW_Budzet_Decyzja" targetRef="GW_Check_Pzp" />
+    <bpmn:sequenceFlow id="Flow_Budz_odrzuc" name="Odrzuć" sourceRef="GW_Budzet_Decyzja" targetRef="End_Odrzucony">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Budz_odrzuc'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:exclusiveGateway id="GW_Check_Pzp" name="Czy wymaga procedury PZP?" default="Flow_SkipPzp" />
+    <bpmn:sequenceFlow id="Flow_SkipPzp" sourceRef="GW_Check_Pzp" targetRef="Task_Realizacja" />
+    <bpmn:sequenceFlow id="Flow_ToPzp" name="Wymaga procedury PZP" sourceRef="GW_Check_Pzp" targetRef="End_PrzekazanoPzp">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">requires_tender == True</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:userTask id="Task_Realizacja" name="Realizacja zamówienia" camunda:candidateGroups="dzial_zakupow"><spiffworkflow:property name="formJsonSchemaFilename" value="realizacja-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="realizacja-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Real_do_gw" sourceRef="Task_Realizacja" targetRef="GW_Check_Magazyn" />
+
+    <bpmn:exclusiveGateway id="GW_Check_Magazyn" name="Czy zakup na magazyn?" default="Flow_SkipMagazyn" />
+    <bpmn:sequenceFlow id="Flow_SkipMagazyn" sourceRef="GW_Check_Magazyn" targetRef="End_Zatwierdzony" />
+    <bpmn:sequenceFlow id="Flow_ToMagazyn" name="Wymaga potwierdzenia odbioru" sourceRef="GW_Check_Magazyn" targetRef="Task_Magazyn">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">requires_warehouse_receipt == True</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:userTask id="Task_Magazyn" name="Potwierdzenie odbioru" camunda:candidateGroups="dzial_zakupow"><spiffworkflow:property name="formJsonSchemaFilename" value="magazyn-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="magazyn-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Magazyn_koniec" sourceRef="Task_Magazyn" targetRef="End_Zatwierdzony" />
+
+    <bpmn:endEvent id="End_Zatwierdzony" name="Zatwierdzony - czeka na fakturę" />
+    <bpmn:endEvent id="End_Odrzucony" name="Odrzucony" />
+    <bpmn:endEvent id="End_PrzekazanoPzp" name="Przekazano do procedury PZP" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_Process_Wniosek_zakupowy">
+    <bpmndi:BPMNPlane id="Plane_Process_Wniosek_zakupowy" bpmnElement="Process_Wniosek_zakupowy">
+      <bpmndi:BPMNShape id="Shape_StartEvent_main" bpmnElement="StartEvent_main">
+        <dc:Bounds x="50" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Kierownik" bpmnElement="Task_Kierownik">
+        <dc:Bounds x="140" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Kierownik_Decyzja" bpmnElement="GW_Kierownik_Decyzja" isMarkerVisible="true">
+        <dc:Bounds x="290" y="275" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Check_Inwestycja" bpmnElement="GW_Check_Inwestycja" isMarkerVisible="true">
+        <dc:Bounds x="400" y="275" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Inwestycja" bpmnElement="Task_Inwestycja">
+        <dc:Bounds x="500" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Inwestycja_Decyzja" bpmnElement="GW_Inwestycja_Decyzja" isMarkerVisible="true">
+        <dc:Bounds x="660" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Check_Projekt" bpmnElement="GW_Check_Projekt" isMarkerVisible="true">
+        <dc:Bounds x="790" y="275" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Projekt" bpmnElement="Task_Projekt">
+        <dc:Bounds x="880" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Projekt_Decyzja" bpmnElement="GW_Projekt_Decyzja" isMarkerVisible="true">
+        <dc:Bounds x="1040" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Check_Budzet" bpmnElement="GW_Check_Budzet" isMarkerVisible="true">
+        <dc:Bounds x="1170" y="275" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Budzet" bpmnElement="Task_Budzet">
+        <dc:Bounds x="1260" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Budzet_Decyzja" bpmnElement="GW_Budzet_Decyzja" isMarkerVisible="true">
+        <dc:Bounds x="1420" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Check_Pzp" bpmnElement="GW_Check_Pzp" isMarkerVisible="true">
+        <dc:Bounds x="1550" y="275" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Realizacja" bpmnElement="Task_Realizacja">
+        <dc:Bounds x="1650" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Check_Magazyn" bpmnElement="GW_Check_Magazyn" isMarkerVisible="true">
+        <dc:Bounds x="1800" y="275" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Magazyn" bpmnElement="Task_Magazyn">
+        <dc:Bounds x="1890" y="400" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Zatwierdzony" bpmnElement="End_Zatwierdzony">
+        <dc:Bounds x="1920" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Odrzucony" bpmnElement="End_Odrzucony">
+        <dc:Bounds x="700" y="20" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_PrzekazanoPzp" bpmnElement="End_PrzekazanoPzp">
+        <dc:Bounds x="1650" y="440" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_Start" bpmnElement="Flow_Start" />
+      <bpmndi:BPMNEdge id="Edge_Flow_K_do_gw" bpmnElement="Flow_K_do_gw" />
+      <bpmndi:BPMNEdge id="Edge_Flow_K_ok" bpmnElement="Flow_K_ok" />
+      <bpmndi:BPMNEdge id="Edge_Flow_K_odrzuc" bpmnElement="Flow_K_odrzuc" />
+      <bpmndi:BPMNEdge id="Edge_Flow_SkipInw" bpmnElement="Flow_SkipInw" />
+      <bpmndi:BPMNEdge id="Edge_Flow_ToInw" bpmnElement="Flow_ToInw" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Inw_do_gw" bpmnElement="Flow_Inw_do_gw" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Inw_ok" bpmnElement="Flow_Inw_ok" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Inw_odrzuc" bpmnElement="Flow_Inw_odrzuc" />
+      <bpmndi:BPMNEdge id="Edge_Flow_SkipProj" bpmnElement="Flow_SkipProj" />
+      <bpmndi:BPMNEdge id="Edge_Flow_ToProj" bpmnElement="Flow_ToProj" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Proj_do_gw" bpmnElement="Flow_Proj_do_gw" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Proj_ok" bpmnElement="Flow_Proj_ok" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Proj_odrzuc" bpmnElement="Flow_Proj_odrzuc" />
+      <bpmndi:BPMNEdge id="Edge_Flow_SkipBudzet" bpmnElement="Flow_SkipBudzet" />
+      <bpmndi:BPMNEdge id="Edge_Flow_ToBudzet" bpmnElement="Flow_ToBudzet" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Budz_do_gw" bpmnElement="Flow_Budz_do_gw" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Budz_ok" bpmnElement="Flow_Budz_ok" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Budz_odrzuc" bpmnElement="Flow_Budz_odrzuc" />
+      <bpmndi:BPMNEdge id="Edge_Flow_SkipPzp" bpmnElement="Flow_SkipPzp" />
+      <bpmndi:BPMNEdge id="Edge_Flow_ToPzp" bpmnElement="Flow_ToPzp" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Real_do_gw" bpmnElement="Flow_Real_do_gw" />
+      <bpmndi:BPMNEdge id="Edge_Flow_SkipMagazyn" bpmnElement="Flow_SkipMagazyn" />
+      <bpmndi:BPMNEdge id="Edge_Flow_ToMagazyn" bpmnElement="Flow_ToMagazyn" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Magazyn_koniec" bpmnElement="Flow_Magazyn_koniec" />
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

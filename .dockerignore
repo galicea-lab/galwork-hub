@@ -1,0 +1,13 @@
+.git
+.venv
+venv
+__pycache__
+*.pyc
+tests
+dev
+backlog
+*.log
+ds.log
+config/config.ini
+.env
+secret

@@ -1,0 +1,12 @@
+{
+  "ui:order": [
+    "tytul",
+    "numer_zamowienia",
+    "potwierdzono",
+    "data_odbioru",
+    "uwagi"
+  ],
+  "uwagi": {
+    "ui:widget": "textarea"
+  }
+}

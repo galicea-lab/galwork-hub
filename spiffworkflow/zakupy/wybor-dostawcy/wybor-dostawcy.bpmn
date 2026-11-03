@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" id="defs_Process_Wybor_dostawcy" targetNamespace="http://bpmn" exporter="" exporterVersion="1.0">
+  <bpmn:process id="Process_Wybor_dostawcy" name="Wybór dostawcy" isExecutable="true">
+    <bpmn:documentation>Dobra praktyka zakupowa dla zamówień poniżej progu formalnego
+postępowania (zakupy.md, "Wybór dostawcy (dawne 'Oferty')") - NIEZALEŻNA
+od tego, czy organizacja podlega PZP. Powiązana z wnioskiem zakupowym
+TYLKO przez `wniosek_zakupowy_id` (wolny tekst/UUID wpisany ręcznie albo
+przekazany jako `business_key` przy starcie) - nie przez Call Activity,
+zgodnie z decyzją użytkownika 2026-10-20 ("odrębne procesy").</bpmn:documentation>
+    <bpmn:startEvent id="StartEvent_main" name="Start" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_main" targetRef="Task_Oferty" />
+    <bpmn:userTask id="Task_Oferty" name="Zgłoszenie ofert"><spiffworkflow:property name="formJsonSchemaFilename" value="oferty-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="oferty-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_2" name="Porównaj" sourceRef="Task_Oferty" targetRef="Task_Wybor" />
+    <bpmn:userTask id="Task_Wybor" name="Wybór dostawcy"><spiffworkflow:property name="formJsonSchemaFilename" value="wybor-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="wybor-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_Wybor" targetRef="EndEvent_1" />
+    <bpmn:endEvent id="EndEvent_1" name="Dostawca wybrany" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_Process_Wybor_dostawcy">
+    <bpmndi:BPMNPlane id="Plane_Process_Wybor_dostawcy" bpmnElement="Process_Wybor_dostawcy">
+      <bpmndi:BPMNShape id="Shape_StartEvent_main" bpmnElement="StartEvent_main">
+        <dc:Bounds x="80" y="100" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Oferty" bpmnElement="Task_Oferty">
+        <dc:Bounds x="180" y="78" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Wybor" bpmnElement="Task_Wybor">
+        <dc:Bounds x="340" y="78" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_1" bpmnElement="EndEvent_1">
+        <dc:Bounds x="500" y="100" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1" />
+      <bpmndi:BPMNEdge id="Edge_Flow_2" bpmnElement="Flow_2" />
+      <bpmndi:BPMNEdge id="Edge_Flow_3" bpmnElement="Flow_3" />
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,45 @@
+# whitelist plików eksportowanych do publicznego mirrora
+# na GitHubie (scripts/public-export.mjs). Obecność tego pliku oznacza,
+# że projekt jest publikowany jako otwarty (zob. release.yml).
+# Nowe pliki w katalogach wymienionych z /** są publikowane automatycznie;
+# nowe katalogi i pliki w korzeniu - dopiero po dopisaniu tutaj.
+# Wzorce: * (jeden segment), ** (dowolna liczba segmentów), katalog/ (prefix).
+# Celowo pominięte: dev/, backlog/, data/, secret/, .forgejo/, pliki lokalne
+# (.env, *.log). dev/ i backlog/ są tylko w Forgejo.
+
+.gitignore
+.dockerignore
+.public-paths
+README.md
+CONTRIBUTING.md
+LICENSE
+Dockerfile
+docker-entrypoint.sh
+requirements.txt
+requirements-dev.txt
+pyproject.toml
+alembic.ini
+alembic_up.sh
+main.py
+router.py
+
+config/__init__.py
+config/config.py
+config/config.ini.example
+
+alembic/**
+api/**
+bcs/**
+connector/**
+core/**
+crud/**
+db/**
+lib/**
+models/**
+pm/**
+schemas/**
+scripts/**
+services/**
+spiffworkflow/**
+tests/**
+wf/**

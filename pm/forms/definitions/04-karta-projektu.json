@@ -1,0 +1,187 @@
+{
+  "slug": "04-karta-projektu",
+  "title": "Karta Projektu (Project Charter)",
+  "phase": "1. Inicjacja",
+  "when": "Powstaje w Fazie 1 - Inicjacja, po zatwierdzeniu Business Case. Formalnie nadaje Kierownikowi Projektu uprawnienia do dysponowania zasobami. Podpisuje Sponsor.",
+  "sections": [
+    {
+      "type": "fields",
+      "key": "metryka",
+      "title": "1. Metryka dokumentu",
+      "fields": [
+        {
+          "key": "nazwa_projektu",
+          "label": "Nazwa / ID projektu",
+          "type": "text"
+        },
+        {
+          "key": "sponsor",
+          "label": "Sponsor",
+          "type": "text"
+        },
+        {
+          "key": "kierownik",
+          "label": "Kierownik Projektu",
+          "type": "text"
+        },
+        {
+          "key": "komitet",
+          "label": "Komitet Sterujacy (sklad)",
+          "type": "textarea"
+        },
+        {
+          "key": "data_wydania",
+          "label": "Data wydania",
+          "type": "date"
+        },
+        {
+          "key": "wersja",
+          "label": "Wersja",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "narrative",
+      "key": "cel_uzasadnienie",
+      "title": "2. Cel i uzasadnienie",
+      "blocks": [
+        {
+          "key": "cel_smart",
+          "label": "Cel (SMART)"
+        },
+        {
+          "key": "uzasadnienie",
+          "label": "Powod / uzasadnienie biznesowe"
+        }
+      ]
+    },
+    {
+      "type": "fields",
+      "key": "zakres",
+      "title": "3. Zakres wstepny",
+      "fields": [
+        {
+          "key": "w_granicach",
+          "label": "W granicach zakresu",
+          "type": "textarea"
+        },
+        {
+          "key": "poza_zakresem",
+          "label": "Poza zakresem (wykluczone)",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "deliverables",
+      "title": "4. Produkty czastkowe wysokiego poziomu",
+      "columns": [
+        {
+          "key": "produkt",
+          "label": "Produkt czastkowy",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "fields",
+      "key": "ograniczenia",
+      "title": "5. Ograniczenia i zalozenia",
+      "fields": [
+        {
+          "key": "ograniczenia",
+          "label": "Ograniczenia (czas/koszt/jakosc)",
+          "type": "textarea"
+        },
+        {
+          "key": "zalozenia",
+          "label": "Zalozenia",
+          "type": "textarea"
+        },
+        {
+          "key": "wykluczenia",
+          "label": "Wykluczenia",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "kamienie_milowe",
+      "title": "6. Kluczowe kamienie milowe (wstepnie)",
+      "columns": [
+        {
+          "key": "nazwa",
+          "label": "Kamien milowy",
+          "type": "text"
+        },
+        {
+          "key": "termin",
+          "label": "Termin",
+          "type": "date"
+        }
+      ],
+      "data_source": "milestones",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "fields",
+      "key": "budzet",
+      "title": "7. Budzet wstepny i uprawnienia PM",
+      "fields": [
+        {
+          "key": "budzet_bazowy",
+          "label": "Budzet bazowy",
+          "type": "number"
+        },
+        {
+          "key": "prog_autoryzacji",
+          "label": "Prog autoryzacji zmian przez PM",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "type": "checklist",
+      "key": "kryteria_sukcesu",
+      "title": "9. Kryteria sukcesu",
+      "items": [
+        {
+          "key": "kryteria_sukcesu_0",
+          "label": "Osiagnieto wszystkie cele SMART."
+        },
+        {
+          "key": "kryteria_sukcesu_1",
+          "label": "Wszystkie produkty czastkowe dostarczono i odebrano (UAT)."
+        },
+        {
+          "key": "kryteria_sukcesu_2",
+          "label": "Budzet i harmonogram w zaakceptowanych tolerancjach."
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "akceptacja",
+      "title": "10. Podpisy autoryzujace",
+      "roles": [
+        {
+          "key": "sponsor",
+          "label": "Sponsor"
+        },
+        {
+          "key": "kierownik_projektu",
+          "label": "Kierownik Projektu"
+        }
+      ]
+    }
+  ]
+}

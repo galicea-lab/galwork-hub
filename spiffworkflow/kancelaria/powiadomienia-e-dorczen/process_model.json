@@ -1,0 +1,9 @@
+{
+    "description": "Powiadomienia e-doreczen",
+    "display_name": "Powiadomienia e-doreczen",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "powiadomienia-e-doreczen.bpmn",
+    "primary_process_id": "Process_Powiadomienia_e-doreczen"
+}

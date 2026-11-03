@@ -1,0 +1,102 @@
+{
+  "slug": "11-raport-evm",
+  "title": "Raport EVM (Metoda Wartosci Wypracowanej)",
+  "phase": "4. Kontrola",
+  "when": "Powstaje cyklicznie w Fazie 4 - Monitorowanie i Kontrola. Kazde wypelnienie formularza dodaje nowy wpis historii EVM (do wykresu S-krzywej).",
+  "sections": [
+    {
+      "type": "fields",
+      "key": "dane_bazowe",
+      "title": "1. Dane bazowe (na dzien raportowania)",
+      "fields": [
+        {
+          "key": "report_date",
+          "label": "Data raportowania",
+          "type": "date"
+        },
+        {
+          "key": "bac",
+          "label": "BAC [zl]",
+          "type": "number"
+        },
+        {
+          "key": "pv",
+          "label": "PV [zl]",
+          "type": "number"
+        },
+        {
+          "key": "ev",
+          "label": "EV [zl]",
+          "type": "number"
+        },
+        {
+          "key": "ac",
+          "label": "AC [zl]",
+          "type": "number"
+        },
+        {
+          "key": "note",
+          "label": "Uwagi",
+          "type": "textarea"
+        }
+      ],
+      "data_source": "evm_snapshots",
+      "mode": "append"
+    },
+    {
+      "type": "calc",
+      "key": "wskazniki",
+      "title": "2. Wskazniki i prognozy (SV/CV/SPI/CPI/EAC/ETC/VAC/TCPI)",
+      "calculator": "evm",
+      "source_key": "dane_bazowe",
+      "extra_fields": []
+    },
+    {
+      "type": "narrative",
+      "key": "analiza",
+      "title": "3. Analiza i dzialania korygujace",
+      "blocks": [
+        {
+          "key": "przyczyny",
+          "label": "Glowne przyczyny odchylen"
+        },
+        {
+          "key": "dzialania",
+          "label": "Zaplanowane dzialania naprawcze"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "rozeslanie",
+      "title": "5. Podpisy / rozeslanie",
+      "columns": [
+        {
+          "key": "odbiorca",
+          "label": "Odbiorca",
+          "type": "text",
+          "readonly": true
+        },
+        {
+          "key": "data_przekazania",
+          "label": "Data przekazania",
+          "type": "date"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": true,
+      "default_rows": [
+        {
+          "odbiorca": "Komitet Sterujacy"
+        },
+        {
+          "odbiorca": "Sponsor"
+        },
+        {
+          "odbiorca": "Zespol (przeglad)"
+        }
+      ],
+      "mode": "replace"
+    }
+  ]
+}

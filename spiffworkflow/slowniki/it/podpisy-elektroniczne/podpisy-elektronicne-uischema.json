@@ -1,0 +1,22 @@
+{
+  "ui:order": [
+    "ID",
+    "Nazwa",
+    "Opis",
+    "Aktywny",
+    "provider",
+    "katalog",
+    "email",
+    "telefon"
+  ],
+  "ID": {
+    "ui:readonly": true
+  },
+  "provider": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/dostawcy-uslug-podpisu-elektronicznego",
+      "sourceName": "Dostawcy usług podpisu elektronicznego"
+    }
+  }
+}

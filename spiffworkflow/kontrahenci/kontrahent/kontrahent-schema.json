@@ -1,0 +1,534 @@
+{
+  "title": "Kontrahent",
+  "description": "Proces: KK - Kontrahenci (ID: 295); Obieg: KK - Kontrahent (ID: 325); Typ dokumentu: K - Karta kontrahenta (ID: 436)",
+  "type": "object",
+  "properties": {
+    "Wybór spółki": {
+      "type": "string",
+      "title": "Wybór spółki",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "editable",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "editable"
+      }
+    },
+    "Identyfikacja": {
+      "type": "object",
+      "properties": {
+        "Firma lub skrót nazwy": {
+          "type": "string",
+          "title": "Firma lub skrót nazwy",
+          "readOnly": true,
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "readonly",
+            "Kartoteka Kontrahentów": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "NIP": {
+          "type": "string",
+          "title": "NIP",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Identyfikacja",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Generowanie kartoteki kontrahenta": {
+      "type": "object",
+      "properties": {
+        "z systemu ERP (Optima)": {
+          "type": "string",
+          "title": "z systemu ERP (Optima)",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "editable",
+            "Weryfikacja danych": "none",
+            "Kartoteka Kontrahentów": "none",
+            "Archiwum": "none"
+          }
+        },
+        "na podstawie NIP": {
+          "type": "string",
+          "title": "na podstawie NIP",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "editable",
+            "Weryfikacja danych": "none",
+            "Kartoteka Kontrahentów": "none",
+            "Archiwum": "none"
+          }
+        },
+        "na podstawie ADE": {
+          "type": "string",
+          "title": "na podstawie ADE",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "editable",
+            "Weryfikacja danych": "none",
+            "Kartoteka Kontrahentów": "none",
+            "Archiwum": "none"
+          }
+        },
+        "Firma / Skrót nazwy": {
+          "type": "string",
+          "title": "Firma / Skrót nazwy",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "editable",
+            "Weryfikacja danych": "none",
+            "Kartoteka Kontrahentów": "none",
+            "Archiwum": "none"
+          },
+          "x-required-in-steps": [
+            "Utworzenie Konta Kontrahenta"
+          ]
+        }
+      },
+      "required": [
+        "Firma / Skrót nazwy"
+      ],
+      "title": "Generowanie kartoteki kontrahenta",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "editable",
+        "Weryfikacja danych": "none",
+        "Kartoteka Kontrahentów": "none",
+        "Archiwum": "none"
+      }
+    },
+    "Adres ADE": {
+      "type": "string",
+      "title": "Adres ADE",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Nr telefonu": {
+      "type": "string",
+      "title": "Nr telefonu",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Dane kontrahenta": {
+      "type": "object",
+      "properties": {
+        "Osoba fizyczna": {
+          "type": "boolean",
+          "title": "Osoba fizyczna",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "editable"
+          }
+        },
+        "Nazwa firmy": {
+          "type": "string",
+          "title": "Nazwa firmy",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Adres siedziby": {
+          "type": "string",
+          "title": "Adres siedziby",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Adres prowadzenia dziełalności": {
+          "type": "string",
+          "title": "Adres prowadzenia dziełalności",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "pesel": {
+          "type": "string",
+          "title": "pesel",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Dane kontrahenta",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Weryfikacja sankcyjna": {
+      "type": "object",
+      "properties": {
+        "Wynik weryfikacji": {
+          "type": "string",
+          "title": "Wynik weryfikacji",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Termin ważności weryfikacji": {
+          "type": "string",
+          "format": "date",
+          "title": "Termin ważności weryfikacji",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Weryfikacja sankcyjna",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Optima": {
+      "type": "object",
+      "properties": {
+        "Konto w Optimie": {
+          "type": "string",
+          "title": "Konto w Optimie",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "link": {
+          "type": "string",
+          "title": "link",
+          "readOnly": true,
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "readonly",
+            "Kartoteka Kontrahentów": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Optima",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Kontakty": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "telefon": {
+            "type": "string",
+            "title": "telefon",
+            "x-permissions": {
+              "Utworzenie Konta Kontrahenta": "none",
+              "Weryfikacja danych": "editable",
+              "Kartoteka Kontrahentów": "editable",
+              "Archiwum": "readonly"
+            }
+          },
+          "Imię i nazwisko": {
+            "type": "string",
+            "title": "Imię i nazwisko",
+            "x-permissions": {
+              "Utworzenie Konta Kontrahenta": "none",
+              "Weryfikacja danych": "editable",
+              "Kartoteka Kontrahentów": "editable",
+              "Archiwum": "readonly"
+            }
+          },
+          "Rodzaj kontaktu": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "0",
+                "title": "(nieokreślony)"
+              },
+              {
+                "const": "1",
+                "title": "opiekun klienta"
+              },
+              {
+                "const": "2",
+                "title": "serwis"
+              },
+              {
+                "const": "3",
+                "title": "kontakt handlowy"
+              },
+              {
+                "const": "4",
+                "title": "sprzedawca"
+              },
+              {
+                "const": "5",
+                "title": "repreentant"
+              }
+            ],
+            "title": "Rodzaj kontaktu",
+            "x-permissions": {
+              "Utworzenie Konta Kontrahenta": "none",
+              "Weryfikacja danych": "editable",
+              "Kartoteka Kontrahentów": "editable",
+              "Archiwum": "readonly"
+            }
+          },
+          "uwagi": {
+            "type": "string",
+            "title": "uwagi",
+            "x-permissions": {
+              "Utworzenie Konta Kontrahenta": "none",
+              "Weryfikacja danych": "editable",
+              "Kartoteka Kontrahentów": "editable",
+              "Archiwum": "readonly"
+            }
+          },
+          "email": {
+            "type": "string",
+            "title": "email",
+            "x-permissions": {
+              "Utworzenie Konta Kontrahenta": "none",
+              "Weryfikacja danych": "editable",
+              "Kartoteka Kontrahentów": "editable",
+              "Archiwum": "readonly"
+            }
+          }
+        }
+      },
+      "title": "Kontakty",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Uwaga!": {
+      "type": "string",
+      "title": "Uwaga!",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "editable"
+      }
+    },
+    "Faktury": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Faktury",
+      "readOnly": true,
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "readonly",
+        "Kartoteka Kontrahentów": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Uwaga! 2": {
+      "type": "string",
+      "title": "Uwaga!",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "editable"
+      }
+    },
+    "Umowy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Umowy",
+      "readOnly": true,
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "readonly",
+        "Kartoteka Kontrahentów": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "regon": {
+      "type": "string",
+      "title": "regon",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "krs": {
+      "type": "string",
+      "title": "krs",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "status VAT": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "0",
+          "title": "-"
+        },
+        {
+          "const": "1",
+          "title": "Czynny"
+        },
+        {
+          "const": "2",
+          "title": "Niezarejestrowany"
+        },
+        {
+          "const": "3",
+          "title": "Zwolniony"
+        }
+      ],
+      "title": "status VAT",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Ewidencja VAT": {
+      "type": "object",
+      "properties": {
+        "data rejestracji": {
+          "type": "string",
+          "format": "date",
+          "title": "data rejestracji",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "data usunięcia z ewidencji": {
+          "type": "string",
+          "format": "date",
+          "title": "data usunięcia z ewidencji",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "data przywrócenia": {
+          "type": "string",
+          "format": "date",
+          "title": "data przywrócenia",
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "editable",
+            "Kartoteka Kontrahentów": "editable",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Ewidencja VAT",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Informacje systemowe": {
+      "type": "object",
+      "properties": {
+        "Kod": {
+          "type": "integer",
+          "title": "Kod",
+          "readOnly": true,
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "readonly",
+            "Kartoteka Kontrahentów": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "komunikat": {
+          "type": "string",
+          "title": "komunikat",
+          "readOnly": true,
+          "x-permissions": {
+            "Utworzenie Konta Kontrahenta": "none",
+            "Weryfikacja danych": "readonly",
+            "Kartoteka Kontrahentów": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Informacje systemowe",
+      "x-permissions": {
+        "Utworzenie Konta Kontrahenta": "none",
+        "Weryfikacja danych": "editable",
+        "Kartoteka Kontrahentów": "editable",
+        "Archiwum": "readonly"
+      }
+    }
+  }
+}

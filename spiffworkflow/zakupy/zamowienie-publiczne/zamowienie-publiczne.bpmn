@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="defs_Process_Zamowienie_publiczne" targetNamespace="http://bpmn" exporter="" exporterVersion="1.0">
+  <bpmn:process id="Process_Zamowienie_publiczne" name="Zamówienie publiczne" isExecutable="true">
+    <bpmn:documentation>Podobieg WARUNKOWY, właściwy wyłącznie podmiotom objętym Prawem
+zamówień publicznych (zakupy.md, "Zamówienie publiczne (dawne
+'Przetargi')") - uruchamiany z wf/services/purchase_request_service.py::
+start_tender, gdy `PurchaseRequest.requires_tender=True`. Powiązany z
+wnioskiem zakupowym przez `business_key` (ten sam `PurchaseRequest.id`),
+NIE przez Call Activity - silnik w tym hubie wiąże obiegi callActivity
+tylko w ramach JEDNEGO ProcessModelVersion (zob. wf/services/
+process_service.py::load_spec), a użytkownik chciał te dwa obiegi
+NIEZALEŻNIE publikowalne/uruchamialne (decyzja 2026-10-20: "odrębne
+procesy").</bpmn:documentation>
+    <bpmn:startEvent id="StartEvent_main" name="Start" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_main" targetRef="Task_Opis" />
+    <bpmn:userTask id="Task_Opis" name="Opis przedmiotu zamówienia" camunda:candidateGroups="komisja_przetargowa"><spiffworkflow:property name="formJsonSchemaFilename" value="opis-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="opis-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_2" name="Opublikuj" sourceRef="Task_Opis" targetRef="Task_Ogloszenie" />
+    <bpmn:userTask id="Task_Ogloszenie" name="Ogłoszenie" camunda:candidateGroups="komisja_przetargowa"><spiffworkflow:property name="formJsonSchemaFilename" value="ogloszenie-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="ogloszenie-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_3" name="Zbierz oferty" sourceRef="Task_Ogloszenie" targetRef="Task_Otwarcie" />
+    <bpmn:userTask id="Task_Otwarcie" name="Otwarcie ofert" camunda:candidateGroups="komisja_przetargowa"><spiffworkflow:property name="formJsonSchemaFilename" value="otwarcie-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="otwarcie-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_Otwarcie" targetRef="Task_Rozstrzygniecie" />
+    <bpmn:userTask id="Task_Rozstrzygniecie" name="Rozstrzygnięcie" camunda:candidateGroups="komisja_przetargowa"><spiffworkflow:property name="formJsonSchemaFilename" value="rozstrzygniecie-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="rozstrzygniecie-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_Rozstrzygniecie" targetRef="GW_Rozstrzygniecie" />
+    <bpmn:exclusiveGateway id="GW_Rozstrzygniecie" name="Wynik postępowania" default="Flow_Pozytywne" />
+    <bpmn:sequenceFlow id="Flow_Pozytywne" name="Rozstrzygnięcie pozytywne" sourceRef="GW_Rozstrzygniecie" targetRef="End_Pozytywne" />
+    <bpmn:sequenceFlow id="Flow_Uniewaznienie" name="Unieważnienie" sourceRef="GW_Rozstrzygniecie" targetRef="End_Uniewaznione">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Uniewaznienie'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_BrakRozstrzygniecia" name="Brak rozstrzygnięcia" sourceRef="GW_Rozstrzygniecie" targetRef="End_BrakRozstrzygniecia">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_BrakRozstrzygniecia'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="End_Pozytywne" name="Postępowanie rozstrzygnięte" />
+    <bpmn:endEvent id="End_Uniewaznione" name="Postępowanie unieważnione" />
+    <bpmn:endEvent id="End_BrakRozstrzygniecia" name="Zakończone bez rozstrzygnięcia" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_Process_Zamowienie_publiczne">
+    <bpmndi:BPMNPlane id="Plane_Process_Zamowienie_publiczne" bpmnElement="Process_Zamowienie_publiczne">
+      <bpmndi:BPMNShape id="Shape_StartEvent_main" bpmnElement="StartEvent_main">
+        <dc:Bounds x="60" y="200" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Opis" bpmnElement="Task_Opis">
+        <dc:Bounds x="150" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Ogloszenie" bpmnElement="Task_Ogloszenie">
+        <dc:Bounds x="310" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Otwarcie" bpmnElement="Task_Otwarcie">
+        <dc:Bounds x="470" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rozstrzygniecie" bpmnElement="Task_Rozstrzygniecie">
+        <dc:Bounds x="630" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Rozstrzygniecie" bpmnElement="GW_Rozstrzygniecie" isMarkerVisible="true">
+        <dc:Bounds x="790" y="193" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Pozytywne" bpmnElement="End_Pozytywne">
+        <dc:Bounds x="900" y="100" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Uniewaznione" bpmnElement="End_Uniewaznione">
+        <dc:Bounds x="900" y="200" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_BrakRozstrzygniecia" bpmnElement="End_BrakRozstrzygniecia">
+        <dc:Bounds x="900" y="300" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1" />
+      <bpmndi:BPMNEdge id="Edge_Flow_2" bpmnElement="Flow_2" />
+      <bpmndi:BPMNEdge id="Edge_Flow_3" bpmnElement="Flow_3" />
+      <bpmndi:BPMNEdge id="Edge_Flow_4" bpmnElement="Flow_4" />
+      <bpmndi:BPMNEdge id="Edge_Flow_5" bpmnElement="Flow_5" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Pozytywne" bpmnElement="Flow_Pozytywne" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Uniewaznienie" bpmnElement="Flow_Uniewaznienie" />
+      <bpmndi:BPMNEdge id="Edge_Flow_BrakRozstrzygniecia" bpmnElement="Flow_BrakRozstrzygniecia" />
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

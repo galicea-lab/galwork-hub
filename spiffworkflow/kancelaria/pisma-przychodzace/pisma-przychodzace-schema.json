@@ -1,0 +1,392 @@
+{
+  "title": "Pisma przychodzące",
+  "description": "Formularz – Proces: KANC - Pisma przychodzące; Obieg: KPRZ - Pisma przychodzące (ID: 225); Typ dokumentu: Pisma przychodzące",
+  "type": "object",
+  "properties": {
+    "Wybór spółki": {
+      "type": "string",
+      "title": "Wybór spółki",
+      "x-permissions": {
+        "Nowe pismo": "editable",
+        "Obsługa kancelaryjna pisma": "editable",
+        "Decydent": "editable",
+        "Pismo u adresatów": "editable",
+        "Procedowanie": "editable",
+        "Archiwum pism przychodzących": "editable"
+      }
+    },
+    "Temat": {
+      "type": "string",
+      "title": "Temat",
+      "x-permissions": {
+        "Nowe pismo": "editable",
+        "Obsługa kancelaryjna pisma": "editable",
+        "Decydent": "editable",
+        "Pismo u adresatów": "editable",
+        "Procedowanie": "readonly",
+        "Archiwum pism przychodzących": "readonly"
+      }
+    },
+    "Nadawca": {
+      "type": "object",
+      "properties": {
+        "Nazwa nadawcy": {
+          "type": "string",
+          "title": "Nazwa nadawcy",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Obsługa kancelaryjna pisma": "editable",
+            "Decydent": "editable",
+            "Pismo u adresatów": "readonly",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "Adres e-doręczeń": {
+          "type": "string",
+          "title": "Adres e-doręczeń",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Obsługa kancelaryjna pisma": "editable",
+            "Decydent": "editable",
+            "Pismo u adresatów": "readonly",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "Adres pocztowy": {
+          "type": "string",
+          "title": "Adres pocztowy",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Obsługa kancelaryjna pisma": "editable",
+            "Decydent": "editable",
+            "Pismo u adresatów": "readonly",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Obsługa kancelaryjna pisma": "editable",
+            "Decydent": "editable",
+            "Pismo u adresatów": "readonly",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "Numer telefonu": {
+          "type": "string",
+          "title": "Numer telefonu",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Obsługa kancelaryjna pisma": "editable",
+            "Decydent": "editable",
+            "Pismo u adresatów": "readonly",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        }
+      },
+      "title": "Nadawca",
+      "x-permissions": {
+        "Nowe pismo": "editable",
+        "Obsługa kancelaryjna pisma": "editable",
+        "Decydent": "editable",
+        "Pismo u adresatów": "readonly",
+        "Procedowanie": "readonly",
+        "Archiwum pism przychodzących": "readonly"
+      }
+    },
+    "Treść": {
+      "type": "string",
+      "title": "Treść",
+      "x-permissions": {
+        "Nowe pismo": "editable",
+        "Obsługa kancelaryjna pisma": "editable",
+        "Decydent": "editable",
+        "Pismo u adresatów": "editable",
+        "Procedowanie": "readonly",
+        "Archiwum pism przychodzących": "readonly"
+      }
+    },
+    "Kto podpisuje": {
+      "type": "string",
+      "title": "Kto podpisuje",
+      "readOnly": true,
+      "x-permissions": {
+        "Nowe pismo": "none",
+        "Obsługa kancelaryjna pisma": "none",
+        "Decydent": "none",
+        "Pismo u adresatów": "none",
+        "Procedowanie": "none",
+        "Archiwum pism przychodzących": "none"
+      }
+    },
+    "Metryka": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Metryka",
+      "readOnly": true,
+      "x-permissions": {
+        "Nowe pismo": "none",
+        "Obsługa kancelaryjna pisma": "readonly",
+        "Decydent": "readonly",
+        "Pismo u adresatów": "readonly",
+        "Procedowanie": "readonly",
+        "Archiwum pism przychodzących": "readonly"
+      }
+    },
+    "Dystrybucja": {
+      "type": "object",
+      "properties": {
+        "Decydent": {
+          "type": "string",
+          "title": "Decydent",
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "editable",
+            "Decydent": "editable",
+            "Pismo u adresatów": "none",
+            "Procedowanie": "none",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "Dział": {
+          "type": "string",
+          "title": "Dział",
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "editable",
+            "Decydent": "editable",
+            "Pismo u adresatów": "readonly",
+            "Procedowanie": "none",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "Komu przekazać": {
+          "type": "string",
+          "title": "Komu przekazać",
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "editable",
+            "Decydent": "editable",
+            "Pismo u adresatów": "readonly",
+            "Procedowanie": "editable",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "Uwagi decydenta": {
+          "type": "string",
+          "title": "Uwagi decydenta",
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "none",
+            "Decydent": "editable",
+            "Pismo u adresatów": "readonly",
+            "Procedowanie": "none",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        }
+      },
+      "title": "Dystrybucja",
+      "x-permissions": {
+        "Nowe pismo": "none",
+        "Obsługa kancelaryjna pisma": "editable",
+        "Decydent": "editable",
+        "Pismo u adresatów": "editable",
+        "Procedowanie": "editable",
+        "Archiwum pism przychodzących": "readonly"
+      }
+    },
+    "Teczka": {
+      "type": "object",
+      "properties": {
+        "Teczka Sprawy": {
+          "type": "string",
+          "title": "Teczka Sprawy",
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "none",
+            "Decydent": "none",
+            "Pismo u adresatów": "editable",
+            "Procedowanie": "editable",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "link": {
+          "type": "string",
+          "title": "link",
+          "readOnly": true,
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "none",
+            "Decydent": "none",
+            "Pismo u adresatów": "readonly",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "kolejny nr w teczce": {
+          "type": "string",
+          "title": "kolejny nr w teczce",
+          "readOnly": true,
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "none",
+            "Decydent": "none",
+            "Pismo u adresatów": "readonly",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "Sygnatura dokumentu wg instrukcji kancelaryjnej": {
+          "type": "string",
+          "title": "Sygnatura dokumentu wg instrukcji kancelaryjnej",
+          "readOnly": true,
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "none",
+            "Decydent": "none",
+            "Pismo u adresatów": "readonly",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "[tech]włożone": {
+          "type": "boolean",
+          "title": "[tech]włożone",
+          "readOnly": true,
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "none",
+            "Decydent": "none",
+            "Pismo u adresatów": "readonly",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        }
+      },
+      "title": "Teczka",
+      "x-permissions": {
+        "Nowe pismo": "none",
+        "Obsługa kancelaryjna pisma": "none",
+        "Decydent": "none",
+        "Pismo u adresatów": "editable",
+        "Procedowanie": "editable",
+        "Archiwum pism przychodzących": "readonly"
+      }
+    },
+    "Kogo dotyczy": {
+      "type": "object",
+      "properties": {
+        "Uczelnia/Rektor": {
+          "type": "string",
+          "title": "Uczelnia/Rektor",
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "editable",
+            "Decydent": "editable",
+            "Pismo u adresatów": "editable",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "Kierunek": {
+          "type": "string",
+          "title": "Kierunek",
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "editable",
+            "Decydent": "editable",
+            "Pismo u adresatów": "editable",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "Iinstytut": {
+          "type": "string",
+          "title": "Iinstytut",
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "editable",
+            "Decydent": "editable",
+            "Pismo u adresatów": "editable",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        },
+        "Student(ka)": {
+          "type": "string",
+          "title": "Student(ka)",
+          "x-permissions": {
+            "Nowe pismo": "none",
+            "Obsługa kancelaryjna pisma": "editable",
+            "Decydent": "editable",
+            "Pismo u adresatów": "editable",
+            "Procedowanie": "readonly",
+            "Archiwum pism przychodzących": "readonly"
+          }
+        }
+      },
+      "title": "Kogo dotyczy",
+      "x-permissions": {
+        "Nowe pismo": "none",
+        "Obsługa kancelaryjna pisma": "editable",
+        "Decydent": "editable",
+        "Pismo u adresatów": "editable",
+        "Procedowanie": "readonly",
+        "Archiwum pism przychodzących": "readonly"
+      }
+    },
+    "Historia przetwarzania": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "data przekazania": {
+            "type": "string",
+            "format": "date-time",
+            "title": "data przekazania",
+            "x-permissions": {
+              "Nowe pismo": "none",
+              "Obsługa kancelaryjna pisma": "none",
+              "Decydent": "editable",
+              "Pismo u adresatów": "readonly",
+              "Procedowanie": "readonly",
+              "Archiwum pism przychodzących": "readonly"
+            }
+          },
+          "Kto przekazuje": {
+            "type": "string",
+            "title": "Kto przekazuje",
+            "x-permissions": {
+              "Nowe pismo": "none",
+              "Obsługa kancelaryjna pisma": "none",
+              "Decydent": "editable",
+              "Pismo u adresatów": "readonly",
+              "Procedowanie": "readonly",
+              "Archiwum pism przychodzących": "readonly"
+            }
+          }
+        }
+      },
+      "title": "Historia przetwarzania",
+      "readOnly": true,
+      "x-permissions": {
+        "Nowe pismo": "none",
+        "Obsługa kancelaryjna pisma": "none",
+        "Decydent": "none",
+        "Pismo u adresatów": "none",
+        "Procedowanie": "none",
+        "Archiwum pism przychodzących": "none"
+      }
+    }
+  }
+}

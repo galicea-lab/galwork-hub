@@ -1,0 +1,9 @@
+{
+    "description": "Informacja z potwierdzeniem",
+    "display_name": "Informacja z potwierdzeniem",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "informacja-z-potwierdzeniem.bpmn",
+    "primary_process_id": "Process_Informacja_z_potwierdzeniem"
+}

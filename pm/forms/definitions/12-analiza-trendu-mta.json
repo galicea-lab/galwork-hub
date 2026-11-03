@@ -1,0 +1,108 @@
+{
+  "slug": "12-analiza-trendu-mta",
+  "title": "Analiza Trendu Kamieni Milowych (MTA)",
+  "phase": "4. Kontrola",
+  "when": "Powstaje cyklicznie w Fazie 4 - Monitorowanie i Kontrola. Kolejne prognozy terminu tego samego kamienia milowego ujawniaja trend (opoznienie/stabilnosc/przyspieszenie).",
+  "sections": [
+    {
+      "type": "table",
+      "key": "milestones",
+      "title": "Kamienie milowe (nazwa + termin bazowy)",
+      "columns": [
+        {
+          "key": "name",
+          "label": "Kamien milowy",
+          "type": "text"
+        },
+        {
+          "key": "baseline_date",
+          "label": "Termin bazowy",
+          "type": "date"
+        }
+      ],
+      "data_source": "milestones",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "table",
+      "key": "milestone_forecasts",
+      "title": "1. Nowa prognoza (na dzien biezacego raportu)",
+      "columns": [
+        {
+          "key": "milestone_name",
+          "label": "Kamien milowy",
+          "type": "text"
+        },
+        {
+          "key": "report_date",
+          "label": "Data raportu",
+          "type": "date"
+        },
+        {
+          "key": "forecast_date",
+          "label": "Prognozowana data osiagniecia",
+          "type": "date"
+        }
+      ],
+      "data_source": "milestone_forecasts",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "append"
+    },
+    {
+      "type": "calc",
+      "key": "trend",
+      "title": "2. Wykres trendu",
+      "calculator": "mta",
+      "source_key": "milestone_forecasts",
+      "extra_fields": []
+    },
+    {
+      "type": "narrative",
+      "key": "uwagi",
+      "title": "Uwagi do najistotniejszych odchylen",
+      "blocks": [
+        {
+          "key": "uwagi",
+          "label": "Uwagi"
+        },
+        {
+          "key": "dzialania",
+          "label": "Dzialania"
+        }
+      ]
+    },
+    {
+      "type": "checklist",
+      "key": "kontrola",
+      "title": "3. Kamienie milowe pod szczegolna kontrola",
+      "items": [
+        {
+          "key": "kontrola_0",
+          "label": "Kamien niezgodny z planem bazowym (baseline)."
+        },
+        {
+          "key": "kontrola_1",
+          "label": "Ryzyko dla terminow zewnetrznych (partnerzy, sezonowosc)."
+        },
+        {
+          "key": "kontrola_2",
+          "label": "Potrzebna rewizja planu bazowego -> 13-wniosek-o-zmiane."
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "podpisy",
+      "title": "4. Podpisy",
+      "roles": [
+        {
+          "key": "kierownik_projektu",
+          "label": "Kierownik Projektu"
+        }
+      ]
+    }
+  ]
+}

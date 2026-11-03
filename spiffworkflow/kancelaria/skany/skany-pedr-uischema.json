@@ -1,0 +1,50 @@
+{
+  "ui:order": [
+    "Wybór spółki",
+    "Temat",
+    "Treść",
+    "Nadawca",
+    "Metryka",
+    "Data"
+  ],
+  "Temat": {
+    "ui:readonly": true
+  },
+  "Treść": {
+    "ui:widget": "textarea",
+    "ui:readonly": true
+  },
+  "Nadawca": {
+    "ui:order": [
+      "Nazwa nadawcy",
+      "Email"
+    ],
+    "Email": {
+      "ui:help": "Mail studencki"
+    },
+    "ui:help": "Dane studenta",
+    "Nazwa nadawcy": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/adres-e-doreczen",
+        "sourceName": "Adres e-Doręczeń"
+      }
+    }
+  },
+  "Metryka": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Data": {
+    "ui:readonly": true
+  },
+  "Wybór spółki": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/companies"
+    }
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "slug": "15-raport-koncowy",
+  "title": "Raport koncowy projektu (Project Closure Report)",
+  "phase": "5. Zamkniecie",
+  "when": "Powstaje na koncu Fazy 5 - Zamkniecie, po odbiorze UAT i rozliczeniu ksiegowym, przed przekazaniem produktu do eksploatacji.",
+  "sections": [
+    {
+      "type": "fields",
+      "key": "metryka",
+      "title": "1. Metryka",
+      "fields": [
+        {
+          "key": "projekt",
+          "label": "Projekt / ID",
+          "type": "text"
+        },
+        {
+          "key": "daty",
+          "label": "Daty: start / koniec",
+          "type": "text"
+        },
+        {
+          "key": "sponsor",
+          "label": "Sponsor",
+          "type": "text"
+        },
+        {
+          "key": "kierownik",
+          "label": "Kierownik Projektu",
+          "type": "text"
+        },
+        {
+          "key": "wersja",
+          "label": "Wersja raportu",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "podsumowanie",
+      "title": "2. Podsumowanie wynikow",
+      "columns": [
+        {
+          "key": "kryterium",
+          "label": "Kryterium",
+          "type": "text",
+          "readonly": true
+        },
+        {
+          "key": "plan",
+          "label": "Plan (baseline)",
+          "type": "text"
+        },
+        {
+          "key": "wynik",
+          "label": "Wynik faktyczny",
+          "type": "text"
+        },
+        {
+          "key": "odchylenie",
+          "label": "Odchylenie",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": true,
+      "default_rows": [
+        {
+          "kryterium": "Zakres (produkty czastkowe)"
+        },
+        {
+          "kryterium": "Harmonogram (termin koncowy)"
+        },
+        {
+          "kryterium": "Budzet (koszt koncowy / EAC)"
+        },
+        {
+          "kryterium": "Jakosc (kryteria akceptacji)"
+        },
+        {
+          "kryterium": "Korzysci biznesowe (NPV/ROI)"
+        }
+      ],
+      "mode": "replace"
+    },
+    {
+      "type": "narrative",
+      "key": "cele_produkty",
+      "title": "3. Osiagniete cele i produkty",
+      "blocks": [
+        {
+          "key": "cele_status",
+          "label": "Cele SMART - status realizacji"
+        },
+        {
+          "key": "produkty",
+          "label": "Dostarczone produkty czastkowe"
+        }
+      ]
+    },
+    {
+      "type": "checklist",
+      "key": "rozliczenie",
+      "title": "4. Rozliczenie",
+      "items": [
+        {
+          "key": "rozliczenie_0",
+          "label": "Rozliczenie ksiegowe i finansowe kontraktow zakonczone."
+        },
+        {
+          "key": "rozliczenie_1",
+          "label": "Konta chmurowe / subskrypcje / zasoby zwolnione."
+        },
+        {
+          "key": "rozliczenie_2",
+          "label": "Lista usterek punch list zamknieta."
+        },
+        {
+          "key": "rozliczenie_3",
+          "label": "Produkt przekazano do eksploatacji."
+        }
+      ]
+    },
+    {
+      "type": "narrative",
+      "key": "wnioski",
+      "title": "5. Wnioski i rekomendacje",
+      "blocks": [
+        {
+          "key": "co_sie_udalo",
+          "label": "Co sie udalo"
+        },
+        {
+          "key": "co_bylo_trudne",
+          "label": "Co bylo trudne / ryzyka zrealizowane"
+        },
+        {
+          "key": "rekomendacje",
+          "label": "Rekomendacje na przyszlosc"
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "zamkniecie",
+      "title": "6. Zgoda na zamkniecie",
+      "roles": [
+        {
+          "key": "kierownik_projektu",
+          "label": "Kierownik Projektu"
+        },
+        {
+          "key": "sponsor",
+          "label": "Sponsor"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "slug": "20-sla-sip",
+  "title": "Karta poziomu uslugi (SLA / SIP)",
+  "phase": "Eksploatacja",
+  "when": "Powstaje w fazie operacyjnej przy ustalaniu poziomu uslug. SLA definiuje gwarantowane poziomy, SIP - plan ciaglego doskonalenia.",
+  "sections": [
+    {
+      "type": "fields",
+      "key": "metryka",
+      "title": "1. Metryka",
+      "fields": [
+        {
+          "key": "nazwa_uslugi",
+          "label": "Nazwa uslugi",
+          "type": "text"
+        },
+        {
+          "key": "klient",
+          "label": "Klient / strona uslugi",
+          "type": "text"
+        },
+        {
+          "key": "okres",
+          "label": "Okres obowiazywania",
+          "type": "text"
+        },
+        {
+          "key": "wlasciciel_uslugi",
+          "label": "Wlasciciel uslugi",
+          "type": "text"
+        },
+        {
+          "key": "priorytety",
+          "label": "Priorytety uslugi (P1-P5)",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "sla",
+      "title": "2. Tabela SLA (metryki i cele)",
+      "columns": [
+        {
+          "key": "metryka",
+          "label": "Metryka",
+          "type": "text"
+        },
+        {
+          "key": "definicja",
+          "label": "Definicja",
+          "type": "text"
+        },
+        {
+          "key": "cel",
+          "label": "Cel (SLA)",
+          "type": "text"
+        },
+        {
+          "key": "okres",
+          "label": "Zliczanie (okres)",
+          "type": "text"
+        },
+        {
+          "key": "konsekwencja",
+          "label": "Konsekwencja przy przekroczeniu",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "fields",
+      "key": "okna",
+      "title": "3. Okna uslugi i wyjatki",
+      "fields": [
+        {
+          "key": "okna_wsparcia",
+          "label": "Okna wsparcia",
+          "type": "textarea"
+        },
+        {
+          "key": "wyjatki",
+          "label": "Wylaczenia / wyjatki",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "sip",
+      "title": "4. SIP - Plan doskonalenia uslugi",
+      "columns": [
+        {
+          "key": "obszar",
+          "label": "Obszar doskonalenia",
+          "type": "text"
+        },
+        {
+          "key": "dzialania",
+          "label": "Dzialania",
+          "type": "text"
+        },
+        {
+          "key": "wlasciciel",
+          "label": "Wlasciciel",
+          "type": "text"
+        },
+        {
+          "key": "termin",
+          "label": "Termin",
+          "type": "date"
+        },
+        {
+          "key": "miernik",
+          "label": "Miernik",
+          "type": "text"
+        },
+        {
+          "key": "cel",
+          "label": "Cel",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "checklist",
+      "key": "raportowanie",
+      "title": "5. Raportowanie i przeglad",
+      "items": [
+        {
+          "key": "raportowanie_0",
+          "label": "Raport SLA cykliczny przygotowywany."
+        },
+        {
+          "key": "raportowanie_1",
+          "label": "Przeglad poziomu uslug i SIP wykonywany."
+        },
+        {
+          "key": "raportowanie_2",
+          "label": "Kary / rekompensata za niedotrzymanie ustalone."
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "akceptacja",
+      "title": "6. Podpisy / akceptacja",
+      "roles": [
+        {
+          "key": "dostawca_uslugi",
+          "label": "Dostawca uslugi"
+        },
+        {
+          "key": "klient_/_kierownik_uslugi",
+          "label": "Klient / kierownik uslugi"
+        },
+        {
+          "key": "service_owner",
+          "label": "Service Owner"
+        }
+      ]
+    }
+  ]
+}

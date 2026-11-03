@@ -1,0 +1,38 @@
+{
+  "title": "Zgłoszenie ofert",
+  "description": "Ewidencja ofert dla zamówienia poniżej progu formalnego postępowania (zob. zakupy.md). `wniosek_zakupowy_id` to referencja do wniosku (nie Call Activity - powiązanie przez identyfikator).",
+  "type": "object",
+  "properties": {
+    "wniosek_zakupowy_id": {
+      "type": "string",
+      "title": "Numer / identyfikator wniosku zakupowego"
+    },
+    "oferty": {
+      "type": "array",
+      "title": "Oferty",
+      "items": {
+        "type": "object",
+        "properties": {
+          "dostawca": {
+            "type": "string",
+            "title": "Dostawca"
+          },
+          "kwota": {
+            "type": "string",
+            "title": "Kwota"
+          },
+          "waluta": {
+            "type": "string",
+            "title": "Waluta",
+            "default": "PLN"
+          },
+          "kwota_pln": {
+            "type": "string",
+            "title": "Kwota po przeliczeniu na PLN (jeśli oferta w innej walucie)"
+          }
+        }
+      }
+    }
+  },
+  "required": ["wniosek_zakupowy_id", "oferty"]
+}

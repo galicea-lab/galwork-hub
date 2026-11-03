@@ -1,0 +1,10 @@
+{
+    "description": "Wniosek zakupowy - zob. galwork-book, czesc-3-obszary/dzialy/zakupy.md",
+    "display_name": "Wniosek zakupowy",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "wniosek-zakupowy.bpmn",
+    "primary_process_id": "Process_Wniosek_zakupowy",
+    "key": "wniosek-zakupowy"
+}

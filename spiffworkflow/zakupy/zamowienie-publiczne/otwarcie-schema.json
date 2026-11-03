@@ -1,0 +1,22 @@
+{
+  "title": "Otwarcie ofert",
+  "type": "object",
+  "properties": {
+    "tytul": {
+      "type": "string",
+      "title": "Przedmiot zamówienia",
+      "readOnly": true
+    },
+    "oferty": {
+      "type": "array",
+      "title": "Oferty złożone w postępowaniu",
+      "items": {
+        "type": "object",
+        "properties": {
+          "dostawca": { "type": "string", "title": "Dostawca" },
+          "kwota": { "type": "string", "title": "Kwota" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "ui:order": [
+    "tytul",
+    "dostawca",
+    "kwota_szacowana",
+    "numer_zamowienia",
+    "requires_warehouse_receipt"
+  ],
+  "requires_warehouse_receipt": { "ui:widget": "hidden" }
+}

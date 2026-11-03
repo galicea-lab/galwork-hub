@@ -1,0 +1,31 @@
+{
+  "title": "Potwierdzenie odbioru",
+  "description": "Zakup 'na magazyn' - potwierdzenie fizycznego odbioru towaru, wymagane przed dopasowaniem faktury (zob. zakupy.md, 'Zakup na magazyn a zakup usługi'). Stany magazynowe/SKU prowadzi ERP - to pole jest tylko potwierdzeniem w strukturze obiegu.",
+  "type": "object",
+  "properties": {
+    "tytul": {
+      "type": "string",
+      "title": "Tytuł wniosku",
+      "readOnly": true
+    },
+    "numer_zamowienia": {
+      "type": "string",
+      "title": "Numer zamówienia (ERP)",
+      "readOnly": true
+    },
+    "potwierdzono": {
+      "type": "boolean",
+      "title": "Towar odebrany"
+    },
+    "data_odbioru": {
+      "type": "string",
+      "format": "date",
+      "title": "Data odbioru"
+    },
+    "uwagi": {
+      "type": "string",
+      "title": "Uwagi (np. niezgodność ilości/jakości)"
+    }
+  },
+  "required": ["potwierdzono"]
+}

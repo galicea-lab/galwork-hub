@@ -1,0 +1,28 @@
+{
+  "title": "Realizacja zamówienia",
+  "description": "Dział zamówień realizuje zatwierdzony wniosek (składa zamówienie u dostawcy). Numer zamówienia jest referencją do systemu, w którym dział zamówień faktycznie je składa (ERP) - Galwork go tylko przechowuje.",
+  "type": "object",
+  "properties": {
+    "tytul": {
+      "type": "string",
+      "title": "Tytuł wniosku",
+      "readOnly": true
+    },
+    "dostawca": {
+      "type": "string",
+      "title": "Dostawca",
+      "readOnly": true
+    },
+    "kwota_szacowana": {
+      "type": "string",
+      "title": "Kwota szacowana",
+      "readOnly": true
+    },
+    "numer_zamowienia": {
+      "type": "string",
+      "title": "Numer zamówienia (ERP)"
+    },
+    "requires_warehouse_receipt": { "type": "boolean" }
+  },
+  "required": ["numer_zamowienia"]
+}

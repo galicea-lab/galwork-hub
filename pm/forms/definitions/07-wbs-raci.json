@@ -1,0 +1,121 @@
+{
+  "slug": "07-wbs-raci",
+  "title": "WBS + Slownik WBS + Macierz RACI",
+  "phase": "2. Planowanie",
+  "when": "Powstaje w Fazie 2 - Planowanie. Hierarchiczna dekompozycja zakresu na pakiety prac; fundament harmonogramowania, budzetowania i RACI.",
+  "sections": [
+    {
+      "type": "table",
+      "key": "wbs_items",
+      "title": "WBS + Slownik + RACI (jeden wiersz = jeden wezel WBS)",
+      "columns": [
+        {
+          "key": "code",
+          "label": "Kod",
+          "type": "text"
+        },
+        {
+          "key": "parent_code",
+          "label": "Kod nadrzedny",
+          "type": "text"
+        },
+        {
+          "key": "name",
+          "label": "Nazwa elementu / pakietu prac",
+          "type": "text"
+        },
+        {
+          "key": "level",
+          "label": "Poziom",
+          "type": "number"
+        },
+        {
+          "key": "deliverable",
+          "label": "Produkt czastkowy (deliverable)",
+          "type": "textarea"
+        },
+        {
+          "key": "acceptance_criteria",
+          "label": "Kryteria akceptacji",
+          "type": "textarea"
+        },
+        {
+          "key": "duration_hours",
+          "label": "Estymata roboczogodzin",
+          "type": "number"
+        },
+        {
+          "key": "cost",
+          "label": "Koszt szacowany",
+          "type": "number"
+        },
+        {
+          "key": "responsible",
+          "label": "R - Wykonawca",
+          "type": "text"
+        },
+        {
+          "key": "accountable",
+          "label": "A - Odpowiedzialny",
+          "type": "text"
+        },
+        {
+          "key": "consulted",
+          "label": "C - Konsultowany",
+          "type": "text"
+        },
+        {
+          "key": "informed",
+          "label": "I - Informowany",
+          "type": "text"
+        }
+      ],
+      "data_source": "wbs_items",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "checklist",
+      "key": "weryfikacja",
+      "title": "4. Weryfikacja poprawnosci WBS",
+      "items": [
+        {
+          "key": "weryfikacja_0",
+          "label": "Pokrywa 100% zakresu (bez pominiec i podwojnego liczenia)."
+        },
+        {
+          "key": "weryfikacja_1",
+          "label": "Pakiety sa niezalezne (mozna jednoznacznie przypisac czas i koszt)."
+        },
+        {
+          "key": "weryfikacja_2",
+          "label": "Kazdy pakiet ma zdefiniowany produkt czastkowy."
+        },
+        {
+          "key": "weryfikacja_3",
+          "label": "RACI ma dokladnie jedno 'A' per pakiet."
+        },
+        {
+          "key": "weryfikacja_4",
+          "label": "Kody sa jednoznaczne i spojne z systemem zarzadzania praca (Taiga/Jira)."
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "podpisy",
+      "title": "5. Podpisy",
+      "roles": [
+        {
+          "key": "kierownik_projektu",
+          "label": "Kierownik Projektu"
+        },
+        {
+          "key": "zespol",
+          "label": "Zespol"
+        }
+      ]
+    }
+  ]
+}

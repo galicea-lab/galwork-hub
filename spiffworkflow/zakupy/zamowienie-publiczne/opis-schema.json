@@ -1,0 +1,23 @@
+{
+  "title": "Opis przedmiotu zamówienia",
+  "type": "object",
+  "properties": {
+    "wniosek_zakupowy_id": {
+      "type": "string",
+      "title": "Numer / identyfikator wniosku zakupowego"
+    },
+    "tytul": {
+      "type": "string",
+      "title": "Przedmiot zamówienia"
+    },
+    "opis": {
+      "type": "string",
+      "title": "Opis przedmiotu zamówienia"
+    },
+    "wartosc_szacunkowa": {
+      "type": "string",
+      "title": "Wartość szacunkowa"
+    }
+  },
+  "required": ["tytul", "opis"]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "required": ["decyzja"],
+  "properties": {
+    "decyzja": {
+      "type": "string",
+      "title": "Decyzja",
+      "enum": ["zarejestrowano", "wymaga_odpowiedzi"],
+      "enumNames": ["Zarejestrowano - nie wymaga odpowiedzi", "Wymaga przygotowania odpowiedzi"]
+    },
+    "notatka": {
+      "type": "string",
+      "title": "Notatka"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "title": "Rozstrzygnięcie",
+  "description": "Wynik postępowania wybierany jest automatycznie dodanym polem wyboru (Rozstrzygnięcie pozytywne / Unieważnienie / Brak rozstrzygnięcia) - zob. wf/decisions.py.",
+  "type": "object",
+  "properties": {
+    "tytul": {
+      "type": "string",
+      "title": "Przedmiot zamówienia",
+      "readOnly": true
+    },
+    "oferty": {
+      "type": "array",
+      "title": "Oferty złożone w postępowaniu",
+      "readOnly": true,
+      "items": { "type": "object" }
+    },
+    "wybrany_dostawca": {
+      "type": "string",
+      "title": "Wybrany dostawca (jeśli rozstrzygnięcie pozytywne)"
+    },
+    "uzasadnienie": {
+      "type": "string",
+      "title": "Uzasadnienie rozstrzygnięcia"
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "ui:order": [
+    "Wybór spółki",
+    "Temat",
+    "Treść",
+    "Kogo dotyczy",
+    "Nadawca",
+    "Teczka",
+    "Metryka"
+  ],
+  "Temat": {
+    "ui:readonly": true
+  },
+  "Treść": {
+    "ui:widget": "textarea",
+    "ui:readonly": true
+  },
+  "Kogo dotyczy": {
+    "ui:order": [],
+    "ui:help": "Zaświadczenie dlastudenta w związku ze studiowaniemna konkretnymkierunku",
+    "ui:readonly": true
+  },
+  "Nadawca": {
+    "ui:order": [
+      "Adres pocztowy",
+      "Numer telefonu"
+    ],
+    "ui:help": "Dane studenta"
+  },
+  "Teczka": {
+    "ui:order": [
+      "Teczka Sprawy",
+      "link",
+      "kolejny nr w teczce",
+      "Sygnatura dokumentu wg instrukcji kancelaryjnej",
+      "[tech]włożone"
+    ],
+    "Teczka Sprawy": {
+      "ui:help": "Wybierz teczkę, lub załóż nową",
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/teczki-spraw",
+        "sourceName": "Teczki Spraw",
+        "sourceType": "Baza MSSQL"
+      }
+    },
+    "link": {
+      "ui:help": "Link do teczki",
+      "ui:readonly": true
+    },
+    "kolejny nr w teczce": {
+      "ui:readonly": true
+    },
+    "Sygnatura dokumentu wg instrukcji kancelaryjnej": {
+      "ui:readonly": true
+    },
+    "[tech]włożone": {
+      "ui:readonly": true
+    },
+    "ui:readonly": true
+  },
+  "Metryka": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Wybór spółki": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/companies"
+    }
+  }
+}

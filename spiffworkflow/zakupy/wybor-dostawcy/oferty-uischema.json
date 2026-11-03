@@ -1,0 +1,3 @@
+{
+  "ui:order": ["wniosek_zakupowy_id", "oferty"]
+}

@@ -1,0 +1,132 @@
+{
+  "slug": "17-incydent-itil",
+  "title": "Zgloszenie incydentu (ITIL 4 - Incident Management)",
+  "phase": "Eksploatacja",
+  "when": "Powstaje w fazie operacyjnej, gdy usluga dziala nieprawidlowo wzgledem SLA. Cel: jak najszybsze przywrocenie normalnej eksploatacji.",
+  "sections": [
+    {
+      "type": "fields",
+      "key": "metryka",
+      "title": "1. Metryka zgloszenia",
+      "fields": [
+        {
+          "key": "numer",
+          "label": "Numer incydentu (INC-###)",
+          "type": "text"
+        },
+        {
+          "key": "data_godzina",
+          "label": "Data i godzina zgloszenia",
+          "type": "text"
+        },
+        {
+          "key": "kanal",
+          "label": "Kanal zgloszenia",
+          "type": "text"
+        },
+        {
+          "key": "zglaszajacy",
+          "label": "Zglaszajacy / rola",
+          "type": "text"
+        },
+        {
+          "key": "usluga",
+          "label": "Usluga / system (CI)",
+          "type": "text"
+        },
+        {
+          "key": "priorytet",
+          "label": "Priorytet",
+          "type": "select",
+          "options": [
+            "P1",
+            "P2",
+            "P3",
+            "P4",
+            "P5"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "narrative",
+      "key": "opis",
+      "title": "2. Opis objawow",
+      "blocks": [
+        {
+          "key": "objawy",
+          "label": "Co sie stalo"
+        },
+        {
+          "key": "replikacja",
+          "label": "Replikacja (jak odtworzyc)"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "dzialania",
+      "title": "4. Rejestr dzialan i status",
+      "columns": [
+        {
+          "key": "data_godzina",
+          "label": "Data/h",
+          "type": "text"
+        },
+        {
+          "key": "dzialanie",
+          "label": "Dzialanie",
+          "type": "textarea"
+        },
+        {
+          "key": "wykonawca",
+          "label": "Wykonawca",
+          "type": "text"
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "checklist",
+      "key": "zamkniecie",
+      "title": "5. Zamkniecie",
+      "items": [
+        {
+          "key": "zamkniecie_0",
+          "label": "Potwierdzenie przywrocenia uslugi przez uzytkownika."
+        },
+        {
+          "key": "zamkniecie_1",
+          "label": "Kategoria zamkniecia okreslona."
+        },
+        {
+          "key": "zamkniecie_2",
+          "label": "Powiazano z problemem (jesli istnieje)."
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "podpisy",
+      "title": "Podpisy",
+      "roles": [
+        {
+          "key": "service_desk_/_l1",
+          "label": "Service Desk / L1"
+        },
+        {
+          "key": "l2/l3",
+          "label": "L2/L3"
+        }
+      ]
+    }
+  ]
+}

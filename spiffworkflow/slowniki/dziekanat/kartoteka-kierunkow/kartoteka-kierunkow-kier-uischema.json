@@ -1,0 +1,75 @@
+{
+  "ui:order": [
+    "ID",
+    "Skrót",
+    "Nazwa",
+    "Wydział",
+    "Instytut",
+    "Dyrektor Instytutu",
+    "Sekretariat",
+    "Dziekan",
+    "Rok I",
+    "Rok II",
+    "Rok III",
+    "Rok IV",
+    "Opis",
+    "Aktywny"
+  ],
+  "ID": {
+    "ui:readonly": true
+  },
+  "Skrót": {
+    "ui:help": "Skrót nazwy kierunku"
+  },
+  "Rok I": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Rok II": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Rok III": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Rok IV": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Instytut": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/instytuty",
+      "sourceName": "instytuty",
+      "sourceType": "REST Web Service"
+    }
+  },
+  "Dyrektor Instytutu": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/instytuty-uczelni",
+      "sourceName": "Instytuty Uczelni"
+    }
+  },
+  "Sekretariat": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/users",
+      "sourceName": "<Użytkownicy i grupy>",
+      "sourceType": "Kartoteka Użytkowników"
+    }
+  }
+}

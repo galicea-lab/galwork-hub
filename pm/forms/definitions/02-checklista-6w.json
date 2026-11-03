@@ -1,0 +1,137 @@
+{
+  "slug": "02-checklista-6w",
+  "title": "Checklista 6W (Zasada 6xW) - Inicjacja Projektu",
+  "phase": "1. Inicjacja",
+  "when": "Powstaje na starcie Fazy 1 - Inicjacja jako szybki arkusz weryfikujacy dojrzalosc pomyslu na projekt. Wypelnia Sponsor / inicjator, weryfikuje Komitet Sterujacy.",
+  "sections": [
+    {
+      "type": "table",
+      "key": "6w",
+      "title": "Tabela 6W",
+      "columns": [
+        {
+          "key": "pytanie",
+          "label": "Pytanie",
+          "type": "text",
+          "readonly": true
+        },
+        {
+          "key": "tresc",
+          "label": "Tresc pytania",
+          "type": "text",
+          "readonly": true
+        },
+        {
+          "key": "odpowiedz",
+          "label": "Odpowiedz / adresat odpowiedzi",
+          "type": "textarea"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": true,
+      "default_rows": [
+        {
+          "pytanie": "1. Why? (Dlaczego?)",
+          "tresc": "Podloze biznesowe - problem lub szansa rynkowa"
+        },
+        {
+          "pytanie": "2. What? (Co?)",
+          "tresc": "Wstepny zakres - oczekiwany produkt koncowy"
+        },
+        {
+          "pytanie": "3. Who? (Kto?)",
+          "tresc": "Kluczowi interesariusze, sponsor, uzytkownicy, PM"
+        },
+        {
+          "pytanie": "4. When? (Kiedy?)",
+          "tresc": "Ramy czasowe i twarde terminy graniczne"
+        },
+        {
+          "pytanie": "5. What for? (Po co?)",
+          "tresc": "Korzysci biznesowe + oczekiwany ROI"
+        },
+        {
+          "pytanie": "6. How? (Jak?)",
+          "tresc": "Zalozenia wykonawcze, ograniczenia, kluczowe ryzyka"
+        }
+      ],
+      "mode": "replace"
+    },
+    {
+      "type": "checklist",
+      "key": "gotowosc",
+      "title": "Checklista gotowosci do inicjacji",
+      "items": [
+        {
+          "key": "gotowosc_0",
+          "label": "Wszystkie 6 pol wypelniono jednym zdaniem."
+        },
+        {
+          "key": "gotowosc_1",
+          "label": "Why? opisuje problem/szanse, a nie rozwiazanie."
+        },
+        {
+          "key": "gotowosc_2",
+          "label": "What? odroznia produkt od rezultatu biznesowego."
+        },
+        {
+          "key": "gotowosc_3",
+          "label": "Wskazano Sponsora (osobe z C-level/zarzadu)."
+        },
+        {
+          "key": "gotowosc_4",
+          "label": "Wskazano twardy termin lub uzasadnienie jego braku."
+        },
+        {
+          "key": "gotowosc_5",
+          "label": "What for? zawiera wstepna, mierzalna korzysc."
+        },
+        {
+          "key": "gotowosc_6",
+          "label": "Wskazano co najmniej 1 kluczowe ryzyko wysokiego poziomu."
+        }
+      ]
+    },
+    {
+      "type": "fields",
+      "key": "ocena",
+      "title": "Ocena dojrzalosci",
+      "fields": [
+        {
+          "key": "wynik",
+          "label": "Wynik (X/7)",
+          "type": "text"
+        },
+        {
+          "key": "interpretacja",
+          "label": "Interpretacja",
+          "type": "text"
+        },
+        {
+          "key": "dzialanie",
+          "label": "Dzialanie",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "akceptacja",
+      "title": "Akceptacja",
+      "roles": [
+        {
+          "key": "sponsor",
+          "label": "Sponsor"
+        },
+        {
+          "key": "kierownik_projektu",
+          "label": "Kierownik Projektu"
+        },
+        {
+          "key": "komitet_sterujacy",
+          "label": "Komitet Sterujacy"
+        }
+      ]
+    }
+  ]
+}

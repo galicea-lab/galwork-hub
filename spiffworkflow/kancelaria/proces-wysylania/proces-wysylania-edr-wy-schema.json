@@ -1,0 +1,612 @@
+{
+  "title": "Proces wysyłania-EDR-WY",
+  "description": "Proces: EDR-WY - e-Doręczenia (ID: 201); Obieg: Proces wysyłania (ID: 239); Typ dokumentu: EDR-WY - Wysyłanie EDR (ID: 313)",
+  "type": "object",
+  "properties": {
+    "Adres tradycyjny": {
+      "type": "string",
+      "title": "Adres tradycyjny",
+      "x-permissions": {
+        "Rejestruj przesyłkę": "editable",
+        "Weryfikacja adresów": "readonly",
+        "Zarządzanie Wysyłką": "readonly",
+        "Kolejka do wysłania": "editable",
+        "Wysyłka EDR": "editable",
+        "Odczyt poświadczeń EDR": "editable",
+        "Sukces": "editable",
+        "Problem z wysłaniem": "readonly"
+      }
+    },
+    "Temat": {
+      "type": "string",
+      "title": "Temat",
+      "x-permissions": {
+        "Rejestruj przesyłkę": "editable",
+        "Weryfikacja adresów": "editable",
+        "Zarządzanie Wysyłką": "readonly",
+        "Kolejka do wysłania": "editable",
+        "Wysyłka EDR": "editable",
+        "Odczyt poświadczeń EDR": "editable",
+        "Sukces": "readonly",
+        "Problem z wysłaniem": "readonly"
+      }
+    },
+    "Wybór spółki": {
+      "type": "string",
+      "title": "Wybór spółki",
+      "x-permissions": {
+        "Rejestruj przesyłkę": "editable",
+        "Weryfikacja adresów": "editable",
+        "Zarządzanie Wysyłką": "editable",
+        "Kolejka do wysłania": "editable",
+        "Wysyłka EDR": "editable",
+        "Odczyt poświadczeń EDR": "editable",
+        "Sukces": "editable",
+        "Problem z wysłaniem": "editable"
+      }
+    },
+    "Powiązania": {
+      "type": "object",
+      "properties": {
+        "Gdzie zlecono wysyłanie": {
+          "type": "string",
+          "title": "Gdzie zlecono wysyłanie",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "readonly",
+            "Weryfikacja adresów": "readonly",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "student": {
+          "type": "string",
+          "title": "student",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "editable",
+            "Weryfikacja adresów": "editable",
+            "Zarządzanie Wysyłką": "editable",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "Do kogo przekazać pismo przychodząace": {
+          "type": "string",
+          "title": "Do kogo przekazać pismo przychodząace",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "none",
+            "Weryfikacja adresów": "none",
+            "Zarządzanie Wysyłką": "none",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        }
+      },
+      "title": "Powiązania",
+      "x-permissions": {
+        "Rejestruj przesyłkę": "editable",
+        "Weryfikacja adresów": "editable",
+        "Zarządzanie Wysyłką": "editable",
+        "Kolejka do wysłania": "readonly",
+        "Wysyłka EDR": "readonly",
+        "Odczyt poświadczeń EDR": "readonly",
+        "Sukces": "editable",
+        "Problem z wysłaniem": "readonly"
+      }
+    },
+    "Nadawca": {
+      "type": "object",
+      "properties": {
+        "Nadawca": {
+          "type": "string",
+          "title": "Nadawca",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "editable",
+            "Weryfikacja adresów": "readonly",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "Adres Nadawcy": {
+          "type": "string",
+          "title": "Adres Nadawcy",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "editable",
+            "Weryfikacja adresów": "readonly",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "Imię": {
+          "type": "string",
+          "title": "Imię",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "editable",
+            "Weryfikacja adresów": "readonly",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "Nazwisko": {
+          "type": "string",
+          "title": "Nazwisko",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "editable",
+            "Weryfikacja adresów": "readonly",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "Firma": {
+          "type": "string",
+          "title": "Firma",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "editable",
+            "Weryfikacja adresów": "readonly",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        }
+      },
+      "title": "Nadawca",
+      "x-permissions": {
+        "Rejestruj przesyłkę": "editable",
+        "Weryfikacja adresów": "readonly",
+        "Zarządzanie Wysyłką": "readonly",
+        "Kolejka do wysłania": "readonly",
+        "Wysyłka EDR": "readonly",
+        "Odczyt poświadczeń EDR": "readonly",
+        "Sukces": "readonly",
+        "Problem z wysłaniem": "readonly"
+      }
+    },
+    "Odbiorca": {
+      "type": "object",
+      "properties": {
+        "Odbiorca": {
+          "type": "string",
+          "title": "Odbiorca",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "editable",
+            "Weryfikacja adresów": "readonly",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "readonly",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "Adres odbiorcy": {
+          "type": "string",
+          "title": "Adres odbiorcy",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "editable",
+            "Weryfikacja adresów": "readonly",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "readonly",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "Imię": {
+          "type": "string",
+          "title": "Imię",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "editable",
+            "Weryfikacja adresów": "readonly",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "readonly",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "Nazwisko": {
+          "type": "string",
+          "title": "Nazwisko",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "editable",
+            "Weryfikacja adresów": "readonly",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "readonly",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "Firma": {
+          "type": "string",
+          "title": "Firma",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "editable",
+            "Weryfikacja adresów": "readonly",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "readonly",
+            "Wysyłka EDR": "readonly",
+            "Odczyt poświadczeń EDR": "readonly",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        }
+      },
+      "title": "Odbiorca",
+      "x-permissions": {
+        "Rejestruj przesyłkę": "editable",
+        "Weryfikacja adresów": "readonly",
+        "Zarządzanie Wysyłką": "readonly",
+        "Kolejka do wysłania": "readonly",
+        "Wysyłka EDR": "readonly",
+        "Odczyt poświadczeń EDR": "readonly",
+        "Sukces": "readonly",
+        "Problem z wysłaniem": "readonly"
+      }
+    },
+    "Treść wiadomości": {
+      "type": "string",
+      "title": "Treść wiadomości",
+      "x-permissions": {
+        "Rejestruj przesyłkę": "editable",
+        "Weryfikacja adresów": "editable",
+        "Zarządzanie Wysyłką": "readonly",
+        "Kolejka do wysłania": "readonly",
+        "Wysyłka EDR": "readonly",
+        "Odczyt poświadczeń EDR": "readonly",
+        "Sukces": "readonly",
+        "Problem z wysłaniem": "readonly"
+      }
+    },
+    "Metadane Przesyłki": {
+      "type": "object",
+      "properties": {
+        "id. przesyłki": {
+          "type": "string",
+          "title": "id. przesyłki",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "none",
+            "Weryfikacja adresów": "none",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "editable",
+            "Wysyłka EDR": "editable",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "sposób doręczenia": {
+          "type": "string",
+          "title": "sposób doręczenia",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "none",
+            "Weryfikacja adresów": "none",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "editable",
+            "Wysyłka EDR": "editable",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "Wątek (id)": {
+          "type": "string",
+          "title": "Wątek (id)",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "none",
+            "Weryfikacja adresów": "none",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "editable",
+            "Wysyłka EDR": "editable",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "znacznik czasu": {
+          "type": "string",
+          "title": "znacznik czasu",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "none",
+            "Weryfikacja adresów": "none",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "editable",
+            "Wysyłka EDR": "editable",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        }
+      },
+      "title": "Metadane Przesyłki",
+      "x-permissions": {
+        "Rejestruj przesyłkę": "editable",
+        "Weryfikacja adresów": "editable",
+        "Zarządzanie Wysyłką": "readonly",
+        "Kolejka do wysłania": "editable",
+        "Wysyłka EDR": "editable",
+        "Odczyt poświadczeń EDR": "editable",
+        "Sukces": "readonly",
+        "Problem z wysłaniem": "readonly"
+      }
+    },
+    "Dane Kontrolne": {
+      "type": "object",
+      "properties": {
+        "Rodzaj przesyłki": {
+          "type": "string",
+          "title": "Rodzaj przesyłki",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "none",
+            "Weryfikacja adresów": "none",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "editable",
+            "Wysyłka EDR": "editable",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "etykiety": {
+          "type": "string",
+          "title": "etykiety",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "none",
+            "Weryfikacja adresów": "none",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "editable",
+            "Wysyłka EDR": "editable",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        },
+        "otwarte": {
+          "type": "string",
+          "title": "otwarte",
+          "x-permissions": {
+            "Rejestruj przesyłkę": "none",
+            "Weryfikacja adresów": "none",
+            "Zarządzanie Wysyłką": "readonly",
+            "Kolejka do wysłania": "editable",
+            "Wysyłka EDR": "editable",
+            "Odczyt poświadczeń EDR": "editable",
+            "Sukces": "readonly",
+            "Problem z wysłaniem": "readonly"
+          }
+        }
+      },
+      "title": "Dane Kontrolne",
+      "x-permissions": {
+        "Rejestruj przesyłkę": "none",
+        "Weryfikacja adresów": "none",
+        "Zarządzanie Wysyłką": "readonly",
+        "Kolejka do wysłania": "editable",
+        "Wysyłka EDR": "editable",
+        "Odczyt poświadczeń EDR": "editable",
+        "Sukces": "readonly",
+        "Problem z wysłaniem": "readonly"
+      }
+    },
+    "rest_odpowiedź": {
+      "type": "string",
+      "title": "rest_odpowiedź",
+      "x-permissions": {
+        "Rejestruj przesyłkę": "none",
+        "Weryfikacja adresów": "readonly",
+        "Zarządzanie Wysyłką": "readonly",
+        "Kolejka do wysłania": "editable",
+        "Wysyłka EDR": "editable",
+        "Odczyt poświadczeń EDR": "editable",
+        "Sukces": "readonly",
+        "Problem z wysłaniem": "readonly"
+      }
+    },
+    "poświadczenia": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id.wiadomości": {
+            "type": "string",
+            "title": "id.wiadomości",
+            "x-permissions": {
+              "Rejestruj przesyłkę": "editable",
+              "Weryfikacja adresów": "editable",
+              "Zarządzanie Wysyłką": "editable",
+              "Kolejka do wysłania": "editable",
+              "Wysyłka EDR": "editable",
+              "Odczyt poświadczeń EDR": "editable",
+              "Sukces": "readonly",
+              "Problem z wysłaniem": "readonly"
+            }
+          },
+          "data zdarzenia": {
+            "type": "string",
+            "format": "date-time",
+            "title": "data zdarzenia",
+            "x-permissions": {
+              "Rejestruj przesyłkę": "editable",
+              "Weryfikacja adresów": "editable",
+              "Zarządzanie Wysyłką": "editable",
+              "Kolejka do wysłania": "editable",
+              "Wysyłka EDR": "editable",
+              "Odczyt poświadczeń EDR": "editable",
+              "Sukces": "readonly",
+              "Problem z wysłaniem": "readonly"
+            }
+          },
+          "ADE Odbiorcy": {
+            "type": "string",
+            "title": "ADE Odbiorcy",
+            "x-permissions": {
+              "Rejestruj przesyłkę": "editable",
+              "Weryfikacja adresów": "editable",
+              "Zarządzanie Wysyłką": "editable",
+              "Kolejka do wysłania": "editable",
+              "Wysyłka EDR": "editable",
+              "Odczyt poświadczeń EDR": "editable",
+              "Sukces": "readonly",
+              "Problem z wysłaniem": "readonly"
+            }
+          },
+          "typ": {
+            "type": "string",
+            "title": "typ",
+            "x-permissions": {
+              "Rejestruj przesyłkę": "editable",
+              "Weryfikacja adresów": "editable",
+              "Zarządzanie Wysyłką": "editable",
+              "Kolejka do wysłania": "editable",
+              "Wysyłka EDR": "editable",
+              "Odczyt poświadczeń EDR": "editable",
+              "Sukces": "readonly",
+              "Problem z wysłaniem": "readonly"
+            }
+          },
+          "ADE Nadawcy": {
+            "type": "string",
+            "title": "ADE Nadawcy",
+            "x-permissions": {
+              "Rejestruj przesyłkę": "editable",
+              "Weryfikacja adresów": "editable",
+              "Zarządzanie Wysyłką": "editable",
+              "Kolejka do wysłania": "editable",
+              "Wysyłka EDR": "editable",
+              "Odczyt poświadczeń EDR": "editable",
+              "Sukces": "readonly",
+              "Problem z wysłaniem": "readonly"
+            }
+          },
+          "id.poświadczenia": {
+            "type": "string",
+            "title": "id.poświadczenia",
+            "x-permissions": {
+              "Rejestruj przesyłkę": "editable",
+              "Weryfikacja adresów": "editable",
+              "Zarządzanie Wysyłką": "editable",
+              "Kolejka do wysłania": "editable",
+              "Wysyłka EDR": "editable",
+              "Odczyt poświadczeń EDR": "editable",
+              "Sukces": "readonly",
+              "Problem z wysłaniem": "readonly"
+            }
+          },
+          "szczegóły": {
+            "type": "string",
+            "title": "szczegóły",
+            "x-permissions": {
+              "Rejestruj przesyłkę": "editable",
+              "Weryfikacja adresów": "editable",
+              "Zarządzanie Wysyłką": "editable",
+              "Kolejka do wysłania": "editable",
+              "Wysyłka EDR": "editable",
+              "Odczyt poświadczeń EDR": "editable",
+              "Sukces": "readonly",
+              "Problem z wysłaniem": "readonly"
+            }
+          },
+          "pobrane": {
+            "type": "boolean",
+            "title": "pobrane",
+            "x-permissions": {
+              "Rejestruj przesyłkę": "editable",
+              "Weryfikacja adresów": "editable",
+              "Zarządzanie Wysyłką": "editable",
+              "Kolejka do wysłania": "editable",
+              "Wysyłka EDR": "editable",
+              "Odczyt poświadczeń EDR": "editable",
+              "Sukces": "readonly",
+              "Problem z wysłaniem": "readonly"
+            }
+          },
+          "data utworzenia": {
+            "type": "string",
+            "format": "date-time",
+            "title": "data utworzenia",
+            "x-permissions": {
+              "Rejestruj przesyłkę": "editable",
+              "Weryfikacja adresów": "editable",
+              "Zarządzanie Wysyłką": "editable",
+              "Kolejka do wysłania": "editable",
+              "Wysyłka EDR": "editable",
+              "Odczyt poświadczeń EDR": "editable",
+              "Sukces": "readonly",
+              "Problem z wysłaniem": "readonly"
+            }
+          },
+          "externalData": {
+            "type": "string",
+            "title": "externalData",
+            "x-permissions": {
+              "Rejestruj przesyłkę": "editable",
+              "Weryfikacja adresów": "editable",
+              "Zarządzanie Wysyłką": "editable",
+              "Kolejka do wysłania": "editable",
+              "Wysyłka EDR": "editable",
+              "Odczyt poświadczeń EDR": "editable",
+              "Sukces": "readonly",
+              "Problem z wysłaniem": "readonly"
+            }
+          }
+        }
+      },
+      "title": "poświadczenia",
+      "x-permissions": {
+        "Rejestruj przesyłkę": "editable",
+        "Weryfikacja adresów": "editable",
+        "Zarządzanie Wysyłką": "readonly",
+        "Kolejka do wysłania": "editable",
+        "Wysyłka EDR": "editable",
+        "Odczyt poświadczeń EDR": "editable",
+        "Sukces": "readonly",
+        "Problem z wysłaniem": "readonly"
+      }
+    },
+    "cssPreview": {
+      "type": "string",
+      "title": "cssPreview",
+      "x-permissions": {
+        "Rejestruj przesyłkę": "editable",
+        "Weryfikacja adresów": "editable",
+        "Zarządzanie Wysyłką": "editable",
+        "Kolejka do wysłania": "editable",
+        "Wysyłka EDR": "editable",
+        "Odczyt poświadczeń EDR": "editable",
+        "Sukces": "editable",
+        "Problem z wysłaniem": "editable"
+      }
+    }
+  }
+}

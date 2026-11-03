@@ -1,0 +1,148 @@
+{
+  "slug": "10-bramka-decyzyjna",
+  "title": "Bramka Decyzyjna (Stage Gate) - Go / Rework / Hold / Kill",
+  "phase": "Bramka decyzyjna",
+  "when": "Powstaje na granicy faz projektu oraz na kluczowych kamieniach milowych. Komitet Sterujacy (lub Sponsor) podejmuje decyzje Go/Rework/Hold/Kill/Pivot.",
+  "sections": [
+    {
+      "type": "fields",
+      "key": "metryka",
+      "title": "1. Metryka bramki",
+      "fields": [
+        {
+          "key": "nazwa_projektu",
+          "label": "Nazwa / ID projektu",
+          "type": "text"
+        },
+        {
+          "key": "numer_bramki",
+          "label": "Numer i nazwa bramki",
+          "type": "text"
+        },
+        {
+          "key": "data",
+          "label": "Data",
+          "type": "date"
+        },
+        {
+          "key": "faza_przejscie",
+          "label": "Faza poprzednia / nastepna",
+          "type": "text"
+        },
+        {
+          "key": "kryteria_wyjscia",
+          "label": "Kryteria wyjscia z fazy",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "status",
+      "title": "2. Zestawienie statusu przed decyzja",
+      "columns": [
+        {
+          "key": "obszar",
+          "label": "Obszar",
+          "type": "text",
+          "readonly": true
+        },
+        {
+          "key": "status_wskazniki",
+          "label": "Status / wskazniki",
+          "type": "textarea"
+        },
+        {
+          "key": "odchylenie",
+          "label": "Odchylenie od kryterium",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": true,
+      "default_rows": [
+        {
+          "obszar": "Zakres (produkty czastkowe fazy)"
+        },
+        {
+          "obszar": "Harmonogram (postep, EVM/SPI)"
+        },
+        {
+          "obszar": "Budzet (koszty, EVM/CPI)"
+        },
+        {
+          "obszar": "Ryzyko (rejestr, EMV, top ryzyka)"
+        },
+        {
+          "obszar": "Interesariusze (satysfakcja, oczekiwania)"
+        },
+        {
+          "obszar": "Business Case (NPV/ROI aktualne)"
+        }
+      ],
+      "mode": "replace"
+    },
+    {
+      "type": "narrative",
+      "key": "uzasadnienie",
+      "title": "3. Uzasadnienie decyzji",
+      "blocks": [
+        {
+          "key": "rekomendacja_pm",
+          "label": "Rekomendacja PM"
+        },
+        {
+          "key": "dowody",
+          "label": "Dowody / produkty czastkowe przedstawione Komitetowi"
+        }
+      ]
+    },
+    {
+      "type": "fields",
+      "key": "decyzja",
+      "title": "4. Decyzja Komitetu Sterujacego",
+      "fields": [
+        {
+          "key": "decyzja",
+          "label": "Decyzja",
+          "type": "select",
+          "options": [
+            "GO",
+            "REWORK",
+            "HOLD",
+            "KILL",
+            "PIVOT"
+          ]
+        },
+        {
+          "key": "warunki",
+          "label": "Warunki / dzialania po decyzji",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "podpisy",
+      "title": "5. Podpisy",
+      "roles": [
+        {
+          "key": "kierownik_projektu",
+          "label": "Kierownik Projektu"
+        },
+        {
+          "key": "sponsor",
+          "label": "Sponsor"
+        },
+        {
+          "key": "senior_user",
+          "label": "Senior User"
+        },
+        {
+          "key": "senior_supplier",
+          "label": "Senior Supplier"
+        }
+      ]
+    }
+  ]
+}

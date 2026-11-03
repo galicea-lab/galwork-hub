@@ -1,0 +1,26 @@
+{
+  "title": "Ogłoszenie",
+  "type": "object",
+  "properties": {
+    "tytul": {
+      "type": "string",
+      "title": "Przedmiot zamówienia",
+      "readOnly": true
+    },
+    "data_publikacji": {
+      "type": "string",
+      "format": "date",
+      "title": "Data publikacji ogłoszenia"
+    },
+    "termin_skladania_ofert": {
+      "type": "string",
+      "format": "date",
+      "title": "Termin składania ofert"
+    },
+    "link_ogloszenia": {
+      "type": "string",
+      "title": "Link do ogłoszenia"
+    }
+  },
+  "required": ["data_publikacji", "termin_skladania_ofert"]
+}

@@ -1,0 +1,166 @@
+{
+  "slug": "08-rejestr-ryzyka-emv",
+  "title": "Rejestr Ryzyka + Oczekiwana Wartosc Pieniezna (EMV)",
+  "phase": "2. Planowanie",
+  "when": "Powstaje w Fazie 2 - Planowanie, aktualizowany przez caly cykl zycia. EMV = P x I; suma EMV zagrozen daje rezerwe budzetowa (Contingency Reserve).",
+  "sections": [
+    {
+      "type": "table",
+      "key": "risks",
+      "title": "1. Tabela rejestru ryzyka",
+      "columns": [
+        {
+          "key": "category",
+          "label": "Kategoria",
+          "type": "text"
+        },
+        {
+          "key": "description",
+          "label": "Opis ryzyka",
+          "type": "textarea"
+        },
+        {
+          "key": "risk_type",
+          "label": "Typ (Z/S)",
+          "type": "select",
+          "options": [
+            "Z",
+            "S"
+          ]
+        },
+        {
+          "key": "probability",
+          "label": "P (0-1)",
+          "type": "number"
+        },
+        {
+          "key": "impact",
+          "label": "I [zl] (+ strata / - zysk)",
+          "type": "number"
+        },
+        {
+          "key": "strategy",
+          "label": "Strategia",
+          "type": "select",
+          "options": [
+            "Avoid",
+            "Transfer",
+            "Mitigate",
+            "Accept"
+          ]
+        },
+        {
+          "key": "owner",
+          "label": "Wlasciciel",
+          "type": "text"
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "type": "text"
+        }
+      ],
+      "data_source": "risks",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "calc",
+      "key": "rezerwa",
+      "title": "2. Sumaryczna rezerwa budzetowa",
+      "calculator": "emv_ryzyko",
+      "source_key": "risks",
+      "extra_fields": []
+    },
+    {
+      "type": "table",
+      "key": "macierz_pi",
+      "title": "3. Macierz prawdopodobienstwo / wplyw (numery ryzyk)",
+      "columns": [
+        {
+          "key": "poziom",
+          "label": "Prawdopodobienstwo",
+          "type": "text",
+          "readonly": true
+        },
+        {
+          "key": "wplyw_niski",
+          "label": "Wplyw niski",
+          "type": "text"
+        },
+        {
+          "key": "wplyw_sredni",
+          "label": "Wplyw sredni",
+          "type": "text"
+        },
+        {
+          "key": "wplyw_wysoki",
+          "label": "Wplyw wysoki",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": true,
+      "default_rows": [
+        {
+          "poziom": "Prawd. wysokie"
+        },
+        {
+          "poziom": "Prawd. srednie"
+        },
+        {
+          "poziom": "Prawd. niskie"
+        }
+      ],
+      "mode": "replace"
+    },
+    {
+      "type": "narrative",
+      "key": "plan_reagowania",
+      "title": "4. Plan reagowania (ryzyka o najwyzszym EMV)",
+      "blocks": [
+        {
+          "key": "dzialania",
+          "label": "Dzialania / koszt dzialan / ryzyko rezydualne"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "przeglad",
+      "title": "5. Przeglad i aktualizacja",
+      "columns": [
+        {
+          "key": "data",
+          "label": "Data",
+          "type": "date"
+        },
+        {
+          "key": "ocena_ogolna",
+          "label": "Ocena ogolna ryzyka",
+          "type": "text"
+        },
+        {
+          "key": "nowe",
+          "label": "Nowe ryzyka",
+          "type": "text"
+        },
+        {
+          "key": "zamkniete",
+          "label": "Zamkniete",
+          "type": "text"
+        },
+        {
+          "key": "podpis",
+          "label": "Podpis",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    }
+  ]
+}

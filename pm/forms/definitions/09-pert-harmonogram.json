@@ -1,0 +1,102 @@
+{
+  "slug": "09-pert-harmonogram",
+  "title": "Harmonogram PERT (estymacja probabilistyczna)",
+  "phase": "2. Planowanie",
+  "when": "Powstaje w Fazie 2 - Planowanie jako rozszerzenie analizy sieciowej (PDM/CPM), gdy czasy trwania sa niepewne. t_e = (O+4M+P)/6, wariancja = ((P-O)/6)^2.",
+  "sections": [
+    {
+      "type": "table",
+      "key": "schedule_tasks",
+      "title": "1. Estymaty czasowe per zadanie (siec zadan)",
+      "columns": [
+        {
+          "key": "code",
+          "label": "Kod zadania",
+          "type": "text"
+        },
+        {
+          "key": "name",
+          "label": "Nazwa zadania",
+          "type": "text"
+        },
+        {
+          "key": "predecessors",
+          "label": "Poprzednicy (kod:typ:lag, np. A:FS:0;B:SS:2)",
+          "type": "text"
+        },
+        {
+          "key": "optimistic",
+          "label": "O",
+          "type": "number"
+        },
+        {
+          "key": "most_likely",
+          "label": "M",
+          "type": "number"
+        },
+        {
+          "key": "pessimistic",
+          "label": "P",
+          "type": "number"
+        },
+        {
+          "key": "duration",
+          "label": "Czas deterministyczny (CPM, opcjonalnie)",
+          "type": "number"
+        }
+      ],
+      "data_source": "schedule_tasks",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "calc",
+      "key": "wyniki",
+      "title": "2. Wyniki PERT (t_e, wariancja, T_CP, sigma_CP, Z, P(T<=T_S))",
+      "calculator": "pert",
+      "source_key": "schedule_tasks",
+      "extra_fields": [
+        {
+          "key": "t_s",
+          "label": "Termin narzucony T_S",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "type": "calc",
+      "key": "cpm_wyniki",
+      "title": "2b. Sciezka krytyczna (CPM) na podstawie tej samej sieci zadan",
+      "calculator": "cpm",
+      "source_key": "schedule_tasks",
+      "extra_fields": []
+    },
+    {
+      "type": "narrative",
+      "key": "interpretacja",
+      "title": "3. Interpretacja i decyzje",
+      "blocks": [
+        {
+          "key": "rekomendacje",
+          "label": "Rekomendowane decyzje / kompresja harmonogramu"
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "akceptacja",
+      "title": "4. Akceptacja",
+      "roles": [
+        {
+          "key": "kierownik_projektu",
+          "label": "Kierownik Projektu"
+        },
+        {
+          "key": "sponsor",
+          "label": "Sponsor"
+        }
+      ]
+    }
+  ]
+}

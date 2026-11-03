@@ -1,0 +1,147 @@
+{
+  "slug": "14-odbior-uat-punchlist",
+  "title": "Protokol odbioru UAT + Lista usterek (Punch List)",
+  "phase": "5. Zamkniecie",
+  "when": "Powstaje na granicy Fazy Realizacji -> Zamkniecia, przed przekazaniem do eksploatacji, gdy produkt przechodzi formalne testy akceptacyjne uzytkownika (UAT).",
+  "sections": [
+    {
+      "type": "fields",
+      "key": "metryka",
+      "title": "1. Metryka odbioru",
+      "fields": [
+        {
+          "key": "projekt_pakiet",
+          "label": "Projekt / pakiet",
+          "type": "text"
+        },
+        {
+          "key": "data_uat",
+          "label": "Data UAT",
+          "type": "date"
+        },
+        {
+          "key": "srodowisko",
+          "label": "Srodowisko",
+          "type": "text"
+        },
+        {
+          "key": "wersja",
+          "label": "Wersja produktu / build",
+          "type": "text"
+        },
+        {
+          "key": "uczestnicy",
+          "label": "Uczestnicy",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "kryteria",
+      "title": "2. Tabela weryfikacji kryteriow akceptacji",
+      "columns": [
+        {
+          "key": "kryterium",
+          "label": "Kryterium akceptacji",
+          "type": "text"
+        },
+        {
+          "key": "wynik",
+          "label": "Wynik",
+          "type": "select",
+          "options": [
+            "OK",
+            "Blad"
+          ]
+        },
+        {
+          "key": "uwagi",
+          "label": "Uwagi",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "table",
+      "key": "punch_list",
+      "title": "3. Lista usterek odbiorczych (Punch List)",
+      "columns": [
+        {
+          "key": "opis",
+          "label": "Opis usterki",
+          "type": "textarea"
+        },
+        {
+          "key": "priorytet",
+          "label": "Priorytet",
+          "type": "select",
+          "options": [
+            "N",
+            "S",
+            "W"
+          ]
+        },
+        {
+          "key": "wlasciciel",
+          "label": "Wlasciciel",
+          "type": "text"
+        },
+        {
+          "key": "termin",
+          "label": "Termin usuniecia",
+          "type": "date"
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "fields",
+      "key": "decyzja",
+      "title": "4. Decyzja odbioru",
+      "fields": [
+        {
+          "key": "decyzja",
+          "label": "Decyzja",
+          "type": "select",
+          "options": [
+            "Odebrano bez uwag",
+            "Odebrano z lista usterek",
+            "Nie odebrano"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "signatures",
+      "key": "podpisy",
+      "title": "5. Podpisy",
+      "roles": [
+        {
+          "key": "senior_user",
+          "label": "Senior User"
+        },
+        {
+          "key": "kierownik_projektu",
+          "label": "Kierownik Projektu"
+        },
+        {
+          "key": "senior_supplier",
+          "label": "Senior Supplier"
+        }
+      ]
+    }
+  ]
+}

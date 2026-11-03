@@ -1,0 +1,108 @@
+{
+  "title": "EOD-EOD",
+  "description": "Proces: EOD - Przekaż dokument / informację (ID: 312); Obieg: EOD - EOD (ID: 354); Typ dokumentu: EOD - EOD (ID: 466)",
+  "type": "object",
+  "properties": {
+    "Wybór spółki": {
+      "type": "string",
+      "title": "Wybór spółki",
+      "x-permissions": {
+        "Nowa przesyłka": "editable",
+        "Redagowanie": "editable",
+        "EOD": "editable",
+        "Archiwum": "editable",
+        "Kosz": "editable"
+      }
+    },
+    "Tytuł informacji (wybór z wcześniej używanych)": {
+      "type": "string",
+      "title": "Tytuł informacji (wybór z wcześniej używanych)",
+      "x-permissions": {
+        "Nowa przesyłka": "editable",
+        "Redagowanie": "none",
+        "EOD": "none",
+        "Archiwum": "none",
+        "Kosz": "none"
+      }
+    },
+    "Tytuł informacji (dowolny)": {
+      "type": "string",
+      "title": "Tytuł informacji (dowolny)",
+      "x-permissions": {
+        "Nowa przesyłka": "editable",
+        "Redagowanie": "editable",
+        "EOD": "readonly",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      },
+      "x-required-in-steps": [
+        "Redagowanie"
+      ]
+    },
+    "Treść informacji": {
+      "type": "string",
+      "title": "Treść informacji",
+      "x-permissions": {
+        "Nowa przesyłka": "none",
+        "Redagowanie": "editable",
+        "EOD": "readonly",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "Metryka": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Metryka",
+      "readOnly": true,
+      "x-permissions": {
+        "Nowa przesyłka": "none",
+        "Redagowanie": "none",
+        "EOD": "readonly",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "Do kogo": {
+      "type": "object",
+      "properties": {
+        "Adresaci: (Użytkownicy Systemu)": {
+          "type": "string",
+          "title": "Adresaci: (Użytkownicy Systemu)",
+          "x-permissions": {
+            "Nowa przesyłka": "none",
+            "Redagowanie": "editable",
+            "EOD": "editable",
+            "Archiwum": "readonly",
+            "Kosz": "readonly"
+          }
+        },
+        "Adresaci: (grupy)": {
+          "type": "string",
+          "title": "Adresaci: (grupy)",
+          "x-permissions": {
+            "Nowa przesyłka": "none",
+            "Redagowanie": "editable",
+            "EOD": "editable",
+            "Archiwum": "readonly",
+            "Kosz": "readonly"
+          }
+        }
+      },
+      "title": "Do kogo",
+      "x-permissions": {
+        "Nowa przesyłka": "none",
+        "Redagowanie": "editable",
+        "EOD": "editable",
+        "Archiwum": "editable",
+        "Kosz": "editable"
+      }
+    }
+  },
+  "required": [
+    "Tytuł informacji (dowolny)"
+  ]
+}

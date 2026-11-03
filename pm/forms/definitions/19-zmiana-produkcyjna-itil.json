@@ -1,0 +1,183 @@
+{
+  "slug": "19-zmiana-produkcyjna-itil",
+  "title": "Wniosek o zmiane produkcyjna (ITIL 4 - Change Enablement)",
+  "phase": "Eksploatacja",
+  "when": "Powstaje w fazie operacyjnej, gdy potrzebna jest modyfikacja produkcyjnego srodowiska uslugi. Klasyfikacja: standard / normal / major / emergency.",
+  "sections": [
+    {
+      "type": "fields",
+      "key": "metryka",
+      "title": "1. Metryka",
+      "fields": [
+        {
+          "key": "numer",
+          "label": "Numer wniosku (CHG-###)",
+          "type": "text"
+        },
+        {
+          "key": "typ",
+          "label": "Typ zmiany",
+          "type": "select",
+          "options": [
+            "Standard",
+            "Normal",
+            "Major",
+            "Emergency"
+          ]
+        },
+        {
+          "key": "data",
+          "label": "Data wniosku",
+          "type": "date"
+        },
+        {
+          "key": "wnioskodawca",
+          "label": "Wnioskodawca",
+          "type": "text"
+        },
+        {
+          "key": "dotkniete_uslugi",
+          "label": "Dotkniete uslugi / CI (CMDB)",
+          "type": "textarea"
+        },
+        {
+          "key": "okno_zmiany",
+          "label": "Okno zmiany",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "narrative",
+      "key": "opis",
+      "title": "2. Opis zmiany i cel",
+      "blocks": [
+        {
+          "key": "opis",
+          "label": "Opis"
+        }
+      ]
+    },
+    {
+      "type": "fields",
+      "key": "ryzyko",
+      "title": "3. Analiza ryzyka i plan wycofania",
+      "fields": [
+        {
+          "key": "poziom_ryzyka",
+          "label": "Ryzyko",
+          "type": "select",
+          "options": [
+            "Wysokie",
+            "Srednie",
+            "Niskie"
+          ]
+        },
+        {
+          "key": "wplyw_uzytkownicy",
+          "label": "Wplyw na uzytkownikow",
+          "type": "textarea"
+        },
+        {
+          "key": "rollback",
+          "label": "Plan wycofania (rollback)",
+          "type": "textarea"
+        },
+        {
+          "key": "testy",
+          "label": "Testy przed wdrozeniem",
+          "type": "textarea"
+        },
+        {
+          "key": "odpowiedzialny",
+          "label": "Osoba odpowiedzialna za wdrozenie",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "fields",
+      "key": "ocena_cab",
+      "title": "4. Ocena CAB / Change Manager",
+      "fields": [
+        {
+          "key": "decyzja",
+          "label": "Decyzja",
+          "type": "select",
+          "options": [
+            "Zatwierdzono",
+            "Odrzucono",
+            "Emergency"
+          ]
+        },
+        {
+          "key": "warunki",
+          "label": "Warunki zatwierdzenia",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "wdrozenie",
+      "title": "5. Rejestr wdrozenia i zamkniecie",
+      "columns": [
+        {
+          "key": "krok",
+          "label": "Krok",
+          "type": "text",
+          "readonly": true
+        },
+        {
+          "key": "data_godzina",
+          "label": "Data/h",
+          "type": "text"
+        },
+        {
+          "key": "dzialanie",
+          "label": "Dzialanie",
+          "type": "text"
+        },
+        {
+          "key": "wykonawca",
+          "label": "Wykonawca",
+          "type": "text"
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": true,
+      "default_rows": [
+        {
+          "krok": "Wdrozenie"
+        },
+        {
+          "krok": "Weryfikacja po zmianie"
+        },
+        {
+          "krok": "Zamkniecie / powiadomienia"
+        }
+      ],
+      "mode": "replace"
+    },
+    {
+      "type": "signatures",
+      "key": "podpisy",
+      "title": "Podpisy",
+      "roles": [
+        {
+          "key": "change_manager_/_cab",
+          "label": "Change Manager / CAB"
+        },
+        {
+          "key": "wdrozeniowiec",
+          "label": "Wdrozeniowiec"
+        }
+      ]
+    }
+  ]
+}

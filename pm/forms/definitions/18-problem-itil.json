@@ -1,0 +1,150 @@
+{
+  "slug": "18-problem-itil",
+  "title": "Zgloszenie problemu (ITIL 4 - Problem Management)",
+  "phase": "Eksploatacja",
+  "when": "Powstaje w fazie operacyjnej, gdy wykryto powtarzajace sie incydenty lub nieznana przyczyne zrodlowa. Cel: root cause analysis i zapobieganie nawrotom.",
+  "sections": [
+    {
+      "type": "fields",
+      "key": "metryka",
+      "title": "1. Metryka",
+      "fields": [
+        {
+          "key": "numer",
+          "label": "Numer problemu (PRB-###)",
+          "type": "text"
+        },
+        {
+          "key": "data",
+          "label": "Data utworzenia",
+          "type": "date"
+        },
+        {
+          "key": "wlasciciel",
+          "label": "Wlasciciel problemu",
+          "type": "text"
+        },
+        {
+          "key": "powiazane_incydenty",
+          "label": "Powiazane incydenty (INC-###)",
+          "type": "text"
+        },
+        {
+          "key": "kategoria",
+          "label": "Kategoria",
+          "type": "select",
+          "options": [
+            "powtarzalnosc",
+            "nieznana przyczyna",
+            "proaktywny"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "narrative",
+      "key": "objawy",
+      "title": "2. Objawy i dotkniete uslugi",
+      "blocks": [
+        {
+          "key": "objawy",
+          "label": "Objawy"
+        }
+      ]
+    },
+    {
+      "type": "fields",
+      "key": "rca",
+      "title": "3. Analiza przyczyny zrodlowej (RCA)",
+      "fields": [
+        {
+          "key": "objaw",
+          "label": "Objaw",
+          "type": "textarea"
+        },
+        {
+          "key": "przyczyna_bezposrednia",
+          "label": "Bezposrednia przyczyna",
+          "type": "textarea"
+        },
+        {
+          "key": "root_cause",
+          "label": "Przyczyna zrodlowa (root cause)",
+          "type": "textarea"
+        },
+        {
+          "key": "przyczyny_ukryte",
+          "label": "Przyczyny wspoldzielone / ukryte",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "fields",
+      "key": "known_error",
+      "title": "4. Znany blad i obejscie",
+      "fields": [
+        {
+          "key": "zarejestrowano",
+          "label": "Zarejestrowano known error",
+          "type": "checkbox"
+        },
+        {
+          "key": "obejscie",
+          "label": "Opis obejscia (workaround)",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "dzialania",
+      "title": "5. Dzialania eliminujace",
+      "columns": [
+        {
+          "key": "dzialanie",
+          "label": "Dzialanie zaradcze",
+          "type": "text"
+        },
+        {
+          "key": "typ",
+          "label": "Typ",
+          "type": "select",
+          "options": [
+            "Quick fix",
+            "CPC"
+          ]
+        },
+        {
+          "key": "cr",
+          "label": "Wniosek o zmiane (CR-###)",
+          "type": "text"
+        },
+        {
+          "key": "termin",
+          "label": "Termin",
+          "type": "date"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "signatures",
+      "key": "podpisy",
+      "title": "6. Zamkniecie problemu",
+      "roles": [
+        {
+          "key": "problem_manager",
+          "label": "Problem Manager"
+        },
+        {
+          "key": "kierownik_techniczny",
+          "label": "Kierownik techniczny"
+        }
+      ]
+    }
+  ]
+}

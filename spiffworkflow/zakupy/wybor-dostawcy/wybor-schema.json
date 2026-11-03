@@ -1,0 +1,27 @@
+{
+  "title": "Wybór dostawcy",
+  "description": "Wskazanie wybranej oferty i uzasadnienie wyboru (dobra praktyka zakupowa - audytowalność decyzji, niezależnie od PZP).",
+  "type": "object",
+  "properties": {
+    "wniosek_zakupowy_id": {
+      "type": "string",
+      "title": "Numer / identyfikator wniosku zakupowego",
+      "readOnly": true
+    },
+    "oferty": {
+      "type": "array",
+      "title": "Zgłoszone oferty",
+      "readOnly": true,
+      "items": { "type": "object" }
+    },
+    "wybrany_dostawca": {
+      "type": "string",
+      "title": "Wybrany dostawca"
+    },
+    "uzasadnienie_wyboru": {
+      "type": "string",
+      "title": "Uzasadnienie wyboru"
+    }
+  },
+  "required": ["wybrany_dostawca"]
+}

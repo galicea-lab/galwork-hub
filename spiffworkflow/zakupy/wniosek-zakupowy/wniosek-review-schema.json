@@ -1,0 +1,42 @@
+{
+  "title": "Wniosek zakupowy",
+  "description": "Podgląd wniosku do akceptacji - pola tylko do odczytu (dane wypełnione przy złożeniu wniosku). Decyzja Zatwierdź/Odrzuć jest dodawana automatycznie przez silnik (zob. wf/decisions.py).",
+  "type": "object",
+  "properties": {
+    "tytul": {
+      "type": "string",
+      "title": "Tytuł wniosku",
+      "readOnly": true
+    },
+    "dostawca": {
+      "type": "string",
+      "title": "Dostawca",
+      "readOnly": true
+    },
+    "kwota_szacowana": {
+      "type": "string",
+      "title": "Kwota szacowana",
+      "readOnly": true
+    },
+    "waluta": {
+      "type": "string",
+      "title": "Waluta",
+      "readOnly": true
+    },
+    "projekt_mpk": {
+      "type": "string",
+      "title": "Projekt / MPK",
+      "readOnly": true
+    },
+    "uzasadnienie": {
+      "type": "string",
+      "title": "Uzasadnienie",
+      "readOnly": true
+    },
+    "requires_investment_approval": { "type": "boolean" },
+    "requires_project_owner_approval": { "type": "boolean" },
+    "requires_additional_approval": { "type": "boolean" },
+    "requires_tender": { "type": "boolean" },
+    "requires_warehouse_receipt": { "type": "boolean" }
+  }
+}

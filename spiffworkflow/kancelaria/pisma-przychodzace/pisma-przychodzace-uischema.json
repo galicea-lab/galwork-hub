@@ -1,0 +1,176 @@
+{
+  "ui:order": [
+    "Wybór spółki",
+    "Temat",
+    "Nadawca",
+    "Treść",
+    "Kto podpisuje",
+    "Metryka",
+    "Dystrybucja",
+    "Teczka",
+    "Kogo dotyczy",
+    "Historia przetwarzania"
+  ],
+  "Nadawca": {
+    "ui:order": [
+      "Nazwa nadawcy",
+      "Adres e-doręczeń",
+      "Adres pocztowy",
+      "Email",
+      "Numer telefonu"
+    ],
+    "Email": {
+      "ui:help": "Mail studencki"
+    },
+    "ui:help": "Dane studenta",
+    "Nazwa nadawcy": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/adres-e-doreczen",
+        "sourceName": "Adres e-Doręczeń"
+      }
+    }
+  },
+  "Treść": {
+    "ui:widget": "textarea"
+  },
+  "Kto podpisuje": {
+    "ui:help": "Komu wysłaćdopodpisu elektronicznego",
+    "ui:readonly": true,
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/podpisy-elektroniczne",
+      "sourceName": "Podpisy Elektroniczne"
+    }
+  },
+  "Metryka": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Dystrybucja": {
+    "ui:order": [
+      "Decydent",
+      "Dział",
+      "Komu przekazać",
+      "Uwagi decydenta"
+    ],
+    "Decydent": {
+      "ui:help": "Decyduje, komu przekazać pismo",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Uwagi decydenta": {
+      "ui:widget": "textarea"
+    },
+    "Dział": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/dzialy",
+        "sourceName": "Działy"
+      }
+    },
+    "Komu przekazać": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "Teczka": {
+    "ui:order": [
+      "Teczka Sprawy",
+      "link",
+      "kolejny nr w teczce",
+      "Sygnatura dokumentu wg instrukcji kancelaryjnej",
+      "[tech]włożone"
+    ],
+    "Teczka Sprawy": {
+      "ui:help": "Wybierz teczkę, lub załóż nową",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/teczki-spraw",
+        "sourceName": "Teczki Spraw",
+        "sourceType": "Baza MSSQL"
+      }
+    },
+    "link": {
+      "ui:help": "Link do teczki",
+      "ui:readonly": true
+    },
+    "kolejny nr w teczce": {
+      "ui:readonly": true
+    },
+    "Sygnatura dokumentu wg instrukcji kancelaryjnej": {
+      "ui:readonly": true
+    },
+    "[tech]włożone": {
+      "ui:readonly": true
+    }
+  },
+  "Kogo dotyczy": {
+    "ui:order": [
+      "Uczelnia/Rektor",
+      "Kierunek",
+      "Iinstytut",
+      "Student(ka)"
+    ],
+    "ui:help": "Zaświadczenie dlastudenta w związku ze studiowaniemna konkretnymkierunku",
+    "Uczelnia/Rektor": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Kierunek": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    },
+    "Iinstytut": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/instytuty-uczelni",
+        "sourceName": "Instytuty Uczelni"
+      }
+    },
+    "Student(ka)": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/studenci",
+        "sourceName": "Studenci",
+        "sourceType": "Baza MSSQL"
+      }
+    }
+  },
+  "Historia przetwarzania": {
+    "items": {
+      "ui:order": [
+        "data przekazania",
+        "Kto przekazuje"
+      ]
+    },
+    "ui:options": {
+      "addable": true
+    },
+    "ui:readonly": true
+  },
+  "Wybór spółki": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/companies"
+    }
+  }
+}

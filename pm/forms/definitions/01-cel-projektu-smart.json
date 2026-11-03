@@ -1,0 +1,141 @@
+{
+  "slug": "01-cel-projektu-smart",
+  "title": "Opis celu projektu (Checklista SMART / SMART-ER)",
+  "phase": "1. Inicjacja",
+  "when": "Powstaje w Fazie 1 - Inicjacja, przed lub rownolegle z Karta Projektu. Wypelnia Sponsor wspolnie z Kierownikiem Projektu, zatwierdza Komitet Sterujacy.",
+  "sections": [
+    {
+      "type": "info",
+      "key": "Output vs Outcome vs Benefit",
+      "title": "Output vs Outcome vs Benefit",
+      "markdown": "- **Output** - produkt czastkowy (np. \"wdrozono Jire\").\n- **Outcome** - rezultat (np. \"skrocono czas rozwiazywania incydentow o 30%\").\n- **Benefit** - korzysc biznesowa (np. \"obnizono koszty wsparcia o 100 kPLN/rok\")."
+    },
+    {
+      "type": "table",
+      "key": "smart_checklist",
+      "title": "1. Checklista SMART - test celu",
+      "columns": [
+        {
+          "key": "kryterium",
+          "label": "Kryterium",
+          "type": "text",
+          "readonly": true
+        },
+        {
+          "key": "pytanie",
+          "label": "Pytanie kontrolne",
+          "type": "text",
+          "readonly": true
+        },
+        {
+          "key": "adresat",
+          "label": "Adresat",
+          "type": "text"
+        },
+        {
+          "key": "cel1",
+          "label": "Cel 1",
+          "type": "checkbox"
+        },
+        {
+          "key": "cel2",
+          "label": "Cel 2",
+          "type": "checkbox"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": true,
+      "default_rows": [
+        {
+          "kryterium": "S - Specific",
+          "pytanie": "Czy cel jest jednoznaczny dla zespolu?"
+        },
+        {
+          "kryterium": "M - Measurable",
+          "pytanie": "Czy istnieje metryka ilosciowa?"
+        },
+        {
+          "kryterium": "A - Achievable/Ambitious",
+          "pytanie": "Czy cel jest osiagalny przy dostepnych zasobach?"
+        },
+        {
+          "kryterium": "R - Relevant/Realistic",
+          "pytanie": "Czy wpisuje sie w strategie organizacji?"
+        },
+        {
+          "kryterium": "T - Time-bound",
+          "pytanie": "Czy ma jasny termin graniczny?"
+        },
+        {
+          "kryterium": "E - Evaluated (SMART-ER)",
+          "pytanie": "Czy bedzie regularnie weryfikowany?"
+        },
+        {
+          "kryterium": "R - Reviewed/Readjusted (SMART-ER)",
+          "pytanie": "Czy podlega rewizji przy zmianie uwarunkowan?"
+        }
+      ],
+      "mode": "replace"
+    },
+    {
+      "type": "table",
+      "key": "cele",
+      "title": "3. Tabela celow",
+      "columns": [
+        {
+          "key": "cel",
+          "label": "Cel (pelny zapis SMART)",
+          "type": "textarea"
+        },
+        {
+          "key": "typ",
+          "label": "Typ",
+          "type": "select",
+          "options": [
+            "Output",
+            "Outcome",
+            "Benefit"
+          ]
+        },
+        {
+          "key": "wlasciciel",
+          "label": "Wlasciciel",
+          "type": "text"
+        },
+        {
+          "key": "termin",
+          "label": "Termin",
+          "type": "date"
+        },
+        {
+          "key": "metryka",
+          "label": "Metryka + cel liczbowy",
+          "type": "text"
+        }
+      ],
+      "data_source": "form_instance",
+      "fixed_rows": false,
+      "default_rows": [],
+      "mode": "replace"
+    },
+    {
+      "type": "signatures",
+      "key": "akceptacja",
+      "title": "4. Akceptacja",
+      "roles": [
+        {
+          "key": "kierownik_projektu",
+          "label": "Kierownik Projektu"
+        },
+        {
+          "key": "sponsor",
+          "label": "Sponsor"
+        },
+        {
+          "key": "komitet_sterujacy",
+          "label": "Komitet Sterujacy"
+        }
+      ]
+    }
+  ]
+}
