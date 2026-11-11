@@ -1,0 +1,11 @@
+{
+  "title": "Potwierdzenie doręczenia",
+  "description": "Potwierdzenia (UPO) dociąga zadanie cykliczne scripts/edr.py evidences - są w dokumentach sprawy.",
+  "type": "object",
+  "properties": {
+    "message_id": { "type": "string", "title": "Identyfikator wiadomości (messageId)", "readOnly": true },
+    "ade_to": { "type": "string", "title": "Adres do doręczeń elektronicznych", "readOnly": true },
+    "subject": { "type": "string", "title": "Temat", "readOnly": true },
+    "uwagi": { "type": "string", "title": "Uwagi" }
+  }
+}

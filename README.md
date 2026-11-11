@@ -3,7 +3,7 @@
 
 One API for many applications - central hub
 
-**Aplha Version 0.0.4**
+**Version v0.1.0** (beta)
 
 Serwis (hub integracyjny) łączący różne systemy przedsiębiorstwa/uczelni w
 jedno API REST (FastAPI). Zamiast każdej aplikacji frontendowej integrującej
@@ -123,20 +123,12 @@ Katalog `connector/` zawiera integracje z systemami zewnętrznymi. Od
 dziedziczyć.
 
 > Ten publikowany podzbiór zawiera tylko konektory używane przez `pm`/`wf`.
-> Konektory specyficzne dla usuniętej aplikacji `edu` (`u10`,
-> `mlegitymacje`) oraz nieużywane jeszcze przez żadną aplikację (`polon`,
-> `optima`, `zus`, `redmine`, `erpnext`, `n8n`) zostały usunięte - prace nad
-> nimi trwają w pełnej, niepublikowanej wersji repozytorium.
-
-| Konektor | System | Rodzaj integracji | Status |
-|---|---|---|---|
-| `webcon` | WEBCON BPS | REST + OAuth2 | używany przez `edoreczenia`; baza EDR w osobnej sekcji `[edr_db]` |
-| `edoreczenia` | e-Doręczenia (rządowa skrzynka doręczeń) | REST + certyfikat klienta | używany przez `wf/routers/edr_api.py`; `router_edr` nie jest jeszcze montowany; baza z `[edr] test_db=false` (domyślnie produkcyjna, nie testowa) |
-| `signius` | Signius (podpis elektroniczny) | REST + PKCS12 | używany przez `wf/routers/signius_api.py` |
-| `frappe_education` | Frappe Education | REST, `FrappeEducationConnector(BaseConnector)` | używany przez `wf/routers/signius_api.py` (dokumenty/korespondencja); zawiera tylko `connector.py` - pozostałe moduły (słowniki, oceny, wydruki...) były specyficzne dla `edu` i zostały usunięte |
+> Konektory specyficzne dla nieużywane jeszcze przez żadną aplikację (
+> `optima`, `zus`, `redmine`, `webcon`) zostały usunięte - prace nad
+> nimi trwają poza publikowanej wersji repozytorium.
 
 Konfiguracja konektorów - sekcje w `config/config.ini` (jedna sekcja per
-konektor, np. `[signius]`, `[frappe_education]`, `[edr_db]`) - **nie** przez
+konektor, np. `[n8n]`, `[frappe_education]`, `[paperless]`) - **nie** przez
 `core/config.py` (ten plik definiuje sztywny, wymagany `Settings` dla
 rzeczy krytycznych do startu huba: `app`, `db`, `logging`, `auth`,
 `keycloak`; konektory są opcjonalne, więc czytają swoją sekcję samodzielnie,
@@ -151,7 +143,7 @@ przez `BaseConnector.load_ini_section()` albo wprost `configparser`).
 | `wf` | modele przenośne PG/SQLite, routery + **silnik BPMN podłączony** (start/claim/complete/suspend/resume/cancel), autoryzacja Keycloak; |
 | Konektory | brak importów łączących się z bazą na starcie, hasła poza repo (`[edr_db]`, `[signius]`, `[frappe_education]`) |
 | Autoryzacja | tylko Keycloak - `wf` i `galwork` (`api/auth.py`) na jednej tabeli `users` |
-| EDR (`wf/routers/edr_api.py`) |  `/ade*` wymaga tokenu, `/webcon_*` i `/evidences/webcon` dodatkowo grupy admina; **router niezamontowany** (decyzja wdrożeniowa) |
+| EDR (`wf/routers/edr_paperless_api.py`) | `/v1/wf/edr/*` za tokenem Keycloak: odbiór, wysyłka, potwierdzenia, wyszukiwarka adresów `/ade*`; procesy `edr-korespondencja` i `edr-wysylka`, cron `scripts/edr.py`. Dawny router z callbackami e-Delivery i akcjamin - w `dev/wf/routers/edr_api.py` |
 | Testy automatyczne | `tests/` - uruchom `python -m unittest discover -s tests`; brak realnego Keycloaka - ta ścieżka jest atrapowana |
 
 
@@ -214,8 +206,8 @@ Wszystko pod `/v1/<app>`:
 | `/v1/pm` | zarządzanie projektami | `/api/projects`, `/api/projects/{id}/dashboard`, `/api/forms` |
 | `/v1/wf` | obieg dokumentów | `/process-models`, `/process-instances`, `/tasks/my`, `/notifications`, `/` (kalendarz) |
 
-`wf/routers/edr_api.py` (wyszukiwarka e-Delivery, akcje Webcon) jest
-przygotowany, ale **niezamontowany** - patrz "Co zostało do zrobienia".
+e-Doręczenia: `/v1/wf/edr/*` (`wf/routers/edr_paperless_api.py`), w tym
+wyszukiwarka adresów `/ade*`.
 
 Pełna, zawsze aktualna lista endpointów - w Swaggerze pod `/v1/docs` po
 uruchomieniu serwera.

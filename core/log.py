@@ -1,6 +1,8 @@
 import json_logging
 import logging
 from core.config import settings
+# Log dostępu bez wartości parametrów zapytania.
+from core.log_redact import RedactAccessLogFilter
 
 
 # 1. Klasa filtrująca
@@ -43,6 +45,10 @@ def log_init():
   # Aplikacja handlera do loggera dostępu Uvicorn
   uvicorn_access_logger = logging.getLogger("uvicorn.access")
   uvicorn_access_logger.addHandler(file_handler)
+  # Filtr na loggerze (nie na handlerze), żeby obejmował też
+  # konsolę - log dostępu bez wartości parametrów zapytania.
+  if not any(isinstance(f, RedactAccessLogFilter) for f in uvicorn_access_logger.filters):
+    uvicorn_access_logger.addFilter(RedactAccessLogFilter())
 
   # Jeśli nie chcesz logować logów aplikacji (np. print("Moja aplikacja")),
   # wyłącz dodanie handlera do root_logger:

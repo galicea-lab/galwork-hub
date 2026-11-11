@@ -719,7 +719,7 @@ class Contact(Base):
     dotychczasowy hack "ProcessInstance = kontrahent" (InternalDictionary
     `adres-e-doreczen`, zob. wf/services/dictionary_service.py).
 
-    Decyzja 2026-10-19: oryginalny formularz Webcon ("Adres-EADR") sklejał
+    Decyzja 2026-10-19: oryginalny formularz sklejał
     w jeden płaski rekord TOŻSAMOŚĆ kontrahenta (NIP/PESEL/Firma/Nazwisko)
     i JEGO ADRES(Y) (ADE, blok adresowy) - rozdzielone tu na `Contact`
     (kim jest) i `ContactAddress` (gdzie go znaleźć, 1:N), żeby:

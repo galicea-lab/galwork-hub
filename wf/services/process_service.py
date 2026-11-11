@@ -32,7 +32,19 @@ from wf.decisions import (
     inject_decision,
     read_decisions,
 )
-from wf.engine import SERIALIZER_VERSION, ProcessSpec, SpecError, WorkflowEngine, assignment_for, read_form_files
+# 2026-11-06: słuchacze zdarzeń (start instancji, wykonanie zadania) -
+# wywoływani po commicie, zob. wf/services/process_hooks.py.
+from wf.services import process_hooks
+from wf.engine import (
+  SERIALIZER_VERSION,
+  UNRESOLVED_PRINCIPAL,
+  ProcessSpec,
+  SpecError,
+  TaskAssignment,
+  WorkflowEngine,
+  assignment_for,
+  read_form_files,
+)
 from wf.services.form_permissions import filter_form_for_step, has_x_permissions
 from wf.models import (
     HumanTask,
@@ -291,14 +303,13 @@ class ProcessService:
                data: Mapping[str, Any] | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
     """JSON Schema + UI Schema formularza zadania (`GET /tasks/{id}/form`),
     przefiltrowane wg macierzy `x-permissions` dla kroku `human_task.name` -
-    zob. wf/services/form_permissions.py i rjsf.md/x-webcon.md - i wynik
+    zob. wf/services/form_permissions.py - i wynik
     tego filtrowania zbuforowany w Redis (core/redis_cache.py), żeby nie
     przeliczać go przy każdym wejściu w zadanie (ten sam wynik dla
     wszystkich instancji tego procesu w tym kroku).
 
-    Formularze bez `x-permissions` (Spiff-Arena/Jinja, poza migracją
-    Webcon -> RJSF) nie są filtrowane ani buforowane - zachowanie identyczne
-    jak dawne `form_schema()`/`form_ui_schema()` wywołane osobno.
+    Formularze bez `x-permissions` (Spiff-Arena/Jinja) nie są filtrowane ani buforowane 
+    - zachowanie identyczne jak dawne `form_schema()`/`form_ui_schema()` wywołane osobno.
     """
     spec = self.form_spec(version)
     schema_entry = _form_entry(spec['forms'], spec['form_files'], human_task.bpmn_task_id, 'schema')
@@ -464,6 +475,8 @@ class ProcessService:
     if completed:
       self._add_event(db, instance, EventType.INSTANCE_COMPLETED, actor=actor)
     db.commit()
+    process_hooks.emit(db, process_hooks.ProcessHookEvent(
+      process_hooks.INSTANCE_STARTED, instance, actor=actor, form_data=dict(data or {})))
     return instance
 
   def load_workflow(self, instance: ProcessInstance) -> tuple[Any, ProcessSpec]:
@@ -536,7 +549,10 @@ class ProcessService:
         self._add_event(db, instance, EventType.TASK_CREATED, actor=actor,
                         human_task_id=human_task.id,
                         payload={'bpmnTaskId': engine.bpmn_task_id(spiff_task)})
-      assignment = assignment_for(process_spec, human_task.bpmn_task_id)
+      # 2026-11-06: przypisania `${zmienna}` rozwiązywane danymi
+      # instancji (workflow.data + dane zadania, jak w task_form_data).
+      task_data = {**dict(getattr(workflow, 'data', None) or {}), **dict(spiff_task.data or {})}
+      assignment = assignment_for(process_spec, human_task.bpmn_task_id).resolve(task_data)
       self._sync_candidates(db, human_task, assignment)
 
     # zadania, ktore wylaczono ze Spiffa (np. gałąź skasowana)
@@ -573,6 +589,10 @@ class ProcessService:
   def authorize(self, human_task: HumanTask, process_spec: ProcessSpec, actor: CurrentUser) -> None:
     """Sprawdza uprawnienia do zadania (przypisanie z BPMN + role Keycloak)."""
     assignment = assignment_for(process_spec, human_task.bpmn_task_id)
+    if assignment.is_dynamic:
+      # 2026-11-06: wartości zmiennych zna tylko instancja - używamy
+      # kandydatów zapisanych przy sync_tasks.
+      assignment = self._stored_assignment(human_task)
     groups = frozenset(actor.groups) | frozenset(actor.roles)
     if not assignment.allows(actor.username, groups):
       raise NotAuthorizedError(
@@ -582,6 +602,16 @@ class ProcessService:
             and assignment.assignee == actor.username:
       raise NotAuthorizedError(
         f"Zadanie '{human_task.name}' jest już podjęte przez innego użytkownika")
+
+  @staticmethod
+  def _stored_assignment(human_task: HumanTask) -> TaskAssignment:
+    """Przypisanie z kandydatów zadania (HumanTaskCandidate)."""
+    users = tuple(c.principal_value for c in human_task.candidates
+                  if c.principal_type == PrincipalType.USER)
+    groups = tuple(c.principal_value for c in human_task.candidates
+                   if c.principal_type == PrincipalType.GROUP)
+    return TaskAssignment(candidate_users=users,
+                          candidate_groups=groups or (() if users else (UNRESOLVED_PRINCIPAL,)))
 
   def claim_task(self, db: Session, human_task: HumanTask, actor: CurrentUser,
                  process_spec: ProcessSpec) -> HumanTask:
@@ -613,6 +643,16 @@ class ProcessService:
                    **dict(form_data or {})}
     self._validate_form_data(human_task, instance.version, form_data, render_data)
 
+    # 2026-11-06: zadanie bez własnej decyzji czyści `chosen_path`.
+    # Inaczej wybór z poprzedniego okrążenia pętli (np. edu-pismo:
+    # "Do uzupełnienia" -> uzupełnienie -> ponowne "Rozpatrzenie") zostaje w
+    # danych i _prefill_decision zaznacza go z góry przy następnej decyzji.
+    # Decyzja jest zawsze wstrzykiwana do zadania tuż przed gatewayem
+    # (wf/decisions.py), więc zadanie bez decyzji nie przekazuje wyboru dalej.
+    if (decisions_enabled() and DEFAULT_FIELD not in (form_data or {})
+            and self.decision_for(instance.version, human_task.bpmn_task_id) is None):
+      form_data = {**dict(form_data or {}), DEFAULT_FIELD: None}
+
     human_task.status = HumanTaskStatus.COMPLETED
     human_task.completed_by_id = actor.id
     human_task.completed_at = datetime.now(UTC)
@@ -634,6 +674,9 @@ class ProcessService:
     if instance.status == ProcessInstanceStatus.COMPLETED:
       self._add_event(db, instance, EventType.INSTANCE_COMPLETED, actor=actor)
     db.commit()
+    process_hooks.emit(db, process_hooks.ProcessHookEvent(
+      process_hooks.TASK_COMPLETED, instance, actor=actor, human_task=human_task,
+      form_data=dict(form_data or {})))
     return instance
 
   def _validate_form_data(self, human_task: HumanTask, version: ProcessModelVersion,

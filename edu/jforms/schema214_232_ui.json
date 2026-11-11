@@ -1,0 +1,1 @@
+{"type": "VerticalLayout", "elements": [{"type": "Control", "label": "Uzasadnienie pro\u015bby", "scope": "#/properties/uzasadnienie_prosby"}, {"type": "Control", "label": "Nowy/wznowienie kierunek", "scope": "#/properties/nowy_wznowienie_kierunek"}]}

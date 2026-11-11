@@ -4,16 +4,6 @@
 Konektor do Paperless-ngx (https://docs.paperless-ngx.com/) - magazynu
 dokumentów (OCR, pełny tekst, taksonomia korespondent/typ/tagi), REST API.
 
-Kontekst: alternatywa dla WEBCON w obsłudze e-Doręczeń (zob. `analiza_edr.md`)
-- `wf/models/wf.py::Document`/`DocumentVersion` już mają zaprojektowany,
-  obecny w bazie cykl ingestu (`IngestStatus`: staged -> submitted ->
-  done/failed/duplicate, `paperless_task_id`, `paperless_document_id`), ale
-  do tej pory żaden kod nie wołał realnie Paperless API - ten moduł jest
-  tym brakującym klientem. Implementuje wzorzec `connector/base.py::BaseConnector`
-  - zob. `connector/frappe_education/connector.py` dla analogicznego
-  konektora REST w tym repo (ten moduł jest budowany na tamtym wzorcu:
-  `requests.Session` z nagłówkiem auth, `_url`/`_raise_for_status`).
-
 Uwierzytelnianie: token API Paperless-ngx (Django REST Framework,
 nagłówek `Authorization: Token <token>`) - to jest osobne poświadczenie
 serwer-do-serwera, NIE to samo, co SSO Keycloak do interfejsu Paperless dla
@@ -280,8 +270,12 @@ class PaperlessConnector(BaseConnector):
     def update_document(self, document_id: int, fields: dict) -> dict:
         return self._request("patch", f"/api/documents/{document_id}/", json_body=fields).json()
 
-    def download_document(self, document_id: int) -> bytes:
-        resp = self._request("get", f"/api/documents/{document_id}/download/", stream=True)
+    def download_document(self, document_id: int, *, original: bool = False) -> bytes:
+        # 2026-11-08: `original=True` - plik w postaci wgranej, bez wersji
+        # archiwalnej po OCR (PDF/A), która unieważnia podpis PAdES.
+        params = {"original": "true"} if original else None
+        resp = self._request("get", f"/api/documents/{document_id}/download/",
+                             params=params, stream=True)
         return resp.content
 
     def list_documents(self, *, tag_id: int | None = None, document_type_id: int | None = None,

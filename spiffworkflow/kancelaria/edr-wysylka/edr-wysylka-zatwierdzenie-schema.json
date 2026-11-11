@@ -1,0 +1,16 @@
+{
+  "title": "Zatwierdzenie wysyłki",
+  "description": "Po zatwierdzeniu przesyłka trafia do kolejki - wysyła ją zadanie cykliczne (scripts/edr.py send).",
+  "type": "object",
+  "properties": {
+    "odbiorca": { "type": "string", "title": "Odbiorca", "readOnly": true },
+    "ade_to": { "type": "string", "title": "Adres do doręczeń elektronicznych", "readOnly": true },
+    "subject": { "type": "string", "title": "Temat", "readOnly": true },
+    "text_body": { "type": "string", "title": "Treść wiadomości", "readOnly": true },
+    "paperless_document_ids": {
+      "type": "array", "title": "Dokumenty z Paperless-ngx (ID)", "readOnly": true,
+      "items": { "type": "integer" }
+    },
+    "uwagi": { "type": "string", "title": "Uwagi" }
+  }
+}

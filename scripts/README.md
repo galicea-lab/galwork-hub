@@ -29,35 +29,61 @@ plikami BPMN/JSON Schema, czytanymi przez skrypt, nie importowanymi) są OK.
 
 ### `edr.py` + `cron_edr.sh` — eDoręczenia
 
-Obsługa skrzynki eDoręczeń (`connector/edoreczenia/edr_webcon.py`) metodą
-odpytywania (polling) zamiast callbacków HTTP wywoływanych przez usługę
-e-Delivery (`wf/routers/edr_api.py::*Callback`) — callbacki bywają problem
-jest z ich dostarczeniem/konfiguracją, więc `edr.py` daje niezależną od tego
-ścieżkę pobierania danych.
+Obsługa skrzynki eDoręczeń metodą odpytywania (polling) zamiast callbacków
+HTTP usługi e-Delivery. Korespondencja trafia do `wf.Document` i
+Paperless-ngx, sprawy prowadzą procesy BPMN w `wf`
+(`connector/edoreczenia/edr_paperless.py`).
 
-Operacje (`python3 scripts/edr.py <cmd>`):
-- `inbox` — pobiera nowe wiadomości ze skrzynki i przekazuje je do Webcon
-  (`inbox_to_webcon`),
-- `send` — wysyła wiadomości zlecone z Webcon (`send_from_webcon`),
-- `evidences` — pobiera potwierdzenia/dowody doręczenia (`fetch_evidences`),
-- `test` — zapytania diagnostyczne do rejestru eDoręczeń (`SzukajInstytucji`),
-  bez wysyłki/zapisu.
+Operacje (`python3 scripts/edr.py <cmd> [--test]`):
+- `inbox` — nowe wiadomości → instancje procesu `edr-korespondencja` i
+  wysyłka plików do Paperless-ngx (`sync_inbox`, `submit_staged_documents`),
+- `poll` — wynik ingestu w Paperless-ngx (`poll_submitted_documents`),
+- `resubmit` — ponowna wysyłka do Paperless-ngx dokumentów `staged`,
+- `send` — kolejka wysyłki procesu `edr-wysylka`: otwarte zadania
+  „Wysyłka EDR” (`send_queued`, opis niżej),
+- `evidences` — potwierdzenia (UPO) dla spraw w toku, także wysłanych
+  (`fetch_evidences`),
+- `test` — zapytania diagnostyczne do rejestru eDoręczeń (`SzukajInstytucji`).
 
-`cron_edr.sh` woła po kolei `inbox`, `send`, `evidences` i dopisuje wynik do
-`$PROJECT_HOME/cron_edr.log`.
+`--test` przełącza na środowisko testowe e-Doręczeń (`[edr] test_address`,
+`test_key`). `cron_edr.sh` woła po kolei `inbox`, `poll`, `send`,
+`evidences` i dopisuje wynik do `$PROJECT_HOME/cron_edr.log`.
 
-> **Alternatywa bez WEBCON (Paperless-ngx):** `edr.py`/`cron_edr.sh` piszą
-> do WEBCON. Odpowiednik dla wdrożeń bez WEBCON (korespondencja w
-> `wf.Document`/Paperless-ngx, proces BPMN w `wf`, kancelaria w
-> `galwork-dashboard`) to `connector/edoreczenia/edr_paperless.py`
-> (`sync_inbox`/`submit_staged_documents`/`poll_submitted_documents`/
-> `fetch_evidences`) + router akcji `wf/routers/edr_paperless_api.py`
-> (`/v1/wf/edr/*`, montowany od razu, pod tokenem Keycloak) - zob.
-> `analiza_edr.md`. Osobny skrypt crona łączący te funkcje z WEBCON jak
-> `cron_edr.sh` nie jest jeszcze napisany (`sync-inbox`/`refresh-evidences`
-> da się już wywołać ręcznie przez API; `submit_staged_documents`/
-> `poll_submitted_documents` nie są wystawione jako endpoint - zob.
-> docstring `edr_paperless.py` - i czekają na wpis crona).
+Cron działa jako użytkownik `[edr] system_user` (nazwa albo e-mail z tabeli
+`users`; bez tej opcji `id=0`) z grupami `tenar` i `edr-system`.
+
+#### Proces `edr-wysylka` (wysyłka)
+
+Definicja: `spiffworkflow/kancelaria/edr-wysylka/`. Publikacja:
+
+```bash
+python3 scripts/seed_process_model.py spiffworkflow/kancelaria/edr-wysylka \
+    --key edr-wysylka --name "Wysyłka e-Doręczeń"
+```
+
+Przebieg: „Przygotowanie przesyłki” (kancelaria: adres ADE, temat, treść,
+ID dokumentów w Paperless-ngx — pierwszy to pismo główne) → „Zatwierdzenie
+wysyłki” (wyślij / do poprawy / anuluj) → „Wysyłka EDR” (zadanie systemowe,
+grupa `edr-system`, zamyka je `edr.py send`) → „Potwierdzenie doręczenia”
+albo „Problem z wysyłką” (ponów / popraw dane / zrezygnuj).
+
+`send`: dokumenty pobierane są z Paperless-ngx w wersji oryginalnej (podpis
+PAdES zostaje), po wysyłce `business_key` sprawy = `messageId`, więc
+`evidences` dociąga do niej potwierdzenia. Błąd EDR/Paperless-ngx zostawia
+zadanie w kolejce; po `[edr] send_max_attempts` (domyślnie 3) próbach sprawa
+przechodzi do „Problem z wysyłką”. Błąd danych (np. brak dokumentu) — od razu.
+
+`evidences` zamyka „Potwierdzenie doręczenia” ścieżką „Doręczono”, gdy do
+sprawy dotrze potwierdzenie typu z `[edr] delivered_evidence_types`
+(domyślnie `BPOP`; pusta wartość wyłącza automat). To samo robi
+`POST /v1/wf/edr/process-instances/{id}/refresh-evidences`. „Nie doręczono”
+pozostaje decyzją kancelarii.
+
+Odpowiedź na korespondencję: decyzja „Wymaga przygotowania odpowiedzi” w
+„Przeglądzie korespondencji” (`edr-korespondencja`) startuje `edr-wysylka` z
+adresem nadawcy i tematem „Odp: …” (`connector/edoreczenia/edr_reply.py`).
+Adresata można też wyszukać: `GET /v1/wf/edr/ade`, `/ade/person`,
+`/ade/inst`, `/ade/insta` (`connector/edoreczenia/ade_search.py`).
 
 ### `seed_edr_process.py` — model procesu „edr-korespondencja” (Paperless-ngx)
 

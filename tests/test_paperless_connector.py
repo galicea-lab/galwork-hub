@@ -69,6 +69,17 @@ class FakeSession:
     self.closed = True
 
 
+# rzywraca moduł sprzed testu. Samo usunięcie `requests` z
+# sys.modules psuło kolejne testy w tym samym procesie: następny import tworzył
+# nowy obiekt modułu, a podmoduły `requests.*` zostawały z poprzedniego
+# ("module 'requests' has no attribute 'auth'").
+def _restore_module(name, module):
+  if module is None:
+    sys.modules.pop(name, None)
+  else:
+    sys.modules[name] = module
+
+
 def _install_fake_requests():
   fake_session = FakeSession()
   module = types.ModuleType('requests')
@@ -82,8 +93,9 @@ class PaperlessConnectorTest(unittest.TestCase):
   def setUp(self):
     paperless_connector.reset_connector()
     self.addCleanup(paperless_connector.reset_connector)
+    # po teście wraca prawdziwy `requests` (zob. _restore_module).
+    self.addCleanup(_restore_module, 'requests', sys.modules.get('requests'))
     sys.modules.pop('requests', None)
-    self.addCleanup(sys.modules.pop, 'requests', None)
     self._staging_dir = tempfile.mkdtemp(prefix='paperless-staging-test-')
     self.addCleanup(shutil.rmtree, self._staging_dir, True)
 

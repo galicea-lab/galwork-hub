@@ -1,0 +1,11 @@
+{
+  "title": "Problem z wysyłką",
+  "description": "Wysyłka nie powiodła się. Można ją ponowić, poprawić dane przesyłki albo zrezygnować.",
+  "type": "object",
+  "properties": {
+    "send_error": { "type": "string", "title": "Błąd wysyłki", "readOnly": true },
+    "ade_to": { "type": "string", "title": "Adres do doręczeń elektronicznych", "readOnly": true },
+    "subject": { "type": "string", "title": "Temat", "readOnly": true },
+    "uwagi": { "type": "string", "title": "Uwagi" }
+  }
+}

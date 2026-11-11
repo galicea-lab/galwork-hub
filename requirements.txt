@@ -52,3 +52,11 @@ unidecode
 redis
 six
 pymssql
+# fork endesive z PAdES (SubFilter ETSI.CAdES.detached); pypdf 7 jest niezgodny z endesive (write_to_stream).
+endesive @ https://github.com/galicea-lab/endesive/archive/2144c5d.tar.gz
+pypdf>=6,<7
+jsonschema
+python-dateutil
+# kalendarz (kalendarz/): odczyt ICS i rozwijanie zdarzeń cyklicznych
+icalendar>=6,<7
+recurring-ical-events>=3,<4

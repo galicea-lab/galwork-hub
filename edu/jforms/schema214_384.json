@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "required": [],
+  "properties": {
+    "w_roku_akademickim_": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "2023#2023/2024",
+          "title": "2023/2024"
+        },
+        {
+          "const": "2022#2022/2023",
+          "title": "2022/2023"
+        }
+      ]
+    },
+    "uzasadnienie_prosby": {
+      "type": "string"
+    }
+  }
+}

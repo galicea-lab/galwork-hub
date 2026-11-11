@@ -1,5 +1,4 @@
 ds.log
-alembic/versions/
 secret/
 config/config.ini
 # dev/ i backlog/ są śledzone (tylko Forgejo, poza .public-paths), ale bez

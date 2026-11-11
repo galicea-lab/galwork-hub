@@ -1,8 +1,7 @@
 # tests/test_frappe_education_connector.py
 # testy konektora Frappe Education (zob. ../education). Nie wymagają żywej
 # instancji Frappe - podmieniamy moduł `requests` na atrapę, konfigurację
-# przez `ConnectorConfig` w pamięci (jak w tests/test_u10_connector.py dla
-# U10, tylko tu transportem jest REST, nie pymssql).
+# przez `ConnectorConfig` w pamięci (transportem jest REST).
 from __future__ import annotations
 
 import json
@@ -62,6 +61,17 @@ class FakeSession:
     self.closed = True
 
 
+# przywraca moduł sprzed testu. Samo usunięcie `requests` z
+# sys.modules psuło kolejne testy w tym samym procesie: następny import tworzył
+# nowy obiekt modułu, a podmoduły `requests.*` zostawały z poprzedniego
+# ("module 'requests' has no attribute 'auth'").
+def _restore_module(name, module):
+  if module is None:
+    sys.modules.pop(name, None)
+  else:
+    sys.modules[name] = module
+
+
 def _install_fake_requests():
   fake_session = FakeSession()
   module = types.ModuleType('requests')
@@ -75,8 +85,9 @@ class FrappeEducationConnectorTest(unittest.TestCase):
   def setUp(self):
     fe_connector.reset_connector()
     self.addCleanup(fe_connector.reset_connector)
+    # po teście wraca prawdziwy `requests` (zob. _restore_module).
+    self.addCleanup(_restore_module, 'requests', sys.modules.get('requests'))
     sys.modules.pop('requests', None)
-    self.addCleanup(sys.modules.pop, 'requests', None)
 
   def _config(self, **overrides):
     values = {

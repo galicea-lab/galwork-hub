@@ -1,5 +1,4 @@
 # wf/engine.py - jedyne miejsce w hubie, ktore importuje SpiffWorkflow
-# implementacja zamiast szkieletu.
 #
 # Co zmieniono w stosunku do wersji z 2026-10-04 (szkieletu):
 #   * `BpmnWorkflowSerializer.configure(SPIFF_CONFIG)` byl bledny - SPIFF_CONFIG
@@ -19,6 +18,7 @@
 from __future__ import annotations
 
 import json
+import re
 import uuid
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
@@ -46,6 +46,38 @@ CANDIDATE_USERS_TAGS = (f'{{{FLOWABLE_NS}}}candidateUsers', f'{{{CAMUNDA_NS}}}ca
 CANDIDATE_GROUPS_TAGS = (f'{{{FLOWABLE_NS}}}candidateGroups', f'{{{CAMUNDA_NS}}}candidateGroups')
 FORM_TAGS = (f'{{{FLOWABLE_NS}}}formKey', f'{{{CAMUNDA_NS}}}formKey')
 
+# 2026-11-06: przypisania mogą wskazywać zmienną procesu, np.
+# `flowable:assignee="${student_username}"` albo `candidateGroups="${grupy}"`
+# (lista). Wartość rozwiązuje ProcessService.sync_tasks z danych instancji i
+# zapisuje jako kandydatów zadania (HumanTaskCandidate). Zmienna bez wartości
+# NIE oznacza "zadanie dla każdego": dostaje kandydata UNRESOLVED_PRINCIPAL,
+# którego nikt nie ma.
+_VARIABLE_RE = re.compile(r'^\$\{\s*([A-Za-z_][A-Za-z0-9_.]*)\s*\}$')
+UNRESOLVED_PRINCIPAL = '__unresolved__'
+
+
+def _lookup(data: Mapping[str, Any], path: str) -> Any:
+  value: Any = data
+  for part in path.split('.'):
+    if not isinstance(value, Mapping):
+      return None
+    value = value.get(part)
+  return value
+
+
+def _resolve_values(values: Iterable[str], data: Mapping[str, Any]) -> tuple[str, ...]:
+  resolved: list[str] = []
+  for raw in values:
+    match = _VARIABLE_RE.match(raw)
+    if not match:
+      resolved.append(raw)
+      continue
+    value = _lookup(data, match.group(1))
+    items = value if isinstance(value, (list, tuple, set, frozenset)) else [value]
+    resolved.extend(str(item).strip() for item in items
+                    if item is not None and str(item).strip())
+  return tuple(dict.fromkeys(resolved))
+
 
 class SpecError(ValueError):
   """Specyfikacja BPMN jest niepoprawna (bledny XML, brak procesu itd.)."""
@@ -71,6 +103,32 @@ class TaskAssignment:
     if not self.candidate_users and not self.candidate_groups:
       return True
     return username in self.candidate_users or bool(set(groups) & set(self.candidate_groups))
+
+  @property
+  def is_dynamic(self) -> bool:
+    """Czy któreś przypisanie wskazuje zmienną procesu (`${...}`)."""
+    values = [self.assignee or '', *self.candidate_users, *self.candidate_groups]
+    return any(_VARIABLE_RE.match(value) for value in values)
+
+  def resolve(self, data: Mapping[str, Any] | None) -> 'TaskAssignment':
+    """Przypisanie z wartościami zmiennych `${...}` wziętymi z `data`."""
+    if not self.is_dynamic:
+      return self
+    data = data or {}
+    assignee = _resolve_values([self.assignee], data) if self.assignee else ()
+    users = _resolve_values(self.candidate_users, data)
+    groups = _resolve_values(self.candidate_groups, data)
+    if not (assignee or users or groups):
+      groups = (UNRESOLVED_PRINCIPAL,)
+    if len(assignee) > 1:
+      # kilka wartości w `assignee` (lista) traktujemy jak kandydatów
+      users, assignee = tuple(dict.fromkeys((*assignee, *users))), ()
+    return TaskAssignment(
+      assignee=assignee[0] if assignee else None,
+      candidate_users=users,
+      candidate_groups=groups,
+      form_key=self.form_key,
+    )
 
 
 @dataclass(frozen=True)

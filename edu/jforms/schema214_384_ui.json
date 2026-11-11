@@ -1,0 +1,19 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "label": "W roku akademickim ",
+      "scope": "#/properties/w_roku_akademickim_",
+      "options": {
+        "format": "radio",
+        "showUnfocusedDescription": true
+      }
+    },
+    {
+      "type": "Control",
+      "label": "Uzasadnienie pro\u015bby",
+      "scope": "#/properties/uzasadnienie_prosby"
+    }
+  ]
+}

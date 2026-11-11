@@ -215,8 +215,8 @@ class RESTClientObject(object):
         if _preload_content:
             r = RESTResponse(r)
 
-            # log response body
-            logger.debug("response body: %s", r.data)
+            # tylko rozmiar - treść odpowiedzi e-Doręczeń zawiera dane osobowe i treść korespondencji.
+            logger.debug("response body: %d bytes", len(r.data or b""))
 
         if not 200 <= r.status <= 299:
             raise ApiException(http_resp=r)

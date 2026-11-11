@@ -1,0 +1,101 @@
+{
+  "type": "object",
+  "required": [],
+  "properties": {
+    "uzasadnienie_prosby_o_iss": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "1#legitymuj\u0119 si\u0119 orzeczeniem o niepe\u0142nosprawno\u015bci",
+          "title": "legitymuj\u0119 si\u0119 orzeczeniem o niepe\u0142nosprawno\u015bci"
+        },
+        {
+          "const": "2#spodziewam si\u0119 dziecka",
+          "title": "spodziewam si\u0119 dziecka"
+        },
+        {
+          "const": "3#jestem rodzicem",
+          "title": "jestem rodzicem"
+        },
+        {
+          "const": "4#znajduj\u0119 si\u0119 w innej trudnej sytuacji losowej",
+          "title": "znajduj\u0119 si\u0119 w innej trudnej sytuacji losowej"
+        },
+        {
+          "const": "5#studiuj\u0119 na wi\u0119cej ni\u017c jednym kierunku studi\u00f3w",
+          "title": "studiuj\u0119 na wi\u0119cej ni\u017c jednym kierunku studi\u00f3w"
+        },
+        {
+          "const": "6#aktywnie dzia\u0142am w samorz\u0105dzie studenckim (nale\u017cy do\u0142\u0105czy\u0107 opini\u0119 URSS",
+          "title": "aktywnie dzia\u0142am w samorz\u0105dzie studenckim (nale\u017cy do\u0142\u0105czy\u0107 opini\u0119 URSS"
+        }
+      ]
+    },
+    "opis_zalacznikow": {
+      "type": "string"
+    },
+    "od_semestru": {
+      "type": "string",
+      "title": "Od semestru",
+      "description": "",
+      "minLength": 1,
+      "oneOf": [
+        {
+          "const": "1#1",
+          "title": "1"
+        },
+        {
+          "const": "2#2",
+          "title": "2"
+        },
+        {
+          "const": "3#3",
+          "title": "3"
+        },
+        {
+          "const": "4#4",
+          "title": "4"
+        },
+        {
+          "const": "5#5",
+          "title": "5"
+        },
+        {
+          "const": "6#6",
+          "title": "6"
+        },
+        {
+          "const": "7#7",
+          "title": "7"
+        },
+        {
+          "const": "8#8",
+          "title": "8"
+        },
+        {
+          "const": "9#9",
+          "title": "9"
+        },
+        {
+          "const": "10#10",
+          "title": "10"
+        }
+      ]
+    },
+    "w_roku_akademickim": {
+      "type": "string",
+      "title": "W roku",
+      "description": "",
+      "oneOf": [
+        {
+          "const": "2023#2023/2024",
+          "title": "2023/2024"
+        },
+        {
+          "const": "2022#2022/2023",
+          "title": "2022/2023"
+        }
+      ]
+    }
+  }
+}

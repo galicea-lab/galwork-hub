@@ -1,0 +1,9 @@
+{
+  "title": "Pismo do dziekanatu",
+  "type": "object",
+  "required": ["temat", "tresc"],
+  "properties": {
+    "temat": { "type": "string", "title": "Temat", "minLength": 3, "maxLength": 140 },
+    "tresc": { "type": "string", "title": "Treść pisma", "minLength": 1 }
+  }
+}

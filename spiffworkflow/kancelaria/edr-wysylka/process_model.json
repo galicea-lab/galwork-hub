@@ -1,0 +1,10 @@
+{
+    "description": "Wysyłka korespondencji przez e-Doręczenia: przygotowanie, zatwierdzenie, wysyłka z kolejki (scripts/edr.py send), potwierdzenie doręczenia. Dokumenty z Paperless-ngx.",
+    "display_name": "Wysyłka e-Doręczeń",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "edr-wysylka.bpmn",
+    "primary_process_id": "Process_Edr_Wysylka",
+    "key": "edr-wysylka"
+}

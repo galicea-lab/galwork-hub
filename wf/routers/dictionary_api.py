@@ -2,11 +2,8 @@
 # coding: utf-8
 
 """
-Słowniki wyboru dla pól `AsyncSelectWidget`/`TreeSelectWidget` w
-formularzach RJSF wygenerowanych migracją Webcon -> RJSF (zob. rjsf.md,
-x-webcon.md i spiffworkflow-core/zaleznosci.md) - jeden generyczny
-endpoint zamiast osobnego routera na każdy z ~20 słowników wykrytych w
-spiffworkflow-core.
+Słowniki wyboru dla pól `AsyncSelectWidget`/`TreeSelectWidget`
+- jeden generyczny endpoint zamiast osobnego routera
 
 Logika źródeł danych (obieg w hubie / Frappe Education / "jeszcze nie
 podłączone") jest w wf/services/dictionary_service.py - ten plik tylko

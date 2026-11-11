@@ -1,0 +1,60 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "label": "Niezaliczone przedmioty",
+      "scope": "#/properties/niezaliczone_przedmioty"
+    },
+    {
+      "type": "Control",
+      "label": "Z semestru",
+      "scope": "#/properties/z_semestru",
+      "options": {
+        "format": "radio",
+        "showUnfocusedDescription": true
+      }
+    },
+    {
+      "type": "Control",
+      "label": "W roku akademickim ",
+      "scope": "#/properties/w_roku_akademickim_",
+      "options": {
+        "format": "radio",
+        "showUnfocusedDescription": true
+      }
+    },
+    {
+      "type": "Control",
+      "label": "W letniej/zimowej sesji",
+      "scope": "#/properties/w_letniej_zimowej_sesji",
+      "options": {
+        "format": "radio",
+        "showUnfocusedDescription": true
+      }
+    },
+    {
+      "type": "Control",
+      "label": "Zaliczenia/egzaminu?",
+      "scope": "#/properties/zaliczenia_egzaminu_",
+      "options": {
+        "format": "radio",
+        "showUnfocusedDescription": true
+      }
+    },
+    {
+      "type": "Control",
+      "label": "Sesji egzaminacyjnej / poprawkowej?",
+      "scope": "#/properties/sesji_egzaminacyjnej___poprawkowej_",
+      "options": {
+        "format": "radio",
+        "showUnfocusedDescription": true
+      }
+    },
+    {
+      "type": "Control",
+      "label": "Uzasadnienie pro\u015bby",
+      "scope": "#/properties/uzasadnienie_prosby"
+    }
+  ]
+}

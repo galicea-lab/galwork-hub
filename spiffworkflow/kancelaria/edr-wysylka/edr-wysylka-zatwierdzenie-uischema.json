@@ -1,0 +1,5 @@
+{
+  "ui:order": ["odbiorca", "ade_to", "subject", "text_body", "paperless_document_ids", "uwagi", "*"],
+  "text_body": { "ui:widget": "textarea" },
+  "uwagi": { "ui:widget": "textarea" }
+}

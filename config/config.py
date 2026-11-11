@@ -35,7 +35,7 @@ def section(name: str) -> dict:
     """Surowe wartości sekcji [name] z config.ini (z nadpisaniem ze środowiska).
 
     Dla kodu spoza katalogu `connector/` (ten używa `connector/base.py`),
-    np. `section('edr')` w `wf/routers/edr_api.py`.
+    np. `section('edr')` w `scripts/edr.py`.
     """
     return _section_values(name)
 
@@ -126,6 +126,12 @@ class EtalarSettings(BaseModel):
     timeout: int = 30
 
 
+# Sekcja [edu] - grupy Keycloak pracowników dziekanatu,
+# którzy mogą przeglądać dane i sprawy dowolnego studenta (edu/dependencies.py).
+class EduSettings(BaseModel):
+    """Sekcja [edu] - konfiguracja modułu edu."""
+    staff_groups: list[str] = Field(default_factory=lambda: ['dziekanat', 'edu-admin', 'galwork-admin'])
+
 
 # --- Główna klasa ustawień, która agreguje wszystkie sekcje ---
 
@@ -136,6 +142,7 @@ class Settings(BaseSettings):
   logging: LoggingSettings
   keycloak: KeycloakSettings
   etalar: EtalarSettings
+  edu: EduSettings
 
 
 def _as_bool(value, default: bool) -> bool:
@@ -164,6 +171,8 @@ def _build_settings() -> Settings:
                                  'galwork-admin,wf-admin'),
     }),
     etalar=EtalarSettings(**_section_values('etalar')),
+    edu=EduSettings(staff_groups=_split_list(_section_values('edu'), 'staff_groups',
+                                             'dziekanat,edu-admin')),
   )
 
 

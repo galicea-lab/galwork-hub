@@ -2,8 +2,7 @@
 # coding: utf-8
 """
 Synchronizacja `ProcessModel`/`ProcessModelVersion` z plikami w katalogu
-`spiffworkflow/` (obiegi skopiowane ze spiffworkflow-core - zob. rjsf.md,
-x-webcon.md, spiffworkflow-core/zaleznosci.md).
+`spiffworkflow/` (wyselekcjonowane obiegi, 'core')
 
 Kontekst: dotąd każdy obieg trzeba było zaseedować RĘCZNIE, jednym
 wywołaniem `scripts/seed_process_model.py <folder> --key <key>` - łatwo
@@ -29,6 +28,8 @@ pierwszeństwa):
      `discover_process_folders` nie sprawdza tego explicite, kolizję
      wykryje dopiero próba nadpisania innego ProcessModel o tym samym
      kluczu, więc w razie konfliktu dodaj punkt 1 do jednego z folderów).
+
+TODO: Uporządkować powyższe i opisać ostateczną wersję zarządzania obiegami - w tym wybór core
 """
 
 from __future__ import annotations

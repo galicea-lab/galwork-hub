@@ -194,7 +194,7 @@ class EventType(StrEnum):
 class CurrentUser(BaseModel):
     """Kontekst zalogowanego użytkownika: token Keycloak + lokalne `users.id`.
 
-    2026-10-05 (TODO.md pkt 2/4): `id` to int z tabeli `users`
+    2026-10-05: `id` to int z tabeli `users`
     (models/user.py) - ta sama tożsamość, którą zwraca
     api.security.get_current_user. Buduje go zależność
     wf.dependencies.get_current_wf_user.
@@ -773,8 +773,8 @@ class SigniusStatusRead(BaseModel):
 
 
 # ---------------------------------------------------------------------
-# e-Doręczenia (wf/routers/edr_api.py - alternatywa dla WEBCON, zob.
-# analiza_edr.md): korespondencja w wf.Document/DocumentVersion, pliki w
+# e-Doręczenia (wf/routers/edr_paperless_api.py -
+# korespondencja w wf.Document/DocumentVersion, pliki w
 # Paperless-ngx (connector/paperless), silnik - ten sam `wf`.
 # ---------------------------------------------------------------------
 
@@ -802,8 +802,7 @@ class EdrSendResponse(BaseModel):
 # ---------------------------------------------------------------------
 # 2026-10-15: słowniki wyboru (wf/routers/dictionary_api.py,
 # wf/routers/user_directory_api.py) - jeden generyczny schemat odpowiedzi
-# dla pól `AsyncSelectWidget`/`TreeSelectWidget` wygenerowanych migracją
-# Webcon -> RJSF (zob. rjsf.md i spiffworkflow-core/zaleznosci.md). Nie jest
+# dla pól `AsyncSelectWidget`/`TreeSelectWidget`. Nie jest
 # to `ReadModel` z `from_attributes=True`, bo nie ma jednego modelu ORM -
 # wartości pochodzą z `ProcessInstance`, z REST Frappe Education albo z
 # `User`/`OrgUnit`, zależnie od słownika (wf/services/dictionary_service.py).

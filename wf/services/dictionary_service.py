@@ -1,18 +1,7 @@
 # wf/services/dictionary_service.py
 # coding: utf-8
 """
-Słowniki (pola `AsyncSelectWidget`/`TreeSelectWidget`) dla formularzy
-obiegów migrowanych z Webcona do RJSF.
-
-Kontekst: migracja opisana w `rjsf.md`/`x-webcon.md` (katalog
-`spiffworkflow-core`) zamieniła macierz atrybutów Webcona na
-`x-permissions`, a pola słownikowe (`x-webcon.type` = "Pole wyboru"/"Osoba
-lub grupa"/"Spółka"/"Drzewo wyboru") bez zaszytego `oneOf` dostały w
-`*-uischema.json` widget `AsyncSelectWidget`/`TreeSelectWidget` z
-`ui:options.endpoint` wskazującym na backend (`/v1/wf/dictionaries/<slug>`
-albo `/v1/wf/users`). Lista tych słowników i ich źródeł jest spisana w
-`spiffworkflow-core/zaleznosci.md` (ten plik jest "wykonaniem" tamtej
-analizy po stronie huba).
+Słowniki (pola `AsyncSelectWidget`/`TreeSelectWidget`)
 
 Rejestr w tym module odwzorowuje każdy `slug` na jedno z pięciu źródeł
 danych:
@@ -44,7 +33,7 @@ danych:
   4. **Frappe Education** (`FrappeDictionary`) - słownik odpowiada Doctype
      w systemie dziekanatowym (connector/frappe_education), np. "Studenci".
   5. **Niepodłączone** (`NOT_CONNECTED`) - `source-name` wskazuje na system,
-     dla którego w tym repozytorium nie ma jeszcze konektora (ERP Optima,
+     dla którego w tym repozytorium nie ma jeszcze konektora (ERP,
      EZD, "Spółki" uczelni) - zwracamy jawny błąd 501 z wyjaśnieniem,
      zamiast fałszywie pustej listy (żeby nie wyglądało to na "słownik jest
      pusty", gdy w rzeczywistości nikt go jeszcze nie podłączył).
@@ -118,7 +107,7 @@ class InternalDictionary:
     """Słownik = opublikowany `ProcessModel` w tym hubie."""
 
     process_model_key: str
-    source_name: str  # x-webcon.source-name oryginalnego pola (dokumentacyjnie)
+    source_name: str
 
 
 @dataclass(frozen=True)
@@ -220,13 +209,7 @@ CONTACT_ADDRESS_DICTIONARIES: dict[str, ContactAddressDictionary] = {
 
 # ---------------------------------------------------------------------
 # 3. Słowniki wewnętrzne - obiegi skopiowane do spiffworkflow-core (zob.
-#    zaleznosci.md). "instytuty-uczelni" to alias tego samego obiegu co
-#    "instytuty" (x-webcon source-name różnił się między polami, choć
-#    wskazywał na ten sam proces "Instytuty"). "dzialy"/"kategorie-spraw"
-#    PRZENIESIONE do `TABLE_DICTIONARIES` (zob. 1. powyżej), "adres-e-doreczen"
-#    do `CONTACT_ADDRESS_DICTIONARIES` (zob. 2. powyżej) - resztę
-#    wymienionych tu słowników czeka migracja do jednego z tych dwóch
-#    rejestrów, zależnie od struktury.
+#    zaleznosci.md). "instytuty-uczelni" to alias tego samego obiegu co "instytuty"
 # ---------------------------------------------------------------------
 INTERNAL_DICTIONARIES: dict[str, InternalDictionary] = {
     "instytuty": InternalDictionary("instytuty", "instytuty"),
@@ -253,22 +236,14 @@ FRAPPE_DICTIONARIES: dict[str, FrappeDictionary] = {
 #    spiffworkflow-core/zaleznosci.md, sekcja "odwołania zewnętrzne".
 # ---------------------------------------------------------------------
 NOT_CONNECTED: dict[str, str] = {
-    "companies": (
-        "Pole 'Wybór spółki' (x-webcon.type='Spółka') nie wskazuje na żaden "
-        "zidentyfikowany obieg-słownik w spiffworkflow-all - prawdopodobnie "
-        "lista spółek uczelni żyje w systemie ERP/finansowym. W tym "
-        "repozytorium nie ma jeszcze konektora do tego źródła - dodaj go w "
-        "connector/, gdy system źródłowy będzie znany."
-    ),
+    "companies": "Pole 'Wybór spółki' nie ma jeszcze konektora do tego źródła - TODO: dodaj go w connector/.",
     "k-kontrahenci": (
         "source-name='[K] Kontrahenci', source-type='REST Web Service' "
-        "(pole 'z systemu ERP (Optima)' w kontrahent-k-uischema.json). W "
-        "repozytorium nie ma jeszcze konektora Optima (connector/optima/ "
-        "jest tylko zapowiedziane sekcją [optima] w config.ini.example)."
+        "(pole 'z systemu ERP' w kontrahent-k-uischema.json). W "
+        "repozytorium nie ma jeszcze konektora do ERP z kontrahentami."
     ),
     "konta-kontrahentow": (
-        "source-name='Konta kontrahentów' (pole 'Konto w Optimie' w "
-        "kontrahent-k-uischema.json) - jak wyżej, brak konektora Optima."
+        "source-name='Konta kontrahentów w ERP - TODO: brak konektora."
     ),
     "ezd-jrwa": (
         "source-name='[EZD] JRWA', source-type='Baza MSSQL' - rejestr "

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="defs_Process_Wniosek_zakupowy" targetNamespace="http://bpmn" exporter="" exporterVersion="1.0">
   <bpmn:process id="Process_Wniosek_zakupowy" name="Wniosek zakupowy" isExecutable="true">
-    <bpmn:documentation>Nowy projekt (nie migracja WEBCON) - zob. galwork-book,
+    <bpmn:documentation>Dokumentacja - zob. galwork-book,
 czesc-3-obszary/dzialy/zakupy.md. Flagi requires_* są wyliczone PRZEZ SERWIS
 (wf/services/purchase_request_service.py) przy złożeniu wniosku, nie wyborem
 użytkownika - gatewaye "Czy ..." czytają je bezpośrednio z danych zadania, a

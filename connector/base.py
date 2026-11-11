@@ -4,8 +4,8 @@
 Uniwersalny wzorzec konektora do systemu zewnętrznego.
 
 Powstał na podstawie analizy istniejących konektorów w tym katalogu
-(connector/webcon, connector/edoreczenia, connector/signius,
-connector/frappe_education). Każdy z nich komunikuje się z innym rodzajem
+(connector/edoreczenia, connector/signius, connector/frappe_education, ...). 
+Każdy z nich komunikuje się z innym rodzajem
 systemu (REST+OAuth2, SOAP/REST z certyfikatem, REST+PKCS12), więc wzorzec
 nie wymusza jednego protokołu - określa tylko wspólny "kontrakt" (cykl
 życia, konfiguracja, test połączenia, obsługa błędów), żeby każdy nowy

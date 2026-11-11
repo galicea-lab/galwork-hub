@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="defs_Process_Edu_Pismo" targetNamespace="http://bpmn" exporter="" exporterVersion="1.0">
+  <bpmn:process id="Process_Edu_Pismo" name="Pismo do dziekanatu" isExecutable="true">
+    <bpmn:documentation>Pismo studenta i odpowiedź dziekanatu.
+Instancję uruchamia POST /v1/edu/jform/sprawa/submit (business_key = nazwa
+dokumentu Student Correspondence). Dane startowe: case_id, student,
+student_name, album_number, student_username, student_email,
+correspondence_type, temat, tresc. Status sprawy w Frappe aktualizuje
+edu/services/case_sync.py na podstawie chosen_path decyzji "Rozpatrzenie"
+(Flow_Zalatwione, Flow_Odmowa, Flow_Uzupelnienie). Zadanie "Uzupełnienie"
+jest przypisane do studenta, który złożył pismo (${student_username}).</bpmn:documentation>
+    <bpmn:startEvent id="StartEvent_Pismo" name="Złożenie pisma"><spiffworkflow:property name="formJsonSchemaFilename" value="edu-pismo-wniosek-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="edu-pismo-wniosek-uischema.json" /></bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_Start" sourceRef="StartEvent_Pismo" targetRef="Task_Rozpatrzenie" />
+
+    <bpmn:userTask id="Task_Rozpatrzenie" name="Rozpatrzenie" camunda:candidateGroups="dziekanat"><spiffworkflow:property name="formJsonSchemaFilename" value="edu-pismo-rozpatrzenie-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="edu-pismo-rozpatrzenie-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Do_decyzji" sourceRef="Task_Rozpatrzenie" targetRef="GW_Decyzja" />
+    <bpmn:exclusiveGateway id="GW_Decyzja" name="Decyzja dziekanatu" default="Flow_Zalatwione" />
+    <bpmn:sequenceFlow id="Flow_Zalatwione" name="Załatwione - wyślij odpowiedź" sourceRef="GW_Decyzja" targetRef="End_Zalatwione" />
+    <bpmn:sequenceFlow id="Flow_Odmowa" name="Odmowa" sourceRef="GW_Decyzja" targetRef="End_Odmowa">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Odmowa'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Uzupelnienie" name="Do uzupełnienia przez studenta" sourceRef="GW_Decyzja" targetRef="Task_Uzupelnienie">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Uzupelnienie'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:userTask id="Task_Uzupelnienie" name="Uzupełnienie" camunda:assignee="${student_username}"><spiffworkflow:property name="formJsonSchemaFilename" value="edu-pismo-uzupelnienie-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="edu-pismo-uzupelnienie-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Powrot" name="Przekaż do dziekanatu" sourceRef="Task_Uzupelnienie" targetRef="Task_Rozpatrzenie" />
+
+    <bpmn:endEvent id="End_Zalatwione" name="Sprawa załatwiona" />
+    <bpmn:endEvent id="End_Odmowa" name="Odmowa" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_Process_Edu_Pismo">
+    <bpmndi:BPMNPlane id="Plane_Process_Edu_Pismo" bpmnElement="Process_Edu_Pismo">
+      <bpmndi:BPMNShape id="Shape_StartEvent_Pismo" bpmnElement="StartEvent_Pismo"><dc:Bounds x="80" y="122" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rozpatrzenie" bpmnElement="Task_Rozpatrzenie"><dc:Bounds x="200" y="100" width="120" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Decyzja" bpmnElement="GW_Decyzja" isMarkerVisible="true"><dc:Bounds x="400" y="115" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Zalatwione" bpmnElement="End_Zalatwione"><dc:Bounds x="560" y="122" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Odmowa" bpmnElement="End_Odmowa"><dc:Bounds x="560" y="232" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Uzupelnienie" bpmnElement="Task_Uzupelnienie"><dc:Bounds x="365" y="-40" width="120" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_Start" bpmnElement="Flow_Start"><di:waypoint x="116" y="140" /><di:waypoint x="200" y="140" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Do_decyzji" bpmnElement="Flow_Do_decyzji"><di:waypoint x="320" y="140" /><di:waypoint x="400" y="140" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Zalatwione" bpmnElement="Flow_Zalatwione"><di:waypoint x="450" y="140" /><di:waypoint x="560" y="140" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Odmowa" bpmnElement="Flow_Odmowa"><di:waypoint x="425" y="165" /><di:waypoint x="425" y="250" /><di:waypoint x="560" y="250" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Uzupelnienie" bpmnElement="Flow_Uzupelnienie"><di:waypoint x="425" y="115" /><di:waypoint x="425" y="40" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Powrot" bpmnElement="Flow_Powrot"><di:waypoint x="365" y="0" /><di:waypoint x="260" y="0" /><di:waypoint x="260" y="100" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

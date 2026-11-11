@@ -1,0 +1,9 @@
+{
+  "title": "Wysyłka EDR",
+  "description": "Zadanie systemowe - zamyka je scripts/edr.py send.",
+  "type": "object",
+  "properties": {
+    "message_id": { "type": "string", "title": "Identyfikator wiadomości (messageId)" },
+    "send_error": { "type": "string", "title": "Błąd wysyłki" }
+  }
+}

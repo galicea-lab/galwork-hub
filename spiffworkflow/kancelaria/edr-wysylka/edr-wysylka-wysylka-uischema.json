@@ -1,0 +1,4 @@
+{
+  "ui:order": ["message_id", "send_error", "*"],
+  "send_error": { "ui:widget": "textarea" }
+}

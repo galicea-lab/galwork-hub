@@ -1,0 +1,10 @@
+{
+    "description": "Pismo studenta do dziekanatu i odpowiedź (sprawa Student Correspondence w Frappe Education, edu/routers/korespondencja_api.py)",
+    "display_name": "Pismo do dziekanatu",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "edu-pismo.bpmn",
+    "primary_process_id": "Process_Edu_Pismo",
+    "key": "edu-pismo"
+}

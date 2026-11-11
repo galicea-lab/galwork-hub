@@ -46,7 +46,7 @@ class ApiTestCase(unittest.TestCase):
     # aplikacje są montowane jako osobne FastAPI (router.py:
     # app_wf, app_pm, app_galwork pod v1router), a `dependency_overrides`
     # działa per aplikacja - trzeba podmienić zależności we wszystkich.
-    from router import app_galwork, app_pm, app_wf, v1router
+    from router import app_edu, app_galwork, app_kalendarz, app_pm, app_wf, v1router
 
     # SQLite ':memory:' + StaticPool - bez tego każde połączenie
     # (a TestClient obsługuje żądania w innym wątku niż create_all) dostałoby
@@ -57,7 +57,8 @@ class ApiTestCase(unittest.TestCase):
     Base.metadata.create_all(self.engine)
 
     self.app = app
-    self.sub_apps = (app, v1router, app_wf, app_pm, app_galwork)
+
+    self.sub_apps = (app, v1router, app_wf, app_pm, app_galwork, app_edu, app_kalendarz)
     self.db = self.session_factory()
 
     from api.dependencies import get_db

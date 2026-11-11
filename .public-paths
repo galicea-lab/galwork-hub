@@ -37,6 +37,8 @@ db/**
 lib/**
 models/**
 pm/**
+edu/**
+kalendarz/**
 schemas/**
 scripts/**
 services/**

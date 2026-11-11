@@ -1,0 +1,4 @@
+{
+  "ui:order": ["odbiorca", "ade_to", "subject", "text_body", "paperless_document_ids", "*"],
+  "text_body": { "ui:widget": "textarea", "ui:options": { "rows": 6 } }
+}

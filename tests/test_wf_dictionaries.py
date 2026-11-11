@@ -1,9 +1,7 @@
 # tests/test_wf_dictionaries.py
 """
 Testy wf/routers/dictionary_api.py i wf/routers/user_directory_api.py -
-backend pól `AsyncSelectWidget` wygenerowanych migracją Webcon -> RJSF
-(zob. rjsf.md, spiffworkflow-core/zaleznosci.md,
-wf/services/dictionary_service.py).
+backend pól `AsyncSelectWidget` .
 """
 from __future__ import annotations
 

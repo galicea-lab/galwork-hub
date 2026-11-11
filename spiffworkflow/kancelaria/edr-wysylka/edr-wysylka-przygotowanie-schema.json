@@ -1,0 +1,23 @@
+{
+  "title": "Przygotowanie przesyłki e-Doręczenia",
+  "description": "Pierwszy dokument z listy jest pismem głównym, kolejne idą jako załączniki. Pliki pobierane są z Paperless-ngx w wersji oryginalnej (z zachowaniem podpisu).",
+  "type": "object",
+  "required": ["ade_to", "subject", "paperless_document_ids"],
+  "properties": {
+    "odbiorca": { "type": "string", "title": "Odbiorca (nazwa)" },
+    "ade_to": {
+      "type": "string",
+      "title": "Adres do doręczeń elektronicznych odbiorcy",
+      "description": "Np. AE:PL-12345-67890-ABCDE-12",
+      "pattern": "^AE:PL-[0-9]{5}-[0-9]{5}-[A-Z]{5}-[0-9]{2}$"
+    },
+    "subject": { "type": "string", "title": "Temat", "minLength": 1, "maxLength": 255 },
+    "text_body": { "type": "string", "title": "Treść wiadomości" },
+    "paperless_document_ids": {
+      "type": "array",
+      "title": "Dokumenty z Paperless-ngx (ID)",
+      "minItems": 1,
+      "items": { "type": "integer", "minimum": 1 }
+    }
+  }
+}

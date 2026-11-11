@@ -1,13 +1,9 @@
 # wf/routers/user_directory_api.py
 # coding: utf-8
 """
-Katalog użytkowników/grup dla pól `AsyncSelectWidget` typu "Osoba lub
-grupa" (x-webcon source-type "Kartoteka Użytkowników" - zob. x-webcon.md,
-lanes.md; sourceName w `*-uischema.json` z spiffworkflow-core:
-"<Użytkownicy i grupy>", "Użytkownicy Systemu", "Grupy osób").
+Katalog użytkowników/grup dla pól `AsyncSelectWidget` typu "Osoba lub grupa".
 
-Scala dwie tabele tego huba, bo jedno pole w Webconie mogło wskazywać albo
-na pojedynczego użytkownika, albo na grupę:
+Scala dwie tabele huba:
   * `User` (models/user.py) - pojedyncze konta,
   * `OrgUnit` (wf/models/wf.py) - jednostki/grupy organizacyjne
     (`keycloak_group`) - zgodnie z `lanes.md` to jest rejestr rzeczywistych

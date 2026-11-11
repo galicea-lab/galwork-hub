@@ -6,14 +6,10 @@ Klient protokołu e-Doręczenia (`EdrConnector`).
  Potrzebują go dwa miejsca niezależnie od wybranego
 backendu:
 
-  * `wf/routers/edr_api.py` - endpointy `/ade*` (wyszukiwanie w rejestrze
-    e-Delivery) używają `EdrConnector` wprost.
-  * `edr_webcon.py` i `edr_paperless.py` - każdy z nich owija ten sam
-    klient inną logiką "co zrobić z odebraną/wysyłaną wiadomością".
-
-`edr_webcon.py` importuje `EdrConnector`/`mime` z tego modułu i reeksportuje
-je pod swoim starym adresem (`from connector.edoreczenia.edr_webcon import
-EdrConnector`).
+  * `connector/edoreczenia/ade_search.py` - wyszukiwanie w rejestrze
+    e-Delivery (endpointy `/ade*` w `wf/routers/edr_paperless_api.py`).
+  * `edr_paperless.py` - owija klient swoją logiką "co zrobić z odebraną/wysyłaną wiadomością" 
+    (alternatywą może być np. Webcon ze swoją logiką).
 """
 from __future__ import annotations
 

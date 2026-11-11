@@ -60,6 +60,9 @@ from wf.models import (  # noqa: F401
     UserSubstitution,
 )
 
+# usługa kodów jednorazowych (konto/).
+from konto.models import KontoOperation, KontoTicket, KontoWkSession  # noqa: F401
+from kalendarz.models import KalendarzSubskrypcja  # noqa: F401
 from pm.models.project import Project
 from pm.models.dpci import DpciScore
 from pm.models.evm import EvmSnapshot

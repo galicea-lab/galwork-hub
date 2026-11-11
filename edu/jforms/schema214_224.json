@@ -1,0 +1,109 @@
+{
+  "type": "object",
+  "required": [],
+  "properties": {
+    "uzasadnienie_prosby": {
+      "type": "string"
+    },
+    "niezaliczone_przedmioty": {
+      "type": "string"
+    },
+    "z_semestru": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "1#1",
+          "title": "1"
+        },
+        {
+          "const": "2#2",
+          "title": "2"
+        },
+        {
+          "const": "3#3",
+          "title": "3"
+        },
+        {
+          "const": "4#4",
+          "title": "4"
+        },
+        {
+          "const": "5#5",
+          "title": "5"
+        },
+        {
+          "const": "6#6",
+          "title": "6"
+        },
+        {
+          "const": "7#7",
+          "title": "7"
+        },
+        {
+          "const": "8#8",
+          "title": "8"
+        },
+        {
+          "const": "9#9",
+          "title": "9"
+        },
+        {
+          "const": "10#10",
+          "title": "10"
+        }
+      ]
+    },
+    "w_letniej_zimowej_sesji": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "1#letniej",
+          "title": "letniej"
+        },
+        {
+          "const": "2#zimowej",
+          "title": "zimowej"
+        }
+      ]
+    },
+    "zaliczenia_egzaminu_": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "1#zaliczenia",
+          "title": "zaliczenia"
+        },
+        {
+          "const": "2#egzaminu",
+          "title": "egzaminu"
+        }
+      ]
+    },
+    "sesji_egzaminacyjnej___poprawkowej_": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "1#egzaminacyjnej",
+          "title": "egzaminacyjnej"
+        },
+        {
+          "const": "2#poprawkowej",
+          "title": "poprawkowej"
+        }
+      ]
+    },
+    "w_roku_akademickim_": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "2023#2023/2024",
+          "title": "2023/2024"
+        },
+        {
+          "const": "2022#2022/2023",
+          "title": "2022/2023"
+        }
+      ]
+    }
+  }
+}

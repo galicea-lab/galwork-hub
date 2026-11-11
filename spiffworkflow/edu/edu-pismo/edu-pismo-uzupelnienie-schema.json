@@ -1,0 +1,12 @@
+{
+  "title": "Uzupełnienie pisma",
+  "description": "Dziekanat prosi o uzupełnienie. Załączniki dodasz w liście spraw (spinacz).",
+  "type": "object",
+  "required": ["uzupelnienie"],
+  "properties": {
+    "temat": { "type": "string", "title": "Temat", "readOnly": true },
+    "tresc": { "type": "string", "title": "Treść pisma", "readOnly": true },
+    "odpowiedz": { "type": "string", "title": "Uwagi dziekanatu", "readOnly": true },
+    "uzupelnienie": { "type": "string", "title": "Uzupełnienie", "minLength": 1 }
+  }
+}

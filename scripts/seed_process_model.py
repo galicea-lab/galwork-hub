@@ -2,10 +2,9 @@
 # coding: utf-8
 """
 Zakłada (albo aktualizuje i publikuje) ProcessModel z wszystkich plików
-.bpmn/*-schema.json/*-uischema.json jednego katalogu obiegu skopiowanego z
-spiffworkflow-core/spiffworkflow-all (zob. rjsf.md, x-webcon.md,
-spiffworkflow-core/zaleznosci.md) - ten sam mechanizm jednorazowego importu
-"z ręki" co scripts/seed_edr_process.py (POST /process-models + .../publish
+.bpmn/*-schema.json/*-uischema.json jednego katalogu obiegu  - 
+ten sam mechanizm jednorazowego importu
+"ręcznie" co scripts/seed_edr_process.py (POST /process-models + .../publish
 to normalna droga przez API, zob. wf/routers/process_model_router.py), ale
 ogólny: bierze WSZYSTKIE pliki danego typu z katalogu, nie jedną ustaloną
 trójkę nazw, więc działa dla każdego obiegu w spiffworkflow/ bez zmian w

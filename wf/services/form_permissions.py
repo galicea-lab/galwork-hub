@@ -2,12 +2,11 @@
 # coding: utf-8
 """
 Filtrowanie JSON Schema/UI Schema formularza wg macierzy `x-permissions`
-(zob. rjsf.md i x-webcon.md - migracja macierzy atrybutów Webcona do RJSF,
-oraz spiffworkflow-core/*-schema.json, gdzie każde pole niesie
+(zob. spiffworkflow-core/*-schema.json, gdzie każde pole niesie
 `x-permissions: {"<nazwa kroku>": "editable"|"readonly"|"none"}` i opcjonalnie
 `x-required-in-steps: ["<nazwa kroku>", ...]`).
 
-Backend ma tu być - jak to ujęto w rjsf.md - "banalnym filtrem": dla danego
+Backend ma tu być - "banalnym filtrem": dla danego
 kroku (`step` = `HumanTask.name`, bo macierz jest kluczowana nazwą zadania
 BPMN, nie jego technicznym `id`):
 
@@ -15,8 +14,7 @@ BPMN, nie jego technicznym `id`):
     (razem z dzieckami, jeśli to grupa/tablica),
   * `"readonly"` - pole zostaje, dostaje `"readOnly": true`,
   * `"editable"` - pole zostaje bez zmian,
-  * pole bez `x-permissions` w ogóle (formularze nieobjęte migracją Webcon ->
-    RJSF, np. Spiff-Arena/Jinja) - zostaje bez zmian; `has_x_permissions()`
+  * pole bez `x-permissions` w ogóle (formularze  np. Spiff-Arena/Jinja) - zostaje bez zmian; `has_x_permissions()`
     pozwala wywołującemu w ogóle nie wchodzić w tę ścieżkę dla takich
     formularzy (zob. process_service.py::task_form).
 
@@ -26,8 +24,7 @@ uprawnień procesowych do przeglądarki").
 
 `required` dla danego kroku to unia: pól globalnie wymaganych (oryginalny
 `required` kontenera, przefiltrowany do pól, które przeszły filtr) oraz pól
-z `x-required-in-steps` zawierającym `step` (dawny `[E]*` z Webcona - zob.
-x-webcon.md).
+z `x-required-in-steps` zawierającym `step`.
 
 UI Schema jest filtrowany równolegle do JSON Schema (ta sama struktura
 kluczy), żeby nie zostawić w nim `ui:order`/widgetów dla pól, które zniknęły

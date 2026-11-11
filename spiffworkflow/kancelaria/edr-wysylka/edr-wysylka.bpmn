@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="defs_Process_Edr_Wysylka" targetNamespace="http://bpmn" exporter="" exporterVersion="1.0">
+  <bpmn:process id="Process_Edr_Wysylka" name="Wysyłka e-Doręczeń" isExecutable="true">
+    <bpmn:documentation>Wysyłka pisma przez e-Doręczenia.
+Instancję uruchamia POST /v1/wf/process-instances (process_model_key =
+edr-wysylka); dane startowe (opcjonalne, wypełniają formularz): ade_to,
+odbiorca, subject, text_body, paperless_document_ids.
+"Wysyłka EDR" to zadanie systemowe (grupa edr-system): kolejka, którą
+obsługuje cron scripts/edr.py send (connector/edoreczenia/edr_paperless.py::
+send_queued). Cron zamyka je z message_id (ścieżka domyślna) albo z
+send_error i chosen_path = Flow_Blad. Po wysyłce business_key = message_id,
+więc scripts/edr.py evidences dociąga potwierdzenia do sprawy, a po dowodzie
+doręczenia ([edr] delivered_evidence_types, domyślnie BPOP) sam zamyka
+"Potwierdzenie doręczenia" ścieżką "Doręczono" (grupa edr-system).</bpmn:documentation>
+    <bpmn:startEvent id="StartEvent_Wysylka" name="Nowa przesyłka EDR" />
+    <bpmn:sequenceFlow id="Flow_Start" sourceRef="StartEvent_Wysylka" targetRef="Task_Przygotowanie" />
+
+    <bpmn:userTask id="Task_Przygotowanie" name="Przygotowanie przesyłki" camunda:candidateGroups="kancelaria"><spiffworkflow:property name="formJsonSchemaFilename" value="edr-wysylka-przygotowanie-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="edr-wysylka-przygotowanie-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Do_zatwierdzenia" sourceRef="Task_Przygotowanie" targetRef="Task_Zatwierdzenie" />
+
+    <bpmn:userTask id="Task_Zatwierdzenie" name="Zatwierdzenie wysyłki" camunda:candidateGroups="kancelaria"><spiffworkflow:property name="formJsonSchemaFilename" value="edr-wysylka-zatwierdzenie-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="edr-wysylka-zatwierdzenie-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Zatwierdzenie" sourceRef="Task_Zatwierdzenie" targetRef="GW_Zatwierdzenie" />
+    <bpmn:exclusiveGateway id="GW_Zatwierdzenie" name="Decyzja" default="Flow_Wyslij" />
+    <bpmn:sequenceFlow id="Flow_Wyslij" name="Zatwierdź - wyślij" sourceRef="GW_Zatwierdzenie" targetRef="Task_Wysylka" />
+    <bpmn:sequenceFlow id="Flow_Do_poprawy" name="Do poprawy" sourceRef="GW_Zatwierdzenie" targetRef="Task_Przygotowanie">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Do_poprawy'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Anuluj" name="Anuluj wysyłkę" sourceRef="GW_Zatwierdzenie" targetRef="End_Anulowano">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Anuluj'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:userTask id="Task_Wysylka" name="Wysyłka EDR" camunda:candidateGroups="edr-system"><spiffworkflow:property name="formJsonSchemaFilename" value="edr-wysylka-wysylka-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="edr-wysylka-wysylka-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Wynik" sourceRef="Task_Wysylka" targetRef="GW_Wynik" />
+    <bpmn:exclusiveGateway id="GW_Wynik" name="Wynik wysyłki" default="Flow_Wyslano" />
+    <bpmn:sequenceFlow id="Flow_Wyslano" name="Wysłano" sourceRef="GW_Wynik" targetRef="Task_Doreczenie" />
+    <bpmn:sequenceFlow id="Flow_Blad" name="Błąd wysyłki" sourceRef="GW_Wynik" targetRef="Task_Problem">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Blad'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:userTask id="Task_Problem" name="Problem z wysyłką" camunda:candidateGroups="kancelaria"><spiffworkflow:property name="formJsonSchemaFilename" value="edr-wysylka-problem-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="edr-wysylka-problem-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Problem" sourceRef="Task_Problem" targetRef="GW_Problem" />
+    <bpmn:exclusiveGateway id="GW_Problem" name="Co dalej?" default="Flow_Ponow" />
+    <bpmn:sequenceFlow id="Flow_Ponow" name="Ponów wysyłkę" sourceRef="GW_Problem" targetRef="Task_Wysylka" />
+    <bpmn:sequenceFlow id="Flow_Popraw" name="Popraw dane przesyłki" sourceRef="GW_Problem" targetRef="Task_Przygotowanie">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Popraw'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Rezygnacja" name="Zrezygnuj z wysyłki" sourceRef="GW_Problem" targetRef="End_Rezygnacja">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Rezygnacja'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:userTask id="Task_Doreczenie" name="Potwierdzenie doręczenia" camunda:candidateGroups="kancelaria,edr-system"><spiffworkflow:property name="formJsonSchemaFilename" value="edr-wysylka-doreczenie-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="edr-wysylka-doreczenie-uischema.json" /></bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Doreczenie" sourceRef="Task_Doreczenie" targetRef="GW_Doreczenie" />
+    <bpmn:exclusiveGateway id="GW_Doreczenie" name="Doręczenie" default="Flow_Doreczono" />
+    <bpmn:sequenceFlow id="Flow_Doreczono" name="Doręczono" sourceRef="GW_Doreczenie" targetRef="End_Doreczono" />
+    <bpmn:sequenceFlow id="Flow_Niedoreczono" name="Nie doręczono" sourceRef="GW_Doreczenie" targetRef="End_Niedoreczono">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Niedoreczono'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:endEvent id="End_Doreczono" name="Doręczono" />
+    <bpmn:endEvent id="End_Niedoreczono" name="Nie doręczono" />
+    <bpmn:endEvent id="End_Anulowano" name="Anulowano" />
+    <bpmn:endEvent id="End_Rezygnacja" name="Rezygnacja" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_Process_Edr_Wysylka">
+    <bpmndi:BPMNPlane id="Plane_Process_Edr_Wysylka" bpmnElement="Process_Edr_Wysylka">
+      <bpmndi:BPMNShape id="Shape_StartEvent_Wysylka" bpmnElement="StartEvent_Wysylka"><dc:Bounds x="112" y="200" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Przygotowanie" bpmnElement="Task_Przygotowanie"><dc:Bounds x="200" y="178" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Zatwierdzenie" bpmnElement="Task_Zatwierdzenie"><dc:Bounds x="360" y="178" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Zatwierdzenie" bpmnElement="GW_Zatwierdzenie" isMarkerVisible="true"><dc:Bounds x="520" y="193" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Wysylka" bpmnElement="Task_Wysylka"><dc:Bounds x="640" y="178" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Wynik" bpmnElement="GW_Wynik" isMarkerVisible="true"><dc:Bounds x="800" y="193" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Doreczenie" bpmnElement="Task_Doreczenie"><dc:Bounds x="900" y="178" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Doreczenie" bpmnElement="GW_Doreczenie" isMarkerVisible="true"><dc:Bounds x="1060" y="193" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Doreczono" bpmnElement="End_Doreczono"><dc:Bounds x="1162" y="200" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Niedoreczono" bpmnElement="End_Niedoreczono"><dc:Bounds x="1162" y="300" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Anulowano" bpmnElement="End_Anulowano"><dc:Bounds x="527" y="300" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Problem" bpmnElement="Task_Problem"><dc:Bounds x="775" y="330" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Problem" bpmnElement="GW_Problem" isMarkerVisible="true"><dc:Bounds x="920" y="345" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Rezygnacja" bpmnElement="End_Rezygnacja"><dc:Bounds x="1022" y="352" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_Start" bpmnElement="Flow_Start"><di:waypoint x="148" y="218" /><di:waypoint x="200" y="218" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Do_zatwierdzenia" bpmnElement="Flow_Do_zatwierdzenia"><di:waypoint x="300" y="218" /><di:waypoint x="360" y="218" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Zatwierdzenie" bpmnElement="Flow_Zatwierdzenie"><di:waypoint x="460" y="218" /><di:waypoint x="520" y="218" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Wyslij" bpmnElement="Flow_Wyslij"><di:waypoint x="570" y="218" /><di:waypoint x="640" y="218" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Do_poprawy" bpmnElement="Flow_Do_poprawy"><di:waypoint x="545" y="193" /><di:waypoint x="545" y="120" /><di:waypoint x="250" y="120" /><di:waypoint x="250" y="178" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Anuluj" bpmnElement="Flow_Anuluj"><di:waypoint x="545" y="243" /><di:waypoint x="545" y="300" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Wynik" bpmnElement="Flow_Wynik"><di:waypoint x="740" y="218" /><di:waypoint x="800" y="218" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Wyslano" bpmnElement="Flow_Wyslano"><di:waypoint x="850" y="218" /><di:waypoint x="900" y="218" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Blad" bpmnElement="Flow_Blad"><di:waypoint x="825" y="243" /><di:waypoint x="825" y="330" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Problem" bpmnElement="Flow_Problem"><di:waypoint x="875" y="370" /><di:waypoint x="920" y="370" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ponow" bpmnElement="Flow_Ponow"><di:waypoint x="945" y="345" /><di:waypoint x="945" y="300" /><di:waypoint x="710" y="300" /><di:waypoint x="710" y="258" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Popraw" bpmnElement="Flow_Popraw"><di:waypoint x="945" y="395" /><di:waypoint x="945" y="480" /><di:waypoint x="230" y="480" /><di:waypoint x="230" y="258" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Rezygnacja" bpmnElement="Flow_Rezygnacja"><di:waypoint x="970" y="370" /><di:waypoint x="1022" y="370" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Doreczenie" bpmnElement="Flow_Doreczenie"><di:waypoint x="1000" y="218" /><di:waypoint x="1060" y="218" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Doreczono" bpmnElement="Flow_Doreczono"><di:waypoint x="1110" y="218" /><di:waypoint x="1162" y="218" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Niedoreczono" bpmnElement="Flow_Niedoreczono"><di:waypoint x="1085" y="243" /><di:waypoint x="1085" y="318" /><di:waypoint x="1162" y="318" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,6 @@
+{
+  "ui:order": ["student_name", "album_number", "correspondence_type", "temat", "tresc", "uzupelnienie", "odpowiedz", "*"],
+  "tresc": { "ui:widget": "textarea" },
+  "uzupelnienie": { "ui:widget": "textarea" },
+  "odpowiedz": { "ui:widget": "textarea", "ui:options": { "rows": 6 } }
+}

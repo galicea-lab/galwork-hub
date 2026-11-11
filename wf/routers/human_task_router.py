@@ -18,9 +18,7 @@ podjęcie (claim) i wykonanie (complete) zadania.
 (JSON Schema + uiSchema + dane wstępne + `process_lock_version`) - ten sam
 schemat, który później waliduje `complete`.
 
-2026-10-15: dla formularzy z migracji Webcon -> RJSF (macierz
-`x-permissions` w schema.json - zob. rjsf.md/x-webcon.md,
-spiffworkflow-core/) `GET .../form` i walidacja w `complete` korzystają
+2026-10-15:  `GET .../form` i walidacja w `complete` korzystają
 teraz z `ProcessService.task_form()` (wf/services/process_service.py),
 który filtruje pola wg `x-permissions[nazwa_kroku]` (usuwa "none", ustawia
 `readOnly` dla "readonly") i buforuje wynik filtrowania w Redis

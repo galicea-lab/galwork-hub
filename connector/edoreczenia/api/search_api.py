@@ -89,7 +89,7 @@ class SearchEngineApi(object):
         # Authentication setting
         auth_settings = ['oAuthUserAgent']
 
-        # nie pochłaniamy wyjątku, wywołujący (EdrConnector/edr_api.py) ma już własny except.
+        # nie pochłaniamy wyjątku, wywołujący (EdrConnector/ade_search.py) ma już własny except.
         return self.api_client.call_api(
             '/search/bae_search', 'POST',
             path_params,

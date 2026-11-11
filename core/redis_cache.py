@@ -3,7 +3,7 @@
 
 """
 Klient Redis używany do buforowania skompilowanych formularzy zadań
-(`wf/services/process_service.py::task_form`) - zob. rjsf.md/x-webcon.md:
+(`wf/services/process_service.py::task_form`):
 backend ma być "projektorem/filtrem" formularza wg `x-permissions`, a wynik
 tego filtrowania (ten sam dla wszystkich instancji tego samego procesu w tym
 samym kroku) trzymać w Redis, żeby nie przeliczać go przy każdym wejściu w

@@ -1,0 +1,15 @@
+{
+  "title": "Rozpatrzenie pisma",
+  "description": "Odpowiedź trafi do studenta. Wybór ścieżki (załatwione, odmowa, do uzupełnienia) dodaje silnik (wf/decisions.py).",
+  "type": "object",
+  "required": ["odpowiedz"],
+  "properties": {
+    "student_name": { "type": "string", "title": "Student", "readOnly": true },
+    "album_number": { "type": "string", "title": "Nr albumu", "readOnly": true },
+    "correspondence_type": { "type": "string", "title": "Rodzaj sprawy", "readOnly": true },
+    "temat": { "type": "string", "title": "Temat", "readOnly": true },
+    "tresc": { "type": "string", "title": "Treść pisma", "readOnly": true },
+    "uzupelnienie": { "type": "string", "title": "Uzupełnienie studenta", "readOnly": true },
+    "odpowiedz": { "type": "string", "title": "Odpowiedź / uwagi dla studenta", "minLength": 1 }
+  }
+}

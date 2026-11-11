@@ -1,0 +1,4 @@
+{
+  "ui:order": ["temat", "tresc"],
+  "tresc": { "ui:widget": "textarea", "ui:options": { "rows": 8 } }
+}

@@ -4,10 +4,10 @@
 Decyzje gatewayów wyliczane z BPMN (bez kodu per definicja).
 
 Dla każdego `exclusiveGateway` z warunkami `chosen_path == ...` budujemy listę
-opcji z przepływów wychodzących: wartość = to, co ma trafić do `chosen_path`
-(numeryczny ID z importu Webcona albo `Flow_*`), etykieta = nazwa przepływu
-(z fallbackiem na nazwę zadania docelowego). Formularz zadania przed gatewayem
-dostaje pole wyboru, a wybór jest normalizowany przed uruchomieniem Spiffa.
+opcji z przepływów wychodzących: wartość = to, co ma trafić do `chosen_path`, 
+etykieta = nazwa przepływu (z fallbackiem na nazwę zadania docelowego). 
+Formularz zadania przed gatewayem dostaje pole wyboru, 
+a wybór jest normalizowany przed uruchomieniem Spiffa.
 
 To jedno miejsce obsługuje wszystkie definicje i przyszłe zmiany w BPMN.
 """

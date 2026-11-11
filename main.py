@@ -20,6 +20,8 @@ from fastapi.responses import HTMLResponse
 
 from core.config import settings
 from core.log import log_init
+# 2026-11-08: logi bez danych osobowych i tokenów !!!
+from core.log_redact import redact_query, safe_headers
 
 from router import v1router
 
@@ -74,6 +76,9 @@ app.add_middleware(
     allow_credentials=settings.app.cors_allow_credentials,  # Ciasteczka/nagłówki auth w cross-origin
     allow_methods=["*"],    # Zezwól na wszystkie metody HTTP (GET, POST, PUT, DELETE, OPTIONS itp.)
     allow_headers=["*"],    # Zezwól na wszystkie nagłówki w żądaniach cross-origin
+    # 2026-11-06: frontend (galwork-edu) czyta nazwę pobieranego pliku
+    # (załączniki spraw, wydruki) z Content-Disposition.
+    expose_headers=["Content-Disposition"],
 )
 
 # Middleware do logowania wywołań
@@ -81,31 +86,24 @@ app.add_middleware(
 async def log_requests(request: Request, call_next):
   """
   Middleware do logowania czasu trwania żądania oraz jego statusu.
-
-  Przy poziomie DEBUG (core/config.py -> config.ini [logging] level) loguje
-  też nagłówki i treść żądania - to był dawniej zakres api/ep.py::log,
-  wywoływanego jako zależność FastAPI w poszczególnych endpointach; tu robi
-  to jedno miejsce, dla wszystkich żądań.
   """
+  # 2026-11-08: bez treści żądania, tokenów (Authorization, Cookie) i wartości
+  # parametrów zapytania - mogą zawierać dane osobowe; zob. core/log_redact.py.
+  target = redact_query(str(request.url))
   if settings.logging.level == 'DEBUG':
-    try:
-      body = await request.body()
-      logger.debug("Body: %s" % body)
-      logger.debug("Headers:")
-      for name, value in request.headers.items():
-        logger.debug(f"\t{name}: {value}")
-    except Exception as e:
-      logger.debug(e)
+    logger.debug("Content-Length: %s", request.headers.get('content-length', '-'))
+    logger.debug("Headers: %s", safe_headers(request.headers))
 
   start_time = time.time()
   try:
     response = await call_next(request)
   except Exception as e:
-    logger.error(f"Request failed: {request.method} {request.url} - Exception: {e}")
+    # 2026-11-08: typ wyjątku zamiast jego treści (może zawierać dane z żądania).
+    logger.error(f"Request failed: {request.method} {target} - Exception: {type(e).__name__}")
     return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
 
   process_time = time.time() - start_time
-  logger.info(f"Request: {request.method} {request.url} - Status: {response.status_code} - Czas: {process_time:.4f}s")
+  logger.info(f"Request: {request.method} {target} - Status: {response.status_code} - Czas: {process_time:.4f}s")
   return response
 
 #app.add_middleware(CORSMiddleware,)

@@ -21,8 +21,6 @@ FORBIDDEN_IMPORTS = {'conf', 'configobj.config'}
 # Konektory, które muszą importować się bez podania konfiguracji.
 CONNECTOR_MODULES = [
   'connector.base',
-  'connector.edoreczenia.edr_webcon',
-  'connector.webcon.db',
   'connector.frappe_education.connector',
   'connector.signius.connector',
 ]
@@ -65,12 +63,6 @@ class ConnectorImportTest(unittest.TestCase):
       with self.subTest(module=module):
         importlib.import_module(module)
 
-  def test_webcon_connectors_have_own_sections(self):
-    ini = ConfigObj(str(ROOT / 'config' / 'config.ini'))
-    for section in ('edr_db',):
-      with self.subTest(section=section):
-        self.assertIn(section, ini, f'Brak sekcji [{section}] w config.ini')
-
   def test_config_ini_has_no_duplicate_sections(self):
     """`configparser` (core/config.py) rzuca DuplicateSectionError.
 
@@ -86,31 +78,14 @@ class ConnectorImportTest(unittest.TestCase):
     parser = configparser.ConfigParser()
     parser.read(ROOT / 'config' / 'config.ini')
     for section in ('edr_db', 'signius'):
+      # [edr_db] (baza Webcona) może nie istnieć - kod w dev/.
+      if not parser.has_section(section):
+        continue
       for key in ('password', 'user', 'dbpassword', 'dbuser', 'p12_password'):
         if key in parser[section]:
           with self.subTest(section=section, key=key):
             self.assertEqual(parser[section][key].strip(), '',
                              f'{section}.{key} nie powinno być wypełnione w repo')
-
-
-class WebconModuleSmokeTest(unittest.TestCase):
-  """`connector.webcon.db` nie otwiera połączenia na starcie modułu."""
-
-  def test_module_import_does_not_connect(self):
-    import connector.webcon.db as webcon_db
-    for name in ('db_get_edr', 'db_insert_edr', 'sql_select_edr', 'sql_insert_edr',
-                 '_connect_edr'):
-      self.assertTrue(hasattr(webcon_db, name), f'Brak {name} w connector.webcon.db')
-
-  def test_sqlite_engine_can_be_created(self):
-    """Sanity check dla testowej konfiguracji używanej w testach."""
-    engine = create_engine('sqlite://', connect_args={'check_same_thread': False},
-                           poolclass=StaticPool)
-    try:
-      with engine.connect() as conn:
-        self.assertEqual(conn.exec_driver_sql('select 1').scalar(), 1)
-    finally:
-      engine.dispose()
 
 
 if __name__ == '__main__':

@@ -1,38 +1,7 @@
 # coding: utf-8
 
 """
-Konektor do Frappe Education - pełna alternatywa dla connector/u10.
-
-Kontekst
---------
-Ten pakiet (`connector/frappe_education/*`) realizuje te same funkcje
-domenowe, dla uczelni, która prowadzi dziekanat we
-**Frappe Education** (fork `frappe/education`, repo `../education` w tym
-samym katalogu nadrzędnym co `galwork-hub`); Zgodne z Uczelnia10.
-Dodane Education na potrzeby tego konektora:
-`Student.album_number`, `Student.polon_student_uid`, `Program.study_mode`,
-`Program.degree_type`, `Course.ects_credits`, `Course.class_type`,
-`Course.passing_type`, `Program Course.semester_number`,
-`Program Enrollment.is_tuition_based`, `Academic Term.is_summer_term`
-+ `exam_session_*`, i cały nowy doctype `Student Academic Status`
-(odpowiednik `edu.state`/`edu.state.transition` z Odoo - a tu, pośrednio,
-odpowiednik `Lista_Semestrow`/`LStatus` z U10).
-
-Transport: REST API Frappe (`/api/resource/<DocType>`,
-`/api/method/<dotted.path>`), autoryzacja tokenem `api_key:api_secret`
-(https://frappeframework.com/docs/user/en/api/rest) - dokładnie jak
-`connector/erpnext/erpnext.py` (ten sam framework, Education to kolejna
-aplikacja Frappe). Nie reużywamy jednak `ErpNextConnector` wprost:
-- Education może stać na innym hoście/site niż ERPNext (osobna sekcja
-  konfiguracji `[frappe_education]`),
-- `ErpNextConnector.get_list()` koduje `filters`/`fields` przez `str(...)`,
-  co dla list/krotek daje Pythonowy repr z apostrofami (`[('a', '=', 'b')]`)
-  - to NIE jest poprawny JSON i Frappe (`json.loads` po stronie serwera)
-  odrzuci taki parametr albo zinterpretuje go błędnie. Tu kodujemy
-  `json.dumps` (patrz `_encode_list_param`).
-- potrzebujemy dodatkowo: stronicowania (`get_all`), odczytu plików
-  (`get_file_content` - dla connector/frappe_education/wydruki.py) i
-  wywołań `/api/method/...` (`call_method`).
+Konektor do Frappe Education.
 
 Konfiguracja - sekcja `[frappe_education]` w config/config.ini (albo
 zmienne środowiskowe `FRAPPE_EDUCATION_BASE_URL`, `FRAPPE_EDUCATION_API_KEY`,
@@ -51,6 +20,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import threading
 from typing import Any, Iterator
 
@@ -59,6 +29,8 @@ from connector.base import (
     ConnectorConfigError,
     ConnectorError,
 )
+# wywołania w imieniu użytkownika portalu.
+from connector.frappe_education.user_context import forward_user_headers
 
 log = logging.getLogger("connector.frappe_education")
 
@@ -69,6 +41,66 @@ def _encode_list_param(value: Any) -> str | None:
     if value is None:
         return None
     return json.dumps(value)
+
+
+# 2026-11-08 //--
+class FrappeRequestError(ConnectorError):
+    """Frappe odpowiedziało błędem.
+
+    `str(błąd)` zawiera tylko operację, status HTTP i typ wyjątku Frappe - bez
+    treści odpowiedzi, nazw dokumentów i ścieżek plików, bo trafia do logów, a
+    może zawierać dane osobowe. Komunikat Frappe dla użytkownika (bez śladu
+    stosu) jest w `user_message`; zob. `error_message()`.
+    """
+
+    def __init__(self, what: str, status_code: int, exc_type: str | None = None,
+                 user_message: str | None = None) -> None:
+        self.status_code = status_code
+        self.exc_type = exc_type
+        self.user_message = user_message
+        suffix = f" {exc_type}" if exc_type else ""
+        super().__init__(f"frappe_education {what} -> {status_code}{suffix}")
+
+
+def _strip_html(text: str) -> str:
+    return re.sub(r"<[^>]+>", "", text).strip()
+
+
+def _frappe_error_details(resp: Any) -> tuple[str | None, str | None]:
+    """`(exc_type, komunikat dla użytkownika)` z odpowiedzi błędu Frappe."""
+    try:
+        data = resp.json()
+    except Exception:
+        return None, None
+    if not isinstance(data, dict):
+        return None, None
+    exc_type = data.get("exc_type")
+    message = None
+    try:
+        messages = json.loads(data.get("_server_messages") or "[]")
+        if messages:
+            first = json.loads(messages[0]) if isinstance(messages[0], str) else messages[0]
+            message = first.get("message") if isinstance(first, dict) else str(first)
+    except (TypeError, ValueError):
+        message = None
+    if not message and data.get("exception"):
+        # "frappe.exceptions.ValidationError: treść" -> "treść" (bez śladu stosu)
+        last = str(data["exception"]).strip().splitlines()[-1]
+        message = last.split(": ", 1)[1] if ": " in last else last
+    return (str(exc_type) if exc_type else None), (_strip_html(message) if message else None)
+
+
+def error_message(exc: BaseException) -> str:
+    """Komunikat do odpowiedzi API: `user_message` z Frappe, jeśli jest
+    (także w wyjątku-przyczynie), inaczej `str(exc)`. Nie do logów."""
+    current: BaseException | None = exc
+    while current is not None:
+        message = getattr(current, "user_message", None)
+        if message:
+            return message
+        current = current.__cause__
+    return str(exc)
+# --//
 
 
 class FrappeEducationConnector(BaseConnector):
@@ -98,7 +130,7 @@ class FrappeEducationConnector(BaseConnector):
         if self._client is not None:
             return self._client
         try:
-            import requests  # import leniwy - jak w connector/u10/connector.py
+            import requests  # import leniwy
         except ImportError as exc:  # pragma: no cover - zależność środowiskowa
             raise ConnectorError(
                 "Brak pakietu requests - zainstaluj `requests`."
@@ -116,6 +148,9 @@ class FrappeEducationConnector(BaseConnector):
         with self._lock:
             if self._client is None:
                 session = requests.Session()
+                # nagłówki użytkownika portalu w czasie obsługi
+                # jego żądania (zob. connector/frappe_education/user_context.py).
+                session.auth = forward_user_headers
                 session.headers.update({
                     "Authorization": f"token {api_key}:{api_secret}",
                     "Accept": "application/json",
@@ -155,9 +190,9 @@ class FrappeEducationConnector(BaseConnector):
 
     def _raise_for_status(self, resp: Any, what: str) -> None:
         if not resp.ok:
-            raise ConnectorError(
-                f"frappe_education {what} -> {resp.status_code}: {resp.text[:500]}"
-            )
+            # bez treści odpowiedzi w komunikacie (trafia do logów).
+            exc_type, user_message = _frappe_error_details(resp)
+            raise FrappeRequestError(what, resp.status_code, exc_type, user_message)
 
     # ------------------------------------------------------------------
     # CRUD generyczny (/api/resource/<DocType>[/<name>])
@@ -202,8 +237,7 @@ class FrappeEducationConnector(BaseConnector):
         page_size: int = 200,
     ) -> Iterator[dict]:
         """Jak `get_list`, ale stronicuje automatycznie i zwraca wszystkie
-        rekordy (generator) - potrzebne dla zapytań słownikowych/zbiorczych,
-        które w U10 były jednym `SELECT` bez limitu."""
+        rekordy (generator) - potrzebne dla zapytań słownikowych/zbiorczych."""
         start = 0
         while True:
             page = self.get_list(
@@ -225,7 +259,8 @@ class FrappeEducationConnector(BaseConnector):
         """`GET /api/resource/<doctype>/<name>` - pojedynczy dokument."""
         session = self.connect()
         resp = session.get(self._url(f"/api/resource/{doctype}/{name}"), timeout=self._timeout_s())
-        self._raise_for_status(resp, f"get_doc({doctype}, {name})")
+        # bez nazwy dokumentu (np. e-mail jako nazwa User).
+        self._raise_for_status(resp, f"get_doc({doctype})")
         return resp.json().get("data", {})
 
     def create_doc(self, doctype: str, data: dict) -> dict:
@@ -237,13 +272,15 @@ class FrappeEducationConnector(BaseConnector):
     def update_doc(self, doctype: str, name: str, data: dict) -> dict:
         session = self.connect()
         resp = session.put(self._url(f"/api/resource/{doctype}/{name}"), json=data, timeout=self._timeout_s())
-        self._raise_for_status(resp, f"update_doc({doctype}, {name})")
+        # bez nazwy dokumentu.
+        self._raise_for_status(resp, f"update_doc({doctype})")
         return resp.json().get("data", {})
 
     def delete_doc(self, doctype: str, name: str) -> None:
         session = self.connect()
         resp = session.delete(self._url(f"/api/resource/{doctype}/{name}"), timeout=self._timeout_s())
-        self._raise_for_status(resp, f"delete_doc({doctype}, {name})")
+        # bez nazwy dokumentu.
+        self._raise_for_status(resp, f"delete_doc({doctype})")
 
     # ------------------------------------------------------------------
     # /api/method/... (RPC) i pliki
@@ -281,8 +318,7 @@ class FrappeEducationConnector(BaseConnector):
 
     def get_file_list(self, doctype: str, name: str) -> list[dict]:
         """Pliki dołączone do dokumentu (`File`, `attached_to_doctype`/
-        `attached_to_name`) - odpowiednik rejestru wydruków z U10
-        (zob. connector/frappe_education/wydruki.py)."""
+        `attached_to_name`) - zob. connector/frappe_education/wydruki.py."""
         return self.get_list(
             "File",
             filters=[
@@ -300,7 +336,43 @@ class FrappeEducationConnector(BaseConnector):
         uprawnienia do dokumentu, do którego plik jest podczepiony."""
         session = self.connect()
         resp = session.get(f"{self.base_url}{file_url}", timeout=self._timeout_s())
-        self._raise_for_status(resp, f"get_file_content({file_url})")
+        # bez ścieżki pliku (nazwy plików bywają nazwiskami).
+        self._raise_for_status(resp, "get_file_content()")
+        return resp.content
+
+    # 2026-11-06: PDF wydruku dokumentu (Print Format) - źródło dokumentu
+    # do opieczętowania (edu/services/sealing.py).
+    def get_print_pdf(
+        self,
+        doctype: str,
+        name: str,
+        print_format: str | None = None,
+        *,
+        letterhead: str | None = None,
+        no_letterhead: bool = False,
+    ) -> bytes:
+        """`GET /api/method/frappe.utils.print_format.download_pdf` - PDF
+        dokumentu w danym szablonie wydruku (bez `print_format`: szablon
+        domyślny doctype'u, a bez niego "Standard")."""
+        session = self.connect()
+        params = {"doctype": doctype, "name": name, "no_letterhead": "1" if no_letterhead else "0"}
+        if print_format:
+            params["format"] = print_format
+        if letterhead:
+            params["letterhead"] = letterhead
+        resp = session.get(
+            self._url("/api/method/frappe.utils.print_format.download_pdf"),
+            params=params,
+            timeout=self._timeout_s(),
+        )
+        # bez nazwy dokumentu.
+        self._raise_for_status(resp, f"get_print_pdf({doctype})")
+        if not resp.content.startswith(b"%PDF"):
+            raise ConnectorError(
+                # bez nazwy dokumentu.
+                f"frappe_education get_print_pdf({doctype}): odpowiedź nie jest PDF "
+                f"({resp.headers.get('Content-Type', '?')})"
+            )
         return resp.content
 
     def upload_file(
@@ -337,7 +409,8 @@ class FrappeEducationConnector(BaseConnector):
             files=files,
             timeout=self._timeout_s(),
         )
-        self._raise_for_status(resp, f"upload_file({doctype}, {name})")
+        # bez nazwy dokumentu.
+        self._raise_for_status(resp, f"upload_file({doctype})")
         return resp.json().get("message", {})
 
 

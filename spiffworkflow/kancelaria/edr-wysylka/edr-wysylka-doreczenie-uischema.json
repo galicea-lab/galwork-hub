@@ -1,0 +1,4 @@
+{
+  "ui:order": ["message_id", "ade_to", "subject", "uwagi", "*"],
+  "uwagi": { "ui:widget": "textarea" }
+}

@@ -20,7 +20,7 @@ WAŻNE OGRANICZENIE: `wf/engine.py` (zob. komentarz na początku tego pliku)
 NIE wykonuje `serviceTask`/`scriptTask` - `script_engine` jest wyłączony,
 silnik rozumie tylko `userTask`/`manualTask`. W BPMN nie da się więc dziś
 wymodelować "Service Task: poproś o podpis", który silnik sam by wywołał.
-Te endpointy są więc - jak `wf/routers/edr_api.py` dla e-Doręczeń - akcjami
+Te endpointy są więc - jak `wf/routers/edr_paperless_api.py` dla e-Doręczeń - akcjami
 wywoływanymi z zewnątrz (np. przyciskiem w UI po zakończeniu zadania
 człowieka "Zatwierdź i wyślij do podpisu", albo z n8n), a nie krokiem,
 który silnik wykonuje automatycznie. Rozszerzenie silnika o prawdziwe
@@ -31,8 +31,8 @@ Signius w tym kliencie nie ma webhooka (zob. `connector/signius/connector.py`)
 w UI, albo cron/n8n - `connector/n8n` już istnieje w hubie).
 
 Endpointy wymagają tokenu Keycloak (`get_current_wf_user`) - tak jak reszta
-modułu wf; nie ma tu żadnego anonimowego callbacku (w przeciwieństwie do
-edr_api.py), więc router jest od razu montowany w `router.py`.
+modułu wf; nie ma tu żadnego anonimowego callbacku, więc router jest od
+razu montowany w `router.py`.
 """
 
 from __future__ import annotations
