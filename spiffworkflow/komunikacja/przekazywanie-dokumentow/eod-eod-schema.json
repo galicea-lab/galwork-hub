@@ -3,17 +3,6 @@
   "description": "Proces: EOD - Przekaż dokument / informację (ID: 312); Obieg: EOD - EOD (ID: 354); Typ dokumentu: EOD - EOD (ID: 466)",
   "type": "object",
   "properties": {
-    "Wybór spółki": {
-      "type": "string",
-      "title": "Wybór spółki",
-      "x-permissions": {
-        "Nowa przesyłka": "editable",
-        "Redagowanie": "editable",
-        "EOD": "editable",
-        "Archiwum": "editable",
-        "Kosz": "editable"
-      }
-    },
     "Tytuł informacji (wybór z wcześniej używanych)": {
       "type": "string",
       "title": "Tytuł informacji (wybór z wcześniej używanych)",

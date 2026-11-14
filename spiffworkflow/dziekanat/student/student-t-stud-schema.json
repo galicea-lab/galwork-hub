@@ -1,0 +1,221 @@
+{
+  "title": "Student-T-STUD",
+  "description": "Proces: E-T - Teczka Studenta (ID: 123); Obieg: STUD - Student (ID: 137); Typ dokumentu: T-STUD - E-Teczka studenta (ID: 132)",
+  "type": "object",
+  "properties": {
+    "Student(ka)": {
+      "type": "string",
+      "title": "Student(ka)",
+      "x-permissions": {
+        "Start": "editable",
+        "Dane studenta": "readonly",
+        "Archiwum": "readonly",
+        "Kosz": "none"
+      },
+      "x-required-in-steps": [
+        "Start"
+      ]
+    },
+    "Karty Osiągnięć Okresowych": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Karty Osiągnięć Okresowych",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "readonly",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "Decyzje": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Decyzje",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "readonly",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "Wnioski i inne": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Wnioski i inne",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "readonly",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "Id. POLON studenta": {
+      "type": "string",
+      "title": "Id. POLON studenta",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "none",
+        "Archiwum": "none",
+        "Kosz": "none"
+      }
+    },
+    "id. nadany": {
+      "type": "string",
+      "title": "id. nadany",
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "editable",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "Czy poprawny?": {
+      "type": "boolean",
+      "title": "Czy poprawny?",
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "editable",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "Przedrostek nazwiska": {
+      "type": "string",
+      "title": "Przedrostek nazwiska",
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "editable",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "Nazwisko": {
+      "type": "string",
+      "title": "Nazwisko",
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "editable",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "Imię": {
+      "type": "string",
+      "title": "Imię",
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "editable",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "pesel": {
+      "type": "string",
+      "title": "pesel",
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "editable",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "documentCountry": {
+      "type": "string",
+      "title": "documentCountry",
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "editable",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "Rodzaj dokumentu": {
+      "type": "string",
+      "title": "Rodzaj dokumentu",
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "editable",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "Numer dokumentu": {
+      "type": "string",
+      "title": "Numer dokumentu",
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "editable",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "POLON": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "POLON",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "readonly",
+        "Archiwum": "readonly",
+        "Kosz": "readonly"
+      }
+    },
+    "nr_albumu": {
+      "type": "string",
+      "title": "nr_albumu",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "readonly",
+        "Archiwum": "readonly",
+        "Kosz": "none"
+      }
+    },
+    "email": {
+      "type": "string",
+      "title": "email",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Dane studenta": "readonly",
+        "Archiwum": "readonly",
+        "Kosz": "none"
+      }
+    },
+    "Inne sprawy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Inne sprawy",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "none",
+        "Dane studenta": "readonly",
+        "Archiwum": "readonly",
+        "Kosz": "none"
+      }
+    }
+  },
+  "required": [
+    "Student(ka)"
+  ]
+}

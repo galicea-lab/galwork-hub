@@ -174,6 +174,16 @@ def seed(folder: str, key: str, name: str, dry_run: bool = False) -> str:
             # sam komentarz w wf/routers/process_model_router.py
             db.flush()
 
+        # 2026-11-13: przypięcie wersji procesów wywoływanych (callActivity).
+        from wf.services.process_service import ProcessServiceError, get_service
+        try:
+            for warning in get_service().pin_called_versions(db, version):
+                print(f"[seed_process_model] UWAGA: {warning}")
+        except ProcessServiceError as exc:
+            db.rollback()
+            print(f"[seed_process_model] model '{key}' NIE opublikowany: {exc}")
+            return 'error'
+
         version.status = ProcessModelVersionStatus.PUBLISHED
         version.published_at = datetime.now(UTC)
         db.commit()

@@ -2,7 +2,6 @@
   "ui:order": [
     "Temat",
     "Adres tradycyjny",
-    "Wybór spółki",
     "Nadawca",
     "Odbiorca",
     "Powiązania",
@@ -127,12 +126,6 @@
     },
     "ui:options": {
       "addable": true
-    }
-  },
-  "Wybór spółki": {
-    "ui:widget": "AsyncSelectWidget",
-    "ui:options": {
-      "endpoint": "/v1/wf/dictionaries/companies"
     }
   }
 }

@@ -58,15 +58,6 @@
         "Archiwum terminarzy": "editable"
       }
     },
-    "Wybór spółki": {
-      "type": "string",
-      "title": "Wybór spółki",
-      "x-permissions": {
-        "Definicja terminarza": "editable",
-        "Aktywne terminarze": "editable",
-        "Archiwum terminarzy": "editable"
-      }
-    },
     "Zakres": {
       "type": "object",
       "properties": {

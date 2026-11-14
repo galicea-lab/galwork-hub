@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   id="defs_Process_Wszczecie_postepowania"
+                   targetNamespace="http://bpmn"
+                   xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core">
+
+<bpmn:process id="Process_Wszczecie_postepowania" name="Wszczęcie postępowania" isExecutable="true">
+<bpmn:startEvent id="StartEvent_main" name="Start" />
+<bpmn:userTask id="Task_01" name="Wskazanie przesłanki do wszczęcia postępowania" ><spiffworkflow:property name="formJsonSchemaFilename" value="wszczecie-postepowania-skr0-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="wszczecie-postepowania-skr0-uischema.json" /></bpmn:userTask>
+<bpmn:sendTask id="Task_02" name="Załóż teczkę sprawy"><bpmn:documentation>teczka sprawy jako osobna instancja (żyje dłużej niż wszczęcie), nie callActivity - zob. galwork-hub wf/engine.py::StartLink.</bpmn:documentation><bpmn:extensionElements><spiffworkflow:properties><spiffworkflow:property name="startProcess" value="teczka-sprawy" /><spiffworkflow:property name="startInput" value="Wszczęcie postępowania.Wydział-&gt;Kogo dotyczy.Wydział, Wszczęcie postępowania.Instytut-&gt;Kogo dotyczy.Instytut, Wszczęcie postępowania.Kierunek-&gt;Kogo dotyczy.Kierunek, Wszczęcie postępowania.Student(ka)-&gt;Kogo dotyczy.Student(ka), Dane studenta.Numer albumu-&gt;Kogo dotyczy.Numer albumu, Dane studenta.Adres zamieszkania-&gt;Dane adresowe.Adres zamieszkania, Dane studenta.Email-&gt;Dane adresowe.Email, Wszczęcie postępowania.Osoba rejestrująca-&gt;Dane teczki.Osoba rejestrująca, Wszczęcie postępowania.Data rejestracji-&gt;Dane teczki.Data założenia" /></spiffworkflow:properties></bpmn:extensionElements></bpmn:sendTask>
+<bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_main" targetRef="Task_01" />
+<bpmn:sequenceFlow id="Flow_2" sourceRef="Task_01" targetRef="Task_02" name="Rozpocznij postępowanie" />
+<bpmn:endEvent id="EndEvent_1" name="Koniec" />
+<bpmn:sequenceFlow id="Flow_3" sourceRef="Task_02" targetRef="EndEvent_1" />
+</bpmn:process>
+<bpmndi:BPMNDiagram id="Diagram_Process_Wszczecie_postepowania">
+<bpmndi:BPMNPlane id="Plane_Process_Wszczecie_postepowania" bpmnElement="Process_Wszczecie_postepowania">
+<bpmndi:BPMNShape id="Shape_StartEvent_main" bpmnElement="StartEvent_main"><dc:Bounds x="60" y="82" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_01" bpmnElement="Task_01"><dc:Bounds x="280" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_02" bpmnElement="Task_02"><dc:Bounds x="500" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_EndEvent_1" bpmnElement="EndEvent_1"><dc:Bounds x="720" y="82" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1"><di:waypoint x="96" y="100" /><di:waypoint x="280" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_2" bpmnElement="Flow_2"><di:waypoint x="380" y="100" /><di:waypoint x="500" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_3" bpmnElement="Flow_3"><di:waypoint x="600" y="100" /><di:waypoint x="720" y="100" /></bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane>
+</bpmndi:BPMNDiagram>
+</bpmn:definitions>

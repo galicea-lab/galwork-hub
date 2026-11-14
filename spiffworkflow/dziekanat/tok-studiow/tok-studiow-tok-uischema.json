@@ -1,0 +1,77 @@
+{
+  "ui:order": [
+    "POLON"
+  ],
+  "POLON": {
+    "ui:order": [
+      "Id studenta",
+      "id student/tok",
+      "Kierunek",
+      "Kod (POLON)",
+      "Forma",
+      "Poziom",
+      "fosProfile",
+      "interfacultyData",
+      "professionalTitle",
+      "Ilość semestrów",
+      "polon2Fos",
+      "Data rozpoczęcia",
+      "leadingInstitution",
+      "educationEndInstitution",
+      "Data uzyskania dyplomu",
+      "Data rezygnacji",
+      "Semestr studiów",
+      "academicSemester",
+      "Rok akademicki"
+    ],
+    "educationEndInstitution": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/polon-institutions",
+        "sourceName": "POLON – Institutions"
+      }
+    },
+    "leadingInstitution": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/polon-institutions",
+        "sourceName": "POLON – Institutions"
+      }
+    },
+    "Forma": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/polon-fosforms",
+        "sourceName": "POLON – fosForms"
+      }
+    },
+    "Poziom": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/polon-foslevels",
+        "sourceName": "POLON – fosLevels"
+      }
+    },
+    "fosProfile": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/polon-fosprofiles",
+        "sourceName": "POLON – fosProfileS"
+      }
+    },
+    "professionalTitle": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/polon-professionaltitles",
+        "sourceName": "POLON – professionalTitles"
+      }
+    },
+    "academicSemester": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/polon-academicsemesters",
+        "sourceName": "POLON – academicSemesters"
+      }
+    }
+  }
+}

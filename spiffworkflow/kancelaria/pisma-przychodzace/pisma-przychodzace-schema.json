@@ -3,18 +3,6 @@
   "description": "Formularz – Proces: KANC - Pisma przychodzące; Obieg: KPRZ - Pisma przychodzące (ID: 225); Typ dokumentu: Pisma przychodzące",
   "type": "object",
   "properties": {
-    "Wybór spółki": {
-      "type": "string",
-      "title": "Wybór spółki",
-      "x-permissions": {
-        "Nowe pismo": "editable",
-        "Obsługa kancelaryjna pisma": "editable",
-        "Decydent": "editable",
-        "Pismo u adresatów": "editable",
-        "Procedowanie": "editable",
-        "Archiwum pism przychodzących": "editable"
-      }
-    },
     "Temat": {
       "type": "string",
       "title": "Temat",

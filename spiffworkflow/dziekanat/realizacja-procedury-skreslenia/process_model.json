@@ -1,0 +1,9 @@
+{
+    "description": "Realizacja procedury skreślenia",
+    "display_name": "Realizacja procedury skreślenia",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "realizacja-procedury-skreslenia.bpmn",
+    "primary_process_id": "Process_Realizacja_procedury_skreslenia"
+}

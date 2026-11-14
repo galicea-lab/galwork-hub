@@ -204,3 +204,43 @@ class ProcessFlowTest(ApiTestCase):
     from wf.models import HumanTask
     statuses = {task.name: task.status for task in self.db.query(HumanTask).all()}
     self.assertEqual(statuses, {'Recenzja': HumanTaskStatus.CANCELLED})
+
+
+# BEGIN 2026-11-12
+BPMN_LANES = """<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  id="def_lanes" targetNamespace="urn:galwork:test">
+  <bpmn:process id="proc_lanes" isExecutable="true">
+    <bpmn:laneSet id="ls_1">
+      <bpmn:lane id="lane_dziekanat" name="Dziekanat">
+        <bpmn:flowNodeRef>task_lane</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="start_1"/>
+    <bpmn:sequenceFlow id="f1" sourceRef="start_1" targetRef="task_lane"/>
+    <bpmn:userTask id="task_lane" name="W torze"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="task_lane" targetRef="end_1"/>
+    <bpmn:endEvent id="end_1"/>
+  </bpmn:process>
+</bpmn:definitions>
+"""
+
+
+class LaneTest(ApiTestCase):
+  """Zadanie w `bpmn:lane` - SpiffWorkflow 3.x podaje tor jako str."""
+
+  def prepare(self) -> None:
+    self.user = self.create_user()
+    self.current_user = CurrentUser(
+      id=self.user.id, sub=self.user.keycloak_sub, username=self.user.name,
+      email=self.user.email, display_name=self.user.name, groups=frozenset())
+
+  def test_task_in_lane_is_created_with_lane_name(self):
+    from wf.models import HumanTask
+    self.create_process_model(key='tory', bpmn=BPMN_LANES, bpmn_process_id='proc_lanes')
+    response = self.client.post('/v1/wf/process-instances', json={
+      'process_model_key': 'tory', 'title': 'Tor'})
+    self.assertEqual(response.status_code, 201, response.text)
+    task = self.db.query(HumanTask).one()
+    self.assertEqual(task.lane, 'Dziekanat')
+# -END

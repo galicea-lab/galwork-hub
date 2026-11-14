@@ -1,0 +1,4948 @@
+{
+  "title": "Zgłoszenie-F",
+  "description": "Proces: SPRAWA - Sprawy studenckie (ID: 183); Obieg: ISS - Zgłoszenie (ID: 214)",
+  "type": "object",
+  "properties": {
+    "Rodzaj pisma": {
+      "type": "string",
+      "title": "Rodzaj pisma",
+      "x-permissions": {
+        "Start": "editable",
+        "Dziekanat - dyspozytor": "editable",
+        "Weryfikacja BOS": "readonly",
+        "Odrzucone": "readonly",
+        "Promotor": "readonly",
+        "Dyrektor Instytutu": "readonly",
+        "Dziekan Wydziału": "readonly",
+        "Rektor": "readonly",
+        "Dokument Przygotowany": "readonly",
+        "Gotowe": "readonly",
+        "Czy potrzebna opinia Promotora?": "readonly",
+        "Czy potrzebna opinia Dyrektora Instytutu": "readonly",
+        "Czy potrzebna opinia Dziekana": "readonly"
+      },
+      "x-required-in-steps": [
+        "Start"
+      ]
+    },
+    "Kto obsługuje": {
+      "type": "string",
+      "title": "Kto obsługuje",
+      "x-permissions": "p20"
+    },
+    "Kto podpisuje": {
+      "type": "string",
+      "title": "Kto podpisuje",
+      "x-permissions": "p21"
+    },
+    "wydruk z Uczelni10": {
+      "type": "string",
+      "title": "wydruk z Uczelni10",
+      "x-permissions": "p22"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "F-ISS"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-f-iss"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-f-iss"
+          },
+          "OKRES": {
+            "$ref": "#/$defs/okres-f-iss"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-f-iss"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-f-iss"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-f-iss"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-f-iss"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "PMDS"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-pmds"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-pmds"
+          },
+          "WYBÓR OPCJI": {
+            "$ref": "#/$defs/wybor-opcji-pmds"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-pmds"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-pmds"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-pmds"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-pmds"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-pmds"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "POD"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-pmds"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-pod"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-pmds"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-pod"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-pod"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-pod"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-pod"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "PPT"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-pmds"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-ppt"
+          },
+          "WYBÓR OPCJI": {
+            "$ref": "#/$defs/wybor-opcji-ppt"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-ppt"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-f-iss"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-f-iss"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-ppt"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-ppt"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "PSS"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-pmds"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-pss"
+          },
+          "WYBÓR OPCJI": {
+            "$ref": "#/$defs/wybor-opcji-pss"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-pmds"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-pmds"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-pod"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-pod"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-pss"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "PZSK"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-f-iss"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-pzsk"
+          },
+          "OKRES": {
+            "$ref": "#/$defs/okres-pzsk"
+          },
+          "Zwracam się z uprzejmą prośbą o:": {
+            "$ref": "#/$defs/zwracam-sie-z-uprzejma-prosba-o-pzsk"
+          },
+          "WYBÓR OPCJI": {
+            "$ref": "#/$defs/wybor-opcji-pzsk"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-pmds"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-pzsk"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-pmds"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-pzsk"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-pzsk"
+          },
+          "OPŁATY": {
+            "$ref": "#/$defs/oplaty-pzsk"
+          },
+          "PROPONOWANY TERMIN": {
+            "$ref": "#/$defs/proponowany-termin-pzsk"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "TZPD"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-f-iss"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-tzpd"
+          },
+          "WYBÓR OPCJI": {
+            "$ref": "#/$defs/wybor-opcji-tzpd"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-tzpd"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-f-iss"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-f-iss"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-tzpd"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-tzpd"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "UUZ"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-pmds"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-uuz"
+          },
+          "OKRES": {
+            "$ref": "#/$defs/okres-uuz"
+          },
+          "WYBÓR OPCJI": {
+            "$ref": "#/$defs/wybor-opcji-uuz"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-pmds"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-pmds"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-pod"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-pod"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-pss"
+          },
+          "PROPONOWANY TERMIN": {
+            "$ref": "#/$defs/proponowany-termin-pzsk"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "WS"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-f-iss"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-ws"
+          },
+          "WYBÓR OPCJI": {
+            "$ref": "#/$defs/wybor-opcji-pzsk"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-pmds"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-pmds"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-pod"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-pod"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-ws"
+          },
+          "OPŁATY": {
+            "$ref": "#/$defs/oplaty-ws"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "ZA"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-f-iss"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-pzsk"
+          },
+          "OKRES": {
+            "$ref": "#/$defs/okres-pzsk"
+          },
+          "Zwracam się z uprzejmą prośbą o:": {
+            "$ref": "#/$defs/zwracam-sie-z-uprzejma-prosba-o-pzsk"
+          },
+          "WYBÓR OPCJI": {
+            "$ref": "#/$defs/wybor-opcji-pzsk"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-pmds"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-pzsk"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-pmds"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-pzsk"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-pzsk"
+          },
+          "OPŁATY": {
+            "$ref": "#/$defs/oplaty-pzsk"
+          },
+          "PROPONOWANY TERMIN": {
+            "$ref": "#/$defs/proponowany-termin-pzsk"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "ZKS"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-f-iss"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-zks"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-f-iss"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-f-iss"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-zks"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-zks"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "ZOS"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-pmds"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-zos"
+          },
+          "Zwracam się z uprzejmą prośbą o:": {
+            "$ref": "#/$defs/zwracam-sie-z-uprzejma-prosba-o-pzsk"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-pmds"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-pmds"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-pod"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-pod"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-zos"
+          },
+          "OPŁATY": {
+            "$ref": "#/$defs/oplaty-ws"
+          },
+          "PROPONOWANY TERMIN": {
+            "$ref": "#/$defs/proponowany-termin-pzsk"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "ZPD"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-f-iss"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-zpd"
+          },
+          "WYBÓR OPCJI": {
+            "$ref": "#/$defs/wybor-opcji-tzpd"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-f-iss"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-f-iss"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-zpd"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-zpd"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "ZPS"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-f-iss"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-pzsk"
+          },
+          "OKRES": {
+            "$ref": "#/$defs/okres-pzsk"
+          },
+          "Zwracam się z uprzejmą prośbą o:": {
+            "$ref": "#/$defs/zwracam-sie-z-uprzejma-prosba-o-pzsk"
+          },
+          "WYBÓR OPCJI": {
+            "$ref": "#/$defs/wybor-opcji-pzsk"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-pmds"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-pzsk"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-pmds"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-pzsk"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-pzsk"
+          },
+          "OPŁATY": {
+            "$ref": "#/$defs/oplaty-pzsk"
+          },
+          "PROPONOWANY TERMIN": {
+            "$ref": "#/$defs/proponowany-termin-pzsk"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "ZS"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-f-iss"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-zs"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-pmds"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-zs"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-pmds"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-zs"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Rodzaj pisma": {
+            "const": "ZWW"
+          }
+        },
+        "required": [
+          "Rodzaj pisma"
+        ]
+      },
+      "then": {
+        "properties": {
+          "IDENTYFIKACJA": {
+            "$ref": "#/$defs/identyfikacja-pmds"
+          },
+          "PISMO": {
+            "$ref": "#/$defs/pismo-pss"
+          },
+          "WYBÓR OPCJI": {
+            "$ref": "#/$defs/wybor-opcji-pss"
+          },
+          "POLA REDAKCYJNE": {
+            "$ref": "#/$defs/pola-redakcyjne-pmds"
+          },
+          "DANE STUDENTA": {
+            "$ref": "#/$defs/dane-studenta-pmds"
+          },
+          "TOK STUDIÓW": {
+            "$ref": "#/$defs/tok-studiow-pod"
+          },
+          "ADRESAT": {
+            "$ref": "#/$defs/adresat-pod"
+          },
+          "DECYZJA": {
+            "$ref": "#/$defs/decyzja-pss"
+          },
+          "PROPONOWANY TERMIN": {
+            "$ref": "#/$defs/proponowany-termin-zww"
+          }
+        }
+      }
+    }
+  ],
+  "x-permission-profiles": {
+    "p01": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "readonly",
+      "Dyrektor Instytutu": "readonly",
+      "Dziekan Wydziału": "readonly",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p02": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "readonly",
+      "Dziekan Wydziału": "readonly",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p03": {
+      "Start": "editable",
+      "Dziekanat - dyspozytor": "readonly",
+      "Weryfikacja BOS": "readonly",
+      "Odrzucone": "readonly",
+      "Promotor": "readonly",
+      "Dyrektor Instytutu": "readonly",
+      "Dziekan Wydziału": "readonly",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p04": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "readonly",
+      "Odrzucone": "readonly",
+      "Promotor": "readonly",
+      "Dyrektor Instytutu": "readonly",
+      "Dziekan Wydziału": "readonly",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p05": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "none",
+      "Dokument Przygotowany": "none",
+      "Gotowe": "none"
+    },
+    "p06": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "readonly",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "readonly",
+      "Dziekan Wydziału": "readonly",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p07": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "readonly",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p08": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p09": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p10": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "editable",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "editable",
+      "Gotowe": "editable"
+    },
+    "p11": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "readonly",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p12": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "editable",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p13": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p14": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "readonly",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p15": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "editable",
+      "Gotowe": "readonly"
+    },
+    "p17": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "readonly",
+      "Dziekan Wydziału": "readonly",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p18": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "editable",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "editable",
+      "Gotowe": "editable"
+    },
+    "p19": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "editable",
+      "Gotowe": "editable"
+    },
+    "p20": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "readonly",
+      "Odrzucone": "none",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "none",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p21": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "none",
+      "Dokument Przygotowany": "editable",
+      "Gotowe": "readonly"
+    },
+    "p22": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "none",
+      "Dokument Przygotowany": "editable",
+      "Gotowe": "readonly"
+    },
+    "p23": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "none",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p24": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "editable",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "editable",
+      "Gotowe": "editable"
+    },
+    "p25": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "none",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p26": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "none",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p27": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "readonly",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "readonly",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p28": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "readonly",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p29": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "readonly",
+      "Dziekan Wydziału": "readonly",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p30": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "editable",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "editable",
+      "Gotowe": "editable"
+    },
+    "p31": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p32": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "none",
+      "Dokument Przygotowany": "none",
+      "Gotowe": "readonly"
+    },
+    "p33": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p34": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "readonly",
+      "Dziekan Wydziału": "readonly",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p35": {
+      "Start": "editable",
+      "Dziekanat - dyspozytor": "readonly",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "readonly",
+      "Dyrektor Instytutu": "readonly",
+      "Dziekan Wydziału": "readonly",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p36": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "readonly",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "none",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p37": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "readonly",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p38": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p39": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p40": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "none",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "editable"
+    },
+    "p41": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "editable",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "editable",
+      "Gotowe": "editable"
+    },
+    "p42": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "readonly",
+      "Dyrektor Instytutu": "editable",
+      "Dziekan Wydziału": "editable",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p43": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "readonly",
+      "Odrzucone": "readonly",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p44": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "editable",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p45": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "editable",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "editable",
+      "Gotowe": "editable"
+    },
+    "p46": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "none",
+      "Weryfikacja BOS": "none",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p47": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "editable",
+      "Odrzucone": "readonly",
+      "Promotor": "none",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "editable",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    },
+    "p48": {
+      "Start": "none",
+      "Dziekanat - dyspozytor": "editable",
+      "Weryfikacja BOS": "readonly",
+      "Odrzucone": "readonly",
+      "Promotor": "readonly",
+      "Dyrektor Instytutu": "none",
+      "Dziekan Wydziału": "none",
+      "Rektor": "readonly",
+      "Dokument Przygotowany": "readonly",
+      "Gotowe": "readonly"
+    }
+  },
+  "$defs": {
+    "adresat-f-iss": {
+      "type": "object",
+      "properties": {
+        "Dyrektor instytutu": {
+          "type": "string",
+          "title": "Dyrektor instytutu",
+          "x-permissions": "p13"
+        }
+      },
+      "title": "ADRESAT",
+      "x-permissions": "p24"
+    },
+    "adresat-pmds": {
+      "type": "object",
+      "properties": {
+        "Rektor": {
+          "type": "string",
+          "title": "Rektor",
+          "x-permissions": "p31"
+        },
+        "Dziekan Wydziału": {
+          "type": "string",
+          "title": "Dziekan Wydziału",
+          "x-permissions": "p13"
+        }
+      },
+      "title": "ADRESAT",
+      "x-permissions": "p24"
+    },
+    "adresat-pod": {
+      "type": "object",
+      "properties": {
+        "Rektor": {
+          "type": "string",
+          "title": "Rektor",
+          "x-permissions": "p31"
+        },
+        "Dyrektor instytutu": {
+          "type": "string",
+          "title": "Dyrektor instytutu",
+          "x-permissions": "p13"
+        },
+        "Dziekan Wydziału": {
+          "type": "string",
+          "title": "Dziekan Wydziału",
+          "x-permissions": "p13"
+        }
+      },
+      "title": "ADRESAT",
+      "x-permissions": "p24"
+    },
+    "adresat-ppt": {
+      "type": "object",
+      "properties": {
+        "Dyrektor instytutu": {
+          "type": "string",
+          "title": "Dyrektor instytutu",
+          "x-permissions": "p13"
+        },
+        "Dziekan Wydziału": {
+          "type": "string",
+          "title": "Dziekan Wydziału",
+          "x-permissions": "p13"
+        }
+      },
+      "title": "ADRESAT",
+      "x-permissions": "p24"
+    },
+    "adresat-pzsk": {
+      "type": "object",
+      "properties": {
+        "Rektor": {
+          "type": "string",
+          "title": "Rektor",
+          "x-permissions": "p31"
+        },
+        "Dyrektor instytutu": {
+          "type": "string",
+          "title": "Dyrektor instytutu",
+          "x-permissions": "p13"
+        },
+        "Promotor": {
+          "type": "string",
+          "title": "Promotor",
+          "x-permissions": "p42"
+        },
+        "Dziekan Wydziału": {
+          "type": "string",
+          "title": "Dziekan Wydziału",
+          "x-permissions": "p13"
+        }
+      },
+      "title": "ADRESAT",
+      "x-permissions": "p24"
+    },
+    "adresat-tzpd": {
+      "type": "object",
+      "properties": {
+        "Promotor": {
+          "type": "string",
+          "title": "Promotor",
+          "x-permissions": "p42"
+        },
+        "Dziekan Wydziału": {
+          "type": "string",
+          "title": "Dziekan Wydziału",
+          "x-permissions": "p13"
+        }
+      },
+      "title": "ADRESAT",
+      "x-permissions": "p24"
+    },
+    "adresat-zks": {
+      "type": "object",
+      "properties": {
+        "Rektor": {
+          "type": "string",
+          "title": "Rektor",
+          "x-permissions": "p31"
+        }
+      },
+      "title": "ADRESAT",
+      "x-permissions": "p24"
+    },
+    "adresat-zpd": {
+      "type": "object",
+      "properties": {
+        "Dyrektor instytutu": {
+          "type": "string",
+          "title": "Dyrektor instytutu",
+          "x-permissions": "p13"
+        },
+        "Promotor": {
+          "type": "string",
+          "title": "Promotor",
+          "x-permissions": "p42"
+        }
+      },
+      "title": "ADRESAT",
+      "x-permissions": "p24"
+    },
+    "dane-studenta-f-iss": {
+      "type": "object",
+      "properties": {
+        "Nr_albumu": {
+          "type": "string",
+          "title": "Nr_albumu",
+          "x-permissions": "p04"
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "x-permissions": "p04"
+        },
+        "Numer telefonu": {
+          "type": "string",
+          "title": "Numer telefonu",
+          "x-permissions": "p04"
+        },
+        "Adres zamieszkania": {
+          "type": "string",
+          "title": "Adres zamieszkania",
+          "x-permissions": "p04"
+        }
+      },
+      "title": "DANE STUDENTA",
+      "x-permissions": "p12"
+    },
+    "dane-studenta-pmds": {
+      "type": "object",
+      "properties": {
+        "Nr_albumu": {
+          "type": "string",
+          "title": "Nr_albumu",
+          "x-permissions": "p04"
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "x-permissions": "p04"
+        },
+        "Numer telefonu": {
+          "type": "string",
+          "title": "Numer telefonu",
+          "x-permissions": "p04"
+        },
+        "Adres zamieszkania": {
+          "type": "string",
+          "title": "Adres zamieszkania",
+          "x-permissions": "p04"
+        },
+        "Numer dokumentu tożsamości": {
+          "type": "string",
+          "title": "Numer dokumentu tożsamości",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Miejsce wydania dokumentu tożsamości": {
+          "type": "string",
+          "title": "Miejsce wydania dokumentu tożsamości",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Obywatelstwo": {
+          "type": "string",
+          "title": "Obywatelstwo",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Data urodzenia": {
+          "type": "string",
+          "format": "date",
+          "title": "Data urodzenia",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "DocumentId": {
+          "type": "string",
+          "title": "DocumentId",
+          "x-permissions": "p32"
+        }
+      },
+      "title": "DANE STUDENTA",
+      "x-permissions": "p12"
+    },
+    "dane-studenta-pod": {
+      "type": "object",
+      "properties": {
+        "Nr_albumu": {
+          "type": "string",
+          "title": "Nr_albumu",
+          "x-permissions": "p04"
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "x-permissions": "p04"
+        },
+        "Numer telefonu": {
+          "type": "string",
+          "title": "Numer telefonu",
+          "x-permissions": "p04"
+        },
+        "Adres zamieszkania": {
+          "type": "string",
+          "title": "Adres zamieszkania",
+          "x-permissions": "p04"
+        },
+        "Numer dokumentu tożsamości": {
+          "type": "string",
+          "title": "Numer dokumentu tożsamości",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Miejsce wydania dokumentu tożsamości": {
+          "type": "string",
+          "title": "Miejsce wydania dokumentu tożsamości",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Obywatelstwo": {
+          "type": "string",
+          "title": "Obywatelstwo",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Data urodzenia": {
+          "type": "string",
+          "format": "date",
+          "title": "Data urodzenia",
+          "readOnly": true,
+          "x-permissions": "p05"
+        }
+      },
+      "title": "DANE STUDENTA",
+      "x-permissions": "p12"
+    },
+    "dane-studenta-pzsk": {
+      "type": "object",
+      "properties": {
+        "Nr_albumu": {
+          "type": "string",
+          "title": "Nr_albumu",
+          "x-permissions": "p04"
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "x-permissions": "p04"
+        },
+        "Numer telefonu": {
+          "type": "string",
+          "title": "Numer telefonu",
+          "x-permissions": "p04"
+        },
+        "Adres zamieszkania": {
+          "type": "string",
+          "title": "Adres zamieszkania",
+          "x-permissions": "p04"
+        },
+        "Numer dokumentu tożsamości": {
+          "type": "string",
+          "title": "Numer dokumentu tożsamości",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Miejsce wydania dokumentu tożsamości": {
+          "type": "string",
+          "title": "Miejsce wydania dokumentu tożsamości",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Obywatelstwo": {
+          "type": "string",
+          "title": "Obywatelstwo",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Data urodzenia": {
+          "type": "string",
+          "format": "date",
+          "title": "Data urodzenia",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Miejsce urodzenia": {
+          "type": "string",
+          "title": "Miejsce urodzenia",
+          "x-permissions": "p48"
+        },
+        "DocumentId": {
+          "type": "string",
+          "title": "DocumentId",
+          "x-permissions": "p32"
+        },
+        "Zasady studiowania": {
+          "type": "string",
+          "title": "Zasady studiowania",
+          "x-permissions": "p09"
+        },
+        "Okres studiowania": {
+          "type": "string",
+          "title": "Okres studiowania",
+          "x-permissions": "p09"
+        }
+      },
+      "title": "DANE STUDENTA",
+      "x-permissions": "p12"
+    },
+    "dane-studenta-zs": {
+      "type": "object",
+      "properties": {
+        "Nr_albumu": {
+          "type": "string",
+          "title": "Nr_albumu",
+          "x-permissions": "p04"
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "x-permissions": "p04"
+        },
+        "Numer telefonu": {
+          "type": "string",
+          "title": "Numer telefonu",
+          "x-permissions": "p04"
+        },
+        "Adres zamieszkania": {
+          "type": "string",
+          "title": "Adres zamieszkania",
+          "x-permissions": "p04"
+        },
+        "Numer dokumentu tożsamości": {
+          "type": "string",
+          "title": "Numer dokumentu tożsamości",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Miejsce wydania dokumentu tożsamości": {
+          "type": "string",
+          "title": "Miejsce wydania dokumentu tożsamości",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Obywatelstwo": {
+          "type": "string",
+          "title": "Obywatelstwo",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Data urodzenia": {
+          "type": "string",
+          "format": "date",
+          "title": "Data urodzenia",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "DocumentId": {
+          "type": "string",
+          "title": "DocumentId",
+          "x-permissions": "p32"
+        },
+        "Zasady studiowania": {
+          "type": "string",
+          "title": "Zasady studiowania",
+          "x-permissions": "p09"
+        }
+      },
+      "title": "DANE STUDENTA",
+      "x-permissions": "p12"
+    },
+    "decyzja-f-iss": {
+      "type": "object",
+      "properties": {
+        "Decyzja Dyrektora Instytutu": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p14"
+        }
+      },
+      "title": "DECYZJA",
+      "x-permissions": "p19"
+    },
+    "decyzja-pmds": {
+      "type": "object",
+      "properties": {
+        "Ilość punktów za odłeglość": {
+          "type": "string",
+          "title": "Ilość punktów za odłeglość",
+          "x-permissions": "p15"
+        },
+        "Ilość punktów za dochód": {
+          "type": "string",
+          "title": "Ilość punktów za dochód",
+          "x-permissions": "p15"
+        },
+        "Ilość punktów - szczególna sytuacja": {
+          "type": "string",
+          "title": "Ilość punktów - szczególna sytuacja",
+          "x-permissions": "p15"
+        },
+        "Suma km/zł": {
+          "type": "string",
+          "title": "Suma km/zł",
+          "x-permissions": "p15"
+        },
+        "Suma punktów": {
+          "type": "string",
+          "title": "Suma punktów",
+          "x-permissions": "p15"
+        },
+        "Decyzja Rektora": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Rektora",
+          "x-permissions": "p11"
+        },
+        "Data Decyzji Rektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data Decyzji Rektora",
+          "x-permissions": "p11"
+        },
+        "Uzasadnienie decyzji": {
+          "type": "string",
+          "title": "Uzasadnienie decyzji",
+          "x-permissions": "p11"
+        },
+        "Uzasadnienie odmowy": {
+          "type": "string",
+          "title": "Uzasadnienie odmowy",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Decyzja Dziekana Wydziału": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Data decyzji Dziekana Wydziału": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Opinia Dyrektora Instytutu": {
+          "type": "string",
+          "title": "Opinia Dyrektora Instytutu",
+          "x-permissions": "p28"
+        },
+        "Opinia Dziekana Wydziału": {
+          "type": "string",
+          "title": "Opinia Dziekana Wydziału",
+          "x-permissions": "p08"
+        }
+      },
+      "title": "DECYZJA",
+      "x-permissions": "p19"
+    },
+    "decyzja-pod": {
+      "type": "object",
+      "properties": {
+        "Decyzja Dyrektora Instytutu": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Decyzja Rektora": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Rektora",
+          "x-permissions": "p11"
+        },
+        "Data Decyzji Rektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data Decyzji Rektora",
+          "x-permissions": "p11"
+        },
+        "Uzasadnienie decyzji": {
+          "type": "string",
+          "title": "Uzasadnienie decyzji",
+          "x-permissions": "p11"
+        },
+        "Decyzja Dziekana Wydziału": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Data decyzji Dziekana Wydziału": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Opinia Dyrektora Instytutu": {
+          "type": "string",
+          "title": "Opinia Dyrektora Instytutu",
+          "x-permissions": "p28"
+        },
+        "Opinia Dziekana Wydziału": {
+          "type": "string",
+          "title": "Opinia Dziekana Wydziału",
+          "x-permissions": "p08"
+        }
+      },
+      "title": "DECYZJA",
+      "x-permissions": "p19"
+    },
+    "decyzja-ppt": {
+      "type": "object",
+      "properties": {
+        "Proponowany termin uregulowania zaległości": {
+          "type": "string",
+          "format": "date",
+          "title": "Proponowany termin uregulowania zaległości",
+          "x-permissions": "p39"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Decyzja Dziekana Wydziału": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Data decyzji Dziekana Wydziału": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Opinia Dyrektora Instytutu": {
+          "type": "string",
+          "title": "Opinia Dyrektora Instytutu",
+          "x-permissions": "p28"
+        }
+      },
+      "title": "DECYZJA",
+      "x-permissions": "p19"
+    },
+    "decyzja-pss": {
+      "type": "object",
+      "properties": {
+        "Decyzja Dyrektora Instytutu": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Decyzja Rektora": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Rektora",
+          "x-permissions": "p11"
+        },
+        "Data Decyzji Rektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data Decyzji Rektora",
+          "x-permissions": "p11"
+        },
+        "Decyzja Dziekana Wydziału": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Data decyzji Dziekana Wydziału": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Opinia Dyrektora Instytutu": {
+          "type": "string",
+          "title": "Opinia Dyrektora Instytutu",
+          "x-permissions": "p28"
+        },
+        "Opinia Dziekana Wydziału": {
+          "type": "string",
+          "title": "Opinia Dziekana Wydziału",
+          "x-permissions": "p08"
+        }
+      },
+      "title": "DECYZJA",
+      "x-permissions": "p19"
+    },
+    "decyzja-pzsk": {
+      "type": "object",
+      "properties": {
+        "Proponowany termin uregulowania zaległości": {
+          "type": "string",
+          "format": "date",
+          "title": "Proponowany termin uregulowania zaległości",
+          "x-permissions": "p39"
+        },
+        "Ilość punktów za odłeglość": {
+          "type": "string",
+          "title": "Ilość punktów za odłeglość",
+          "x-permissions": "p15"
+        },
+        "Ilość punktów za dochód": {
+          "type": "string",
+          "title": "Ilość punktów za dochód",
+          "x-permissions": "p15"
+        },
+        "Ilość punktów - szczególna sytuacja": {
+          "type": "string",
+          "title": "Ilość punktów - szczególna sytuacja",
+          "x-permissions": "p15"
+        },
+        "Suma km/zł": {
+          "type": "string",
+          "title": "Suma km/zł",
+          "x-permissions": "p15"
+        },
+        "Suma punktów": {
+          "type": "string",
+          "title": "Suma punktów",
+          "x-permissions": "p15"
+        },
+        "Opinia Promotora": {
+          "type": "string",
+          "title": "Opinia Promotora",
+          "x-permissions": "p34"
+        },
+        "Data opinii Promotora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data opinii Promotora",
+          "x-permissions": "p34"
+        },
+        "Decyzja Dyrektora Instytutu": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Decyzja Rektora": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Rektora",
+          "x-permissions": "p11"
+        },
+        "Data Decyzji Rektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data Decyzji Rektora",
+          "x-permissions": "p11"
+        },
+        "Uzasadnienie decyzji": {
+          "type": "string",
+          "title": "Uzasadnienie decyzji",
+          "x-permissions": "p11"
+        },
+        "Uzasadnienie odmowy": {
+          "type": "string",
+          "title": "Uzasadnienie odmowy",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Data zarządzenia": {
+          "type": "string",
+          "format": "date",
+          "title": "Data zarządzenia",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Nr zarządzenia": {
+          "type": "string",
+          "title": "Nr zarządzenia",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Potwierdzam odbiór decyzji": {
+          "type": "boolean",
+          "title": "Potwierdzam odbiór decyzji",
+          "readOnly": true,
+          "x-permissions": "p25"
+        },
+        "Liczba rat": {
+          "type": "integer",
+          "title": "Liczba rat",
+          "readOnly": true,
+          "x-permissions": "p25"
+        },
+        "Różnice programowe": {
+          "type": "string",
+          "title": "Różnice programowe",
+          "x-permissions": "p46"
+        },
+        "Przedmioty do zaliczenia oraz terminy": {
+          "type": "string",
+          "title": "Przedmioty do zaliczenia oraz terminy",
+          "x-permissions": "p38"
+        },
+        "%  zwolnienie z wnioskowanych opłat": {
+          "type": "string",
+          "title": "%  zwolnienie z wnioskowanych opłat",
+          "readOnly": true,
+          "x-permissions": "p23"
+        },
+        "Rozłożenie opłat na raty": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "2",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Rozłożenie opłat na raty",
+          "readOnly": true,
+          "x-permissions": "p23"
+        },
+        "Całkowite/częściowe* zwolnienie z opłat": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "całkowite"
+            },
+            {
+              "const": "2",
+              "title": "częściiowe"
+            }
+          ],
+          "title": "Całkowite/częściowe* zwolnienie z opłat",
+          "readOnly": true,
+          "x-permissions": "p23"
+        },
+        "Przyznać/nie przyznać": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "przyznać"
+            },
+            {
+              "const": "2",
+              "title": "nie przyznać"
+            }
+          ],
+          "title": "Przyznać/nie przyznać",
+          "readOnly": true,
+          "x-permissions": "p23"
+        },
+        "Decyzja Dziekana Wydziału": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Data decyzji Dziekana Wydziału": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Opinia Dyrektora Instytutu": {
+          "type": "string",
+          "title": "Opinia Dyrektora Instytutu",
+          "x-permissions": "p28"
+        },
+        "Opinia Dziekana Wydziału": {
+          "type": "string",
+          "title": "Opinia Dziekana Wydziału",
+          "x-permissions": "p08"
+        }
+      },
+      "title": "DECYZJA",
+      "x-permissions": "p19"
+    },
+    "decyzja-tzpd": {
+      "type": "object",
+      "properties": {
+        "Proponowany termin uregulowania zaległości": {
+          "type": "string",
+          "format": "date",
+          "title": "Proponowany termin uregulowania zaległości",
+          "x-permissions": "p39"
+        },
+        "Opinia Promotora": {
+          "type": "string",
+          "title": "Opinia Promotora",
+          "x-permissions": "p34"
+        },
+        "Data opinii Promotora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data opinii Promotora",
+          "x-permissions": "p34"
+        },
+        "Decyzja Dziekana Wydziału": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Data decyzji Dziekana Wydziału": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dziekana Wydziału",
+          "x-permissions": "p08"
+        }
+      },
+      "title": "DECYZJA",
+      "x-permissions": "p19"
+    },
+    "decyzja-ws": {
+      "type": "object",
+      "properties": {
+        "Decyzja Dyrektora Instytutu": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Decyzja Rektora": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Rektora",
+          "x-permissions": "p11"
+        },
+        "Data Decyzji Rektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data Decyzji Rektora",
+          "x-permissions": "p11"
+        },
+        "Różnice programowe": {
+          "type": "string",
+          "title": "Różnice programowe",
+          "x-permissions": "p46"
+        },
+        "Decyzja Dziekana Wydziału": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Data decyzji Dziekana Wydziału": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Opinia Dyrektora Instytutu": {
+          "type": "string",
+          "title": "Opinia Dyrektora Instytutu",
+          "x-permissions": "p28"
+        },
+        "Opinia Dziekana Wydziału": {
+          "type": "string",
+          "title": "Opinia Dziekana Wydziału",
+          "x-permissions": "p08"
+        }
+      },
+      "title": "DECYZJA",
+      "x-permissions": "p19"
+    },
+    "decyzja-zks": {
+      "type": "object",
+      "properties": {
+        "Decyzja Rektora": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Rektora",
+          "x-permissions": "p11"
+        },
+        "Data Decyzji Rektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data Decyzji Rektora",
+          "x-permissions": "p11"
+        }
+      },
+      "title": "DECYZJA",
+      "x-permissions": "p19"
+    },
+    "decyzja-zos": {
+      "type": "object",
+      "properties": {
+        "Decyzja Dyrektora Instytutu": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Decyzja Rektora": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Rektora",
+          "x-permissions": "p11"
+        },
+        "Data Decyzji Rektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data Decyzji Rektora",
+          "x-permissions": "p11"
+        },
+        "Uzasadnienie decyzji": {
+          "type": "string",
+          "title": "Uzasadnienie decyzji",
+          "x-permissions": "p11"
+        },
+        "Liczba rat": {
+          "type": "integer",
+          "title": "Liczba rat",
+          "readOnly": true,
+          "x-permissions": "p25"
+        },
+        "%  zwolnienie z wnioskowanych opłat": {
+          "type": "string",
+          "title": "%  zwolnienie z wnioskowanych opłat",
+          "readOnly": true,
+          "x-permissions": "p23"
+        },
+        "Rozłożenie opłat na raty": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "2",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Rozłożenie opłat na raty",
+          "readOnly": true,
+          "x-permissions": "p23"
+        },
+        "Całkowite/częściowe* zwolnienie z opłat": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "całkowite"
+            },
+            {
+              "const": "2",
+              "title": "częściiowe"
+            }
+          ],
+          "title": "Całkowite/częściowe* zwolnienie z opłat",
+          "readOnly": true,
+          "x-permissions": "p23"
+        },
+        "Przyznać/nie przyznać": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "przyznać"
+            },
+            {
+              "const": "2",
+              "title": "nie przyznać"
+            }
+          ],
+          "title": "Przyznać/nie przyznać",
+          "readOnly": true,
+          "x-permissions": "p23"
+        },
+        "Decyzja Dziekana Wydziału": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Data decyzji Dziekana Wydziału": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Opinia Dyrektora Instytutu": {
+          "type": "string",
+          "title": "Opinia Dyrektora Instytutu",
+          "x-permissions": "p28"
+        },
+        "Opinia Dziekana Wydziału": {
+          "type": "string",
+          "title": "Opinia Dziekana Wydziału",
+          "x-permissions": "p08"
+        }
+      },
+      "title": "DECYZJA",
+      "x-permissions": "p19"
+    },
+    "decyzja-zpd": {
+      "type": "object",
+      "properties": {
+        "Proponowany termin uregulowania zaległości": {
+          "type": "string",
+          "format": "date",
+          "title": "Proponowany termin uregulowania zaległości",
+          "x-permissions": "p39"
+        },
+        "Opinia Promotora": {
+          "type": "string",
+          "title": "Opinia Promotora",
+          "x-permissions": "p34"
+        },
+        "Data opinii Promotora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data opinii Promotora",
+          "x-permissions": "p34"
+        },
+        "Decyzja Dyrektora Instytutu": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dyrektora Instytutu",
+          "x-permissions": "p14"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p14"
+        }
+      },
+      "title": "DECYZJA",
+      "x-permissions": "p19"
+    },
+    "decyzja-zs": {
+      "type": "object",
+      "properties": {
+        "Decyzja Dziekana Wydziału": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wyrażam zgodę"
+            },
+            {
+              "const": "0",
+              "title": "Nie wyrażam zgody"
+            }
+          ],
+          "title": "Decyzja Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Data decyzji Dziekana Wydziału": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dziekana Wydziału",
+          "x-permissions": "p08"
+        },
+        "Opinia Dyrektora Instytutu": {
+          "type": "string",
+          "title": "Opinia Dyrektora Instytutu",
+          "x-permissions": "p28"
+        },
+        "Opinia Dziekana Wydziału": {
+          "type": "string",
+          "title": "Opinia Dziekana Wydziału",
+          "x-permissions": "p08"
+        }
+      },
+      "title": "DECYZJA",
+      "x-permissions": "p19"
+    },
+    "identyfikacja-f-iss": {
+      "type": "object",
+      "properties": {
+        "Kategoria spraw": {
+          "type": "string",
+          "title": "Kategoria spraw",
+          "x-permissions": "p03",
+          "x-required-in-steps": [
+            "Start"
+          ]
+        },
+        "Rodzaj sprawy": {
+          "type": "string",
+          "title": "Rodzaj sprawy",
+          "x-permissions": "p03",
+          "x-required-in-steps": [
+            "Start"
+          ]
+        },
+        "Kierunek": {
+          "type": "string",
+          "title": "Kierunek",
+          "x-permissions": "p03",
+          "x-required-in-steps": [
+            "Start"
+          ]
+        },
+        "Wydział": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wydział Nauk Społecznych, Humanistycznych i Ochrony Zdrowia"
+            },
+            {
+              "const": "2",
+              "title": "Wydział Nauk Technicznych i Sztuk Projektowych"
+            }
+          ],
+          "title": "Wydział",
+          "x-permissions": "p03"
+        },
+        "Instytut": {
+          "type": "string",
+          "title": "Instytut",
+          "x-permissions": "p35"
+        },
+        "Student(ka)": {
+          "type": "string",
+          "title": "Student(ka)",
+          "x-permissions": "p03",
+          "x-required-in-steps": [
+            "Start"
+          ]
+        }
+      },
+      "required": [
+        "Kategoria spraw",
+        "Rodzaj sprawy",
+        "Kierunek",
+        "Student(ka)"
+      ],
+      "title": "IDENTYFIKACJA",
+      "x-permissions": "p03"
+    },
+    "identyfikacja-pmds": {
+      "type": "object",
+      "properties": {
+        "Kategoria spraw": {
+          "type": "string",
+          "title": "Kategoria spraw",
+          "x-permissions": "p03",
+          "x-required-in-steps": [
+            "Start"
+          ]
+        },
+        "Rodzaj sprawy": {
+          "type": "string",
+          "title": "Rodzaj sprawy",
+          "x-permissions": "p03",
+          "x-required-in-steps": [
+            "Start"
+          ]
+        },
+        "Kierunek": {
+          "type": "string",
+          "title": "Kierunek",
+          "x-permissions": "p03",
+          "x-required-in-steps": [
+            "Start"
+          ]
+        },
+        "Wydział": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wydział Nauk Społecznych, Humanistycznych i Ochrony Zdrowia"
+            },
+            {
+              "const": "2",
+              "title": "Wydział Nauk Technicznych i Sztuk Projektowych"
+            }
+          ],
+          "title": "Wydział",
+          "x-permissions": "p03"
+        },
+        "Student(ka)": {
+          "type": "string",
+          "title": "Student(ka)",
+          "x-permissions": "p03",
+          "x-required-in-steps": [
+            "Start"
+          ]
+        }
+      },
+      "required": [
+        "Kategoria spraw",
+        "Rodzaj sprawy",
+        "Kierunek",
+        "Student(ka)"
+      ],
+      "title": "IDENTYFIKACJA",
+      "x-permissions": "p03"
+    },
+    "okres-f-iss": {
+      "type": "object",
+      "properties": {
+        "Od semestru": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "title": "Od semestru",
+          "x-permissions": "p12"
+        },
+        "W roku akademickim": {
+          "type": "string",
+          "title": "W roku akademickim",
+          "x-permissions": "p12"
+        }
+      },
+      "title": "OKRES",
+      "x-permissions": "p10"
+    },
+    "okres-pzsk": {
+      "type": "object",
+      "properties": {
+        "Od": {
+          "type": "string",
+          "format": "date",
+          "title": "Od",
+          "x-permissions": "p44"
+        },
+        "Do": {
+          "type": "string",
+          "format": "date",
+          "title": "Do",
+          "x-permissions": "p33"
+        },
+        "Od semestru": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "title": "Od semestru",
+          "x-permissions": "p12"
+        },
+        "W roku akademickim": {
+          "type": "string",
+          "title": "W roku akademickim",
+          "x-permissions": "p12"
+        }
+      },
+      "title": "OKRES",
+      "x-permissions": "p10"
+    },
+    "okres-uuz": {
+      "type": "object",
+      "properties": {
+        "Od": {
+          "type": "string",
+          "format": "date",
+          "title": "Od",
+          "x-permissions": "p44"
+        },
+        "Do": {
+          "type": "string",
+          "format": "date",
+          "title": "Do",
+          "x-permissions": "p33"
+        }
+      },
+      "title": "OKRES",
+      "x-permissions": "p10"
+    },
+    "oplaty-pzsk": {
+      "type": "object",
+      "properties": {
+        "Nr zarządzenia Rektora": {
+          "type": "integer",
+          "title": "Nr zarządzenia Rektora",
+          "readOnly": true,
+          "x-permissions": "p25"
+        },
+        "Termin wniesienia opłaty": {
+          "type": "string",
+          "format": "date",
+          "title": "Termin wniesienia opłaty",
+          "x-permissions": "p38"
+        }
+      },
+      "title": "OPŁATY",
+      "readOnly": true,
+      "x-permissions": "p25"
+    },
+    "oplaty-ws": {
+      "type": "object",
+      "properties": {
+        "Termin wniesienia opłaty": {
+          "type": "string",
+          "format": "date",
+          "title": "Termin wniesienia opłaty",
+          "x-permissions": "p38"
+        }
+      },
+      "title": "OPŁATY",
+      "readOnly": true,
+      "x-permissions": "p25"
+    },
+    "pismo-f-iss": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Uzasadnienie prośby o ISS": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "legitymuję się orzeczeniem o niepełnosprawności"
+            },
+            {
+              "const": "2",
+              "title": "spodziewam się dziecka"
+            },
+            {
+              "const": "3",
+              "title": "jestem rodzicem"
+            },
+            {
+              "const": "4",
+              "title": "znajduję się w innej trudnej sytuacji losowej"
+            },
+            {
+              "const": "5",
+              "title": "studiuję na więcej niż jednym kierunku studiów"
+            },
+            {
+              "const": "6",
+              "title": "aktywnie działam w samorządzie studenckim (należy dołączyć opinię URSS"
+            }
+          ],
+          "title": "Uzasadnienie prośby o ISS",
+          "x-permissions": "p02"
+        },
+        "Opis załączników": {
+          "type": "string",
+          "title": "Opis załączników",
+          "x-permissions": "p02"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pismo-pmds": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Odległość miejsca zamieszkania od uczelni w km": {
+          "type": "integer",
+          "title": "Odległość miejsca zamieszkania od uczelni w km",
+          "x-permissions": "p26"
+        },
+        "Ilość osób w rodzinie": {
+          "type": "string",
+          "title": "Ilość osób w rodzinie",
+          "x-permissions": "p36"
+        },
+        "Dochód netto na jednego członka gospodarstwa": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "poniżej 650,00 zł"
+            },
+            {
+              "const": "2",
+              "title": "od 651,00 zł do 1000 zł"
+            },
+            {
+              "const": "3",
+              "title": "powyżej 1000 zł"
+            }
+          ],
+          "title": "Dochód netto na jednego członka gospodarstwa",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Planowany wyjazd na ERASMUS": {
+          "type": "string",
+          "title": "Planowany wyjazd na ERASMUS",
+          "x-permissions": "p26"
+        },
+        "Trudności w dojazdach": {
+          "type": "string",
+          "title": "Trudności w dojazdach",
+          "x-permissions": "p26"
+        },
+        "Dodatkowe uzasadnienie wniosku": {
+          "type": "string",
+          "title": "Dodatkowe uzasadnienie wniosku",
+          "x-permissions": "p37"
+        },
+        "Data przesunięcia pracy dyplomowej przez Dyrektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data przesunięcia pracy dyplomowej przez Dyrektora",
+          "x-permissions": "p06"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p06"
+        },
+        "Brak zaliczenia z powodu:": {
+          "type": "string",
+          "title": "Brak zaliczenia z powodu:",
+          "x-permissions": "p27"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pismo-pod": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Zwracam się z uprzejmą prośbą o": {
+          "type": "string",
+          "title": "Zwracam się z uprzejmą prośbą o",
+          "x-permissions": "p37"
+        },
+        "Uzasadnienie prośby": {
+          "type": "string",
+          "title": "Uzasadnienie prośby",
+          "x-permissions": "p29"
+        },
+        "Data przesunięcia pracy dyplomowej przez Dyrektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data przesunięcia pracy dyplomowej przez Dyrektora",
+          "x-permissions": "p06"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p06"
+        },
+        "Brak zaliczenia z powodu:": {
+          "type": "string",
+          "title": "Brak zaliczenia z powodu:",
+          "x-permissions": "p27"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pismo-ppt": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Uzasadnienie prośby": {
+          "type": "string",
+          "title": "Uzasadnienie prośby",
+          "x-permissions": "p29"
+        },
+        "Niezaliczone przedmioty": {
+          "type": "string",
+          "title": "Niezaliczone przedmioty",
+          "x-permissions": "p02"
+        },
+        "Brak zaliczenia z powodu:": {
+          "type": "string",
+          "title": "Brak zaliczenia z powodu:",
+          "x-permissions": "p27"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pismo-pss": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Uzasadnienie prośby": {
+          "type": "string",
+          "title": "Uzasadnienie prośby",
+          "x-permissions": "p29"
+        },
+        "Nazwa przedmiotu do powtarzania": {
+          "type": "string",
+          "title": "Nazwa przedmiotu do powtarzania",
+          "x-permissions": "p02"
+        },
+        "Data przesunięcia pracy dyplomowej przez Dyrektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data przesunięcia pracy dyplomowej przez Dyrektora",
+          "x-permissions": "p06"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p06"
+        },
+        "Brak zaliczenia z powodu:": {
+          "type": "string",
+          "title": "Brak zaliczenia z powodu:",
+          "x-permissions": "p27"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pismo-pzsk": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Odległość miejsca zamieszkania od uczelni w km": {
+          "type": "integer",
+          "title": "Odległość miejsca zamieszkania od uczelni w km",
+          "x-permissions": "p26"
+        },
+        "Ilość osób w rodzinie": {
+          "type": "string",
+          "title": "Ilość osób w rodzinie",
+          "x-permissions": "p36"
+        },
+        "Dochód netto na jednego członka gospodarstwa": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "poniżej 650,00 zł"
+            },
+            {
+              "const": "2",
+              "title": "od 651,00 zł do 1000 zł"
+            },
+            {
+              "const": "3",
+              "title": "powyżej 1000 zł"
+            }
+          ],
+          "title": "Dochód netto na jednego członka gospodarstwa",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Planowany wyjazd na ERASMUS": {
+          "type": "string",
+          "title": "Planowany wyjazd na ERASMUS",
+          "x-permissions": "p26"
+        },
+        "Trudności w dojazdach": {
+          "type": "string",
+          "title": "Trudności w dojazdach",
+          "x-permissions": "p26"
+        },
+        "Zwracam się z uprzejmą prośbą o": {
+          "type": "string",
+          "title": "Zwracam się z uprzejmą prośbą o",
+          "x-permissions": "p37"
+        },
+        "Cel wydania": {
+          "type": "string",
+          "title": "Cel wydania",
+          "x-permissions": "p36"
+        },
+        "Uzasadnienie prośby": {
+          "type": "string",
+          "title": "Uzasadnienie prośby",
+          "x-permissions": "p29"
+        },
+        "Dodatkowe uzasadnienie wniosku": {
+          "type": "string",
+          "title": "Dodatkowe uzasadnienie wniosku",
+          "x-permissions": "p37"
+        },
+        "Uzasadnienie prośby o ISS": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "legitymuję się orzeczeniem o niepełnosprawności"
+            },
+            {
+              "const": "2",
+              "title": "spodziewam się dziecka"
+            },
+            {
+              "const": "3",
+              "title": "jestem rodzicem"
+            },
+            {
+              "const": "4",
+              "title": "znajduję się w innej trudnej sytuacji losowej"
+            },
+            {
+              "const": "5",
+              "title": "studiuję na więcej niż jednym kierunku studiów"
+            },
+            {
+              "const": "6",
+              "title": "aktywnie działam w samorządzie studenckim (należy dołączyć opinię URSS"
+            }
+          ],
+          "title": "Uzasadnienie prośby o ISS",
+          "x-permissions": "p02"
+        },
+        "Zwracam się o zwolnienie z opłat z powodu:": {
+          "type": "string",
+          "title": "Zwracam się o zwolnienie z opłat z powodu:",
+          "x-permissions": "p09"
+        },
+        "Nazwa przedmiotu do powtarzania": {
+          "type": "string",
+          "title": "Nazwa przedmiotu do powtarzania",
+          "x-permissions": "p02"
+        },
+        "Nowy/wznowienie kierunek": {
+          "type": "string",
+          "title": "Nowy/wznowienie kierunek",
+          "x-permissions": "p09"
+        },
+        "Konieczna forma papierowa": {
+          "type": "boolean",
+          "title": "Konieczna forma papierowa",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Do niniejszego podania dołączam": {
+          "type": "string",
+          "title": "Do niniejszego podania dołączam",
+          "x-permissions": "p09"
+        },
+        "Opis załączników": {
+          "type": "string",
+          "title": "Opis załączników",
+          "x-permissions": "p02"
+        },
+        "Niezaliczone przedmioty": {
+          "type": "string",
+          "title": "Niezaliczone przedmioty",
+          "x-permissions": "p02"
+        },
+        "Data skreślenia": {
+          "type": "string",
+          "format": "date",
+          "title": "Data skreślenia",
+          "x-permissions": "p47"
+        },
+        "Dane dotyczące członków rodziny": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Imię i nazwisko": {
+                "type": "string",
+                "title": "Imię i nazwisko",
+                "x-permissions": "p07"
+              },
+              "Stopień pokrewieństwa": {
+                "type": "string",
+                "title": "Stopień pokrewieństwa",
+                "x-permissions": "p07"
+              },
+              "Data urodzenia": {
+                "type": "string",
+                "format": "date-time",
+                "title": "Data urodzenia",
+                "x-permissions": "p07"
+              }
+            }
+          },
+          "title": "Dane dotyczące członków rodziny",
+          "x-permissions": "p41"
+        },
+        "Data przesunięcia pracy dyplomowej przez Dyrektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data przesunięcia pracy dyplomowej przez Dyrektora",
+          "x-permissions": "p06"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p06"
+        },
+        "Brak zaliczenia z powodu:": {
+          "type": "string",
+          "title": "Brak zaliczenia z powodu:",
+          "x-permissions": "p27"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pismo-tzpd": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Uzasadnienie prośby": {
+          "type": "string",
+          "title": "Uzasadnienie prośby",
+          "x-permissions": "p29"
+        },
+        "Data przesunięcia pracy dyplomowej przez Dyrektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data przesunięcia pracy dyplomowej przez Dyrektora",
+          "x-permissions": "p06"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p06"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pismo-uuz": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Opis załączników": {
+          "type": "string",
+          "title": "Opis załączników",
+          "x-permissions": "p02"
+        },
+        "Data przesunięcia pracy dyplomowej przez Dyrektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data przesunięcia pracy dyplomowej przez Dyrektora",
+          "x-permissions": "p06"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p06"
+        },
+        "Brak zaliczenia z powodu:": {
+          "type": "string",
+          "title": "Brak zaliczenia z powodu:",
+          "x-permissions": "p27"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pismo-ws": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Uzasadnienie prośby": {
+          "type": "string",
+          "title": "Uzasadnienie prośby",
+          "x-permissions": "p29"
+        },
+        "Zwracam się o zwolnienie z opłat z powodu:": {
+          "type": "string",
+          "title": "Zwracam się o zwolnienie z opłat z powodu:",
+          "x-permissions": "p09"
+        },
+        "Dane dotyczące członków rodziny": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Imię i nazwisko": {
+                "type": "string",
+                "title": "Imię i nazwisko",
+                "x-permissions": "p07"
+              },
+              "Stopień pokrewieństwa": {
+                "type": "string",
+                "title": "Stopień pokrewieństwa",
+                "x-permissions": "p07"
+              },
+              "Data urodzenia": {
+                "type": "string",
+                "format": "date-time",
+                "title": "Data urodzenia",
+                "x-permissions": "p07"
+              }
+            }
+          },
+          "title": "Dane dotyczące członków rodziny",
+          "x-permissions": "p41"
+        },
+        "Data przesunięcia pracy dyplomowej przez Dyrektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data przesunięcia pracy dyplomowej przez Dyrektora",
+          "x-permissions": "p06"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p06"
+        },
+        "Brak zaliczenia z powodu:": {
+          "type": "string",
+          "title": "Brak zaliczenia z powodu:",
+          "x-permissions": "p27"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pismo-zks": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Uzasadnienie prośby": {
+          "type": "string",
+          "title": "Uzasadnienie prośby",
+          "x-permissions": "p29"
+        },
+        "Nowy/wznowienie kierunek": {
+          "type": "string",
+          "title": "Nowy/wznowienie kierunek",
+          "x-permissions": "p09"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pismo-zos": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Uzasadnienie prośby": {
+          "type": "string",
+          "title": "Uzasadnienie prośby",
+          "x-permissions": "p29"
+        },
+        "Zwracam się o zwolnienie z opłat z powodu:": {
+          "type": "string",
+          "title": "Zwracam się o zwolnienie z opłat z powodu:",
+          "x-permissions": "p09"
+        },
+        "Konieczna forma papierowa": {
+          "type": "boolean",
+          "title": "Konieczna forma papierowa",
+          "readOnly": true,
+          "x-permissions": "p05"
+        },
+        "Do niniejszego podania dołączam": {
+          "type": "string",
+          "title": "Do niniejszego podania dołączam",
+          "x-permissions": "p09"
+        },
+        "Dane dotyczące członków rodziny": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Imię i nazwisko": {
+                "type": "string",
+                "title": "Imię i nazwisko",
+                "x-permissions": "p07"
+              },
+              "Stopień pokrewieństwa": {
+                "type": "string",
+                "title": "Stopień pokrewieństwa",
+                "x-permissions": "p07"
+              },
+              "Data urodzenia": {
+                "type": "string",
+                "format": "date-time",
+                "title": "Data urodzenia",
+                "x-permissions": "p07"
+              }
+            }
+          },
+          "title": "Dane dotyczące członków rodziny",
+          "x-permissions": "p41"
+        },
+        "Data przesunięcia pracy dyplomowej przez Dyrektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data przesunięcia pracy dyplomowej przez Dyrektora",
+          "x-permissions": "p06"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p06"
+        },
+        "Brak zaliczenia z powodu:": {
+          "type": "string",
+          "title": "Brak zaliczenia z powodu:",
+          "x-permissions": "p27"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pismo-zpd": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Uzasadnienie prośby": {
+          "type": "string",
+          "title": "Uzasadnienie prośby",
+          "x-permissions": "p29"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pismo-zs": {
+      "type": "object",
+      "properties": {
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": "p17"
+        },
+        "Cel wydania": {
+          "type": "string",
+          "title": "Cel wydania",
+          "x-permissions": "p36"
+        },
+        "Data przesunięcia pracy dyplomowej przez Dyrektora": {
+          "type": "string",
+          "format": "date",
+          "title": "Data przesunięcia pracy dyplomowej przez Dyrektora",
+          "x-permissions": "p06"
+        },
+        "Data decyzji Dyrektora Instytutu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data decyzji Dyrektora Instytutu",
+          "x-permissions": "p06"
+        },
+        "Brak zaliczenia z powodu:": {
+          "type": "string",
+          "title": "Brak zaliczenia z powodu:",
+          "x-permissions": "p27"
+        }
+      },
+      "title": "PISMO",
+      "x-permissions": "p10"
+    },
+    "pola-redakcyjne-pmds": {
+      "type": "object",
+      "properties": {
+        "Forma gramatyczna": {
+          "type": "string",
+          "title": "Forma gramatyczna",
+          "description": "Formy w piśmie: Pani/Pan, studentka/student, złożyła/złożył…",
+          "oneOf": [
+            {
+              "const": "K",
+              "title": "żeńska (Pani, studentka)"
+            },
+            {
+              "const": "M",
+              "title": "męska (Pan, student)"
+            }
+          ],
+          "x-permissions": "p01"
+        },
+        "Semestrów": {
+          "type": "string",
+          "title": "Semestrów",
+          "x-permissions": "p01"
+        },
+        "Uzyskać zaliczenie/przystąpić do egzaminu": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "uzyskać zaliczenie"
+            },
+            {
+              "const": "2",
+              "title": "przystąpić do egzaminu"
+            }
+          ],
+          "title": "Uzyskać zaliczenie/przystąpić do egzaminu",
+          "x-permissions": "p02"
+        }
+      },
+      "title": "POLA REDAKCYJNE",
+      "x-permissions": "p10"
+    },
+    "pola-redakcyjne-ppt": {
+      "type": "object",
+      "properties": {
+        "Uzyskać zaliczenie/przystąpić do egzaminu": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "uzyskać zaliczenie"
+            },
+            {
+              "const": "2",
+              "title": "przystąpić do egzaminu"
+            }
+          ],
+          "title": "Uzyskać zaliczenie/przystąpić do egzaminu",
+          "x-permissions": "p02"
+        }
+      },
+      "title": "POLA REDAKCYJNE",
+      "x-permissions": "p10"
+    },
+    "pola-redakcyjne-tzpd": {
+      "type": "object",
+      "properties": {
+        "Forma gramatyczna": {
+          "type": "string",
+          "title": "Forma gramatyczna",
+          "description": "Formy w piśmie: Pani/Pan, studentka/student, złożyła/złożył…",
+          "oneOf": [
+            {
+              "const": "K",
+              "title": "żeńska (Pani, studentka)"
+            },
+            {
+              "const": "M",
+              "title": "męska (Pan, student)"
+            }
+          ],
+          "x-permissions": "p06"
+        }
+      },
+      "title": "POLA REDAKCYJNE",
+      "x-permissions": "p10"
+    },
+    "proponowany-termin-pzsk": {
+      "type": "object",
+      "properties": {
+        "Od": {
+          "type": "string",
+          "format": "date",
+          "title": "Od",
+          "x-permissions": "p43"
+        },
+        "Do": {
+          "type": "string",
+          "format": "date",
+          "title": "Do",
+          "x-permissions": "p33"
+        }
+      },
+      "title": "PROPONOWANY TERMIN",
+      "x-permissions": "p40"
+    },
+    "proponowany-termin-zww": {
+      "type": "object",
+      "properties": {
+        "Do": {
+          "type": "string",
+          "format": "date",
+          "title": "Do",
+          "x-permissions": "p33"
+        }
+      },
+      "title": "PROPONOWANY TERMIN",
+      "x-permissions": "p40"
+    },
+    "tok-studiow-f-iss": {
+      "type": "object",
+      "properties": {
+        "Tryb studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Stacjonarne"
+            },
+            {
+              "const": "2",
+              "title": "Niestacjonarne"
+            }
+          ],
+          "title": "Tryb studiów",
+          "x-permissions": "p01"
+        },
+        "Poziom studiów": {
+          "type": "string",
+          "title": "Poziom studiów",
+          "x-permissions": "p01"
+        },
+        "Rok akademicki": {
+          "type": "string",
+          "title": "Rok akademicki",
+          "x-permissions": "p01"
+        },
+        "Rok studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "I"
+            },
+            {
+              "const": "2",
+              "title": "II"
+            },
+            {
+              "const": "3",
+              "title": "III"
+            },
+            {
+              "const": "4",
+              "title": "IV"
+            },
+            {
+              "const": "5",
+              "title": "V"
+            },
+            {
+              "const": "6",
+              "title": "VI"
+            }
+          ],
+          "title": "Rok studiów",
+          "x-permissions": "p01"
+        },
+        "Semestr": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "title": "Semestr",
+          "x-permissions": "p01"
+        },
+        "Semestr studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "letni"
+            },
+            {
+              "const": "2",
+              "title": "zimowy"
+            }
+          ],
+          "title": "Semestr studiów",
+          "x-permissions": "p01"
+        }
+      },
+      "title": "TOK STUDIÓW",
+      "x-permissions": "p18"
+    },
+    "tok-studiow-pmds": {
+      "type": "object",
+      "properties": {
+        "Tryb studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Stacjonarne"
+            },
+            {
+              "const": "2",
+              "title": "Niestacjonarne"
+            }
+          ],
+          "title": "Tryb studiów",
+          "x-permissions": "p01"
+        },
+        "Poziom studiów": {
+          "type": "string",
+          "title": "Poziom studiów",
+          "x-permissions": "p01"
+        },
+        "Ilość semestrów": {
+          "type": "string",
+          "title": "Ilość semestrów",
+          "x-permissions": "p01"
+        },
+        "Rok akademicki": {
+          "type": "string",
+          "title": "Rok akademicki",
+          "x-permissions": "p01"
+        },
+        "Rok studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "I"
+            },
+            {
+              "const": "2",
+              "title": "II"
+            },
+            {
+              "const": "3",
+              "title": "III"
+            },
+            {
+              "const": "4",
+              "title": "IV"
+            },
+            {
+              "const": "5",
+              "title": "V"
+            },
+            {
+              "const": "6",
+              "title": "VI"
+            }
+          ],
+          "title": "Rok studiów",
+          "x-permissions": "p01"
+        },
+        "Semestr": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "title": "Semestr",
+          "x-permissions": "p01"
+        },
+        "Semestr studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "letni"
+            },
+            {
+              "const": "2",
+              "title": "zimowy"
+            }
+          ],
+          "title": "Semestr studiów",
+          "x-permissions": "p01"
+        },
+        "Planowany termin ukończenia studiów": {
+          "type": "string",
+          "format": "date",
+          "title": "Planowany termin ukończenia studiów",
+          "x-permissions": "p02"
+        },
+        "Data rozpoczęcia kształcenia": {
+          "type": "string",
+          "format": "date",
+          "title": "Data rozpoczęcia kształcenia",
+          "x-permissions": "p02"
+        },
+        "Specjalność": {
+          "type": "string",
+          "title": "Specjalność",
+          "x-permissions": "p02"
+        }
+      },
+      "title": "TOK STUDIÓW",
+      "x-permissions": "p18"
+    },
+    "tok-studiow-pod": {
+      "type": "object",
+      "properties": {
+        "Tryb studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Stacjonarne"
+            },
+            {
+              "const": "2",
+              "title": "Niestacjonarne"
+            }
+          ],
+          "title": "Tryb studiów",
+          "x-permissions": "p01"
+        },
+        "Poziom studiów": {
+          "type": "string",
+          "title": "Poziom studiów",
+          "x-permissions": "p01"
+        },
+        "Ilość semestrów": {
+          "type": "string",
+          "title": "Ilość semestrów",
+          "x-permissions": "p01"
+        },
+        "Rok akademicki": {
+          "type": "string",
+          "title": "Rok akademicki",
+          "x-permissions": "p01"
+        },
+        "Rok studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "I"
+            },
+            {
+              "const": "2",
+              "title": "II"
+            },
+            {
+              "const": "3",
+              "title": "III"
+            },
+            {
+              "const": "4",
+              "title": "IV"
+            },
+            {
+              "const": "5",
+              "title": "V"
+            },
+            {
+              "const": "6",
+              "title": "VI"
+            }
+          ],
+          "title": "Rok studiów",
+          "x-permissions": "p01"
+        },
+        "Semestr": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "title": "Semestr",
+          "x-permissions": "p01"
+        },
+        "Semestr studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "letni"
+            },
+            {
+              "const": "2",
+              "title": "zimowy"
+            }
+          ],
+          "title": "Semestr studiów",
+          "x-permissions": "p01"
+        },
+        "Planowany termin ukończenia studiów": {
+          "type": "string",
+          "format": "date",
+          "title": "Planowany termin ukończenia studiów",
+          "x-permissions": "p02"
+        },
+        "Specjalność": {
+          "type": "string",
+          "title": "Specjalność",
+          "x-permissions": "p02"
+        }
+      },
+      "title": "TOK STUDIÓW",
+      "x-permissions": "p18"
+    },
+    "wybor-opcji-pmds": {
+      "type": "object",
+      "properties": {
+        "Z semestru": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "title": "Z semestru",
+          "x-permissions": "p02"
+        },
+        "W letniej/zimowej sesji": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "letniej"
+            },
+            {
+              "const": "2",
+              "title": "zimowej"
+            }
+          ],
+          "title": "W letniej/zimowej sesji",
+          "x-permissions": "p02"
+        },
+        "Do tej pory wznawiałem/am": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "wznawiałem studia"
+            },
+            {
+              "const": "2",
+              "title": "wznawiałam studia"
+            },
+            {
+              "const": "3",
+              "title": "nie wznawiałem studia"
+            },
+            {
+              "const": "4",
+              "title": "nie wznawiałam studia"
+            }
+          ],
+          "title": "Do tej pory wznawiałem/am",
+          "x-permissions": "p09"
+        },
+        "Zaliczenia/egzaminu?": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "zaliczenia"
+            },
+            {
+              "const": "2",
+              "title": "egzaminu"
+            }
+          ],
+          "title": "Zaliczenia/egzaminu?",
+          "x-permissions": "p02"
+        },
+        "Sesji egzaminacyjnej / poprawkowej?": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "egzaminacyjnej"
+            },
+            {
+              "const": "2",
+              "title": "poprawkowej"
+            }
+          ],
+          "title": "Sesji egzaminacyjnej / poprawkowej?",
+          "x-permissions": "p02"
+        },
+        "Rodzaj pracy dyplomowej": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "inżynierskiej"
+            },
+            {
+              "const": "2",
+              "title": "licencjackiej"
+            },
+            {
+              "const": "3",
+              "title": "magisterskiej"
+            }
+          ],
+          "title": "Rodzaj pracy dyplomowej",
+          "x-permissions": "p02"
+        },
+        "Na studiach pierwszego/drugiego stopnia": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "pierwszego"
+            },
+            {
+              "const": "2",
+              "title": "drugiego"
+            }
+          ],
+          "title": "Na studiach pierwszego/drugiego stopnia",
+          "x-permissions": "p09"
+        },
+        "Rok akademicki wznawiania studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "2019/2020"
+            },
+            {
+              "const": "2",
+              "title": "2020/2021"
+            },
+            {
+              "const": "3",
+              "title": "2021/2022"
+            },
+            {
+              "const": "4",
+              "title": "2022/2023"
+            },
+            {
+              "const": "5",
+              "title": "2023/2024"
+            },
+            {
+              "const": "6",
+              "title": "2024/2025"
+            }
+          ],
+          "title": "Rok akademicki wznawiania studiów",
+          "x-permissions": "p09"
+        },
+        "Okoliczności uniemożliwiające udział w zajęciach": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "jestem rodzicem"
+            },
+            {
+              "const": "2",
+              "title": "ciąża"
+            },
+            {
+              "const": "3",
+              "title": "długotrwała choroba potwierdzona zaświadczeniem lekarskim"
+            },
+            {
+              "const": "4",
+              "title": "wyjazd na studia za granicę"
+            },
+            {
+              "const": "5",
+              "title": "konieczność oczekiwania na powtarzanie semestru"
+            },
+            {
+              "const": "6",
+              "title": "wystąpienie ważnych okoliczności losowych, tj:"
+            }
+          ],
+          "title": "Okoliczności uniemożliwiające udział w zajęciach",
+          "x-permissions": "p07"
+        }
+      },
+      "title": "WYBÓR OPCJI",
+      "x-permissions": "p30"
+    },
+    "wybor-opcji-ppt": {
+      "type": "object",
+      "properties": {
+        "Z semestru": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "title": "Z semestru",
+          "x-permissions": "p02"
+        },
+        "W letniej/zimowej sesji": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "letniej"
+            },
+            {
+              "const": "2",
+              "title": "zimowej"
+            }
+          ],
+          "title": "W letniej/zimowej sesji",
+          "x-permissions": "p02"
+        },
+        "Zaliczenia/egzaminu?": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "zaliczenia"
+            },
+            {
+              "const": "2",
+              "title": "egzaminu"
+            }
+          ],
+          "title": "Zaliczenia/egzaminu?",
+          "x-permissions": "p02"
+        },
+        "Sesji egzaminacyjnej / poprawkowej?": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "egzaminacyjnej"
+            },
+            {
+              "const": "2",
+              "title": "poprawkowej"
+            }
+          ],
+          "title": "Sesji egzaminacyjnej / poprawkowej?",
+          "x-permissions": "p02"
+        },
+        "W roku akademickim": {
+          "type": "string",
+          "title": "W roku akademickim",
+          "x-permissions": "p06"
+        }
+      },
+      "title": "WYBÓR OPCJI",
+      "x-permissions": "p30"
+    },
+    "wybor-opcji-pss": {
+      "type": "object",
+      "properties": {
+        "Z semestru": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "title": "Z semestru",
+          "x-permissions": "p02"
+        },
+        "W roku akademickim": {
+          "type": "string",
+          "title": "W roku akademickim",
+          "x-permissions": "p06"
+        }
+      },
+      "title": "WYBÓR OPCJI",
+      "x-permissions": "p30"
+    },
+    "wybor-opcji-pzsk": {
+      "type": "object",
+      "properties": {
+        "Z semestru": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "title": "Z semestru",
+          "x-permissions": "p02"
+        },
+        "W letniej/zimowej sesji": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "letniej"
+            },
+            {
+              "const": "2",
+              "title": "zimowej"
+            }
+          ],
+          "title": "W letniej/zimowej sesji",
+          "x-permissions": "p02"
+        },
+        "Do tej pory wznawiałem/am": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "wznawiałem studia"
+            },
+            {
+              "const": "2",
+              "title": "wznawiałam studia"
+            },
+            {
+              "const": "3",
+              "title": "nie wznawiałem studia"
+            },
+            {
+              "const": "4",
+              "title": "nie wznawiałam studia"
+            }
+          ],
+          "title": "Do tej pory wznawiałem/am",
+          "x-permissions": "p09"
+        },
+        "Zaliczenia/egzaminu?": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "zaliczenia"
+            },
+            {
+              "const": "2",
+              "title": "egzaminu"
+            }
+          ],
+          "title": "Zaliczenia/egzaminu?",
+          "x-permissions": "p02"
+        },
+        "Sesji egzaminacyjnej / poprawkowej?": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "egzaminacyjnej"
+            },
+            {
+              "const": "2",
+              "title": "poprawkowej"
+            }
+          ],
+          "title": "Sesji egzaminacyjnej / poprawkowej?",
+          "x-permissions": "p02"
+        },
+        "Rodzaj pracy dyplomowej": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "inżynierskiej"
+            },
+            {
+              "const": "2",
+              "title": "licencjackiej"
+            },
+            {
+              "const": "3",
+              "title": "magisterskiej"
+            }
+          ],
+          "title": "Rodzaj pracy dyplomowej",
+          "x-permissions": "p02"
+        },
+        "Na studiach pierwszego/drugiego stopnia": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "pierwszego"
+            },
+            {
+              "const": "2",
+              "title": "drugiego"
+            }
+          ],
+          "title": "Na studiach pierwszego/drugiego stopnia",
+          "x-permissions": "p09"
+        },
+        "Rok akademicki wznawiania studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "2019/2020"
+            },
+            {
+              "const": "2",
+              "title": "2020/2021"
+            },
+            {
+              "const": "3",
+              "title": "2021/2022"
+            },
+            {
+              "const": "4",
+              "title": "2022/2023"
+            },
+            {
+              "const": "5",
+              "title": "2023/2024"
+            },
+            {
+              "const": "6",
+              "title": "2024/2025"
+            }
+          ],
+          "title": "Rok akademicki wznawiania studiów",
+          "x-permissions": "p09"
+        },
+        "Okoliczności uniemożliwiające udział w zajęciach": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "jestem rodzicem"
+            },
+            {
+              "const": "2",
+              "title": "ciąża"
+            },
+            {
+              "const": "3",
+              "title": "długotrwała choroba potwierdzona zaświadczeniem lekarskim"
+            },
+            {
+              "const": "4",
+              "title": "wyjazd na studia za granicę"
+            },
+            {
+              "const": "5",
+              "title": "konieczność oczekiwania na powtarzanie semestru"
+            },
+            {
+              "const": "6",
+              "title": "wystąpienie ważnych okoliczności losowych, tj:"
+            }
+          ],
+          "title": "Okoliczności uniemożliwiające udział w zajęciach",
+          "x-permissions": "p07"
+        },
+        "W roku akademickim": {
+          "type": "string",
+          "title": "W roku akademickim",
+          "x-permissions": "p06"
+        }
+      },
+      "title": "WYBÓR OPCJI",
+      "x-permissions": "p30"
+    },
+    "wybor-opcji-tzpd": {
+      "type": "object",
+      "properties": {
+        "W roku akademickim": {
+          "type": "string",
+          "title": "W roku akademickim",
+          "x-permissions": "p06"
+        }
+      },
+      "title": "WYBÓR OPCJI",
+      "x-permissions": "p30"
+    },
+    "wybor-opcji-uuz": {
+      "type": "object",
+      "properties": {
+        "Z semestru": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "title": "Z semestru",
+          "x-permissions": "p02"
+        },
+        "Okoliczności uniemożliwiające udział w zajęciach": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "jestem rodzicem"
+            },
+            {
+              "const": "2",
+              "title": "ciąża"
+            },
+            {
+              "const": "3",
+              "title": "długotrwała choroba potwierdzona zaświadczeniem lekarskim"
+            },
+            {
+              "const": "4",
+              "title": "wyjazd na studia za granicę"
+            },
+            {
+              "const": "5",
+              "title": "konieczność oczekiwania na powtarzanie semestru"
+            },
+            {
+              "const": "6",
+              "title": "wystąpienie ważnych okoliczności losowych, tj:"
+            }
+          ],
+          "title": "Okoliczności uniemożliwiające udział w zajęciach",
+          "x-permissions": "p07"
+        },
+        "W roku akademickim": {
+          "type": "string",
+          "title": "W roku akademickim",
+          "x-permissions": "p06"
+        }
+      },
+      "title": "WYBÓR OPCJI",
+      "x-permissions": "p30"
+    },
+    "zwracam-sie-z-uprzejma-prosba-o-pzsk": {
+      "type": "object",
+      "properties": {
+        "Zwolnienie z pozostałych opłat": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "całkowite"
+            },
+            {
+              "const": "2",
+              "title": "częściowe"
+            }
+          ],
+          "title": "Zwolnienie z pozostałych opłat",
+          "x-permissions": "p07"
+        },
+        "Opłaty określone w art. 79 ust. 1 i 2": {
+          "type": "string",
+          "title": "Opłaty określone w art. 79 ust. 1 i 2",
+          "x-permissions": "p07"
+        },
+        "Całkowite/częściowe zwolnienie z opłat": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "całkowite"
+            },
+            {
+              "const": "2",
+              "title": "częściowe"
+            }
+          ],
+          "title": "Całkowite/częściowe zwolnienie z opłat",
+          "x-permissions": "p07"
+        },
+        "Rozłożenie wyżej wskazanych opłat na raty": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Rozłożenie wyżej wskazanych opłat na raty"
+            },
+            {
+              "const": "2",
+              "title": "Inne"
+            }
+          ],
+          "title": "Rozłożenie wyżej wskazanych opłat na raty",
+          "x-permissions": "p07"
+        }
+      },
+      "title": "Zwracam się z uprzejmą prośbą o:",
+      "x-permissions": "p45"
+    }
+  }
+}

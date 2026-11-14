@@ -1,0 +1,179 @@
+{
+  "ui:order": [
+    "Wszczęcie postępowania",
+    "Dane studenta",
+    "Decyzja",
+    "Podobieg doręczenia zawiadomienia",
+    "Podobieg realizacji",
+    "z upoważnienia Rektora",
+    "Odwołanie",
+    "Zawartość teczki",
+    "Teczka Sprawy",
+    "Systemowe",
+    "Dokumentacja sprawy"
+  ],
+  "Wszczęcie postępowania": {
+    "ui:order": [
+      "Data rejestracji",
+      "Osoba rejestrująca",
+      "Powód skreślenia",
+      "Wydział",
+      "Instytut",
+      "Kierunek",
+      "Student(ka)",
+      "Nr rejestru",
+      "Dziekan Wydziału"
+    ],
+    "Osoba rejestrująca": {
+      "ui:readonly": true
+    },
+    "Nr rejestru": {
+      "ui:readonly": true
+    },
+    "Powód skreślenia": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/powod-skreslenia",
+        "sourceName": "Powód skreślenia",
+        "sourceType": "Baza MSSQL"
+      }
+    },
+    "Instytut": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/instytuty",
+        "sourceName": "instytuty",
+        "sourceType": "REST Web Service"
+      }
+    },
+    "Kierunek": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    },
+    "Student(ka)": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/studenci",
+        "sourceName": "Studenci",
+        "sourceType": "Baza MSSQL"
+      }
+    },
+    "Dziekan Wydziału": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "Dane studenta": {
+    "ui:order": [
+      "Forma gramatyczna",
+      "Numer albumu",
+      "Rok akademicki",
+      "Poziom studiów",
+      "Tryb studiów",
+      "Adres zamieszkania",
+      "Email",
+      "Aktualny semestr studiów",
+      "Rok studiów"
+    ],
+    "Rok akademicki": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/rok-akademicki",
+        "sourceName": "rok akademicki",
+        "sourceType": "REST Web Service"
+      }
+    },
+    "Poziom studiów": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/poziom-studiow",
+        "sourceName": "Poziom studiów"
+      }
+    },
+    "Forma gramatyczna": {
+      "ui:widget": "radio"
+    }
+  },
+  "Decyzja": {
+    "ui:order": [
+      "Uzasadnienie",
+      "Numer decyzji",
+      "Data",
+      "Czyn wskazany w orzeczeniu",
+      "Data doręczenia orzeczenia",
+      "Data ostateczna",
+      "Data orzeczenia",
+      "Szablon decyzji",
+      "Ustosunkowanie się studenta",
+      "Semestru"
+    ],
+    "Uzasadnienie": {
+      "ui:help": "uzasadnienie należy rozwinąć dostosowując do indywidulanej sytuacji studenta."
+    },
+    "Data": {
+      "ui:help": "Data orzeczenia, decyzji..."
+    },
+    "Ustosunkowanie się studenta": {
+      "ui:readonly": true
+    },
+    "Szablon decyzji": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/szablony-skreslen",
+        "sourceName": "Szablony skreśleń"
+      }
+    }
+  },
+  "Podobieg doręczenia zawiadomienia": {
+    "ui:readonly": true
+  },
+  "Podobieg realizacji": {
+    "ui:readonly": true
+  },
+  "z upoważnienia Rektora": {
+    "ui:readonly": true
+  },
+  "Zawartość teczki": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Teczka Sprawy": {
+    "ui:help": "Wybierz teczkę, lub załóż nową",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/teczki-spraw",
+      "sourceName": "Wybór teczki  spraw - Dziekanat",
+      "sourceType": "Widok z bazy"
+    }
+  },
+  "Systemowe": {
+    "ui:order": [
+      "Formularz decyzji",
+      "Formularz zawiadomienia",
+      "Formularz zawiadomienia - akronim",
+      "Bieżący rok",
+      "prefix numeru teczki",
+      "środek numeru teczki",
+      "kolejny nr w teczce"
+    ],
+    "ui:readonly": true
+  },
+  "Dokumentacja sprawy": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:help": "Zawartość teczki",
+    "ui:readonly": true
+  }
+}

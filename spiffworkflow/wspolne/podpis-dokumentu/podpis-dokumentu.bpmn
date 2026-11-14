@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" id="defs_Process_Podpis_dokumentu" targetNamespace="http://bpmn">
+  <bpmn:process id="Process_Podpis_dokumentu" name="Podpis dokumentu" isExecutable="true">
+    <bpmn:documentation>wspólny podproces podpisu (callActivity calledElement="Process_Podpis_dokumentu").
+Wejście: dokument_id (Document w hubie) - opcjonalne: bez niego krok "Wybór dokumentu" bierze
+główny dokument sprawy. Podproces nie widzi innych danych procesu wywołującego.
+Wyjście: wynik_podpisu ("podpisany"/"odrzucony"), podpisany_dokument_id.
+Kroki systemowe (serviceTask) wykonuje hub: galwork-hub wf/services/signing_service.py;
+status Signius sprawdzany co retryMinutes (scripts/wf_wake.py).</bpmn:documentation>
+    <bpmn:ioSpecification>
+      <bpmn:dataInput id="dokument_id" name="dokument_id" />
+      <bpmn:dataOutput id="wynik_podpisu" name="wynik_podpisu" />
+      <bpmn:dataOutput id="podpisany_dokument_id" name="podpisany_dokument_id" />
+      <bpmn:inputSet>
+        <bpmn:dataInputRefs>dokument_id</bpmn:dataInputRefs>
+      </bpmn:inputSet>
+      <bpmn:outputSet>
+        <bpmn:dataOutputRefs>wynik_podpisu</bpmn:dataOutputRefs>
+        <bpmn:dataOutputRefs>podpisany_dokument_id</bpmn:dataOutputRefs>
+      </bpmn:outputSet>
+    </bpmn:ioSpecification>
+    <bpmn:startEvent id="StartEvent_1" name="Start" />
+    <bpmn:serviceTask id="Service_Dokument" name="Wybór dokumentu">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="dokumenty.glowny" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_Przygotowanie" name="Przygotowanie do podpisu">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="podpis-przygotowanie-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="podpis-przygotowanie-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Service_Wyslij" name="Wysłanie do podpisu">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="signius.request" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_Czekaj" name="Oczekiwanie na podpis">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="signius.wait" />
+          <spiffworkflow:property name="retryMinutes" value="15" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="GW_Wynik" name="Wynik podpisu" default="Flow_Podpisany" />
+    <bpmn:endEvent id="End_Podpisany" name="Dokument podpisany" />
+    <bpmn:userTask id="Task_Odrzucony" name="Podpis odrzucony">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="podpis-odrzucony-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="podpis-odrzucony-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="GW_Ponow" name="Ponowić podpis?" default="Flow_Zakoncz" />
+    <bpmn:endEvent id="End_Odrzucony" name="Podpis odrzucony" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Service_Dokument" />
+    <bpmn:sequenceFlow id="Flow_1b" sourceRef="Service_Dokument" targetRef="Task_Przygotowanie" />
+    <bpmn:sequenceFlow id="Flow_2" name="Wyślij do podpisu" sourceRef="Task_Przygotowanie" targetRef="Service_Wyslij" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Service_Wyslij" targetRef="Service_Czekaj" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Service_Czekaj" targetRef="GW_Wynik" />
+    <bpmn:sequenceFlow id="Flow_Podpisany" name="Podpisany" sourceRef="GW_Wynik" targetRef="End_Podpisany" />
+    <bpmn:sequenceFlow id="Flow_Odrzucony" name="Odrzucony" sourceRef="GW_Wynik" targetRef="Task_Odrzucony">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">wynik_podpisu == 'odrzucony'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_Odrzucony" targetRef="GW_Ponow" />
+    <bpmn:sequenceFlow id="Flow_Zakoncz" name="Zakończ" sourceRef="GW_Ponow" targetRef="End_Odrzucony" />
+    <bpmn:sequenceFlow id="Flow_Ponow" name="Ponów" sourceRef="GW_Ponow" targetRef="Task_Przygotowanie">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Ponow'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_Process_Podpis_dokumentu">
+    <bpmndi:BPMNPlane id="Plane_Process_Podpis_dokumentu" bpmnElement="Process_Podpis_dokumentu">
+      <bpmndi:BPMNShape id="Shape_StartEvent_1" bpmnElement="StartEvent_1">
+        <dc:Bounds x="60" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Service_Dokument" bpmnElement="Service_Dokument">
+        <dc:Bounds x="130" y="160" width="110" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Przygotowanie" bpmnElement="Task_Przygotowanie">
+        <dc:Bounds x="280" y="160" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Service_Wyslij" bpmnElement="Service_Wyslij">
+        <dc:Bounds x="440" y="160" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Service_Czekaj" bpmnElement="Service_Czekaj">
+        <dc:Bounds x="600" y="160" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Wynik" bpmnElement="GW_Wynik" isMarkerVisible="true">
+        <dc:Bounds x="760" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Podpisany" bpmnElement="End_Podpisany">
+        <dc:Bounds x="870" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Odrzucony" bpmnElement="Task_Odrzucony">
+        <dc:Bounds x="735" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Ponow" bpmnElement="GW_Ponow" isMarkerVisible="true">
+        <dc:Bounds x="760" y="430" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Odrzucony" bpmnElement="End_Odrzucony">
+        <dc:Bounds x="870" y="437" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1">
+        <di:waypoint x="96" y="200" />
+        <di:waypoint x="130" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_1b" bpmnElement="Flow_1b">
+        <di:waypoint x="240" y="200" />
+        <di:waypoint x="280" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_2" bpmnElement="Flow_2">
+        <di:waypoint x="400" y="200" />
+        <di:waypoint x="440" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_3" bpmnElement="Flow_3">
+        <di:waypoint x="560" y="200" />
+        <di:waypoint x="600" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_4" bpmnElement="Flow_4">
+        <di:waypoint x="720" y="200" />
+        <di:waypoint x="760" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Podpisany" bpmnElement="Flow_Podpisany">
+        <di:waypoint x="810" y="200" />
+        <di:waypoint x="870" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Odrzucony" bpmnElement="Flow_Odrzucony">
+        <di:waypoint x="785" y="225" />
+        <di:waypoint x="785" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_5" bpmnElement="Flow_5">
+        <di:waypoint x="785" y="380" />
+        <di:waypoint x="785" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Zakoncz" bpmnElement="Flow_Zakoncz">
+        <di:waypoint x="810" y="455" />
+        <di:waypoint x="870" y="455" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_Ponow" bpmnElement="Flow_Ponow">
+        <di:waypoint x="760" y="455" />
+        <di:waypoint x="340" y="455" />
+        <di:waypoint x="340" y="240" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

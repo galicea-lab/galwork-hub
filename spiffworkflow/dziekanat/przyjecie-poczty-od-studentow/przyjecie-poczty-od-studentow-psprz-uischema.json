@@ -1,0 +1,98 @@
+{
+  "ui:order": [
+    "Temat",
+    "Nadawca",
+    "Kogo dotyczy",
+    "Inna sprawa",
+    "Element e-Doręczeń"
+  ],
+  "Nadawca": {
+    "ui:order": [
+      "Adres e-doręczeń",
+      "Adres pocztowy",
+      "Email",
+      "Numer telefonu",
+      "Imię i nazwisko",
+      "Dotyczy skreślenia?"
+    ],
+    "Email": {
+      "ui:help": "Mail studencki"
+    },
+    "Dotyczy skreślenia?": {
+      "ui:order": [
+        "Odwołanie w procedurze skreślenia",
+        "Skreślenie: Teczka Sprawy"
+      ],
+      "Skreślenie: Teczka Sprawy": {
+        "ui:help": "Wybierz teczkę, lub załóż nową",
+        "ui:widget": "AsyncSelectWidget",
+        "ui:options": {
+          "endpoint": "/v1/wf/dictionaries/teczki-spraw",
+          "sourceName": "Wybór teczki  spraw - Dziekanat",
+          "sourceType": "Widok z bazy"
+        }
+      },
+      "Odwołanie w procedurze skreślenia": {
+        "ui:widget": "AsyncSelectWidget",
+        "ui:options": {
+          "endpoint": "/v1/wf/dictionaries/procedury-skreslenia-czeka-na-odwolanie",
+          "sourceName": "Procedury skreślenia - czeka na odwołanie",
+          "sourceType": "Widok z bazy"
+        }
+      }
+    },
+    "ui:help": "Dane studenta"
+  },
+  "Kogo dotyczy": {
+    "ui:order": [
+      "Kierunek",
+      "Wydział",
+      "Instytut",
+      "Student(ka)"
+    ],
+    "ui:help": "Wybór studenta",
+    "Kierunek": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    },
+    "Instytut": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/instytuty",
+        "sourceName": "instytuty",
+        "sourceType": "REST Web Service"
+      }
+    },
+    "Student(ka)": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/studenci",
+        "sourceName": "Studenci",
+        "sourceType": "Baza MSSQL"
+      }
+    }
+  },
+  "Inna sprawa": {
+    "ui:order": [
+      "Kategoria spraw",
+      "Rodzaj sprawy"
+    ],
+    "Rodzaj sprawy": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kategorie-spraw",
+        "sourceName": "Rodzaje spraw"
+      }
+    },
+    "Kategoria spraw": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/grupa-formularzy",
+        "sourceName": "Grupa formularzy"
+      }
+    }
+  }
+}

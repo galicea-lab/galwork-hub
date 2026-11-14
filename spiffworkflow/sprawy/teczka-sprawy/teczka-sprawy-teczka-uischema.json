@@ -1,6 +1,5 @@
 {
   "ui:order": [
-    "Wybór spółki",
     "Krótki opis  sprawy",
     "Dział",
     "Kategoria spraw",
@@ -16,9 +15,9 @@
   ],
   "Dział": {
     "ui:widget": "AsyncSelectWidget",
-      "ui:options": {
-        "endpoint": "/api/dictionaries/dzialy",
-        "sourceName": "Działy" 
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/dzialy",
+      "sourceName": "Działy"
     }
   },
   "Kategoria spraw": {
@@ -46,7 +45,7 @@
     "JRWA": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/v1/wf/dictionaries/ezd-jrwa",
+        "endpoint": "/v1/wf/dictionaries/jrwa",
         "sourceName": "[EZD] JRWA",
         "sourceType": "Baza MSSQL"
       }
@@ -54,7 +53,7 @@
     "Kategoria archiwizacji": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/v1/wf/dictionaries/ezd-kategoria-archiwizacji",
+        "endpoint": "/v1/wf/dictionaries/kategoria-archiwizacji",
         "sourceName": "[EZD] Kategoria archiwizacji",
         "sourceType": "Baza MSSQL"
       }
@@ -151,12 +150,6 @@
       "removable": false
     },
     "ui:readonly": true
-  },
-  "Wybór spółki": {
-    "ui:widget": "AsyncSelectWidget",
-    "ui:options": {
-      "endpoint": "/v1/wf/dictionaries/companies"
-    }
   },
   "Terminarz": {
     "ui:widget": "AsyncSelectWidget",

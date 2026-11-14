@@ -3,20 +3,6 @@
   "description": "Proces: Dokument; Obieg: DD - Dokumenty Sprawy; Typ dokumentu: Dokumenty Działu",
   "type": "object",
   "properties": {
-    "Wybór spółki": {
-      "type": "string",
-      "title": "Wybór spółki",
-      "x-permissions": {
-        "Nowy Dokument": "none",
-        "Przypisanie teczki": "editable",
-        "Redagowanie": "editable",
-        "Zmiana teczki": "editable",
-        "Prośba o informacje / decyzje": "none",
-        "e-Doręczenia": "none",
-        "Obsługa doręczania": "none",
-        "Archiwum": "none"
-      }
-    },
     "Temat": {
       "type": "string",
       "title": "Temat",

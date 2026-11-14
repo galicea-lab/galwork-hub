@@ -215,6 +215,14 @@ def publish_process_model_version(process_model_id: UUID, version_id: UUID,
     if version is None or version.process_model_id != process_model_id:
         raise HTTPException(status_code=404, detail="Wersja procesu nie znaleziona")
 
+    # 2026-11-13: przypięcie wersji procesów wywoływanych (callActivity)
+    # - brak opublikowanego procesu wywoływanego blokuje publikację.
+    try:
+        warnings = get_service().pin_called_versions(db, version)
+    except ProcessServiceError as exc:
+        db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
     previous = db.execute(
         select(ProcessModelVersion).where(
             ProcessModelVersion.process_model_id == process_model_id,
@@ -230,6 +238,7 @@ def publish_process_model_version(process_model_id: UUID, version_id: UUID,
     version.published_at = datetime.now(UTC)
     db.commit()
     db.refresh(version)
+    version.warnings = warnings  # 2026-11-13: tylko w odpowiedzi, nie w bazie
     return version
 
 

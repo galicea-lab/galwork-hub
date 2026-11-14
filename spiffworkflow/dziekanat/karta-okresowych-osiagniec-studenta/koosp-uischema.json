@@ -1,0 +1,56 @@
+{
+  "ui:order": [
+    "Rok akademicki",
+    "zimowy/letni",
+    "Kierunek",
+    "kod_kierunku",
+    "Student(ka)",
+    "nr_albumu",
+    "Semestr (numer kolejny)",
+    "typ",
+    "kierunek_typ"
+  ],
+  "Rok akademicki": {
+    "ui:help": "Rok akademicki",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/rok-akademicki",
+      "sourceName": "rok akademicki",
+      "sourceType": "REST Web Service"
+    }
+  },
+  "Kierunek": {
+    "ui:help": "Kierunek studiów",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/kierunki",
+      "sourceName": "Kierunki"
+    }
+  },
+  "kod_kierunku": {
+    "ui:readonly": true
+  },
+  "Student(ka)": {
+    "ui:help": "select  * from (_x000d__x000d_\nselect * from v_studenci_x000d__x000d_\n) as nnn where  (([k_skrot] = N'IwB')) _x000d__x000d_",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/studenci",
+      "sourceName": "<Baza systemu>",
+      "sourceType": "Systemowe"
+    }
+  },
+  "nr_albumu": {
+    "ui:help": "Numer albumu"
+  },
+  "typ": {
+    "ui:readonly": true,
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/typ-studiow",
+      "sourceName": "Typ studiów"
+    }
+  },
+  "kierunek_typ": {
+    "ui:readonly": true
+  }
+}

@@ -1,6 +1,5 @@
 {
   "ui:order": [
-    "Wybór spółki",
     "Temat",
     "Nadawca",
     "Treść",
@@ -166,11 +165,5 @@
       "addable": true
     },
     "ui:readonly": true
-  },
-  "Wybór spółki": {
-    "ui:widget": "AsyncSelectWidget",
-    "ui:options": {
-      "endpoint": "/v1/wf/dictionaries/companies"
-    }
   }
 }

@@ -9,7 +9,6 @@
     "Potwierdzam",
     "Lista",
     "Lista 2",
-    "Wybór spółki",
     "termin",
     "Listy realizacj widoczne dla:",
     "Dodatkowy Link",
@@ -75,12 +74,6 @@
   "Uwagi": {
     "ui:widget": "textarea",
     "ui:readonly": true
-  },
-  "Wybór spółki": {
-    "ui:widget": "AsyncSelectWidget",
-    "ui:options": {
-      "endpoint": "/v1/wf/dictionaries/companies"
-    }
   },
   "Listy realizacj widoczne dla:": {
     "ui:widget": "AsyncSelectWidget",

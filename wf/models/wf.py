@@ -211,8 +211,17 @@ class HumanTask(Base):
     completed_by_id: Mapped[int | None] = user_fk("completed_by")
     completed_on_behalf_of_id: Mapped[int | None] = user_fk("completed_on_behalf_of")
     submitted_data: Mapped[dict[str, Any] | None] = mapped_column(json_type())
+    # BEGIN 2026-11-13: zadanie podprocesu wywołanego przez callActivity -
+    # proces BPMN zadania i wersja modelu, z której biorą się formularz,
+    # x-permissions i decyzje (NULL = proces główny instancji i jej wersja).
+    bpmn_process_id: Mapped[str | None] = mapped_column(Text)
+    form_version_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("process_model_version.id", ondelete="SET NULL"))
+    # END
 
     process_instance: Mapped[ProcessInstance] = relationship(back_populates="tasks")
+    form_version: Mapped["ProcessModelVersion | None"] = relationship(
+        foreign_keys=[form_version_id])  # 2026-11-13
     claimed_by: Mapped[User | None] = relationship(foreign_keys=[claimed_by_id])
     completed_by: Mapped[User | None] = relationship(foreign_keys=[completed_by_id])
     completed_on_behalf_of: Mapped[User | None] = relationship(
@@ -616,6 +625,7 @@ class ProcessInstance(Base):
         Index("ix_pi_version", "process_model_version_id"),
         partial_index("ix_pi_wakeup", "next_wakeup_at",
                       where=text("next_wakeup_at IS NOT NULL")),
+        Index("ix_pi_parent", "parent_instance_id"),  # 2026-11-13
         # j.w. - indeks GIN na `summary` tylko dla PostgreSQL.
     )
 
@@ -639,6 +649,13 @@ class ProcessInstance(Base):
     error_task_id: Mapped[uuid.UUID | None] = mapped_column(Uuid(as_uuid=True))
     lock_version: Mapped[int] = mapped_column(Integer, nullable=False,
                                               server_default=text("0"))
+    # BEGIN 2026-11-13: instancja uruchomiona przez inną (sendTask
+    # z `startProcess` albo szybka akcja zadania) - żyje niezależnie od
+    # rodzica; `parent_task_id` = zadanie Spiffa/HumanTask, które ją uruchomiło.
+    parent_instance_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("process_instance.id", ondelete="SET NULL"))
+    parent_task_id: Mapped[uuid.UUID | None] = mapped_column(Uuid(as_uuid=True))
+    # -END
 
     __mapper_args__ = {"version_id_col": lock_version}
 

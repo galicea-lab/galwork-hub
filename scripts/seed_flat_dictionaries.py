@@ -40,10 +40,74 @@ from wf.models import DictionaryEntry, ProcessInstance, ProcessModel, ProcessMod
 from wf.services.dictionary_service import TABLE_DICTIONARIES  # noqa: E402
 
 STATIC_ENTRIES: dict[str, list[tuple[str, str]]] = {
+    # 2026-11-12: kody = warunki `if` w galwork-models/dziekanat/prosba_studenta/
+    # zgloszenie-schema.json (generowany z src/rodzaje.json). Nowy kod bez
+    # sekcji w schemacie pokaże tylko sekcje wspólne.
+    "rodzaj-pisma-studenta": [
+        ("F-ISS", "Podanie o ISS"),
+        ("PMDS", "Wniosek o przyznanie miejsca w Domu Studenta"),
+        ("POD", "Podanie uniwersalne do Rektora/Dziekana/Dyrektora"),
+        ("PPT", "Podanie o wyrażenie zgody na przywrócenie terminu"),
+        ("PSS", "Podanie o wyrażenie zgody na powtarzanie semestru studiów"),
+        ("PZSK", "Podanie o zmianę studiowanego kierunku (PZSK)"),
+        ("TZPD", "Podanie o przedłużenie terminu złożenia pracy dyplomowej (Dziekan)"),
+        ("UUZ", "Podanie o udzielenie urlopu od zajęć"),
+        ("WS", "Podanie o wyrażenie zgody na wznowienie studiów"),
+        ("ZA", "Zaświadczenie absolwenta"),
+        ("ZKS", "Podanie o zmianę studiowanego kierunku (ZKS)"),
+        ("ZOS", "Podanie o zwolnienie z opłat za kształcenie"),
+        ("ZPD", "Podanie o przedłużenie terminu złożenia pracy dyplomowej (Dyrektor)"),
+        ("ZPS", "Podanie o zmianę podstawy studiowania"),
+        ("ZS", "Prośba o wydanie zaświadczenia o studiowaniu"),
+        ("ZWW", "Podanie o wyrażenie zgody na wpis warunkowy"),
+    ],
     "dzien-tygodnia": [
         ("1", "Poniedziałek"), ("2", "Wtorek"), ("3", "Środa"), ("4", "Czwartek"),
         ("5", "Piątek"), ("6", "Sobota"), ("7", "Niedziela"),
     ],
+    # BEGIN 2026-11-13: słowniki wspólne dla uczelni (wzorce galwork-models);
+    # treść do weryfikacji z aktualnymi przepisami przed wdrożeniem.
+    # Art. 108 ustawy Prawo o szkolnictwie wyższym i nauce: ust. 1 - skreślenie
+    # obowiązkowe, ust. 2 - fakultatywne.
+    "powod-skreslenia": [
+        ("108-1-1", "Niepodjęcie studiów"),
+        ("108-1-2", "Rezygnacja ze studiów"),
+        ("108-1-3", "Niezłożenie w terminie pracy dyplomowej lub egzaminu dyplomowego"),
+        ("108-1-4", "Ukaranie karą dyscyplinarną wydalenia z uczelni"),
+        ("108-2-1", "Brak udziału w obowiązkowych zajęciach"),
+        ("108-2-2", "Brak postępów w nauce"),
+        ("108-2-3", "Nieuzyskanie zaliczenia semestru lub roku w określonym terminie"),
+        ("108-2-4", "Niewniesienie opłat związanych z odbywaniem studiów"),
+    ],
+    # Kategorie archiwalne: A - materiały archiwalne, B<n> - dokumentacja
+    # niearchiwalna przechowywana n lat, BE<n> - po n latach ekspertyza
+    # archiwum, Bc - krótkotrwała, brakowana po wykorzystaniu.
+    "kategoria-archiwizacji": [
+        ("A", "A - materiały archiwalne"),
+        ("BE5", "BE5 - ekspertyza po 5 latach"), ("BE10", "BE10 - ekspertyza po 10 latach"),
+        ("BE25", "BE25 - ekspertyza po 25 latach"), ("BE50", "BE50 - ekspertyza po 50 latach"),
+        ("B2", "B2 - przechowywanie 2 lata"), ("B5", "B5 - przechowywanie 5 lat"),
+        ("B10", "B10 - przechowywanie 10 lat"), ("B25", "B25 - przechowywanie 25 lat"),
+        ("B50", "B50 - przechowywanie 50 lat"),
+        ("Bc", "Bc - dokumentacja krótkotrwała"),
+    ],
+    # Kodeks pracy + urlopy nauczycieli akademickich (ustawa PSWN).
+    "rodzaje-urlopow": [
+        ("wypoczynkowy", "Urlop wypoczynkowy"),
+        ("na-zadanie", "Urlop na żądanie"),
+        ("okolicznosciowy", "Urlop okolicznościowy"),
+        ("bezplatny", "Urlop bezpłatny"),
+        ("opiekunczy", "Urlop opiekuńczy"),
+        ("opieka-nad-dzieckiem", "Zwolnienie na opiekę nad dzieckiem"),
+        ("macierzynski", "Urlop macierzyński"),
+        ("rodzicielski", "Urlop rodzicielski"),
+        ("ojcowski", "Urlop ojcowski"),
+        ("wychowawczy", "Urlop wychowawczy"),
+        ("szkoleniowy", "Urlop szkoleniowy"),
+        ("naukowy", "Urlop naukowy"),
+        ("zdrowotny", "Urlop dla poratowania zdrowia"),
+    ],
+    # END
 }
 
 

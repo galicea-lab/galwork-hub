@@ -1,0 +1,173 @@
+{
+  "ui:order": [
+    "Wszczęcie postępowania",
+    "Dane studenta",
+    "Decyzja",
+    "Zawiadomienie o wszczęciu postępowania",
+    "Podobieg doręczenia zawiadomienia",
+    "Podobieg realizacji",
+    "Odwołanie",
+    "Teczka Sprawy",
+    "z upoważnienia Rektora",
+    "Systemowe",
+    "Dokumentacja sprawy",
+    "Zawartość teczki"
+  ],
+  "Wszczęcie postępowania": {
+    "ui:order": [
+      "Data rejestracji",
+      "Osoba rejestrująca",
+      "Powód skreślenia",
+      "Wydział",
+      "Instytut",
+      "Kierunek",
+      "Student(ka)",
+      "Nr rejestru",
+      "Dziekan Wydziału"
+    ],
+    "Osoba rejestrująca": {
+      "ui:readonly": true
+    },
+    "Powód skreślenia": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/powod-skreslenia",
+        "sourceName": "Powód skreślenia",
+        "sourceType": "Baza MSSQL"
+      }
+    },
+    "Instytut": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/instytuty",
+        "sourceName": "instytuty",
+        "sourceType": "REST Web Service"
+      }
+    },
+    "Kierunek": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    },
+    "Student(ka)": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/studenci",
+        "sourceName": "Studenci",
+        "sourceType": "Baza MSSQL"
+      }
+    },
+    "Dziekan Wydziału": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "Dane studenta": {
+    "ui:order": [
+      "Forma gramatyczna",
+      "Numer albumu",
+      "Rok akademicki",
+      "Poziom studiów",
+      "Tryb studiów",
+      "Adres zamieszkania",
+      "Email",
+      "Aktualny semestr studiów",
+      "Rok studiów"
+    ],
+    "Rok akademicki": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/rok-akademicki",
+        "sourceName": "rok akademicki",
+        "sourceType": "REST Web Service"
+      }
+    },
+    "Poziom studiów": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/poziom-studiow",
+        "sourceName": "Poziom studiów"
+      }
+    },
+    "Forma gramatyczna": {
+      "ui:widget": "radio"
+    }
+  },
+  "Decyzja": {
+    "ui:order": [
+      "Semestru"
+    ],
+    "Semestru": {
+      "ui:readonly": true
+    },
+    "ui:readonly": true
+  },
+  "Zawiadomienie o wszczęciu postępowania": {
+    "ui:order": [
+      "Stopień studiów",
+      "Semestr studiów",
+      "Rok studiów - słownie",
+      "Data rozpoczęcia roku akademickiego",
+      "W semesrtze"
+    ],
+    "W semesrtze": {
+      "ui:readonly": true
+    }
+  },
+  "Podobieg doręczenia zawiadomienia": {
+    "ui:readonly": true
+  },
+  "Podobieg realizacji": {
+    "ui:readonly": true
+  },
+  "Teczka Sprawy": {
+    "ui:help": "Wybierz teczkę, lub załóż nową",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/teczki-spraw",
+      "sourceName": "Wybór teczki  spraw - Dziekanat",
+      "sourceType": "Widok z bazy"
+    }
+  },
+  "Systemowe": {
+    "ui:order": [
+      "Formularz decyzji",
+      "Formularz zawiadomienia",
+      "Formularz zawiadomienia - akronim",
+      "Bieżący rok",
+      "prefix numeru teczki",
+      "środek numeru teczki",
+      "kolejny nr w teczce"
+    ],
+    "Bieżący rok": {
+      "ui:readonly": true
+    },
+    "prefix numeru teczki": {
+      "ui:readonly": true
+    },
+    "środek numeru teczki": {
+      "ui:readonly": true
+    }
+  },
+  "Dokumentacja sprawy": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:help": "Zawartość teczki",
+    "ui:readonly": true
+  },
+  "Zawartość teczki": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  }
+}

@@ -31,20 +31,6 @@
         "Problem z wysłaniem": "readonly"
       }
     },
-    "Wybór spółki": {
-      "type": "string",
-      "title": "Wybór spółki",
-      "x-permissions": {
-        "Rejestruj przesyłkę": "editable",
-        "Weryfikacja adresów": "editable",
-        "Zarządzanie Wysyłką": "editable",
-        "Kolejka do wysłania": "editable",
-        "Wysyłka EDR": "editable",
-        "Odczyt poświadczeń EDR": "editable",
-        "Sukces": "editable",
-        "Problem z wysłaniem": "editable"
-      }
-    },
     "Powiązania": {
       "type": "object",
       "properties": {

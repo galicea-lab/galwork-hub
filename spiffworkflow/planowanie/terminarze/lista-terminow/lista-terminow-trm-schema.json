@@ -3,19 +3,6 @@
   "description": "Proces: SCHD - Terminarz (ID: 286); Obieg: TRM - Lista terminów (ID: 320); Typ dokumentu: TRM - Lista terminów (ID: 431)",
   "type": "object",
   "properties": {
-    "Wybór spółki": {
-      "type": "string",
-      "title": "Wybór spółki",
-      "x-permissions": {
-        "Wybór terminarza": "editable",
-        "Rejestracja terminów": "editable",
-        "Zarejestrowane terminy": "editable",
-        "Aktualny semestr": "editable",
-        "Następny semestr": "editable",
-        "Archiwalne semestry": "editable",
-        "Odrzucone": "editable"
-      }
-    },
     "Tytuł": {
       "type": "string",
       "title": "Tytuł",

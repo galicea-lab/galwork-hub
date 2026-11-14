@@ -1,0 +1,8 @@
+{
+    "description": "Podprocesy wspólne dla wielu obiegów (np. podpis dokumentu)",
+    "display_name": "Wspólne podprocesy",
+    "messages": null,
+    "correlation_keys": null,
+    "correlation_properties": null,
+    "data_store_specifications": null
+}

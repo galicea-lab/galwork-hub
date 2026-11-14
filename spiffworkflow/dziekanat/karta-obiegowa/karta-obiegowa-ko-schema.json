@@ -1,0 +1,540 @@
+{
+  "title": "Karta obiegowa-KO",
+  "description": "Proces: KO - Karta obiegowa (ID: 259); Obieg: Karta obiegowa (ID: 294); Typ dokumentu: KO - Karta obiegowa (ID: 402)",
+  "type": "object",
+  "properties": {
+    "DANE STUDENTA": {
+      "type": "object",
+      "properties": {
+        "Student/ka": {
+          "type": "string",
+          "title": "Student/ka",
+          "x-permissions": {
+            "Start": "editable",
+            "Uzupełnienie danych": "editable",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Wydział": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wydział 1"
+            },
+            {
+              "const": "2",
+              "title": "Wydział 2"
+            }
+          ],
+          "title": "Wydział",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "editable",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Kierunek studiów": {
+          "type": "string",
+          "title": "Kierunek studiów",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "editable",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Nr albumu": {
+          "type": "string",
+          "title": "Nr albumu",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "editable",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "editable",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        }
+      },
+      "title": "DANE STUDENTA",
+      "x-permissions": {
+        "Start": "editable",
+        "Uzupełnienie danych": "editable",
+        "Weryfikacja zaległości": "readonly",
+        "BOS": "readonly",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    },
+    "BOS": {
+      "type": "object",
+      "properties": {
+        "Zobowiązania wobec BOS:": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "brak zobowiązań"
+            },
+            {
+              "const": "2",
+              "title": "ma zobowiązania"
+            }
+          ],
+          "title": "Zobowiązania wobec BOS:",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "editable",
+            "BOS": "editable",
+            "Końcowy (pozytywny)": "readonly"
+          },
+          "x-required-in-steps": [
+            "Weryfikacja zaległości",
+            "BOS"
+          ]
+        },
+        "Imię i nazwisko": {
+          "type": "string",
+          "title": "Imię i nazwisko",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Wyślij email do studenta": {
+          "type": "string",
+          "title": "Wyślij email do studenta",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "editable",
+            "BOS": "editable",
+            "Końcowy (pozytywny)": "none"
+          }
+        }
+      },
+      "required": [
+        "Zobowiązania wobec BOS:"
+      ],
+      "title": "BOS",
+      "x-permissions": {
+        "Start": "none",
+        "Uzupełnienie danych": "none",
+        "Weryfikacja zaległości": "editable",
+        "BOS": "editable",
+        "Końcowy (pozytywny)": "editable"
+      }
+    },
+    "KWESTURA": {
+      "type": "object",
+      "properties": {
+        "Zobowiązania wobec Kwestury:": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "brak zobowiązań"
+            },
+            {
+              "const": "2",
+              "title": "ma zobowiązania"
+            }
+          ],
+          "title": "Zobowiązania wobec Kwestury:",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "editable",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          },
+          "x-required-in-steps": [
+            "Weryfikacja zaległości"
+          ]
+        },
+        "Imię i nazwisko": {
+          "type": "string",
+          "title": "Imię i nazwisko",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Wyślij email do studenta": {
+          "type": "string",
+          "title": "Wyślij email do studenta",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "editable",
+            "BOS": "none",
+            "Końcowy (pozytywny)": "none"
+          }
+        }
+      },
+      "required": [
+        "Zobowiązania wobec Kwestury:"
+      ],
+      "title": "KWESTURA",
+      "x-permissions": {
+        "Start": "none",
+        "Uzupełnienie danych": "none",
+        "Weryfikacja zaległości": "editable",
+        "BOS": "editable",
+        "Końcowy (pozytywny)": "editable"
+      }
+    },
+    "BIBLIOTEKA": {
+      "type": "object",
+      "properties": {
+        "Zobowiązania wobec Biblioteki:": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "brak zobowiązań"
+            },
+            {
+              "const": "2",
+              "title": "ma zobowiązania"
+            }
+          ],
+          "title": "Zobowiązania wobec Biblioteki:",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "editable",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          },
+          "x-required-in-steps": [
+            "Weryfikacja zaległości"
+          ]
+        },
+        "Imię i nazwisko": {
+          "type": "string",
+          "title": "Imię i nazwisko",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Wyślij email do studenta": {
+          "type": "string",
+          "title": "Wyślij email do studenta",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "editable",
+            "BOS": "none",
+            "Końcowy (pozytywny)": "none"
+          }
+        }
+      },
+      "required": [
+        "Zobowiązania wobec Biblioteki:"
+      ],
+      "title": "BIBLIOTEKA",
+      "x-permissions": {
+        "Start": "none",
+        "Uzupełnienie danych": "none",
+        "Weryfikacja zaległości": "editable",
+        "BOS": "editable",
+        "Końcowy (pozytywny)": "editable"
+      }
+    },
+    "AKADEMICKI ZWIĄZEK SPORTOWY": {
+      "type": "object",
+      "properties": {
+        "Zobowiązania wobec AZS:": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "brak zobowiązań"
+            },
+            {
+              "const": "2",
+              "title": "ma zobowiązania"
+            }
+          ],
+          "title": "Zobowiązania wobec AZS:",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "editable",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          },
+          "x-required-in-steps": [
+            "Weryfikacja zaległości"
+          ]
+        },
+        "Imię i nazwisko": {
+          "type": "string",
+          "title": "Imię i nazwisko",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Wyślij email do studenta": {
+          "type": "string",
+          "title": "Wyślij email do studenta",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "editable",
+            "BOS": "none",
+            "Końcowy (pozytywny)": "none"
+          }
+        }
+      },
+      "required": [
+        "Zobowiązania wobec AZS:"
+      ],
+      "title": "AKADEMICKI ZWIĄZEK SPORTOWY",
+      "x-permissions": {
+        "Start": "none",
+        "Uzupełnienie danych": "none",
+        "Weryfikacja zaległości": "editable",
+        "BOS": "editable",
+        "Końcowy (pozytywny)": "editable"
+      }
+    },
+    "AKADEMIK": {
+      "type": "object",
+      "properties": {
+        "Zobowiązania wobec Akademika:": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "brak zobowiązań"
+            },
+            {
+              "const": "2",
+              "title": "ma zobowiązania"
+            }
+          ],
+          "title": "Zobowiązania wobec Akademika:",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "editable",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          },
+          "x-required-in-steps": [
+            "Weryfikacja zaległości"
+          ]
+        },
+        "Imię i nazwisko": {
+          "type": "string",
+          "title": "Imię i nazwisko",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "readOnly": true,
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "readonly",
+            "BOS": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Wyślij email do studenta": {
+          "type": "string",
+          "title": "Wyślij email do studenta",
+          "x-permissions": {
+            "Start": "none",
+            "Uzupełnienie danych": "none",
+            "Weryfikacja zaległości": "editable",
+            "BOS": "none",
+            "Końcowy (pozytywny)": "none"
+          }
+        }
+      },
+      "required": [
+        "Zobowiązania wobec Akademika:"
+      ],
+      "title": "AKADEMIK",
+      "x-permissions": {
+        "Start": "none",
+        "Uzupełnienie danych": "none",
+        "Weryfikacja zaległości": "editable",
+        "BOS": "editable",
+        "Końcowy (pozytywny)": "editable"
+      }
+    },
+    "Numer Teczki": {
+      "type": "string",
+      "title": "Numer Teczki",
+      "x-permissions": {
+        "Start": "none",
+        "Uzupełnienie danych": "readonly",
+        "Weryfikacja zaległości": "readonly",
+        "BOS": "readonly",
+        "Końcowy (pozytywny)": "readonly"
+      },
+      "readOnly": true,
+      "default": "{{ ((data.get('DANE STUDENTA') or {}).get('Nr albumu') or '') }}",
+      "description": "Numer teczki studenta = numer albumu (DANE STUDENTA / Nr albumu), wyliczany - nie ze słownika spraw."
+    }
+  }
+}

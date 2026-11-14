@@ -1,6 +1,5 @@
 {
   "ui:order": [
-    "Wybór spółki",
     "Tytuł",
     "Terminy",
     "Terminy kalendarza osobistego?",
@@ -135,12 +134,6 @@
         "sourceName": "Grupy osób",
         "sourceType": "Kartoteka Użytkowników"
       }
-    }
-  },
-  "Wybór spółki": {
-    "ui:widget": "AsyncSelectWidget",
-    "ui:options": {
-      "endpoint": "/v1/wf/dictionaries/companies"
     }
   },
   "Powiązany terminarz": {

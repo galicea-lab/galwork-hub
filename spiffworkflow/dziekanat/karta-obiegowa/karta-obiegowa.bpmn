@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   id="defs_Process_Karta_obiegowa"
+                   targetNamespace="http://bpmn"
+                   xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core">
+
+<bpmn:process id="Process_Karta_obiegowa" name="Karta obiegowa" isExecutable="true">
+<bpmn:laneSet id="LaneSet_Karta_obiegowa">
+  <bpmn:lane id="Lane_BOS" name="BOS">
+    <bpmn:flowNodeRef>Task_04</bpmn:flowNodeRef>
+  </bpmn:lane>
+</bpmn:laneSet>
+<bpmn:startEvent id="StartEvent_main" name="Start">
+  <bpmn:extensionElements>
+    <spiffworkflow:properties>
+      <spiffworkflow:property name="formJsonSchemaFilename" value="karta-obiegowa-ko-schema.json" />
+      <spiffworkflow:property name="formUiSchemaFilename" value="karta-obiegowa-ko-uischema.json" />
+    </spiffworkflow:properties>
+  </bpmn:extensionElements>
+</bpmn:startEvent>
+<bpmn:userTask id="Task_02" name="Uzupełnienie danych" ><spiffworkflow:property name="formJsonSchemaFilename" value="karta-obiegowa-ko-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="karta-obiegowa-ko-uischema.json" /></bpmn:userTask>
+<bpmn:userTask id="Task_03" name="Weryfikacja zaległości" ><spiffworkflow:property name="formJsonSchemaFilename" value="karta-obiegowa-ko-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="karta-obiegowa-ko-uischema.json" /></bpmn:userTask>
+<bpmn:userTask id="Task_04" name="BOS" ><spiffworkflow:property name="formJsonSchemaFilename" value="karta-obiegowa-ko-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="karta-obiegowa-ko-uischema.json" /><spiffworkflow:property name="lane" value="BOS" /></bpmn:userTask>
+<bpmn:userTask id="Task_05" name="Końcowy (pozytywny)" ><spiffworkflow:property name="formJsonSchemaFilename" value="karta-obiegowa-ko-schema.json" /><spiffworkflow:property name="formUiSchemaFilename" value="karta-obiegowa-ko-uischema.json" /></bpmn:userTask>
+<bpmn:sequenceFlow id="Flow_1" name="Zainicjuj" sourceRef="StartEvent_main" targetRef="Task_02" />
+<bpmn:sequenceFlow id="Flow_3" sourceRef="Task_02" targetRef="Task_03" name="Przekaż do podpisu" />
+<bpmn:sequenceFlow id="Flow_4" sourceRef="Task_03" targetRef="Task_04" name="Przekaż" />
+<bpmn:sequenceFlow id="Flow_5" sourceRef="Task_04" targetRef="Task_05" name="Przekaż" />
+<bpmn:endEvent id="EndEvent_1" name="Koniec" />
+<bpmn:sequenceFlow id="Flow_6" sourceRef="Task_05" targetRef="EndEvent_1" />
+</bpmn:process>
+<bpmndi:BPMNDiagram id="Diagram_Process_Karta_obiegowa">
+<bpmndi:BPMNPlane id="Plane_Process_Karta_obiegowa" bpmnElement="Process_Karta_obiegowa">
+<bpmndi:BPMNShape id="Shape_StartEvent_main" bpmnElement="StartEvent_main"><dc:Bounds x="60" y="82" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_02" bpmnElement="Task_02"><dc:Bounds x="500" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_03" bpmnElement="Task_03"><dc:Bounds x="720" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_04" bpmnElement="Task_04"><dc:Bounds x="940" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_Task_05" bpmnElement="Task_05"><dc:Bounds x="1160" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Shape_EndEvent_1" bpmnElement="EndEvent_1"><dc:Bounds x="1380" y="82" width="36" height="36" /></bpmndi:BPMNShape>
+<bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1"><di:waypoint x="96" y="100" /><di:waypoint x="500" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_3" bpmnElement="Flow_3"><di:waypoint x="600" y="100" /><di:waypoint x="720" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_4" bpmnElement="Flow_4"><di:waypoint x="820" y="100" /><di:waypoint x="940" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_5" bpmnElement="Flow_5"><di:waypoint x="1040" y="100" /><di:waypoint x="1160" y="100" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Edge_Flow_6" bpmnElement="Flow_6"><di:waypoint x="1260" y="100" /><di:waypoint x="1380" y="100" /></bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane>
+</bpmndi:BPMNDiagram>
+</bpmn:definitions>

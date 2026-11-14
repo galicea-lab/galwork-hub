@@ -87,6 +87,13 @@ login=xxxxxxxxxx
 password=oxxxxxx
 sender=xxxxx<xxxxx@xxxxxxxxxx.pl>
 
+# 2026-11-13: obiegi - kroki systemowe (serviceTask z `handler`, np. podpis
+# w Signius) budzone przez scripts/wf_wake.py (scripts/cron_wf.sh).
+# system_user - nazwa albo e-mail z tabeli users, w imieniu którego działa
+# cron (domyślnie [edr] system_user).
+[wf]
+system_user=
+
 [edr]
 test_db=false
 # adresy usług e-Doręczeń i dane rejestracyjne systemu

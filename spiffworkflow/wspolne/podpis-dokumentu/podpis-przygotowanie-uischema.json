@@ -1,0 +1,9 @@
+{
+  "ui:order": [
+    "dokument_tytul",
+    "tytul",
+    "podpisujacy_email",
+    "podpisujacy_telefon",
+    "podpis_kwalifikowany"
+  ]
+}

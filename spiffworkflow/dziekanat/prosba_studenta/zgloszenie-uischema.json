@@ -1,0 +1,336 @@
+{
+  "ui:order": [
+    "Rodzaj pisma",
+    "*",
+    "Kto obsługuje",
+    "Kto podpisuje",
+    "wydruk z Uczelni10"
+  ],
+  "Rodzaj pisma": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/rodzaj-pisma-studenta",
+      "sourceName": "Rodzaj pisma"
+    }
+  },
+  "Kto obsługuje": {
+    "ui:help": "Osoba obsługująca  sprawę, sekretariat",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/users",
+      "sourceName": "sl_sekretariat",
+      "sourceType": "Baza MSSQL"
+    }
+  },
+  "Kto podpisuje": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/podpisy-elektroniczne",
+      "sourceName": "Podpisy Elektroniczne"
+    }
+  },
+  "wydruk z Uczelni10": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/sprawy-wydruki",
+      "sourceName": "[sprawy] wydruki",
+      "sourceType": "REST Web Service"
+    }
+  },
+  "IDENTYFIKACJA": {
+    "ui:help": "Zaświadczenie dlastudenta w związku ze studiowaniemna konkretnymkierunku",
+    "Rodzaj sprawy": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kategorie-spraw",
+        "sourceName": "Rodzaje spraw"
+      }
+    },
+    "Kierunek": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    },
+    "Instytut": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/instytuty",
+        "sourceName": "instytuty",
+        "sourceType": "REST Web Service"
+      }
+    },
+    "Student(ka)": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/studenci",
+        "sourceName": "Studenci",
+        "sourceType": "Baza MSSQL"
+      }
+    },
+    "Kategoria spraw": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/grupa-formularzy",
+        "sourceName": "Grupa formularzy"
+      }
+    }
+  },
+  "PISMO": {
+    "Opis załączników": {
+      "ui:widget": "textarea"
+    },
+    "Dochód netto na jednego członka gospodarstwa": {
+      "ui:readonly": true
+    },
+    "Planowany wyjazd na ERASMUS": {
+      "ui:help": "Planowany wyjazd \tna wymianę w ramach programu ERASMUS w terminie"
+    },
+    "Trudności w dojazdach": {
+      "ui:widget": "textarea",
+      "ui:help": "Posiadam trudności w dojazdach (opisać utrudnienia komunikacyjne tj. np. przesiadki, brak połączeń itd.)"
+    },
+    "Dodatkowe uzasadnienie wniosku": {
+      "ui:widget": "textarea",
+      "ui:help": "(dane dobrowolne) (sieroctwo, orzeczenie o stopniu niepełnosprawności itp.)"
+    },
+    "Brak zaliczenia z powodu:": {
+      "ui:widget": "textarea"
+    },
+    "Zwracam się z uprzejmą prośbą o": {
+      "ui:widget": "textarea"
+    },
+    "Uzasadnienie prośby": {
+      "ui:widget": "textarea"
+    },
+    "Niezaliczone przedmioty": {
+      "ui:widget": "textarea"
+    },
+    "Nazwa przedmiotu do powtarzania": {
+      "ui:widget": "textarea",
+      "ui:help": "niezaliczone przedmioty"
+    },
+    "Konieczna forma papierowa": {
+      "ui:help": "Należy wydrukować, podpisać i złożyć w dziekanacie (sekretariacie)",
+      "ui:readonly": true
+    },
+    "Do niniejszego podania dołączam": {
+      "ui:widget": "textarea",
+      "ui:help": "Opis załączników"
+    },
+    "Dane dotyczące członków rodziny": {
+      "items": {},
+      "ui:options": {
+        "addable": true
+      },
+      "ui:help": "w tym dzieci do 26 lat"
+    },
+    "Zwracam się o zwolnienie z opłat z powodu:": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/zwolnienie-z-oplat",
+        "sourceName": "Zwolnienie z opłat"
+      }
+    },
+    "Nowy/wznowienie kierunek": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    }
+  },
+  "OKRES": {
+    "Od semestru": {
+      "ui:help": "Skreślenie"
+    },
+    "W roku akademickim": {
+      "ui:help": "Skreślenie",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/rok-akademicki",
+        "sourceName": "rok akademicki",
+        "sourceType": "REST Web Service"
+      }
+    }
+  },
+  "DANE STUDENTA": {
+    "Nr_albumu": {
+      "ui:help": "Numer albumu"
+    },
+    "Email": {
+      "ui:help": "Mail studencki"
+    },
+    "ui:help": "Dane studenta",
+    "Numer dokumentu tożsamości": {
+      "ui:readonly": true
+    },
+    "Miejsce wydania dokumentu tożsamości": {
+      "ui:readonly": true
+    },
+    "Obywatelstwo": {
+      "ui:readonly": true
+    },
+    "Data urodzenia": {
+      "ui:readonly": true
+    },
+    "DocumentId": {
+      "ui:help": "Identyfikator w systemie podpisywania Signius"
+    },
+    "Okres studiowania": {
+      "ui:help": "??? można złożyć z dat rozpoczęciai do  jkiedy studia"
+    }
+  },
+  "TOK STUDIÓW": {
+    "Tryb studiów": {
+      "ui:help": "stacjonarne / niestacjonarne"
+    },
+    "ui:help": "Dane ostudiowaniu",
+    "Rok akademicki": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/rok-akademicki",
+        "sourceName": "rok akademicki",
+        "sourceType": "REST Web Service"
+      }
+    },
+    "Poziom studiów": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/poziom-studiow",
+        "sourceName": "Poziom studiów"
+      }
+    }
+  },
+  "ADRESAT": {
+    "Dyrektor instytutu": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    },
+    "Rektor": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Dziekan Wydziału": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    },
+    "Promotor": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "POLA REDAKCYJNE": {
+    "Semestrów": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/semestry",
+        "sourceName": "Semestry"
+      }
+    },
+    "Forma gramatyczna": {
+      "ui:widget": "radio"
+    }
+  },
+  "DECYZJA": {
+    "Uzasadnienie decyzji": {
+      "ui:widget": "textarea",
+      "ui:help": "dostosować do indywidualnej sytuacji studenta i odpowiednio rozwinąć uzasadnienie"
+    },
+    "Uzasadnienie odmowy": {
+      "ui:widget": "textarea",
+      "ui:help": "należy opisać regulaminową przesłankę lub inne okoliczności, które w odniesieniu do regulaminu nie pozwalają na realizację studiów wg indywidualnego systemu studiowania, uzasadnienie musi uwzględniając indywidulaną sytuację studenta, proszę także sprawdzić czy wniosek został złożony w terminie zgodnie z § 9 ust. 7 Regulaminu",
+      "ui:readonly": true
+    },
+    "Opinia Dyrektora Instytutu": {
+      "ui:widget": "textarea"
+    },
+    "Opinia Dziekana Wydziału": {
+      "ui:widget": "textarea"
+    },
+    "Opinia Promotora": {
+      "ui:widget": "textarea"
+    },
+    "Data zarządzenia": {
+      "ui:readonly": true
+    },
+    "Nr zarządzenia": {
+      "ui:readonly": true
+    },
+    "Potwierdzam odbiór decyzji": {
+      "ui:readonly": true
+    },
+    "Liczba rat": {
+      "ui:readonly": true
+    },
+    "Różnice programowe": {
+      "ui:help": "W przypadku wyznaczenia różnic programowych ich wykaz wraz z terminem realizacji należy dołączyć do niniejszego wniosku studenta.",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/roznice-programowe",
+        "sourceName": "Różnice programowe"
+      }
+    },
+    "Przedmioty do zaliczenia oraz terminy": {
+      "ui:widget": "textarea",
+      "ui:help": "W przypadku wyznaczenia różnic programowych ich wykaz wraz z terminem realizacji należy dołączyć do niniejszego wniosku studenta"
+    },
+    "%  zwolnienie z wnioskowanych opłat": {
+      "ui:readonly": true
+    },
+    "Rozłożenie opłat na raty": {
+      "ui:readonly": true
+    },
+    "Całkowite/częściowe* zwolnienie z opłat": {
+      "ui:readonly": true
+    },
+    "Przyznać/nie przyznać": {
+      "ui:readonly": true
+    }
+  },
+  "WYBÓR OPCJI": {
+    "W roku akademickim": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/rok-akademicki",
+        "sourceName": "rok akademicki",
+        "sourceType": "REST Web Service"
+      }
+    }
+  },
+  "Zwracam się z uprzejmą prośbą o:": {
+    "Całkowite/częściowe zwolnienie z opłat": {
+      "ui:help": "całkowite/częściowe* zwolnienie z opłat za kształcenie na studiach stacjonarnych w języku polskim w  roku akademickim …………../…………..;"
+    },
+    "ui:help": "wybrać właściwe",
+    "Opłaty określone w art. 79 ust. 1 i 2": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/oplaty",
+        "sourceName": "Pozostałe opłaty określone w art. 79 ust. 1 i 2"
+      }
+    }
+  },
+  "OPŁATY": {
+    "Nr zarządzenia Rektora": {
+      "ui:help": "Zarządzenie zgodnie z którym jest naliczana opłata za powtarzanie semestru.",
+      "ui:readonly": true
+    },
+    "ui:readonly": true
+  }
+}

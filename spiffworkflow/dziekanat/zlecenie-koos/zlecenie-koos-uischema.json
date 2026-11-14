@@ -1,0 +1,91 @@
+{
+  "ui:order": [
+    "Kierunek",
+    "Semestr (numer kolejny)",
+    "kod_kierunku",
+    "typ",
+    "Rok akademicki",
+    "zimowy/letni",
+    "Data",
+    "Decyzja",
+    "KtoPodpisuje",
+    "kierunek_typ",
+    "Sekretariat",
+    "Lista studentów",
+    "generowanie"
+  ],
+  "Kierunek": {
+    "ui:help": "Kierunek studiów",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/kierunki",
+      "sourceName": "Kierunki"
+    }
+  },
+  "kod_kierunku": {
+    "ui:readonly": true
+  },
+  "Rok akademicki": {
+    "ui:help": "Rok akademicki",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/rok-akademicki",
+      "sourceName": "rok akademicki",
+      "sourceType": "REST Web Service"
+    }
+  },
+  "KtoPodpisuje": {
+    "ui:help": "Podpisujący",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/podpisy-elektroniczne",
+      "sourceName": "Podpisy Elektroniczne"
+    }
+  },
+  "kierunek_typ": {
+    "ui:readonly": true
+  },
+  "Sekretariat": {
+    "ui:help": "Sekretariat",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/pracownicy?department=Sekretariat",
+      "sourceName": "v_sekretariat",
+      "sourceType": "Baza MSSQL"
+    }
+  },
+  "Lista studentów": {
+    "ui:help": "Jeśli należy wygenerować karty dla wybranych studentów - wpisz ich tutaj.",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/studenci",
+      "sourceName": "Studenci",
+      "sourceType": "Baza MSSQL"
+    }
+  },
+  "generowanie": {
+    "items": {
+      "ui:order": [
+        "id",
+        "data",
+        "status",
+        "semestr",
+        "wariant",
+        "kierunek",
+        "nr_albumu",
+        "wynik",
+        "fn"
+      ]
+    },
+    "ui:options": {
+      "addable": true
+    }
+  },
+  "typ": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/typ-studiow",
+      "sourceName": "Typ studiów"
+    }
+  }
+}

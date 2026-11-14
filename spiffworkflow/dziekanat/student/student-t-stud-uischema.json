@@ -1,0 +1,89 @@
+{
+  "ui:order": [
+    "Student(ka)",
+    "Karty Osiągnięć Okresowych",
+    "Decyzje",
+    "Wnioski i inne",
+    "Id. POLON studenta",
+    "id. nadany",
+    "Czy poprawny?",
+    "Przedrostek nazwiska",
+    "Nazwisko",
+    "Imię",
+    "pesel",
+    "documentCountry",
+    "Rodzaj dokumentu",
+    "Numer dokumentu",
+    "POLON",
+    "nr_albumu",
+    "email",
+    "Inne sprawy"
+  ],
+  "Karty Osiągnięć Okresowych": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Decyzje": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Wnioski i inne": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Id. POLON studenta": {
+    "ui:readonly": true
+  },
+  "POLON": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "nr_albumu": {
+    "ui:help": "Numer albumu",
+    "ui:readonly": true
+  },
+  "email": {
+    "ui:readonly": true
+  },
+  "Inne sprawy": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Student(ka)": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/studenci",
+      "sourceName": "<Baza systemu>",
+      "sourceType": "Systemowe"
+    }
+  },
+  "documentCountry": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/kraj",
+      "sourceName": "Kraj"
+    }
+  },
+  "Rodzaj dokumentu": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/polon-documenttype",
+      "sourceName": "POLON – documentType"
+    }
+  }
+}

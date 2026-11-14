@@ -1,0 +1,9 @@
+{
+    "description": "Zlecenie KOOS",
+    "display_name": "Zlecenie KOOS",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "zlecenie-koos.bpmn",
+    "primary_process_id": "Process_KOOS"
+}

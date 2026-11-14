@@ -1,6 +1,5 @@
 {
   "ui:order": [
-    "Wybór spółki",
     "Tytuł informacji (wybór z wcześniej używanych)",
     "Tytuł informacji (dowolny)",
     "Treść informacji",
@@ -39,12 +38,6 @@
         "sourceName": "Grupy osób",
         "sourceType": "Kartoteka Użytkowników"
       }
-    }
-  },
-  "Wybór spółki": {
-    "ui:widget": "AsyncSelectWidget",
-    "ui:options": {
-      "endpoint": "/v1/wf/dictionaries/companies"
     }
   },
   "Tytuł informacji (wybór z wcześniej używanych)": {

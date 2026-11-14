@@ -3,15 +3,6 @@
   "description": "Proces: KANC - Pisma przychodzące; Obieg: Powiadomienia e-doreczen; Typ dokumentu: PEDR - Powiadomienie e-doręczeń",
   "type": "object",
   "properties": {
-    "Wybór spółki": {
-      "type": "string",
-      "title": "Wybór spółki",
-      "x-permissions": {
-        "Start": "editable",
-        "Aktywne": "editable",
-        "Końcowy (pozytywny)": "editable"
-      }
-    },
     "Data": {
       "type": "string",
       "format": "date",

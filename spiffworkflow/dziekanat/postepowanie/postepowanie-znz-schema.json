@@ -1,0 +1,1217 @@
+{
+  "title": "Postępowanie-ZNZ",
+  "description": "Proces: SLS - Skreślenie z listy studentów (ID: 198); Obieg: PSK - Postępowanie (ID: 235); Typ dokumentu: ZNZ - Zawiadomienie_Niepodjęcie studiów (ID: 276)",
+  "type": "object",
+  "properties": {
+    "Wszczęcie postępowania": {
+      "type": "object",
+      "properties": {
+        "Data rejestracji": {
+          "type": "string",
+          "title": "Data rejestracji",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Uzupełnienie danych studenta": "readonly",
+            "Weryfikacja": "readonly",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "readonly",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Osoba rejestrująca": {
+          "type": "string",
+          "title": "Osoba rejestrująca",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "readonly",
+            "Uzupełnienie danych studenta": "readonly",
+            "Weryfikacja": "readonly",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "readonly",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Powód skreślenia": {
+          "type": "string",
+          "title": "Powód skreślenia",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Uzupełnienie danych studenta": "readonly",
+            "Weryfikacja": "readonly",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "readonly",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Wydział": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wydział Nauk Społecznych, Humanistycznych i Ochrony Zdrowia"
+            },
+            {
+              "const": "2",
+              "title": "Wydział Nauk Technicznych i Sztuk Projektowych"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "Wydział Nauk Społecznych, Humanistycznych i Ochrony Zdrowia",
+              "description": "Marek Delong"
+            },
+            {
+              "id": "2",
+              "name": "Wydział Nauk Technicznych i Sztuk Projektowych",
+              "description": "Wioletta Tomaszewska-Górecka"
+            }
+          ],
+          "title": "Wydział",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Uzupełnienie danych studenta": "readonly",
+            "Weryfikacja": "readonly",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "readonly",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "editable"
+          }
+        },
+        "Instytut": {
+          "type": "string",
+          "title": "Instytut",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Uzupełnienie danych studenta": "readonly",
+            "Weryfikacja": "readonly",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "readonly",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Kierunek": {
+          "type": "string",
+          "title": "Kierunek",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Uzupełnienie danych studenta": "readonly",
+            "Weryfikacja": "readonly",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "readonly",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Student(ka)": {
+          "type": "string",
+          "title": "Student(ka)",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Uzupełnienie danych studenta": "readonly",
+            "Weryfikacja": "readonly",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "readonly",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Nr rejestru": {
+          "type": "string",
+          "title": "Nr rejestru",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Uzupełnienie danych studenta": "readonly",
+            "Weryfikacja": "readonly",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "readonly",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Dziekan Wydziału": {
+          "type": "string",
+          "title": "Dziekan Wydziału",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Uzupełnienie danych studenta": "readonly",
+            "Weryfikacja": "readonly",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "readonly",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        }
+      },
+      "title": "Wszczęcie postępowania",
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+        "Uzupełnienie danych studenta": "editable",
+        "Weryfikacja": "readonly",
+        "Wnioskowanie o wszęcie postepowania": "editable",
+        "Decyzja i podpis Rektora": "editable",
+        "Doręczanie": "readonly",
+        "Obsługa doręczania": "editable",
+        "Czekanie na odwołanie": "editable",
+        "Przyszło odwołanie": "editable",
+        "Realizacja Procedury Skreślenia": "readonly",
+        "Anulowanie zadania": "editable"
+      }
+    },
+    "Dane studenta": {
+      "type": "object",
+      "properties": {
+        "Forma gramatyczna": {
+          "type": "string",
+          "title": "Forma gramatyczna",
+          "description": "Formy w piśmie: Pani/Pan, studentka/student, złożyła/złożył…",
+          "oneOf": [
+            {
+              "const": "K",
+              "title": "żeńska (Pani, studentka)"
+            },
+            {
+              "const": "M",
+              "title": "męska (Pan, student)"
+            }
+          ],
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "editable",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          },
+          "x-required-in-steps": [
+            "Uzupełnienie danych studenta"
+          ]
+        },
+        "Numer albumu": {
+          "type": "string",
+          "title": "Numer albumu",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "editable",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Rok akademicki": {
+          "type": "string",
+          "title": "Rok akademicki",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "editable",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Poziom studiów": {
+          "type": "string",
+          "title": "Poziom studiów",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "editable",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Tryb studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Stacjonarne"
+            },
+            {
+              "const": "2",
+              "title": "Niestacjonarne"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "Stacjonarne",
+              "description": ""
+            },
+            {
+              "id": "2",
+              "name": "Niestacjonarne",
+              "description": ""
+            }
+          ],
+          "title": "Tryb studiów",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "editable",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Adres zamieszkania": {
+          "type": "string",
+          "title": "Adres zamieszkania",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "editable",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "editable",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Aktualny semestr studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "1",
+              "description": "I"
+            },
+            {
+              "id": "2",
+              "name": "2",
+              "description": "II"
+            },
+            {
+              "id": "3",
+              "name": "3",
+              "description": "III"
+            },
+            {
+              "id": "4",
+              "name": "4",
+              "description": "IV"
+            },
+            {
+              "id": "5",
+              "name": "5",
+              "description": "V"
+            },
+            {
+              "id": "6",
+              "name": "6",
+              "description": "VI"
+            },
+            {
+              "id": "7",
+              "name": "7",
+              "description": "VII"
+            },
+            {
+              "id": "8",
+              "name": "8",
+              "description": "VIII"
+            },
+            {
+              "id": "9",
+              "name": "9",
+              "description": "IX"
+            },
+            {
+              "id": "10",
+              "name": "10",
+              "description": "X"
+            }
+          ],
+          "title": "Aktualny semestr studiów",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "editable",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Rok studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "I"
+            },
+            {
+              "const": "2",
+              "title": "II"
+            },
+            {
+              "const": "3",
+              "title": "III"
+            },
+            {
+              "const": "4",
+              "title": "IV"
+            },
+            {
+              "const": "5",
+              "title": "V"
+            },
+            {
+              "const": "6",
+              "title": "VI"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "I",
+              "description": "pierwszego"
+            },
+            {
+              "id": "2",
+              "name": "II",
+              "description": "drugiego"
+            },
+            {
+              "id": "3",
+              "name": "III",
+              "description": "trzeciego"
+            },
+            {
+              "id": "4",
+              "name": "IV",
+              "description": "czwartego"
+            },
+            {
+              "id": "5",
+              "name": "V",
+              "description": "piątego"
+            },
+            {
+              "id": "6",
+              "name": "VI",
+              "description": "szóstego"
+            }
+          ],
+          "title": "Rok studiów",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "editable",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "editable"
+          }
+        }
+      },
+      "title": "Dane studenta",
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Uzupełnienie danych studenta": "editable",
+        "Weryfikacja": "editable",
+        "Wnioskowanie o wszęcie postepowania": "editable",
+        "Decyzja i podpis Rektora": "editable",
+        "Doręczanie": "readonly",
+        "Obsługa doręczania": "readonly",
+        "Czekanie na odwołanie": "editable",
+        "Przyszło odwołanie": "none",
+        "Realizacja Procedury Skreślenia": "readonly",
+        "Anulowanie zadania": "editable"
+      },
+      "required": [
+        "Forma gramatyczna"
+      ]
+    },
+    "Zawiadomienie o wszczęciu postępowania": {
+      "type": "object",
+      "properties": {
+        "Stopień studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "pierwszego"
+            },
+            {
+              "const": "2",
+              "title": "drugiego"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "pierwszego",
+              "description": ""
+            },
+            {
+              "id": "2",
+              "name": "drugiego",
+              "description": ""
+            }
+          ],
+          "title": "Stopień studiów",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "readonly",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Semestr studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "1",
+              "description": "I"
+            },
+            {
+              "id": "2",
+              "name": "2",
+              "description": "II"
+            },
+            {
+              "id": "3",
+              "name": "3",
+              "description": "III"
+            },
+            {
+              "id": "4",
+              "name": "4",
+              "description": "IV"
+            },
+            {
+              "id": "5",
+              "name": "5",
+              "description": "V"
+            },
+            {
+              "id": "6",
+              "name": "6",
+              "description": "VI"
+            },
+            {
+              "id": "7",
+              "name": "7",
+              "description": "VII"
+            },
+            {
+              "id": "8",
+              "name": "8",
+              "description": "VIII"
+            },
+            {
+              "id": "9",
+              "name": "9",
+              "description": "IX"
+            },
+            {
+              "id": "10",
+              "name": "10",
+              "description": "X"
+            }
+          ],
+          "title": "Semestr studiów",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "readonly",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Rok studiów - słownie": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "I"
+            },
+            {
+              "const": "2",
+              "title": "II"
+            },
+            {
+              "const": "3",
+              "title": "III"
+            },
+            {
+              "const": "4",
+              "title": "IV"
+            },
+            {
+              "const": "5",
+              "title": "V"
+            },
+            {
+              "const": "6",
+              "title": "VI"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "I",
+              "description": "pierwszego"
+            },
+            {
+              "id": "2",
+              "name": "II",
+              "description": "drugiego"
+            },
+            {
+              "id": "3",
+              "name": "III",
+              "description": "trzeciego"
+            },
+            {
+              "id": "4",
+              "name": "IV",
+              "description": "czwartego"
+            },
+            {
+              "id": "5",
+              "name": "V",
+              "description": "piątego"
+            },
+            {
+              "id": "6",
+              "name": "VI",
+              "description": "szóstego"
+            }
+          ],
+          "title": "Rok studiów - słownie",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "readonly",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "Data rozpoczęcia roku akademickiego": {
+          "type": "string",
+          "format": "date",
+          "title": "Data rozpoczęcia roku akademickiego",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "editable",
+            "Wnioskowanie o wszęcie postepowania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "readonly"
+          }
+        },
+        "W semesrtze": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "1",
+              "description": ""
+            },
+            {
+              "id": "2",
+              "name": "2",
+              "description": ""
+            },
+            {
+              "id": "3",
+              "name": "3",
+              "description": ""
+            },
+            {
+              "id": "4",
+              "name": "4",
+              "description": ""
+            },
+            {
+              "id": "5",
+              "name": "5",
+              "description": ""
+            },
+            {
+              "id": "6",
+              "name": "6",
+              "description": ""
+            },
+            {
+              "id": "7",
+              "name": "7",
+              "description": ""
+            },
+            {
+              "id": "8",
+              "name": "8",
+              "description": ""
+            },
+            {
+              "id": "9",
+              "name": "9",
+              "description": ""
+            },
+            {
+              "id": "10",
+              "name": "10",
+              "description": ""
+            }
+          ],
+          "title": "W semesrtze",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Uzupełnienie danych studenta": "none",
+            "Weryfikacja": "none",
+            "Wnioskowanie o wszęcie postepowania": "none",
+            "Decyzja i podpis Rektora": "none",
+            "Doręczanie": "none",
+            "Obsługa doręczania": "none",
+            "Czekanie na odwołanie": "none",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "none",
+            "Anulowanie zadania": "none"
+          }
+        }
+      },
+      "title": "Zawiadomienie o wszczęciu postępowania",
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Uzupełnienie danych studenta": "editable",
+        "Weryfikacja": "editable",
+        "Wnioskowanie o wszęcie postepowania": "editable",
+        "Decyzja i podpis Rektora": "editable",
+        "Doręczanie": "editable",
+        "Obsługa doręczania": "none",
+        "Czekanie na odwołanie": "editable",
+        "Przyszło odwołanie": "none",
+        "Realizacja Procedury Skreślenia": "editable",
+        "Anulowanie zadania": "editable"
+      }
+    },
+    "Podobieg doręczenia zawiadomienia": {
+      "type": "string",
+      "title": "Podobieg doręczenia zawiadomienia",
+      "readOnly": true,
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Uzupełnienie danych studenta": "none",
+        "Weryfikacja": "none",
+        "Wnioskowanie o wszęcie postepowania": "none",
+        "Decyzja i podpis Rektora": "none",
+        "Doręczanie": "readonly",
+        "Obsługa doręczania": "none",
+        "Czekanie na odwołanie": "readonly",
+        "Przyszło odwołanie": "none",
+        "Realizacja Procedury Skreślenia": "readonly",
+        "Anulowanie zadania": "readonly"
+      }
+    },
+    "Podobieg realizacji": {
+      "type": "string",
+      "title": "Podobieg realizacji",
+      "readOnly": true,
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Uzupełnienie danych studenta": "none",
+        "Weryfikacja": "none",
+        "Wnioskowanie o wszęcie postepowania": "none",
+        "Decyzja i podpis Rektora": "none",
+        "Doręczanie": "readonly",
+        "Obsługa doręczania": "none",
+        "Czekanie na odwołanie": "readonly",
+        "Przyszło odwołanie": "none",
+        "Realizacja Procedury Skreślenia": "readonly",
+        "Anulowanie zadania": "readonly"
+      }
+    },
+    "Odwołanie": {
+      "type": "string",
+      "title": "Odwołanie",
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Uzupełnienie danych studenta": "none",
+        "Weryfikacja": "none",
+        "Wnioskowanie o wszęcie postepowania": "none",
+        "Decyzja i podpis Rektora": "none",
+        "Doręczanie": "none",
+        "Obsługa doręczania": "none",
+        "Czekanie na odwołanie": "none",
+        "Przyszło odwołanie": "editable",
+        "Realizacja Procedury Skreślenia": "none",
+        "Anulowanie zadania": "none"
+      }
+    },
+    "Teczka Sprawy": {
+      "type": "string",
+      "title": "Teczka Sprawy",
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Uzupełnienie danych studenta": "editable",
+        "Weryfikacja": "none",
+        "Wnioskowanie o wszęcie postepowania": "readonly",
+        "Decyzja i podpis Rektora": "readonly",
+        "Doręczanie": "none",
+        "Obsługa doręczania": "readonly",
+        "Czekanie na odwołanie": "readonly",
+        "Przyszło odwołanie": "none",
+        "Realizacja Procedury Skreślenia": "readonly",
+        "Anulowanie zadania": "readonly"
+      },
+      "x-required-in-steps": [
+        "Uzupełnienie danych studenta"
+      ]
+    },
+    "z upoważnienia Rektora": {
+      "type": "boolean",
+      "title": "z upoważnienia Rektora",
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Uzupełnienie danych studenta": "none",
+        "Weryfikacja": "none",
+        "Wnioskowanie o wszęcie postepowania": "none",
+        "Decyzja i podpis Rektora": "editable",
+        "Doręczanie": "none",
+        "Obsługa doręczania": "none",
+        "Czekanie na odwołanie": "none",
+        "Przyszło odwołanie": "none",
+        "Realizacja Procedury Skreślenia": "none",
+        "Anulowanie zadania": "none"
+      }
+    },
+    "Systemowe": {
+      "type": "object",
+      "properties": {
+        "Formularz decyzji": {
+          "type": "string",
+          "title": "Formularz decyzji",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "readonly",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "none",
+            "Wnioskowanie o wszęcie postepowania": "editable",
+            "Decyzja i podpis Rektora": "editable",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "editable"
+          }
+        },
+        "Formularz zawiadomienia": {
+          "type": "string",
+          "title": "Formularz zawiadomienia",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "readonly",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "none",
+            "Wnioskowanie o wszęcie postepowania": "editable",
+            "Decyzja i podpis Rektora": "editable",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "editable"
+          }
+        },
+        "Formularz zawiadomienia - akronim": {
+          "type": "string",
+          "title": "Formularz zawiadomienia - akronim",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "readonly",
+            "Uzupełnienie danych studenta": "editable",
+            "Weryfikacja": "none",
+            "Wnioskowanie o wszęcie postepowania": "editable",
+            "Decyzja i podpis Rektora": "editable",
+            "Doręczanie": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Czekanie na odwołanie": "readonly",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "editable"
+          }
+        },
+        "Bieżący rok": {
+          "type": "string",
+          "title": "Bieżący rok",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "readonly",
+            "Uzupełnienie danych studenta": "readonly",
+            "Weryfikacja": "none",
+            "Wnioskowanie o wszęcie postepowania": "none",
+            "Decyzja i podpis Rektora": "none",
+            "Doręczanie": "none",
+            "Obsługa doręczania": "none",
+            "Czekanie na odwołanie": "none",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "none"
+          }
+        },
+        "prefix numeru teczki": {
+          "type": "string",
+          "title": "prefix numeru teczki",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "readonly",
+            "Uzupełnienie danych studenta": "readonly",
+            "Weryfikacja": "none",
+            "Wnioskowanie o wszęcie postepowania": "none",
+            "Decyzja i podpis Rektora": "none",
+            "Doręczanie": "none",
+            "Obsługa doręczania": "none",
+            "Czekanie na odwołanie": "none",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "none"
+          }
+        },
+        "środek numeru teczki": {
+          "type": "string",
+          "title": "środek numeru teczki",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "readonly",
+            "Uzupełnienie danych studenta": "readonly",
+            "Weryfikacja": "none",
+            "Wnioskowanie o wszęcie postepowania": "none",
+            "Decyzja i podpis Rektora": "none",
+            "Doręczanie": "none",
+            "Obsługa doręczania": "none",
+            "Czekanie na odwołanie": "none",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "readonly",
+            "Anulowanie zadania": "none"
+          }
+        },
+        "kolejny nr w teczce": {
+          "type": "string",
+          "title": "kolejny nr w teczce",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Uzupełnienie danych studenta": "none",
+            "Weryfikacja": "none",
+            "Wnioskowanie o wszęcie postepowania": "none",
+            "Decyzja i podpis Rektora": "none",
+            "Doręczanie": "none",
+            "Obsługa doręczania": "none",
+            "Czekanie na odwołanie": "none",
+            "Przyszło odwołanie": "none",
+            "Realizacja Procedury Skreślenia": "none",
+            "Anulowanie zadania": "none"
+          }
+        }
+      },
+      "title": "Systemowe",
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+        "Uzupełnienie danych studenta": "none",
+        "Weryfikacja": "none",
+        "Wnioskowanie o wszęcie postepowania": "none",
+        "Decyzja i podpis Rektora": "none",
+        "Doręczanie": "none",
+        "Obsługa doręczania": "none",
+        "Czekanie na odwołanie": "none",
+        "Przyszło odwołanie": "none",
+        "Realizacja Procedury Skreślenia": "readonly",
+        "Anulowanie zadania": "none"
+      }
+    },
+    "Dokumentacja sprawy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Dokumentacja sprawy",
+      "readOnly": true,
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Uzupełnienie danych studenta": "none",
+        "Weryfikacja": "none",
+        "Wnioskowanie o wszęcie postepowania": "none",
+        "Decyzja i podpis Rektora": "none",
+        "Doręczanie": "none",
+        "Obsługa doręczania": "readonly",
+        "Czekanie na odwołanie": "readonly",
+        "Przyszło odwołanie": "readonly",
+        "Realizacja Procedury Skreślenia": "readonly",
+        "Anulowanie zadania": "none"
+      }
+    },
+    "Zawartość teczki": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Zawartość teczki",
+      "readOnly": true,
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Uzupełnienie danych studenta": "none",
+        "Weryfikacja": "none",
+        "Wnioskowanie o wszęcie postepowania": "none",
+        "Decyzja i podpis Rektora": "none",
+        "Doręczanie": "none",
+        "Obsługa doręczania": "none",
+        "Czekanie na odwołanie": "none",
+        "Przyszło odwołanie": "none",
+        "Realizacja Procedury Skreślenia": "none",
+        "Anulowanie zadania": "none"
+      }
+    }
+  },
+  "required": [
+    "Teczka Sprawy"
+  ]
+}

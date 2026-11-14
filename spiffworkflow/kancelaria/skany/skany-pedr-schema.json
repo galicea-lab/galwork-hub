@@ -3,19 +3,6 @@
   "description": "Proces: KANC - Pisma przychodzące (ID: 191); Obieg: SKAN - Skany (ID: 226); Typ dokumentu: PEDR - Powiadomienie e-doręczeń (ID: 535)",
   "type": "object",
   "properties": {
-    "Wybór spółki": {
-      "type": "string",
-      "title": "Wybór spółki",
-      "x-permissions": {
-        "Rejestracja": "editable",
-        "Weryfikacja": "editable",
-        "Pisma przychodzące": "editable",
-        "Kosz": "editable",
-        "OCR": "editable",
-        "Uchwały i zarządzenia": "editable",
-        "Pisma i sprawy": "editable"
-      }
-    },
     "Temat": {
       "type": "string",
       "title": "Temat",

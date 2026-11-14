@@ -47,6 +47,7 @@ from wf.schemas.wf_schemas import (
     HumanTaskStatus,
     MyTaskItem,
     Page,
+    ProcessInstanceRead,
     TaskClaimRequest,
     TaskCompleteRequest,
     TaskFormRead,
@@ -182,7 +183,7 @@ def get_task_form(task_id: UUID,
     except ProcessServiceError as exc:
         raise HTTPException(status_code=409, detail=str(exc))
 
-    version = task.process_instance.version
+    version = service.task_version(task)  # 2026-11-13: podproces z innego modelu
     data = service.task_form_data(workflow, task)
     try:
         schema, ui_schema = service.task_form(version, task, data)
@@ -197,7 +198,31 @@ def get_task_form(task_id: UUID,
         form_data=data,
         documents=_task_documents(db, task),
         process_lock_version=task.process_instance.lock_version,
+        quick_actions=service.quick_actions(db, task, process_spec),  # 2026-11-13
     )
+
+
+# BEGIN 2026-11-13
+@router.post("/{task_id}/quick-actions/{process_model_key}",
+             response_model=ProcessInstanceRead, status_code=201)
+def run_task_quick_action(task_id: UUID, process_model_key: str,
+                          db: Session = Depends(get_db),
+                          current_user: CurrentUser = Depends(get_current_wf_user)):
+    """Szybka akcja zadania (`quickAction` w BPMN): uruchamia osobną instancję
+    modelu `process_model_key` z danymi wskazanymi w `startInput`, powiązaną
+    z instancją zadania. Wymaga tych samych uprawnień co zadanie."""
+    task = _get_task_or_404(db, task_id)
+    service = get_service()
+    try:
+        child = service.run_quick_action(db, task, process_model_key, current_user)
+    except NotAuthorizedError as exc:
+        raise HTTPException(status_code=403, detail=str(exc))
+    except ProcessServiceError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+    except FormRenderError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+    return child
+# -END
 
 
 @router.post("/{task_id}/claim", response_model=HumanTaskRead)

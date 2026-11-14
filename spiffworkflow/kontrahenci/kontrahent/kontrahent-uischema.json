@@ -1,6 +1,5 @@
 {
   "ui:order": [
-    "Wybór spółki",
     "Identyfikacja",
     "Generowanie kartoteki kontrahenta",
     "Adres ADE",
@@ -42,7 +41,7 @@
     "z systemu ERP (Optima)": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/v1/wf/dictionaries/k-kontrahenci",
+        "endpoint": "/v1/wf/dictionaries/kontrahenci",
         "sourceName": "[K] Kontrahenci",
         "sourceType": "REST Web Service"
       }
@@ -79,17 +78,8 @@
   },
   "Optima": {
     "ui:order": [
-      "Konto w Optimie",
       "link"
     ],
-    "Konto w Optimie": {
-      "ui:help": "Konto w systemie ERP",
-      "ui:widget": "AsyncSelectWidget",
-      "ui:options": {
-        "endpoint": "/v1/wf/dictionaries/konta-kontrahentow",
-        "sourceName": "Konta kontrahentów"
-      }
-    },
     "link": {
       "ui:help": "link do konta w systemie ERP",
       "ui:readonly": true
@@ -141,12 +131,6 @@
     "komunikat": {
       "ui:widget": "textarea",
       "ui:readonly": true
-    }
-  },
-  "Wybór spółki": {
-    "ui:widget": "AsyncSelectWidget",
-    "ui:options": {
-      "endpoint": "/v1/wf/dictionaries/companies"
     }
   },
   "Uwaga!": {

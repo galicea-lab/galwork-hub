@@ -1,0 +1,359 @@
+{
+  "title": "Zlecenie generowania KO-ZLC-KO",
+  "description": "Proces: KOOS - Karta Osiągnięć Studenta (ID: 25); Obieg: Zlecenie generowania KOS (ID: 142); Typ dokumentu: ZLC-KOS - Zlecenie utworzenia KOS (ID: 138)",
+  "type": "object",
+  "properties": {
+    "Kierunek": {
+      "type": "string",
+      "title": "Kierunek",
+      "x-permissions": {
+        "Zlecenie": "editable",
+        "KOS do wygenerowania": "editable",
+        "Wysłane do podpisu": "editable",
+        "Gotowe - utworzono KOS": "readonly"
+      },
+      "x-required-in-steps": [
+        "Zlecenie",
+        "KOS do wygenerowania"
+      ]
+    },
+    "Semestr (numer kolejny)": {
+      "type": "string",
+      "title": "Semestr (numer kolejny)",
+      "x-permissions": {
+        "Zlecenie": "editable",
+        "KOS do wygenerowania": "editable",
+        "Wysłane do podpisu": "editable",
+        "Gotowe - utworzono KOS": "readonly"
+      }
+    },
+    "kod_kierunku": {
+      "type": "string",
+      "title": "kod_kierunku",
+      "readOnly": true,
+      "x-permissions": {
+        "Zlecenie": "none",
+        "KOS do wygenerowania": "none",
+        "Wysłane do podpisu": "none",
+        "Gotowe - utworzono KOS": "none"
+      }
+    },
+    "typ": {
+      "type": "string",
+      "title": "typ",
+      "x-permissions": {
+        "Zlecenie": "editable",
+        "KOS do wygenerowania": "editable",
+        "Wysłane do podpisu": "editable",
+        "Gotowe - utworzono KOS": "readonly"
+      }
+    },
+    "Rok akademicki": {
+      "type": "string",
+      "title": "Rok akademicki",
+      "x-permissions": {
+        "Zlecenie": "editable",
+        "KOS do wygenerowania": "editable",
+        "Wysłane do podpisu": "editable",
+        "Gotowe - utworzono KOS": "readonly"
+      },
+      "x-required-in-steps": [
+        "Zlecenie",
+        "KOS do wygenerowania"
+      ]
+    },
+    "zimowy/letni": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "0",
+          "title": "Zimowy"
+        },
+        {
+          "const": "1",
+          "title": "Letni"
+        }
+      ],
+      "x-ext-values": [
+        {
+          "id": "0",
+          "name": "Zimowy",
+          "description": "Zimowy"
+        },
+        {
+          "id": "1",
+          "name": "Letni",
+          "description": "Letni"
+        }
+      ],
+      "title": "zimowy/letni",
+      "x-permissions": {
+        "Zlecenie": "editable",
+        "KOS do wygenerowania": "editable",
+        "Wysłane do podpisu": "editable",
+        "Gotowe - utworzono KOS": "readonly"
+      },
+      "x-required-in-steps": [
+        "Zlecenie",
+        "KOS do wygenerowania"
+      ]
+    },
+    "Data": {
+      "type": "string",
+      "format": "date",
+      "title": "Data",
+      "x-permissions": {
+        "Zlecenie": "editable",
+        "KOS do wygenerowania": "editable",
+        "Wysłane do podpisu": "editable",
+        "Gotowe - utworzono KOS": "readonly"
+      }
+    },
+    "Decyzja": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "0",
+          "title": "- automat -"
+        },
+        {
+          "const": "1",
+          "title": "promocja"
+        },
+        {
+          "const": "2",
+          "title": "przedłużenie sesji"
+        },
+        {
+          "const": "3",
+          "title": "po egzaminie poprawkowym"
+        },
+        {
+          "const": "4",
+          "title": "warunek - zezwolenie"
+        },
+        {
+          "const": "5",
+          "title": "warunek - wykonanie"
+        },
+        {
+          "const": "6",
+          "title": "promocja + różnice programowe"
+        },
+        {
+          "const": "7",
+          "title": "skreślenie"
+        },
+        {
+          "const": "8",
+          "title": "absolwent"
+        }
+      ],
+      "x-ext-values": [
+        {
+          "id": "0",
+          "name": "- automat -",
+          "description": ""
+        },
+        {
+          "id": "1",
+          "name": "promocja",
+          "description": ""
+        },
+        {
+          "id": "2",
+          "name": "przedłużenie sesji",
+          "description": ""
+        },
+        {
+          "id": "3",
+          "name": "po egzaminie poprawkowym",
+          "description": ""
+        },
+        {
+          "id": "4",
+          "name": "warunek - zezwolenie",
+          "description": ""
+        },
+        {
+          "id": "5",
+          "name": "warunek - wykonanie",
+          "description": ""
+        },
+        {
+          "id": "6",
+          "name": "promocja + różnice programowe",
+          "description": ""
+        },
+        {
+          "id": "7",
+          "name": "skreślenie",
+          "description": ""
+        },
+        {
+          "id": "8",
+          "name": "absolwent",
+          "description": ""
+        }
+      ],
+      "title": "Decyzja",
+      "x-permissions": {
+        "Zlecenie": "editable",
+        "KOS do wygenerowania": "editable",
+        "Wysłane do podpisu": "editable",
+        "Gotowe - utworzono KOS": "readonly"
+      }
+    },
+    "KtoPodpisuje": {
+      "type": "string",
+      "title": "KtoPodpisuje",
+      "x-permissions": {
+        "Zlecenie": "editable",
+        "KOS do wygenerowania": "editable",
+        "Wysłane do podpisu": "editable",
+        "Gotowe - utworzono KOS": "readonly"
+      }
+    },
+    "kierunek_typ": {
+      "type": "string",
+      "title": "kierunek_typ",
+      "readOnly": true,
+      "x-permissions": {
+        "Zlecenie": "none",
+        "KOS do wygenerowania": "none",
+        "Wysłane do podpisu": "none",
+        "Gotowe - utworzono KOS": "none"
+      }
+    },
+    "Sekretariat": {
+      "type": "string",
+      "title": "Sekretariat",
+      "x-permissions": {
+        "Zlecenie": "editable",
+        "KOS do wygenerowania": "editable",
+        "Wysłane do podpisu": "editable",
+        "Gotowe - utworzono KOS": "readonly"
+      }
+    },
+    "Lista studentów": {
+      "type": "string",
+      "title": "Lista studentów",
+      "x-permissions": {
+        "Zlecenie": "editable",
+        "KOS do wygenerowania": "editable",
+        "Wysłane do podpisu": "editable",
+        "Gotowe - utworzono KOS": "readonly"
+      }
+    },
+    "generowanie": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "id",
+            "x-permissions": {
+              "Zlecenie": "none",
+              "KOS do wygenerowania": "editable",
+              "Wysłane do podpisu": "editable",
+              "Gotowe - utworzono KOS": "readonly"
+            }
+          },
+          "data": {
+            "type": "string",
+            "title": "data",
+            "x-permissions": {
+              "Zlecenie": "none",
+              "KOS do wygenerowania": "editable",
+              "Wysłane do podpisu": "editable",
+              "Gotowe - utworzono KOS": "readonly"
+            }
+          },
+          "status": {
+            "type": "string",
+            "title": "status",
+            "x-permissions": {
+              "Zlecenie": "none",
+              "KOS do wygenerowania": "editable",
+              "Wysłane do podpisu": "editable",
+              "Gotowe - utworzono KOS": "readonly"
+            }
+          },
+          "semestr": {
+            "type": "string",
+            "title": "semestr",
+            "x-permissions": {
+              "Zlecenie": "none",
+              "KOS do wygenerowania": "editable",
+              "Wysłane do podpisu": "editable",
+              "Gotowe - utworzono KOS": "readonly"
+            }
+          },
+          "wariant": {
+            "type": "string",
+            "title": "wariant",
+            "x-permissions": {
+              "Zlecenie": "none",
+              "KOS do wygenerowania": "editable",
+              "Wysłane do podpisu": "editable",
+              "Gotowe - utworzono KOS": "readonly"
+            }
+          },
+          "kierunek": {
+            "type": "string",
+            "title": "kierunek",
+            "x-permissions": {
+              "Zlecenie": "none",
+              "KOS do wygenerowania": "editable",
+              "Wysłane do podpisu": "editable",
+              "Gotowe - utworzono KOS": "readonly"
+            }
+          },
+          "nr_albumu": {
+            "type": "string",
+            "title": "nr_albumu",
+            "x-permissions": {
+              "Zlecenie": "none",
+              "KOS do wygenerowania": "editable",
+              "Wysłane do podpisu": "editable",
+              "Gotowe - utworzono KOS": "readonly"
+            }
+          },
+          "wynik": {
+            "type": "string",
+            "title": "wynik",
+            "x-permissions": {
+              "Zlecenie": "none",
+              "KOS do wygenerowania": "editable",
+              "Wysłane do podpisu": "editable",
+              "Gotowe - utworzono KOS": "readonly"
+            }
+          },
+          "fn": {
+            "type": "string",
+            "title": "fn",
+            "x-permissions": {
+              "Zlecenie": "none",
+              "KOS do wygenerowania": "editable",
+              "Wysłane do podpisu": "editable",
+              "Gotowe - utworzono KOS": "readonly"
+            }
+          }
+        }
+      },
+      "title": "generowanie",
+      "x-permissions": {
+        "Zlecenie": "none",
+        "KOS do wygenerowania": "editable",
+        "Wysłane do podpisu": "editable",
+        "Gotowe - utworzono KOS": "readonly"
+      }
+    }
+  },
+  "required": [
+    "Kierunek",
+    "Rok akademicki",
+    "zimowy/letni"
+  ]
+}

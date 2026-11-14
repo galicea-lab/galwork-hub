@@ -33,7 +33,12 @@ from wf.schemas.wf_schemas import (
     ProcessInstanceRead,
     ProcessInstanceStatus,
 )
-from wf.services.process_service import NotAuthorizedError, ProcessServiceError, get_service
+from wf.services.process_service import (
+    InvalidTaskDataError,
+    NotAuthorizedError,
+    ProcessServiceError,
+    get_service,
+)
 
 router = APIRouter(prefix="/process-instances", tags=["process-instances"])
 
@@ -64,12 +69,15 @@ def list_process_instances(
     offset: int = 0,
     status: ProcessInstanceStatus | None = None,
     process_model_key: str | None = None,
+    parent_instance_id: UUID | None = None,  # 2026-11-13: instancje potomne
     db: Session = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_wf_user),
 ):
     stmt = select(ProcessInstance).options(_WITH_VERSION)
     if status is not None:
         stmt = stmt.where(ProcessInstance.status == status)
+    if parent_instance_id is not None:
+        stmt = stmt.where(ProcessInstance.parent_instance_id == parent_instance_id)
     if process_model_key is not None:
         stmt = (stmt.join(ProcessModelVersion)
                 .join(ProcessModel)
@@ -88,6 +96,10 @@ def start_process_instance(payload: ProcessInstanceCreate,
     service = get_service()
     try:
         version = service.published_version(db, payload.process_model_key)
+        # 2026-11-13: dane z formularza startowego (startEvent) - walidacja
+        # jak przy wykonaniu zadania; wewnętrzne starty (edr, instancje
+        # potomne) idą bez niej przez ProcessService.start_instance.
+        service.validate_start_data(version, payload.data)
         instance = service.start_instance(
             db, version,
             title=payload.title,
@@ -95,6 +107,8 @@ def start_process_instance(payload: ProcessInstanceCreate,
             data=payload.data,
             actor=current_user,
         )
+    except InvalidTaskDataError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
     except ProcessServiceError as exc:
         # Brak opublikowanej wersji procesu albo błędne pliki BPMN.
         raise HTTPException(status_code=409, detail=str(exc))
@@ -106,6 +120,23 @@ def get_process_instance(instance_id: UUID,
                          db: Session = Depends(get_db),
                          current_user: CurrentUser = Depends(get_current_wf_user)):
     return _get_instance_or_404(db, instance_id)
+
+
+# BEGIN 2026-11-13
+@router.post("/{instance_id}/wake", response_model=ProcessInstanceRead)
+def wake_process_instance(instance_id: UUID,
+                          db: Session = Depends(get_db),
+                          current_user: CurrentUser = Depends(get_current_wf_user)):
+    """Ponownie wykonuje czekające kroki systemowe (serviceTask z `handler`),
+    np. sprawdza status podpisu w Signius - zamiast czekać na cron
+    (scripts/wf_wake.py)."""
+    instance = _get_instance_or_404(db, instance_id)
+    try:
+        get_service().wake(db, instance, current_user)
+    except ProcessServiceError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+    return _get_instance_or_404(db, instance_id)
+# -END
 
 
 @router.post("/{instance_id}/cancel", response_model=ProcessInstanceRead)

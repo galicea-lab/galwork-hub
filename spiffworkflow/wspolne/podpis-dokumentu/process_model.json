@@ -1,0 +1,9 @@
+{
+    "description": "Wspólny podproces: podpis dokumentu przez Signius (wywoływany przez callActivity). Wejście: dokument_id; wyjście: wynik_podpisu, podpisany_dokument_id.",
+    "display_name": "Podpis dokumentu",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "podpis-dokumentu.bpmn",
+    "primary_process_id": "Process_Podpis_dokumentu"
+}

@@ -37,13 +37,22 @@ def get_dictionary_options(
     slug: str,
     q: str | None = Query(default=None, max_length=200),
     limit: int = Query(default=50, ge=1, le=500),
+    # 2026-11-13: filtry słowników ERPNext (ErpNextDictionary.query_fields),
+    # podawane w `ui:options.endpoint`, np. /pracownicy?department=Sekretariat.
+    department: str | None = Query(default=None, max_length=200),
+    designation: str | None = Query(default=None, max_length=200),
+    category: str | None = Query(default=None, max_length=200),
+    location: str | None = Query(default=None, max_length=200),
     db: Session = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_wf_user),
 ):
     """`GET /v1/wf/dictionaries/{slug}?q=...` - opcje dla jednego pola
     `AsyncSelectWidget` (`ui:options.endpoint` w `*-uischema.json`)."""
     try:
-        return list_options(db, slug, q=q, limit=limit)
+        params = {name: value for name, value in (
+            ("department", department), ("designation", designation),
+            ("category", category), ("location", location)) if value}
+        return list_options(db, slug, q=q, limit=limit, params=params)
     except DictionaryNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except DictionaryNotConnectedError as exc:

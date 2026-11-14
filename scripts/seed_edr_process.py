@@ -151,6 +151,16 @@ def seed(key: str, name: str, dry_run: bool = False) -> str:
             # druga publikacja tego samego procesu dostaje IntegrityError).
             db.flush()
 
+        # 2026-11-13: przypięcie wersji procesów wywoływanych (callActivity).
+        from wf.services.process_service import ProcessServiceError, get_service
+        try:
+            for warning in get_service().pin_called_versions(db, version):
+                print(f"[seed_edr_process] UWAGA: {warning}")
+        except ProcessServiceError as exc:
+            db.rollback()
+            print(f"[seed_edr_process] model '{key}' NIE opublikowany: {exc}")
+            return 'error'
+
         version.status = ProcessModelVersionStatus.PUBLISHED
         version.published_at = datetime.now(UTC)
         db.commit()

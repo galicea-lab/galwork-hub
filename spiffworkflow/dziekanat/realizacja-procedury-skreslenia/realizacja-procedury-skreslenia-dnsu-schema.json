@@ -1,0 +1,1192 @@
+{
+  "title": "Realizacja procedury skre-DNSU",
+  "description": "Proces: SLS - Skreślenie z listy studentów (ID: 198); Obieg: Realizacja procedury skreślenia (ID: 236); Typ dokumentu: DNSU - Decyzja niepodjęcie studiów po zakończonym urlopie (ID: 260)",
+  "type": "object",
+  "properties": {
+    "Wszczęcie postępowania": {
+      "type": "object",
+      "properties": {
+        "Data rejestracji": {
+          "type": "string",
+          "title": "Data rejestracji",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Osoba rejestrująca": {
+          "type": "string",
+          "title": "Osoba rejestrująca",
+          "readOnly": true,
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "readonly",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Powód skreślenia": {
+          "type": "string",
+          "title": "Powód skreślenia",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Wydział": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wydział Nauk Społecznych, Humanistycznych i Ochrony Zdrowia"
+            },
+            {
+              "const": "2",
+              "title": "Wydział Nauk Technicznych i Sztuk Projektowych"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "Wydział Nauk Społecznych, Humanistycznych i Ochrony Zdrowia",
+              "description": "Marek Delong"
+            },
+            {
+              "id": "2",
+              "name": "Wydział Nauk Technicznych i Sztuk Projektowych",
+              "description": "Wioletta Tomaszewska-Górecka"
+            }
+          ],
+          "title": "Wydział",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Instytut": {
+          "type": "string",
+          "title": "Instytut",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Kierunek": {
+          "type": "string",
+          "title": "Kierunek",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Student(ka)": {
+          "type": "string",
+          "title": "Student(ka)",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Nr rejestru": {
+          "type": "string",
+          "title": "Nr rejestru",
+          "readOnly": true,
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "readonly",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Dziekan Wydziału": {
+          "type": "string",
+          "title": "Dziekan Wydziału",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Wszczęcie postępowania",
+      "x-permissions": {
+        "Realizacja procedury skreślenia": "editable",
+        "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+        "BOS rozpatrzenie odwołania": "readonly",
+        "Decyzja i podpis Rektora": "readonly",
+        "Obsługa doręczania": "readonly",
+        "Doręczanie": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Dane studenta": {
+      "type": "object",
+      "properties": {
+        "Forma gramatyczna": {
+          "type": "string",
+          "title": "Forma gramatyczna",
+          "description": "Formy w piśmie: Pani/Pan, studentka/student, złożyła/złożył…",
+          "oneOf": [
+            {
+              "const": "K",
+              "title": "żeńska (Pani, studentka)"
+            },
+            {
+              "const": "M",
+              "title": "męska (Pan, student)"
+            }
+          ],
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Numer albumu": {
+          "type": "string",
+          "title": "Numer albumu",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Rok akademicki": {
+          "type": "string",
+          "title": "Rok akademicki",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Poziom studiów": {
+          "type": "string",
+          "title": "Poziom studiów",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Adres zamieszkania": {
+          "type": "string",
+          "title": "Adres zamieszkania",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Aktualny semestr studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "1",
+              "description": "I"
+            },
+            {
+              "id": "2",
+              "name": "2",
+              "description": "II"
+            },
+            {
+              "id": "3",
+              "name": "3",
+              "description": "III"
+            },
+            {
+              "id": "4",
+              "name": "4",
+              "description": "IV"
+            },
+            {
+              "id": "5",
+              "name": "5",
+              "description": "V"
+            },
+            {
+              "id": "6",
+              "name": "6",
+              "description": "VI"
+            },
+            {
+              "id": "7",
+              "name": "7",
+              "description": "VII"
+            },
+            {
+              "id": "8",
+              "name": "8",
+              "description": "VIII"
+            },
+            {
+              "id": "9",
+              "name": "9",
+              "description": "IX"
+            },
+            {
+              "id": "10",
+              "name": "10",
+              "description": "X"
+            }
+          ],
+          "title": "Aktualny semestr studiów",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Rok studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "I"
+            },
+            {
+              "const": "2",
+              "title": "II"
+            },
+            {
+              "const": "3",
+              "title": "III"
+            },
+            {
+              "const": "4",
+              "title": "IV"
+            },
+            {
+              "const": "5",
+              "title": "V"
+            },
+            {
+              "const": "6",
+              "title": "VI"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "I",
+              "description": "pierwszego"
+            },
+            {
+              "id": "2",
+              "name": "II",
+              "description": "drugiego"
+            },
+            {
+              "id": "3",
+              "name": "III",
+              "description": "trzeciego"
+            },
+            {
+              "id": "4",
+              "name": "IV",
+              "description": "czwartego"
+            },
+            {
+              "id": "5",
+              "name": "V",
+              "description": "piątego"
+            },
+            {
+              "id": "6",
+              "name": "VI",
+              "description": "szóstego"
+            }
+          ],
+          "title": "Rok studiów",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Dane studenta",
+      "x-permissions": {
+        "Realizacja procedury skreślenia": "editable",
+        "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+        "BOS rozpatrzenie odwołania": "editable",
+        "Decyzja i podpis Rektora": "editable",
+        "Obsługa doręczania": "editable",
+        "Doręczanie": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Decyzja": {
+      "type": "object",
+      "properties": {
+        "Uzasadnienie": {
+          "type": "string",
+          "title": "Uzasadnienie",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Numer decyzji": {
+          "type": "string",
+          "title": "Numer decyzji",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Wydział": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wydział Nauk Społecznych, Humanistycznych i Ochrony Zdrowia"
+            },
+            {
+              "const": "2",
+              "title": "Wydział Nauk Technicznych i Sztuk Projektowych"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "Wydział Nauk Społecznych, Humanistycznych i Ochrony Zdrowia",
+              "description": "Marek Delong"
+            },
+            {
+              "id": "2",
+              "name": "Wydział Nauk Technicznych i Sztuk Projektowych",
+              "description": "Wioletta Tomaszewska-Górecka"
+            }
+          ],
+          "title": "Wydział",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Numer rostrzygnięcia": {
+          "type": "string",
+          "title": "Numer rostrzygnięcia",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Data rozstrzygnięcia": {
+          "type": "string",
+          "format": "date",
+          "title": "Data rozstrzygnięcia",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Data od": {
+          "type": "string",
+          "format": "date",
+          "title": "Data od",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Data do": {
+          "type": "string",
+          "format": "date",
+          "title": "Data do",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Semestrze/semestrach": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "semestrze"
+            },
+            {
+              "const": "2",
+              "title": "semestrach"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "semestrze",
+              "description": ""
+            },
+            {
+              "id": "2",
+              "name": "semestrach",
+              "description": ""
+            }
+          ],
+          "title": "Semestrze/semestrach",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Rok rozpoczęcia studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "2022"
+            },
+            {
+              "const": "2",
+              "title": "2023"
+            },
+            {
+              "const": "3",
+              "title": "2024"
+            },
+            {
+              "const": "4",
+              "title": "2025"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "2022",
+              "description": ""
+            },
+            {
+              "id": "2",
+              "name": "2023",
+              "description": ""
+            },
+            {
+              "id": "3",
+              "name": "2024",
+              "description": ""
+            },
+            {
+              "id": "4",
+              "name": "2025",
+              "description": ""
+            }
+          ],
+          "title": "Rok rozpoczęcia studiów",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Semestr urlopu": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "1",
+              "description": "I"
+            },
+            {
+              "id": "2",
+              "name": "2",
+              "description": "II"
+            },
+            {
+              "id": "3",
+              "name": "3",
+              "description": "III"
+            },
+            {
+              "id": "4",
+              "name": "4",
+              "description": "IV"
+            },
+            {
+              "id": "5",
+              "name": "5",
+              "description": "V"
+            },
+            {
+              "id": "6",
+              "name": "6",
+              "description": "VI"
+            },
+            {
+              "id": "7",
+              "name": "7",
+              "description": "VII"
+            },
+            {
+              "id": "8",
+              "name": "8",
+              "description": "VIII"
+            },
+            {
+              "id": "9",
+              "name": "9",
+              "description": "IX"
+            },
+            {
+              "id": "10",
+              "name": "10",
+              "description": "X"
+            }
+          ],
+          "title": "Semestr urlopu",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Rok urlopu": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "2019/2020"
+            },
+            {
+              "const": "2",
+              "title": "2020/2021"
+            },
+            {
+              "const": "3",
+              "title": "2021/2022"
+            },
+            {
+              "const": "4",
+              "title": "2022/2023"
+            },
+            {
+              "const": "5",
+              "title": "2023/2024"
+            },
+            {
+              "const": "6",
+              "title": "2024/2025"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "2019/2020",
+              "description": ""
+            },
+            {
+              "id": "2",
+              "name": "2020/2021",
+              "description": ""
+            },
+            {
+              "id": "3",
+              "name": "2021/2022",
+              "description": ""
+            },
+            {
+              "id": "4",
+              "name": "2022/2023",
+              "description": ""
+            },
+            {
+              "id": "5",
+              "name": "2023/2024",
+              "description": ""
+            },
+            {
+              "id": "6",
+              "name": "2024/2025",
+              "description": ""
+            }
+          ],
+          "title": "Rok urlopu",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Szablon decyzji": {
+          "type": "string",
+          "title": "Szablon decyzji",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Ustosunkowanie się studenta": {
+          "type": "string",
+          "title": "Ustosunkowanie się studenta",
+          "readOnly": true,
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "none",
+            "BOS rozpatrzenie odwołania": "none",
+            "Decyzja i podpis Rektora": "none",
+            "Obsługa doręczania": "none",
+            "Doręczanie": "none",
+            "Archiwum": "none"
+          }
+        },
+        "Semestru": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "0",
+              "title": "pierwszy"
+            },
+            {
+              "const": "1",
+              "title": "drugi"
+            },
+            {
+              "const": "2",
+              "title": "trzeci"
+            },
+            {
+              "const": "3",
+              "title": "czwarty"
+            },
+            {
+              "const": "4",
+              "title": "piąty"
+            },
+            {
+              "const": "5",
+              "title": "szósty"
+            },
+            {
+              "const": "6",
+              "title": "siódmy"
+            },
+            {
+              "const": "7",
+              "title": "ósmy"
+            },
+            {
+              "const": "8",
+              "title": "dziewiąty"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "0",
+              "name": "pierwszy",
+              "description": "pierwszego"
+            },
+            {
+              "id": "1",
+              "name": "drugi",
+              "description": "drugiego"
+            },
+            {
+              "id": "2",
+              "name": "trzeci",
+              "description": "trzeciego"
+            },
+            {
+              "id": "3",
+              "name": "czwarty",
+              "description": "czwartego"
+            },
+            {
+              "id": "4",
+              "name": "piąty",
+              "description": "piątego"
+            },
+            {
+              "id": "5",
+              "name": "szósty",
+              "description": "szóstego"
+            },
+            {
+              "id": "6",
+              "name": "siódmy",
+              "description": "siódmego"
+            },
+            {
+              "id": "7",
+              "name": "ósmy",
+              "description": "ósmego"
+            },
+            {
+              "id": "8",
+              "name": "dziewiąty",
+              "description": "dziewiątego"
+            }
+          ],
+          "title": "Semestru",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "none",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Decyzja",
+      "x-permissions": {
+        "Realizacja procedury skreślenia": "none",
+        "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+        "BOS rozpatrzenie odwołania": "editable",
+        "Decyzja i podpis Rektora": "editable",
+        "Obsługa doręczania": "editable",
+        "Doręczanie": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Podobieg doręczenia zawiadomienia": {
+      "type": "string",
+      "title": "Podobieg doręczenia zawiadomienia",
+      "readOnly": true,
+      "x-permissions": {
+        "Realizacja procedury skreślenia": "none",
+        "Wydanie decyzji o skreśleniu z listy studentów": "none",
+        "BOS rozpatrzenie odwołania": "none",
+        "Decyzja i podpis Rektora": "none",
+        "Obsługa doręczania": "none",
+        "Doręczanie": "none",
+        "Archiwum": "readonly"
+      }
+    },
+    "Podobieg realizacji": {
+      "type": "string",
+      "title": "Podobieg realizacji",
+      "readOnly": true,
+      "x-permissions": {
+        "Realizacja procedury skreślenia": "none",
+        "Wydanie decyzji o skreśleniu z listy studentów": "none",
+        "BOS rozpatrzenie odwołania": "none",
+        "Decyzja i podpis Rektora": "none",
+        "Obsługa doręczania": "none",
+        "Doręczanie": "none",
+        "Archiwum": "readonly"
+      }
+    },
+    "z upoważnienia Rektora": {
+      "type": "boolean",
+      "title": "z upoważnienia Rektora",
+      "readOnly": true,
+      "x-permissions": {
+        "Realizacja procedury skreślenia": "none",
+        "Wydanie decyzji o skreśleniu z listy studentów": "none",
+        "BOS rozpatrzenie odwołania": "none",
+        "Decyzja i podpis Rektora": "none",
+        "Obsługa doręczania": "none",
+        "Doręczanie": "none",
+        "Archiwum": "none"
+      }
+    },
+    "Odwołanie": {
+      "type": "string",
+      "title": "Odwołanie",
+      "x-permissions": {
+        "Realizacja procedury skreślenia": "editable",
+        "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+        "BOS rozpatrzenie odwołania": "readonly",
+        "Decyzja i podpis Rektora": "readonly",
+        "Obsługa doręczania": "readonly",
+        "Doręczanie": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Zawartość teczki": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Zawartość teczki",
+      "readOnly": true,
+      "x-permissions": {
+        "Realizacja procedury skreślenia": "none",
+        "Wydanie decyzji o skreśleniu z listy studentów": "none",
+        "BOS rozpatrzenie odwołania": "none",
+        "Decyzja i podpis Rektora": "none",
+        "Obsługa doręczania": "none",
+        "Doręczanie": "none",
+        "Archiwum": "none"
+      }
+    },
+    "Teczka Sprawy": {
+      "type": "string",
+      "title": "Teczka Sprawy",
+      "x-permissions": {
+        "Realizacja procedury skreślenia": "editable",
+        "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+        "BOS rozpatrzenie odwołania": "editable",
+        "Decyzja i podpis Rektora": "readonly",
+        "Obsługa doręczania": "readonly",
+        "Doręczanie": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Systemowe": {
+      "type": "object",
+      "properties": {
+        "Formularz decyzji": {
+          "type": "string",
+          "title": "Formularz decyzji",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Formularz zawiadomienia": {
+          "type": "string",
+          "title": "Formularz zawiadomienia",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Formularz zawiadomienia - akronim": {
+          "type": "string",
+          "title": "Formularz zawiadomienia - akronim",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+            "BOS rozpatrzenie odwołania": "readonly",
+            "Decyzja i podpis Rektora": "readonly",
+            "Obsługa doręczania": "readonly",
+            "Doręczanie": "readonly",
+            "Archiwum": "readonly"
+          }
+        },
+        "Bieżący rok": {
+          "type": "string",
+          "title": "Bieżący rok",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "none",
+            "Obsługa doręczania": "none",
+            "Doręczanie": "none",
+            "Archiwum": "none"
+          }
+        },
+        "prefix numeru teczki": {
+          "type": "string",
+          "title": "prefix numeru teczki",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "none",
+            "Obsługa doręczania": "none",
+            "Doręczanie": "none",
+            "Archiwum": "none"
+          }
+        },
+        "środek numeru teczki": {
+          "type": "string",
+          "title": "środek numeru teczki",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "editable",
+            "BOS rozpatrzenie odwołania": "editable",
+            "Decyzja i podpis Rektora": "none",
+            "Obsługa doręczania": "none",
+            "Doręczanie": "none",
+            "Archiwum": "none"
+          }
+        },
+        "kolejny nr w teczce": {
+          "type": "string",
+          "title": "kolejny nr w teczce",
+          "x-permissions": {
+            "Realizacja procedury skreślenia": "editable",
+            "Wydanie decyzji o skreśleniu z listy studentów": "none",
+            "BOS rozpatrzenie odwołania": "none",
+            "Decyzja i podpis Rektora": "none",
+            "Obsługa doręczania": "none",
+            "Doręczanie": "none",
+            "Archiwum": "none"
+          }
+        }
+      },
+      "title": "Systemowe",
+      "readOnly": true,
+      "x-permissions": {
+        "Realizacja procedury skreślenia": "readonly",
+        "Wydanie decyzji o skreśleniu z listy studentów": "none",
+        "BOS rozpatrzenie odwołania": "none",
+        "Decyzja i podpis Rektora": "none",
+        "Obsługa doręczania": "none",
+        "Doręczanie": "none",
+        "Archiwum": "none"
+      }
+    },
+    "Dokumentacja sprawy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Dokumentacja sprawy",
+      "readOnly": true,
+      "x-permissions": {
+        "Realizacja procedury skreślenia": "none",
+        "Wydanie decyzji o skreśleniu z listy studentów": "readonly",
+        "BOS rozpatrzenie odwołania": "readonly",
+        "Decyzja i podpis Rektora": "readonly",
+        "Obsługa doręczania": "readonly",
+        "Doręczanie": "readonly",
+        "Archiwum": "readonly"
+      }
+    }
+  }
+}

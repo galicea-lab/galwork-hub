@@ -1,0 +1,163 @@
+{
+  "title": "Karta Okresowych Osiągnię-KOSP",
+  "description": "Proces: KOOS - Karta Osiągnięć Studenta (ID: 25); Obieg: KOS - Karta Okresowych Osiągnięć Studenta (ID: 32); Typ dokumentu: KOSP - Karta podpisana (ID: 137)",
+  "type": "object",
+  "properties": {
+    "Rok akademicki": {
+      "type": "string",
+      "title": "Rok akademicki",
+      "x-permissions": {
+        "Start": "editable",
+        "Start (Formularz KOS)": "none",
+        "Karta nie podpisana": "readonly",
+        "Karty": "readonly",
+        "Podpisywanie (Dodanie Załącznika)": "none",
+        "Podpisywanie": "readonly",
+        "Archiwum": "readonly"
+      },
+      "x-required-in-steps": [
+        "Start"
+      ]
+    },
+    "zimowy/letni": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "0",
+          "title": "Zimowy"
+        },
+        {
+          "const": "1",
+          "title": "Letni"
+        }
+      ],
+      "title": "zimowy/letni",
+      "x-permissions": {
+        "Start": "editable",
+        "Start (Formularz KOS)": "none",
+        "Karta nie podpisana": "readonly",
+        "Karty": "readonly",
+        "Podpisywanie (Dodanie Załącznika)": "none",
+        "Podpisywanie": "readonly",
+        "Archiwum": "readonly"
+      },
+      "x-required-in-steps": [
+        "Start"
+      ]
+    },
+    "Kierunek": {
+      "type": "string",
+      "title": "Kierunek",
+      "x-permissions": {
+        "Start": "editable",
+        "Start (Formularz KOS)": "none",
+        "Karta nie podpisana": "readonly",
+        "Karty": "readonly",
+        "Podpisywanie (Dodanie Załącznika)": "none",
+        "Podpisywanie": "readonly",
+        "Archiwum": "readonly"
+      },
+      "x-required-in-steps": [
+        "Start"
+      ]
+    },
+    "kod_kierunku": {
+      "type": "string",
+      "title": "kod_kierunku",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Start (Formularz KOS)": "none",
+        "Karta nie podpisana": "readonly",
+        "Karty": "readonly",
+        "Podpisywanie (Dodanie Załącznika)": "none",
+        "Podpisywanie": "readonly",
+        "Archiwum": "readonly"
+      }
+    },
+    "Student(ka)": {
+      "type": "string",
+      "title": "Student(ka)",
+      "x-permissions": {
+        "Start": "editable",
+        "Start (Formularz KOS)": "none",
+        "Karta nie podpisana": "readonly",
+        "Karty": "readonly",
+        "Podpisywanie (Dodanie Załącznika)": "none",
+        "Podpisywanie": "readonly",
+        "Archiwum": "readonly"
+      },
+      "x-required-in-steps": [
+        "Start"
+      ]
+    },
+    "nr_albumu": {
+      "type": "string",
+      "title": "nr_albumu",
+      "x-permissions": {
+        "Start": "editable",
+        "Start (Formularz KOS)": "none",
+        "Karta nie podpisana": "readonly",
+        "Karty": "readonly",
+        "Podpisywanie (Dodanie Załącznika)": "none",
+        "Podpisywanie": "readonly",
+        "Archiwum": "readonly"
+      },
+      "x-required-in-steps": [
+        "Start"
+      ]
+    },
+    "Semestr (numer kolejny)": {
+      "type": "string",
+      "title": "Semestr (numer kolejny)",
+      "x-permissions": {
+        "Start": "editable",
+        "Start (Formularz KOS)": "none",
+        "Karta nie podpisana": "readonly",
+        "Karty": "readonly",
+        "Podpisywanie (Dodanie Załącznika)": "none",
+        "Podpisywanie": "editable",
+        "Archiwum": "readonly"
+      },
+      "x-required-in-steps": [
+        "Start"
+      ]
+    },
+    "typ": {
+      "type": "string",
+      "title": "typ",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "none",
+        "Start (Formularz KOS)": "none",
+        "Karta nie podpisana": "none",
+        "Karty": "none",
+        "Podpisywanie (Dodanie Załącznika)": "none",
+        "Podpisywanie": "none",
+        "Archiwum": "none"
+      }
+    },
+    "kierunek_typ": {
+      "type": "string",
+      "title": "kierunek_typ",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "none",
+        "Start (Formularz KOS)": "none",
+        "Karta nie podpisana": "none",
+        "Karty": "readonly",
+        "Podpisywanie (Dodanie Załącznika)": "none",
+        "Podpisywanie": "readonly",
+        "Archiwum": "readonly"
+      }
+    }
+  },
+  "required": [
+    "Rok akademicki",
+    "zimowy/letni",
+    "Kierunek",
+    "Student(ka)",
+    "nr_albumu",
+    "Semestr (numer kolejny)"
+  ]
+}

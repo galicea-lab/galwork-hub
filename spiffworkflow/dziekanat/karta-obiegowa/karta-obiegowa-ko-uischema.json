@@ -1,0 +1,183 @@
+{
+  "ui:order": [
+    "DANE STUDENTA",
+    "BOS",
+    "KWESTURA",
+    "BIBLIOTEKA",
+    "AKADEMICKI ZWIĄZEK SPORTOWY",
+    "AKADEMIK",
+    "Numer Teczki"
+  ],
+  "DANE STUDENTA": {
+    "ui:order": [
+      "Student/ka",
+      "Wydział",
+      "Kierunek studiów",
+      "Nr albumu",
+      "Email"
+    ],
+    "Student/ka": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/studenci",
+        "sourceName": "studenci_kierunki",
+        "sourceType": "Baza MSSQL"
+      }
+    },
+    "Kierunek studiów": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    }
+  },
+  "BOS": {
+    "ui:order": [
+      "Zobowiązania wobec BOS:",
+      "Imię i nazwisko",
+      "Email",
+      "Data",
+      "Wyślij email do studenta"
+    ],
+    "Imię i nazwisko": {
+      "ui:help": "Imię i nazwisko osoby podpisującej kartę obiegową",
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Email": {
+      "ui:readonly": true
+    },
+    "Data": {
+      "ui:readonly": true
+    },
+    "Wyślij email do studenta": {
+      "ui:help": "Wiadomość może zostać wysłana do studenta, jeśli student ma zobowiązania wobec wydziału",
+      "ui:widget": "richtext"
+    }
+  },
+  "KWESTURA": {
+    "ui:order": [
+      "Zobowiązania wobec Kwestury:",
+      "Imię i nazwisko",
+      "Email",
+      "Data",
+      "Wyślij email do studenta"
+    ],
+    "Imię i nazwisko": {
+      "ui:help": "Imię i nazwisko osoby podpisującej kartę obiegową",
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Email": {
+      "ui:readonly": true
+    },
+    "Data": {
+      "ui:readonly": true
+    },
+    "Wyślij email do studenta": {
+      "ui:help": "Wiadomość może zostać wysłana do studenta, jeśli student ma zobowiązania wobec wydziału",
+      "ui:widget": "richtext"
+    }
+  },
+  "BIBLIOTEKA": {
+    "ui:order": [
+      "Zobowiązania wobec Biblioteki:",
+      "Imię i nazwisko",
+      "Email",
+      "Data",
+      "Wyślij email do studenta"
+    ],
+    "Imię i nazwisko": {
+      "ui:help": "Imię i nazwisko osoby podpisującej kartę obiegową",
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Email": {
+      "ui:readonly": true
+    },
+    "Data": {
+      "ui:readonly": true
+    },
+    "Wyślij email do studenta": {
+      "ui:help": "Wiadomość może zostać wysłana do studenta, jeśli student ma zobowiązania wobec wydziału",
+      "ui:widget": "richtext"
+    }
+  },
+  "AKADEMICKI ZWIĄZEK SPORTOWY": {
+    "ui:order": [
+      "Zobowiązania wobec AZS:",
+      "Imię i nazwisko",
+      "Email",
+      "Data",
+      "Wyślij email do studenta"
+    ],
+    "Imię i nazwisko": {
+      "ui:help": "Imię i nazwisko osoby podpisującej kartę obiegową",
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Email": {
+      "ui:readonly": true
+    },
+    "Data": {
+      "ui:readonly": true
+    },
+    "Wyślij email do studenta": {
+      "ui:help": "Wiadomość może zostać wysłana do studenta, jeśli student ma zobowiązania wobec wydziału",
+      "ui:widget": "richtext"
+    }
+  },
+  "AKADEMIK": {
+    "ui:order": [
+      "Zobowiązania wobec Akademika:",
+      "Imię i nazwisko",
+      "Email",
+      "Data",
+      "Wyślij email do studenta"
+    ],
+    "Imię i nazwisko": {
+      "ui:help": "Imię i nazwisko osoby podpisującej kartę obiegową",
+      "ui:readonly": true,
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Email": {
+      "ui:readonly": true
+    },
+    "Data": {
+      "ui:readonly": true
+    },
+    "Wyślij email do studenta": {
+      "ui:help": "Wiadomość może zostać wysłana do studenta, jeśli student ma zobowiązania wobec wydziału",
+      "ui:widget": "richtext"
+    }
+  },
+  "Numer Teczki": {
+    "ui:help": "Wyliczany z numeru albumu."
+  }
+}

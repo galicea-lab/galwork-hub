@@ -1,0 +1,34 @@
+{
+  "title": "Przygotowanie do podpisu",
+  "type": "object",
+  "required": [
+    "podpisujacy_email"
+  ],
+  "properties": {
+    "dokument_tytul": {
+      "type": "string",
+      "title": "Dokument do podpisu",
+      "readOnly": true
+    },
+    "tytul": {
+      "type": "string",
+      "title": "Tytuł dokumentu w Signius",
+      "description": "Domyślnie tytuł dokumentu."
+    },
+    "podpisujacy_email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail podpisującego"
+    },
+    "podpisujacy_telefon": {
+      "type": "string",
+      "title": "Telefon podpisującego",
+      "description": "Do autoryzacji SMS w Signius."
+    },
+    "podpis_kwalifikowany": {
+      "type": "boolean",
+      "title": "Podpis kwalifikowany",
+      "default": false
+    }
+  }
+}

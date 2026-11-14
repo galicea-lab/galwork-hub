@@ -1,0 +1,526 @@
+{
+  "title": "Wszczęcie postępowania-SKR0",
+  "description": "Proces: SLS - Skreślenie z listy studentów (ID: 198); Obieg: Wszczęcie postępowania (ID: 234); Typ dokumentu: SKR0 - Wszczęcie postępowania (ID: 303)",
+  "type": "object",
+  "properties": {
+    "Wszczęcie postępowania": {
+      "type": "object",
+      "properties": {
+        "Data rejestracji": {
+          "type": "string",
+          "title": "Data rejestracji",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "Osoba rejestrująca": {
+          "type": "string",
+          "title": "Osoba rejestrująca",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "readonly",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "Powód skreślenia": {
+          "type": "string",
+          "title": "Powód skreślenia",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "Wydział": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wydział Nauk Społecznych, Humanistycznych i Ochrony Zdrowia"
+            },
+            {
+              "const": "2",
+              "title": "Wydział Nauk Technicznych i Sztuk Projektowych"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "Wydział Nauk Społecznych, Humanistycznych i Ochrony Zdrowia",
+              "description": "Marek Delong"
+            },
+            {
+              "id": "2",
+              "name": "Wydział Nauk Technicznych i Sztuk Projektowych",
+              "description": "Wioletta Tomaszewska-Górecka"
+            }
+          ],
+          "title": "Wydział",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "Instytut": {
+          "type": "string",
+          "title": "Instytut",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "Kierunek": {
+          "type": "string",
+          "title": "Kierunek",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "Student(ka)": {
+          "type": "string",
+          "title": "Student(ka)",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "Nr rejestru": {
+          "type": "string",
+          "title": "Nr rejestru",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "Dziekan Wydziału": {
+          "type": "string",
+          "title": "Dziekan Wydziału",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        }
+      },
+      "title": "Wszczęcie postępowania",
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+        "Teczka sprawy": "readonly"
+      }
+    },
+    "Dane studenta": {
+      "type": "object",
+      "properties": {
+        "Forma gramatyczna": {
+          "type": "string",
+          "title": "Forma gramatyczna",
+          "description": "Formy w piśmie: Pani/Pan, studentka/student, złożyła/złożył…",
+          "oneOf": [
+            {
+              "const": "K",
+              "title": "żeńska (Pani, studentka)"
+            },
+            {
+              "const": "M",
+              "title": "męska (Pan, student)"
+            }
+          ],
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Teczka sprawy": "none"
+          }
+        },
+        "Numer albumu": {
+          "type": "string",
+          "title": "Numer albumu",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Teczka sprawy": "none"
+          }
+        },
+        "Rok akademicki": {
+          "type": "string",
+          "title": "Rok akademicki",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Teczka sprawy": "none"
+          }
+        },
+        "Poziom studiów": {
+          "type": "string",
+          "title": "Poziom studiów",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Teczka sprawy": "none"
+          }
+        },
+        "Tryb studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Stacjonarne"
+            },
+            {
+              "const": "2",
+              "title": "Niestacjonarne"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "Stacjonarne",
+              "description": ""
+            },
+            {
+              "id": "2",
+              "name": "Niestacjonarne",
+              "description": ""
+            }
+          ],
+          "title": "Tryb studiów",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Teczka sprawy": "none"
+          }
+        },
+        "Adres zamieszkania": {
+          "type": "string",
+          "title": "Adres zamieszkania",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Teczka sprawy": "none"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Teczka sprawy": "none"
+          }
+        },
+        "Aktualny semestr studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "1"
+            },
+            {
+              "const": "2",
+              "title": "2"
+            },
+            {
+              "const": "3",
+              "title": "3"
+            },
+            {
+              "const": "4",
+              "title": "4"
+            },
+            {
+              "const": "5",
+              "title": "5"
+            },
+            {
+              "const": "6",
+              "title": "6"
+            },
+            {
+              "const": "7",
+              "title": "7"
+            },
+            {
+              "const": "8",
+              "title": "8"
+            },
+            {
+              "const": "9",
+              "title": "9"
+            },
+            {
+              "const": "10",
+              "title": "10"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "1",
+              "description": "I"
+            },
+            {
+              "id": "2",
+              "name": "2",
+              "description": "II"
+            },
+            {
+              "id": "3",
+              "name": "3",
+              "description": "III"
+            },
+            {
+              "id": "4",
+              "name": "4",
+              "description": "IV"
+            },
+            {
+              "id": "5",
+              "name": "5",
+              "description": "V"
+            },
+            {
+              "id": "6",
+              "name": "6",
+              "description": "VI"
+            },
+            {
+              "id": "7",
+              "name": "7",
+              "description": "VII"
+            },
+            {
+              "id": "8",
+              "name": "8",
+              "description": "VIII"
+            },
+            {
+              "id": "9",
+              "name": "9",
+              "description": "IX"
+            },
+            {
+              "id": "10",
+              "name": "10",
+              "description": "X"
+            }
+          ],
+          "title": "Aktualny semestr studiów",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Teczka sprawy": "none"
+          }
+        },
+        "Rok studiów": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "I"
+            },
+            {
+              "const": "2",
+              "title": "II"
+            },
+            {
+              "const": "3",
+              "title": "III"
+            },
+            {
+              "const": "4",
+              "title": "IV"
+            },
+            {
+              "const": "5",
+              "title": "V"
+            },
+            {
+              "const": "6",
+              "title": "VI"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "I",
+              "description": "pierwszego"
+            },
+            {
+              "id": "2",
+              "name": "II",
+              "description": "drugiego"
+            },
+            {
+              "id": "3",
+              "name": "III",
+              "description": "trzeciego"
+            },
+            {
+              "id": "4",
+              "name": "IV",
+              "description": "czwartego"
+            },
+            {
+              "id": "5",
+              "name": "V",
+              "description": "piątego"
+            },
+            {
+              "id": "6",
+              "name": "VI",
+              "description": "szóstego"
+            }
+          ],
+          "title": "Rok studiów",
+          "readOnly": true,
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "none",
+            "Teczka sprawy": "none"
+          }
+        }
+      },
+      "title": "Dane studenta",
+      "readOnly": true,
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Teczka sprawy": "none"
+      }
+    },
+    "Podobieg doręczenia zawiadomienia": {
+      "type": "string",
+      "title": "Podobieg doręczenia zawiadomienia",
+      "readOnly": true,
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Teczka sprawy": "readonly"
+      }
+    },
+    "Podobieg realizacji": {
+      "type": "string",
+      "title": "Podobieg realizacji",
+      "readOnly": true,
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Teczka sprawy": "readonly"
+      }
+    },
+    "z upoważnienia Rektora": {
+      "type": "boolean",
+      "title": "z upoważnienia Rektora",
+      "readOnly": true,
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Teczka sprawy": "none"
+      }
+    },
+    "Odwołanie": {
+      "type": "string",
+      "title": "Odwołanie",
+      "readOnly": true,
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Teczka sprawy": "none"
+      }
+    },
+    "Teczka Sprawy": {
+      "type": "string",
+      "title": "Teczka Sprawy",
+      "readOnly": true,
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Teczka sprawy": "readonly"
+      }
+    },
+    "Systemowe": {
+      "type": "object",
+      "properties": {
+        "Formularz decyzji": {
+          "type": "string",
+          "title": "Formularz decyzji",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "Formularz zawiadomienia": {
+          "type": "string",
+          "title": "Formularz zawiadomienia",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "Formularz zawiadomienia - akronim": {
+          "type": "string",
+          "title": "Formularz zawiadomienia - akronim",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "Bieżący rok": {
+          "type": "string",
+          "title": "Bieżący rok",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "prefix numeru teczki": {
+          "type": "string",
+          "title": "prefix numeru teczki",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "środek numeru teczki": {
+          "type": "string",
+          "title": "środek numeru teczki",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        },
+        "kolejny nr w teczce": {
+          "type": "string",
+          "title": "kolejny nr w teczce",
+          "x-permissions": {
+            "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+            "Teczka sprawy": "readonly"
+          }
+        }
+      },
+      "title": "Systemowe",
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "editable",
+        "Teczka sprawy": "none"
+      }
+    },
+    "Dokumentacja sprawy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Dokumentacja sprawy",
+      "readOnly": true,
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Teczka sprawy": "none"
+      }
+    },
+    "Zawartość teczki": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Zawartość teczki",
+      "readOnly": true,
+      "x-permissions": {
+        "Wskazanie przesłanki do wszczęcia postępowania": "none",
+        "Teczka sprawy": "readonly"
+      }
+    }
+  }
+}

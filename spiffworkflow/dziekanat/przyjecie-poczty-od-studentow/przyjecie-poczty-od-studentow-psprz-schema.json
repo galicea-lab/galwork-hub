@@ -1,0 +1,208 @@
+{
+  "title": "Przyjęcie poczty od stud-PSPRZ",
+  "description": "Proces: PSPRZ - Korespondencja (ID: 268); Obieg: Przyjęcie poczty od studentów (ID: 302); Typ dokumentu: PSPRZ - Formularz Pisma od studenta (ID: 410)",
+  "type": "object",
+  "properties": {
+    "Temat": {
+      "type": "string",
+      "title": "Temat",
+      "x-permissions": {
+        "Nowe pismo": "editable",
+        "Przekaż pismo": "editable",
+        "Archiwum": "editable"
+      }
+    },
+    "Nadawca": {
+      "type": "object",
+      "properties": {
+        "Adres e-doręczeń": {
+          "type": "string",
+          "title": "Adres e-doręczeń",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Przekaż pismo": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Adres pocztowy": {
+          "type": "string",
+          "title": "Adres pocztowy",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Przekaż pismo": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Email": {
+          "type": "string",
+          "title": "Email",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Przekaż pismo": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Numer telefonu": {
+          "type": "string",
+          "title": "Numer telefonu",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Przekaż pismo": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Imię i nazwisko": {
+          "type": "string",
+          "title": "Imię i nazwisko",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Przekaż pismo": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Dotyczy skreślenia?": {
+          "type": "object",
+          "properties": {
+            "Odwołanie w procedurze skreślenia": {
+              "type": "string",
+              "title": "Odwołanie w procedurze skreślenia",
+              "x-permissions": {
+                "Nowe pismo": "editable",
+                "Przekaż pismo": "editable",
+                "Archiwum": "readonly"
+              }
+            },
+            "Skreślenie: Teczka Sprawy": {
+              "type": "string",
+              "title": "Skreślenie: Teczka Sprawy",
+              "x-permissions": {
+                "Nowe pismo": "editable",
+                "Przekaż pismo": "editable",
+                "Archiwum": "readonly"
+              }
+            }
+          },
+          "title": "Dotyczy skreślenia?",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Przekaż pismo": "editable",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Nadawca",
+      "x-permissions": {
+        "Nowe pismo": "editable",
+        "Przekaż pismo": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Kogo dotyczy": {
+      "type": "object",
+      "properties": {
+        "Kierunek": {
+          "type": "string",
+          "title": "Kierunek",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Przekaż pismo": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Wydział": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Wydział Nauk Społecznych, Humanistycznych i Ochrony Zdrowia"
+            },
+            {
+              "const": "2",
+              "title": "Wydział Nauk Technicznych i Sztuk Projektowych"
+            }
+          ],
+          "x-ext-values": [
+            {
+              "id": "1",
+              "name": "Wydział Nauk Społecznych, Humanistycznych i Ochrony Zdrowia",
+              "description": "Marek Delong"
+            },
+            {
+              "id": "2",
+              "name": "Wydział Nauk Technicznych i Sztuk Projektowych",
+              "description": "Wioletta Tomaszewska-Górecka"
+            }
+          ],
+          "title": "Wydział",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Przekaż pismo": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Instytut": {
+          "type": "string",
+          "title": "Instytut",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Przekaż pismo": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Student(ka)": {
+          "type": "string",
+          "title": "Student(ka)",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Przekaż pismo": "editable",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Kogo dotyczy",
+      "x-permissions": {
+        "Nowe pismo": "editable",
+        "Przekaż pismo": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Inna sprawa": {
+      "type": "object",
+      "properties": {
+        "Kategoria spraw": {
+          "type": "string",
+          "title": "Kategoria spraw",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Przekaż pismo": "editable",
+            "Archiwum": "readonly"
+          }
+        },
+        "Rodzaj sprawy": {
+          "type": "string",
+          "title": "Rodzaj sprawy",
+          "x-permissions": {
+            "Nowe pismo": "editable",
+            "Przekaż pismo": "editable",
+            "Archiwum": "readonly"
+          }
+        }
+      },
+      "title": "Inna sprawa",
+      "x-permissions": {
+        "Nowe pismo": "editable",
+        "Przekaż pismo": "editable",
+        "Archiwum": "readonly"
+      }
+    },
+    "Element e-Doręczeń": {
+      "type": "string",
+      "title": "Element e-Doręczeń",
+      "x-permissions": {
+        "Nowe pismo": "editable",
+        "Przekaż pismo": "editable",
+        "Archiwum": "editable"
+      }
+    }
+  }
+}

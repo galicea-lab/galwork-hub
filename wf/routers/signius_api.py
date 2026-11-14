@@ -20,6 +20,10 @@ WAŻNE OGRANICZENIE: `wf/engine.py` (zob. komentarz na początku tego pliku)
 NIE wykonuje `serviceTask`/`scriptTask` - `script_engine` jest wyłączony,
 silnik rozumie tylko `userTask`/`manualTask`. W BPMN nie da się więc dziś
 wymodelować "Service Task: poproś o podpis", który silnik sam by wywołał.
+2026-11-13: dla dokumentów huba podpis jest już krokiem procesu -
+wspólny podproces spiffworkflow/wspolne/podpis-dokumentu (serviceTask
+signius.request/signius.wait, wf/services/signing_service.py). Te endpointy
+zostają dla korespondencji studenckiej we Frappe.
 Te endpointy są więc - jak `wf/routers/edr_paperless_api.py` dla e-Doręczeń - akcjami
 wywoływanymi z zewnątrz (np. przyciskiem w UI po zakończeniu zadania
 człowieka "Zatwierdź i wyślij do podpisu", albo z n8n), a nie krokiem,

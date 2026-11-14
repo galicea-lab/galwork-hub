@@ -6,7 +6,7 @@
 # v<version> się z nią zgadza. Projekt nie jest instalowany jako pakiet.
 [project]
 name = "galwork-hub"
-version = "0.0.1"
+version = "0.1.1"
 requires-python = ">=3.12"
 
 [tool.pytest.ini_options]

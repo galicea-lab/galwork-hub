@@ -1,0 +1,191 @@
+{
+  "title": "Tok studiów-TOK",
+  "description": "Proces: TOK - Tok studiów (ID: 273); Obieg: Tok studiów (ID: 305); Typ dokumentu: TOK - Tok (ID: 413)",
+  "type": "object",
+  "properties": {
+    "POLON": {
+      "type": "object",
+      "properties": {
+        "Id studenta": {
+          "type": "string",
+          "title": "Id studenta",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "id student/tok": {
+          "type": "string",
+          "title": "id student/tok",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Kierunek": {
+          "type": "string",
+          "title": "Kierunek",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Kod (POLON)": {
+          "type": "string",
+          "title": "Kod (POLON)",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Forma": {
+          "type": "string",
+          "title": "Forma",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Poziom": {
+          "type": "string",
+          "title": "Poziom",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "fosProfile": {
+          "type": "string",
+          "title": "fosProfile",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "interfacultyData": {
+          "type": "string",
+          "title": "interfacultyData",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "professionalTitle": {
+          "type": "string",
+          "title": "professionalTitle",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Ilość semestrów": {
+          "type": "string",
+          "title": "Ilość semestrów",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "polon2Fos": {
+          "type": "boolean",
+          "title": "polon2Fos",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Data rozpoczęcia": {
+          "type": "string",
+          "title": "Data rozpoczęcia",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "editable",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "leadingInstitution": {
+          "type": "string",
+          "title": "leadingInstitution",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "readonly",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "educationEndInstitution": {
+          "type": "string",
+          "title": "educationEndInstitution",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "editable",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Data uzyskania dyplomu": {
+          "type": "string",
+          "format": "date",
+          "title": "Data uzyskania dyplomu",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "editable",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Data rezygnacji": {
+          "type": "string",
+          "format": "date",
+          "title": "Data rezygnacji",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "editable",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Semestr studiów": {
+          "type": "string",
+          "title": "Semestr studiów",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "editable",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "academicSemester": {
+          "type": "string",
+          "title": "academicSemester",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "editable",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Rok akademicki": {
+          "type": "string",
+          "title": "Rok akademicki",
+          "x-permissions": {
+            "Start": "editable",
+            "Semestr studiów": "editable",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        }
+      },
+      "title": "POLON",
+      "x-permissions": {
+        "Start": "editable",
+        "Semestr studiów": "readonly",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    }
+  }
+}

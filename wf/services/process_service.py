@@ -15,13 +15,13 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Any, Iterable, Mapping
 
 from jinja2.exceptions import TemplateError
 from jinja2.sandbox import SandboxedEnvironment
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, object_session
 from SpiffWorkflow.bpmn.exceptions import WorkflowTaskException
 
 from core.redis_cache import cache_get_json, cache_set_json
@@ -34,7 +34,7 @@ from wf.decisions import (
 )
 # 2026-11-06: słuchacze zdarzeń (start instancji, wykonanie zadania) -
 # wywoływani po commicie, zob. wf/services/process_hooks.py.
-from wf.services import process_hooks
+from wf.services import process_hooks, service_tasks
 from wf.engine import (
   SERIALIZER_VERSION,
   UNRESOLVED_PRINCIPAL,
@@ -43,6 +43,10 @@ from wf.engine import (
   TaskAssignment,
   WorkflowEngine,
   assignment_for,
+  called_elements,
+  defined_processes,
+  start_event_name,
+  has_io_specification,
   read_form_files,
 )
 from wf.services.form_permissions import filter_form_for_step, has_x_permissions
@@ -50,6 +54,7 @@ from wf.models import (
     HumanTask,
     HumanTaskCandidate,
     ProcessEvent,
+    ProcessModelFile,
     ProcessInstance,
     ProcessInstanceState,
     ProcessModel,
@@ -245,18 +250,103 @@ class ProcessService:
     return version
 
   def load_spec(self, version: ProcessModelVersion) -> ProcessSpec:
-    """Buduje specyfikację Spiffa z plików BPMN wersji modelu."""
-    files = {
-      file.file_name: file.content
-      for file in version.files
-      if file.file_type == ProcessFileType.BPMN
-    }
+    """Buduje specyfikację Spiffa z plików BPMN wersji modelu.
+
+    2026-11-13: procesy wywoływane przez `callActivity`, których nie ma
+    w plikach tej wersji, pochodzą z wersji innych modeli (przypiętych przy
+    publikacji - zob. `pin_called_versions`)."""
+    files = _bpmn_files(version)
     if not files:
       raise SpecError(f"Wersja procesu {version.version} nie zawiera plików BPMN")
+    db = object_session(version)
+    called = self.called_versions(db, version) if db is not None else {}
+    called_files = {str(v.id): _bpmn_files(v) for v in called.values()}
     try:
-      return self.engine.build_spec(files, version.bpmn_process_id)
+      return self.engine.build_spec(
+        files, version.bpmn_process_id, called_files=called_files,
+        called_versions={pid: str(v.id) for pid, v in called.items()})
     except SpecError as exc:
       raise ProcessServiceError(str(exc)) from exc
+
+  # BEGIN 2026-11-13: callActivity między modelami
+  def called_versions(self, db: Session, version: ProcessModelVersion, *,
+                      pinned: bool = True,
+                      _visited: frozenset | None = None) -> dict[str, ProcessModelVersion]:
+    """{id procesu wywoływanego: wersja modelu} dla `callActivity` wskazujących
+    procesy spoza plików `version` - także pośrednio (podproces podprocesu).
+
+    Najpierw wersja przypięta w `spec_json['called_versions']` (`pinned`),
+    potem opublikowana wersja modelu, który ten proces definiuje."""
+    visited = (_visited or frozenset()) | {version.id}
+    files = _bpmn_files(version)
+    own = set().union(*(defined_processes(c) for c in files.values())) if files else set()
+    wanted = set().union(*(called_elements(c) for c in files.values())) - own if files else set()
+    pins = ((version.spec_json or {}).get('called_versions') or {}) if pinned else {}
+    result: dict[str, ProcessModelVersion] = {}
+    for process_id in sorted(wanted):
+      target = db.get(ProcessModelVersion, _as_uuid(pins[process_id])) if process_id in pins else None
+      if target is None:
+        target = self._published_defining(db, process_id, exclude_model_id=version.process_model_id)
+      result[process_id] = target
+      if target.id not in visited:
+        result.update({pid: v for pid, v in self.called_versions(
+          db, target, pinned=pinned, _visited=visited).items() if pid not in result})
+    return result
+
+  def _published_defining(self, db: Session, process_id: str, *,
+                          exclude_model_id) -> ProcessModelVersion:
+    """Opublikowana wersja innego modelu definiująca proces `process_id`."""
+    published = (select(ProcessModelVersion)
+                 .where(ProcessModelVersion.status == ProcessModelVersionStatus.PUBLISHED,
+                        ProcessModelVersion.process_model_id != exclude_model_id))
+    found = db.execute(published.where(ProcessModelVersion.bpmn_process_id == process_id)
+                       ).scalars().all()
+    if not found:
+      candidates = db.execute(
+        published.join(ProcessModelFile, ProcessModelFile.version_id == ProcessModelVersion.id)
+        .where(ProcessModelFile.file_type == ProcessFileType.BPMN,
+               ProcessModelFile.content.contains(f'id="{process_id}"'))
+      ).scalars().unique().all()
+      found = [v for v in candidates
+               if any(process_id in defined_processes(c) for c in _bpmn_files(v).values())]
+    if not found:
+      raise ProcessServiceError(
+        f"Proces wywoływany '{process_id}' (callActivity) nie ma opublikowanej wersji "
+        f"w żadnym modelu - opublikuj najpierw model, który go definiuje")
+    if len(found) > 1:
+      keys = ', '.join(sorted(v.process_model.key for v in found))
+      raise ProcessServiceError(
+        f"Proces wywoływany '{process_id}' jest zdefiniowany w kilku opublikowanych "
+        f"modelach ({keys}) - nazwy procesów BPMN muszą być unikalne")
+    return found[0]
+
+  def pin_called_versions(self, db: Session, version: ProcessModelVersion) -> list[str]:
+    """Przy publikacji: przypina bieżące opublikowane wersje procesów
+    wywoływanych (`spec_json['called_versions']`), żeby późniejsza publikacja
+    modelu wywoływanego nie zmieniała procesu wywołującego. Zwraca
+    ostrzeżenia (proces wywoływany bez `ioSpecification` dostaje WSZYSTKIE
+    dane rodzica - istotne dla RODO)."""
+    called = self.called_versions(db, version, pinned=False)
+    direct = set().union(*(called_elements(c) for c in _bpmn_files(version).values()))
+    spec_json = {key: value for key, value in (version.spec_json or {}).items()
+                 if key != 'called_versions'}
+    if called:
+      spec_json['called_versions'] = {pid: str(v.id) for pid, v in called.items() if pid in direct}
+    version.spec_json = spec_json
+    warnings = []
+    for pid, target in sorted(called.items()):
+      if not any(has_io_specification(c, pid) for c in _bpmn_files(target).values()):
+        warnings.append(
+          f"Proces wywoływany '{pid}' (model {target.process_model.key}) nie deklaruje "
+          f"danych wejścia/wyjścia (ioSpecification) - dostanie wszystkie dane procesu wywołującego")
+    return warnings
+
+  @staticmethod
+  def task_version(human_task: HumanTask) -> ProcessModelVersion:
+    """Wersja modelu, z której pochodzi formularz zadania: dla zadania
+    podprocesu z innego modelu - jego wersja, inaczej wersja instancji."""
+    return human_task.form_version or human_task.process_instance.version
+  # -END
 
   def form_spec(self, version: ProcessModelVersion) -> dict[str, Any]:
     """Schematy formularzy wersji: pliki wersji + `spec_json` (nakładka).
@@ -374,9 +464,31 @@ class ProcessService:
     ui_schema = _form_entry(spec['uischemas'], spec['form_files'], task_id, 'ui')
     if start.get('ui'):
       ui_schema = spec['uischemas'].get(form_key(str(start['ui'])), ui_schema)
+    # 2026-11-13: x-permissions jak w formularzu zadania - krok = nazwa
+    # zdarzenia startowego (dawne zadanie "Start" przeniesione na startEvent).
+    schema_obj = _try_parse_json(schema) if schema is not None else None
+    if schema_obj is not None and has_x_permissions(schema_obj):
+      step = start_event_name(_bpmn_files(version).values(), task_id) or task_id
+      schema, ui_schema = filter_form_for_step(schema_obj, _try_parse_json(ui_schema) or {}, step)
     return (task_id,
             render_form_json(schema, data) if schema is not None else None,
             render_form_json(ui_schema, data) if ui_schema is not None else None)
+
+  def validate_start_data(self, version: ProcessModelVersion,
+                          data: Mapping[str, Any] | None) -> None:
+    """2026-11-13: dane startu z formularza (POST /process-instances)
+    względem formularza startowego - jak `_validate_form_data` zadania."""
+    try:
+      _task_id, schema, _ui = self.start_form(version, data=dict(data or {}))
+    except FormRenderError as exc:
+      raise InvalidTaskDataError(f"Formularz startowy nie renderuje się: {exc}") from exc
+    if not schema:
+      return
+    import jsonschema
+    try:
+      jsonschema.validate(instance=dict(data or {}), schema=schema)
+    except jsonschema.ValidationError as exc:
+      raise InvalidTaskDataError(f"Dane startowe są nieprawidłowe: {exc.message}") from exc
 
   def decision_for(self, version: ProcessModelVersion,
                    bpmn_task_id: str | None) -> Mapping[str, Any] | None:
@@ -390,8 +502,7 @@ class ProcessService:
     """Zaznacza domyślną opcję od razu w formularzu (bez klikania)."""
     if not decisions_enabled():
       return data
-    decision = self.decision_for(human_task.process_instance.version,
-                                 human_task.bpmn_task_id)
+    decision = self.decision_for(self.task_version(human_task), human_task.bpmn_task_id)
     if not decision or decision.get('blocked'):
       return data
     field = str(decision.get('field') or DEFAULT_FIELD)
@@ -431,6 +542,9 @@ class ProcessService:
       data = {**data, **dict(human_task.submitted_data
                              or human_task.process_instance.summary or {})}
       return self._prefill_decision(data, human_task)
+    # 2026-11-13: zadanie podprocesu widzi tylko dane podprocesu - bez
+    # danych rodzica, których podproces nie dostał (ioSpecification).
+    data = dict(getattr(spiff_task.workflow, 'data', None) or {})
     chain: list[Any] = []
     node = spiff_task
     while node is not None:
@@ -445,10 +559,19 @@ class ProcessService:
   def start_instance(self, db: Session, version: ProcessModelVersion, *,
                      title: str, business_key: str | None,
                      data: Mapping[str, Any] | None,
-                     actor: CurrentUser) -> ProcessInstance:
-    """Startuje instancję procesu i zapisuje jej stan w bazie."""
+                     actor: CurrentUser,
+                     parent: ProcessInstance | None = None,
+                     parent_task_id=None) -> ProcessInstance:
+    """Startuje instancję procesu i zapisuje jej stan w bazie.
+
+    2026-11-13: `parent`/`parent_task_id` - instancja uruchomiona przez
+    inną (sendTask `startProcess` albo szybka akcja zadania)."""
     process_spec = self.load_spec(version)
-    workflow = self.engine.start(process_spec, dict(data or {}))
+    try:
+      workflow = self.engine.start(process_spec, dict(data or {}))
+    except WorkflowTaskException as exc:
+      # 2026-11-13: np. brak danych wejścia podprocesu (ioSpecification)
+      raise ProcessServiceError(f"Nie udało się uruchomić procesu: {exc}") from exc
 
     instance = ProcessInstance(
       process_model_version_id=version.id,
@@ -461,6 +584,8 @@ class ProcessService:
                     else ProcessInstanceStatus.WAITING)),
       summary=dict(data or {}),
       started_by_id=actor.id,
+      parent_instance_id=parent.id if parent is not None else None,
+      parent_task_id=parent_task_id,
     )
     db.add(instance)
     db.flush()  # potrzebne instance.id dla stanu, zadań i zdarzeń
@@ -470,14 +595,190 @@ class ProcessService:
       instance.completed_at = datetime.now(UTC)
 
     self._save_state(db, instance, workflow)
-    self._add_event(db, instance, EventType.INSTANCE_STARTED, actor=actor)
+    self._add_event(db, instance, EventType.INSTANCE_STARTED, actor=actor,
+                    payload={'parentInstanceId': str(parent.id)} if parent is not None else None)
     self.sync_tasks(db, instance, workflow, process_spec, actor=actor)
     if completed:
       self._add_event(db, instance, EventType.INSTANCE_COMPLETED, actor=actor)
     db.commit()
     process_hooks.emit(db, process_hooks.ProcessHookEvent(
       process_hooks.INSTANCE_STARTED, instance, actor=actor, form_data=dict(data or {})))
+    self.advance_system(db, instance, workflow, process_spec, actor)  # 2026-11-13
     return instance
+
+  # BEGIN 2026-11-13: kroki systemowe (serviceTask) i budzenie instancji
+  def advance_system(self, db: Session, instance: ProcessInstance, workflow,
+                     process_spec: ProcessSpec, actor: CurrentUser, *,
+                     now: datetime | None = None) -> None:
+    """Wykonuje czekające `serviceTask` przez obsługę z service_tasks, dopóki
+    proces posuwa się naprzód; potem uruchamia instancje potomne (sendTask).
+    Krok, którego wynik nie jest gotowy, ustawia `next_wakeup_at`."""
+    now = now or datetime.now(UTC)
+    for _round in range(50):
+      next_wakeup: datetime | None = None
+      errors: list[str] = []
+      progressed = False
+      for task in self.engine.waiting_service_tasks(workflow):
+        call = (process_spec.service_calls.get(self.engine.task_process_id(task)) or {}).get(
+          self.engine.bpmn_task_id(task))
+        if call is None:
+          continue
+        fn = service_tasks.get_handler(call.handler)
+        if fn is None:
+          errors.append(f"Krok '{call.name}': brak obsługi '{call.handler}' w hubie")
+          continue
+        ctx = service_tasks.ServiceContext(
+          db=db, instance=instance, actor=actor, element_id=call.element_id, name=call.name,
+          data=dict(task.data or {}), params=dict(call.params))
+        try:
+          result = fn(ctx)
+        except Exception as exc:  # obsługa woła systemy zewnętrzne - każdy błąd do dziennika
+          logger.exception('Instancja %s: krok %s (%s)', instance.id, call.element_id, call.handler)
+          errors.append(f"Krok '{call.name}': {exc}")
+          retry_at = now + ctx.retry_after()
+          next_wakeup = min(next_wakeup or retry_at, retry_at)
+          self._add_event(db, instance, EventType.SERVICE_TASK_FAILED, actor=actor, payload={
+            'element': call.element_id, 'handler': call.handler, 'error': str(exc)})
+          continue
+        if result.completed:
+          self.engine.complete_service_task(workflow, task, result.data)
+          self._add_event(db, instance, EventType.SERVICE_TASK_COMPLETED, actor=actor, payload={
+            'element': call.element_id, 'handler': call.handler})
+          progressed = True
+          break  # proces się zmienił - lista czekających kroków od nowa
+        retry_at = now + (result.retry_after or service_tasks.DEFAULT_RETRY)
+        next_wakeup = min(next_wakeup or retry_at, retry_at)
+      if progressed:
+        was_completed = instance.status == ProcessInstanceStatus.COMPLETED
+        self._save_state(db, instance, workflow)
+        self.refresh_status(db, instance, workflow)
+        self.sync_tasks(db, instance, workflow, process_spec, actor=actor)
+        if instance.status == ProcessInstanceStatus.COMPLETED and not was_completed:
+          self._add_event(db, instance, EventType.INSTANCE_COMPLETED, actor=actor)
+        db.commit()
+        continue
+      instance.next_wakeup_at = next_wakeup
+      if errors:
+        instance.error_message = '; '.join(errors)
+      elif (instance.error_message or '').startswith("Krok '"):
+        instance.error_message = None  # tylko komunikaty kroków systemowych
+      db.commit()
+      break
+    self.start_pending_children(db, instance, workflow, process_spec, actor)
+
+  def wake(self, db: Session, instance: ProcessInstance, actor: CurrentUser) -> ProcessInstance:
+    """Ponownie wykonuje czekające kroki systemowe instancji (np. sprawdza
+    status podpisu w Signius)."""
+    if instance.status in (ProcessInstanceStatus.COMPLETED, ProcessInstanceStatus.CANCELLED,
+                           ProcessInstanceStatus.SUSPENDED):
+      return instance
+    workflow, process_spec = self.load_workflow(instance)
+    self.advance_system(db, instance, workflow, process_spec, actor)
+    return instance
+
+  def wake_due(self, db: Session, actor: CurrentUser,
+               now: datetime | None = None) -> list[ProcessInstance]:
+    """Budzi instancje z minionym `next_wakeup_at` (scripts/wf_wake.py)."""
+    now = now or datetime.now(UTC)
+    due = db.execute(select(ProcessInstance).where(
+      ProcessInstance.next_wakeup_at.is_not(None), ProcessInstance.next_wakeup_at <= now,
+      ProcessInstance.status.not_in((ProcessInstanceStatus.COMPLETED,
+                                     ProcessInstanceStatus.CANCELLED,
+                                     ProcessInstanceStatus.SUSPENDED)))).scalars().all()
+    woken = []
+    for instance in due:
+      try:
+        woken.append(self.wake(db, instance, actor))
+      except ProcessServiceError as exc:
+        db.rollback()
+        logger.warning('Budzenie instancji %s: %s', instance.id, exc)
+    return woken
+  # -END
+
+  # BEGIN 2026-11-13: instancje uruchamiane przez inne instancje
+  def start_pending_children(self, db: Session, instance: ProcessInstance, workflow,
+                             process_spec: ProcessSpec, actor: CurrentUser) -> list[ProcessInstance]:
+    """Uruchamia instancje dla wykonanych `sendTask` z `startProcess`
+    (jedna na wykonanie elementu - powtórne wywołanie nic nie robi).
+    Błąd startu dziecka trafia do dziennika rodzica, nie cofa jego kroku."""
+    if not process_spec.start_links:
+      return []
+    started: list[ProcessInstance] = []
+    for task in self.engine.completed_tasks(workflow):
+      link = (process_spec.start_links.get(self.engine.task_process_id(task)) or {}).get(
+        self.engine.bpmn_task_id(task))
+      if link is None or not link.automatic:
+        continue
+      exists = db.execute(select(ProcessInstance.id).where(
+        ProcessInstance.parent_instance_id == instance.id,
+        ProcessInstance.parent_task_id == task.id)).first()
+      if exists:
+        continue
+      data = {**dict(getattr(task.workflow, 'data', None) or {}), **dict(task.data or {})}
+      for key in link.process_keys:
+        child = self._start_child(db, instance, link, key, data, task.id, actor)
+        if child is not None:
+          started.append(child)
+    return started
+
+  def quick_actions(self, db: Session, human_task: HumanTask,
+                    process_spec: ProcessSpec) -> list[dict[str, str]]:
+    """Szybkie akcje otwartego zadania (`quickAction` w BPMN): [{klucz, etykieta}]."""
+    link = self._quick_link(human_task, process_spec)
+    if link is None:
+      return []
+    names = dict(db.execute(select(ProcessModel.key, ProcessModel.name)
+                            .where(ProcessModel.key.in_(link.process_keys))).all())
+    return [{'process_model_key': key, 'label': names.get(key) or key} for key in link.process_keys]
+
+  def run_quick_action(self, db: Session, human_task: HumanTask, process_model_key: str,
+                       actor: CurrentUser) -> ProcessInstance:
+    """Uruchamia instancję z szybkiej akcji zadania - z uprawnieniami do zadania."""
+    instance = human_task.process_instance
+    workflow, process_spec = self.load_workflow(instance)
+    self.authorize(human_task, process_spec, actor)
+    link = self._quick_link(human_task, process_spec)
+    if link is None or process_model_key not in link.process_keys:
+      raise ProcessServiceError(
+        f"Zadanie '{human_task.name}' nie ma akcji uruchamiającej '{process_model_key}'")
+    data = self.task_form_data(workflow, human_task)
+    return self._start_child(db, instance, link, process_model_key, data, human_task.id,
+                             actor, raise_errors=True)
+
+  @staticmethod
+  def _quick_link(human_task: HumanTask, process_spec: ProcessSpec):
+    if human_task.status not in (HumanTaskStatus.OPEN, HumanTaskStatus.CLAIMED):
+      return None
+    process_id = human_task.bpmn_process_id or process_spec.process_id
+    link = (process_spec.start_links.get(process_id) or {}).get(human_task.bpmn_task_id)
+    return link if link is not None and not link.automatic else None
+
+  def _start_child(self, db: Session, parent: ProcessInstance, link, process_model_key: str,
+                   data: Mapping[str, Any], parent_task_id, actor: CurrentUser, *,
+                   raise_errors: bool = False) -> ProcessInstance | None:
+    try:
+      version = self.published_version(db, process_model_key)
+      child_data = _map_inputs(link.inputs, data)
+      title = _child_title(link, version, parent, child_data)
+      child = self.start_instance(db, version, title=title, business_key=parent.business_key,
+                                  data=child_data, actor=actor, parent=parent,
+                                  parent_task_id=parent_task_id)
+    except (ProcessServiceError, FormRenderError) as exc:
+      db.rollback()
+      if raise_errors:
+        raise
+      logger.warning('Instancja %s: nie uruchomiono %s (%s): %s', parent.id,
+                     process_model_key, link.element_id, exc)
+      self._add_event(db, parent, EventType.CHILD_INSTANCE_FAILED, actor=actor, payload={
+        'processModelKey': process_model_key, 'element': link.element_id, 'error': str(exc)})
+      db.commit()
+      return None
+    self._add_event(db, parent, EventType.CHILD_INSTANCE_STARTED, actor=actor, payload={
+      'childInstanceId': str(child.id), 'processModelKey': process_model_key,
+      'element': link.element_id})
+    db.commit()
+    return child
+  # -END
 
   def load_workflow(self, instance: ProcessInstance) -> tuple[Any, ProcessSpec]:
     """Odtwarza instancję Spiffa zapisaną w ProcessInstanceState."""
@@ -537,6 +838,10 @@ class ProcessService:
     for task_id, spiff_task in ready_by_id.items():
       human_task = db.get(HumanTask, _as_uuid(task_id))
       if human_task is None:
+        # 2026-11-13: zadanie podprocesu z innego modelu pamięta swój
+        # proces i wersję modelu (formularz, x-permissions, decyzje).
+        process_id = engine.task_process_id(spiff_task)
+        sub_version = process_spec.called_versions.get(process_id)
         human_task = HumanTask(
           id=_as_uuid(task_id),
           process_instance_id=instance.id,
@@ -544,6 +849,8 @@ class ProcessService:
           name=engine.task_name(spiff_task),
           lane=engine.task_lane(spiff_task),
           status=HumanTaskStatus.OPEN,
+          bpmn_process_id=process_id if process_id != process_spec.process_id else None,
+          form_version_id=_as_uuid(sub_version) if sub_version else None,
         )
         db.add(human_task)
         self._add_event(db, instance, EventType.TASK_CREATED, actor=actor,
@@ -551,8 +858,11 @@ class ProcessService:
                         payload={'bpmnTaskId': engine.bpmn_task_id(spiff_task)})
       # 2026-11-06: przypisania `${zmienna}` rozwiązywane danymi
       # instancji (workflow.data + dane zadania, jak w task_form_data).
-      task_data = {**dict(getattr(workflow, 'data', None) or {}), **dict(spiff_task.data or {})}
-      assignment = assignment_for(process_spec, human_task.bpmn_task_id).resolve(task_data)
+      # 2026-11-13: dane podprocesu, nie całej instancji (ioSpecification).
+      task_data = {**dict(getattr(spiff_task.workflow, 'data', None) or {}),
+                   **dict(spiff_task.data or {})}
+      assignment = assignment_for(process_spec, human_task.bpmn_task_id,
+                                  human_task.bpmn_process_id).resolve(task_data)
       self._sync_candidates(db, human_task, assignment)
 
     # zadania, ktore wylaczono ze Spiffa (np. gałąź skasowana)
@@ -588,7 +898,7 @@ class ProcessService:
 
   def authorize(self, human_task: HumanTask, process_spec: ProcessSpec, actor: CurrentUser) -> None:
     """Sprawdza uprawnienia do zadania (przypisanie z BPMN + role Keycloak)."""
-    assignment = assignment_for(process_spec, human_task.bpmn_task_id)
+    assignment = assignment_for(process_spec, human_task.bpmn_task_id, human_task.bpmn_process_id)
     if assignment.is_dynamic:
       # 2026-11-06: wartości zmiennych zna tylko instancja - używamy
       # kandydatów zapisanych przy sync_tasks.
@@ -641,7 +951,7 @@ class ProcessService:
 
     render_data = {**self.task_form_data(workflow, human_task),
                    **dict(form_data or {})}
-    self._validate_form_data(human_task, instance.version, form_data, render_data)
+    self._validate_form_data(human_task, self.task_version(human_task), form_data, render_data)
 
     # 2026-11-06: zadanie bez własnej decyzji czyści `chosen_path`.
     # Inaczej wybór z poprzedniego okrążenia pętli (np. edu-pismo:
@@ -650,7 +960,7 @@ class ProcessService:
     # Decyzja jest zawsze wstrzykiwana do zadania tuż przed gatewayem
     # (wf/decisions.py), więc zadanie bez decyzji nie przekazuje wyboru dalej.
     if (decisions_enabled() and DEFAULT_FIELD not in (form_data or {})
-            and self.decision_for(instance.version, human_task.bpmn_task_id) is None):
+            and self.decision_for(self.task_version(human_task), human_task.bpmn_task_id) is None):
       form_data = {**dict(form_data or {}), DEFAULT_FIELD: None}
 
     human_task.status = HumanTaskStatus.COMPLETED
@@ -677,6 +987,7 @@ class ProcessService:
     process_hooks.emit(db, process_hooks.ProcessHookEvent(
       process_hooks.TASK_COMPLETED, instance, actor=actor, human_task=human_task,
       form_data=dict(form_data or {})))
+    self.advance_system(db, instance, workflow, process_spec, actor)  # 2026-11-13
     return instance
 
   def _validate_form_data(self, human_task: HumanTask, version: ProcessModelVersion,
@@ -777,6 +1088,58 @@ class ProcessService:
     )
     db.add(event)
     return event
+
+
+# BEGIN 2026-11-13
+def _get_path(data: Mapping[str, Any], path: str) -> tuple[bool, Any]:
+  """Wartość `a.b.c` z zagnieżdżonych danych formularza (klucz z kropką
+  wprost ma pierwszeństwo)."""
+  if path in data:
+    return True, data[path]
+  node: Any = data
+  for part in path.split('.'):
+    if not isinstance(node, Mapping) or part not in node:
+      return False, None
+    node = node[part]
+  return True, node
+
+
+def _map_inputs(inputs, data: Mapping[str, Any]) -> dict[str, Any]:
+  """Tylko jawnie wskazane dane (`startInput`) - bez deklaracji dziecko
+  nie dostaje danych rodzica (RODO)."""
+  result: dict[str, Any] = {}
+  for source, target in inputs:
+    found, value = _get_path(data, source)
+    if not found:
+      continue
+    # cel z kropką = pole w sekcji formularza dziecka ("Kogo dotyczy.Wydział")
+    *sections, field = target.split('.')
+    node = result
+    for section in sections:
+      node = node.setdefault(section, {})
+      if not isinstance(node, dict):
+        break
+    else:
+      node[field] = value
+  return result
+
+
+def _child_title(link, version: ProcessModelVersion, parent: ProcessInstance,
+                 data: Mapping[str, Any]) -> str:
+  if link.title:
+    try:
+      return _jinja_env().from_string(link.title).render(
+        **data, data=data, parent_title=parent.title).strip() or parent.title
+    except TemplateError as exc:
+      raise FormRenderError(f"Tytuł instancji (startTitle) nie renderuje się: {exc}") from exc
+  return f"{version.process_model.name}: {parent.title}"
+# -END
+
+
+def _bpmn_files(version: ProcessModelVersion) -> dict[str, str]:
+  """2026-11-13: {nazwa: treść} plików BPMN wersji modelu."""
+  return {file.file_name: file.content for file in version.files
+          if file.file_type == ProcessFileType.BPMN}
 
 
 def _as_uuid(value: str):

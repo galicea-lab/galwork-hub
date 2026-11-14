@@ -1,6 +1,5 @@
 {
   "ui:order": [
-    "Wybór spółki",
     "Temat",
     "Dział",
     "Kategorie",
@@ -90,12 +89,6 @@
     },
     "środek numeru teczki": {
       "ui:readonly": true
-    }
-  },
-  "Wybór spółki": {
-    "ui:widget": "AsyncSelectWidget",
-    "ui:options": {
-      "endpoint": "/v1/wf/dictionaries/companies"
     }
   },
   "Kategorie": {

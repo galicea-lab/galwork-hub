@@ -2,7 +2,6 @@
   "ui:order": [
     "Tytuł",
     "Rok/sprawa",
-    "Wybór spółki",
     "Zakres",
     "Systemowe",
     "Listy terminów",
@@ -58,7 +57,7 @@
       "ui:help": "Działy uczelni",
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/api/dictionaries/dzialy",
+        "endpoint": "/v1/wf/dictionaries/dzialy",
         "sourceName": "Działy"
       }
     },
@@ -69,7 +68,7 @@
       "ui:readonly": true,
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/api/users",
+        "endpoint": "/v1/wf/users",
         "sourceName": "<Użytkownicy i grupy>",
         "sourceType": "Kartoteka Użytkowników"
       }
@@ -77,7 +76,7 @@
     "Osoba": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/api/users",
+        "endpoint": "/v1/wf/users",
         "sourceName": "<Użytkownicy i grupy>",
         "sourceType": "Kartoteka Użytkowników"
       }
@@ -85,7 +84,7 @@
     "Rok akademicki": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/api/dictionaries/rok-akademicki",
+        "endpoint": "/v1/wf/dictionaries/rok-akademicki",
         "sourceName": "rok akademicki",
         "sourceType": "REST Web Service"
       }
@@ -93,7 +92,7 @@
     "Grupa": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/api/users",
+        "endpoint": "/v1/wf/users",
         "sourceName": "Grupy osób",
         "sourceType": "Kartoteka Użytkowników"
       }
@@ -101,7 +100,7 @@
     "Kierownik Działu": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/api/users",
+        "endpoint": "/v1/wf/users",
         "sourceName": "<Użytkownicy i grupy>",
         "sourceType": "Kartoteka Użytkowników"
       }
@@ -109,7 +108,7 @@
     "Pracownicy działu": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/api/users",
+        "endpoint": "/v1/wf/users",
         "sourceName": "<Użytkownicy i grupy>",
         "sourceType": "Kartoteka Użytkowników"
       }
@@ -117,7 +116,7 @@
     "Kierownicy": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/api/users",
+        "endpoint": "/v1/wf/users",
         "sourceName": "<Użytkownicy i grupy>",
         "sourceType": "Kartoteka Użytkowników"
       }
@@ -125,7 +124,7 @@
     "Dodatkowe osoby": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/api/users",
+        "endpoint": "/v1/wf/users",
         "sourceName": "<Użytkownicy i grupy>",
         "sourceType": "Kartoteka Użytkowników"
       }
@@ -178,12 +177,6 @@
     },
     "ui:options": {
       "addable": true
-    }
-  },
-  "Wybór spółki": {
-    "ui:widget": "AsyncSelectWidget",
-    "ui:options": {
-      "endpoint": "/api/dictionaries/companies"
     }
   },
   "Nowa lista terminów": {

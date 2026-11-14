@@ -1,0 +1,15 @@
+{
+  "title": "Podpis odrzucony",
+  "type": "object",
+  "properties": {
+    "status_signius": {
+      "type": "string",
+      "title": "Status w Signius",
+      "readOnly": true
+    },
+    "uwagi": {
+      "type": "string",
+      "title": "Uwagi"
+    }
+  }
+}

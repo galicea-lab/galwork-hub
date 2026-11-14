@@ -185,6 +185,12 @@ class EventType(StrEnum):
     COMMENT_ADDED = "comment_added"
     SIGNATURE_REQUESTED = "signature_requested"
     SIGNATURE_COMPLETED = "signature_completed"
+    # 2026-11-13: instancje uruchamiane przez inne (sendTask/szybka akcja)
+    CHILD_INSTANCE_STARTED = "child_instance_started"
+    CHILD_INSTANCE_FAILED = "child_instance_failed"
+    # 2026-11-13: kroki systemowe (serviceTask z `handler`)
+    SERVICE_TASK_COMPLETED = "service_task_completed"
+    SERVICE_TASK_FAILED = "service_task_failed"
 
 
 # =====================================================================
@@ -368,6 +374,9 @@ class ProcessModelVersionRead(ReadModel):
     published_by: UUID | None
     created_at: datetime
     files: list[ProcessModelFileRead] = []
+    # 2026-11-13: ostrzeżenia publikacji (np. proces wywoływany przez
+    # callActivity bez ioSpecification dostaje wszystkie dane rodzica).
+    warnings: list[str] = []
 
 
 # =====================================================================
@@ -397,6 +406,11 @@ class ProcessInstanceRead(ReadModel):
     updated_at: datetime
     error_message: str | None
     lock_version: int
+    # 2026-11-13: instancja uruchomiona przez inną
+    parent_instance_id: UUID | None = None
+    parent_task_id: UUID | None = None
+    # 2026-11-13: krok systemowy czeka na wynik - kolejne sprawdzenie
+    next_wakeup_at: datetime | None = None
 
 
 class ProcessInstanceFilter(Pagination):
@@ -484,6 +498,14 @@ class TaskFormRead(BaseModel):
     form_data: JsonDict = Field(default_factory=dict)
     documents: list["DocumentRead"] = []
     process_lock_version: int
+    # 2026-11-13: przyciski "Uruchom ..." (quickAction w BPMN zadania)
+    quick_actions: list["QuickActionRead"] = []
+
+
+class QuickActionRead(BaseModel):
+    """2026-11-13: szybka akcja zadania - uruchamia instancję modelu."""
+    process_model_key: str
+    label: str
 
 
 class ProcessFormRead(BaseModel):

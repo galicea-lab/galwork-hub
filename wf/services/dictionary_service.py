@@ -3,7 +3,10 @@
 """
 Słowniki (pola `AsyncSelectWidget`/`TreeSelectWidget`)
 
-Rejestr w tym module odwzorowuje każdy `slug` na jedno z pięciu źródeł
+TODO: przenieść do plików konfiguracyjnych, by ułatwić wdrażanie oraz
+dodawanie nowych słowników bez zmiany kodu (np. w config/dictionaries.json).
+
+Rejestr w tym module odwzorowuje każdy `slug` na jedno ze źródeł
 danych:
 
   1. **Tabela** (`TableDictionary`) - słownik płaski (kod/etykieta) w
@@ -17,6 +20,9 @@ danych:
      "tożsamość + adres(y)" (dziś: "adres-e-doreczen"; "Kontrahent"/
      "[Umowy] Karta kontrahenta" z `INTERNAL_DICTIONARIES` mogą dostać tę
      samą migrację później, jeśli ich struktura się do tego nadaje).
+     2026-11-13: to książka adresowa korespondencji (nadawcy i adresaci
+     e-Doręczeń), nie kontrahenci - pisma przychodzą też od instytucji,
+     które nie są kontrahentami. Kontrahenci są w ERPNext (zob. 6.).
   3. **Obieg wewnętrzny** (`InternalDictionary`) - słownik to zwykły,
      opublikowany `ProcessModel` w tym hubie (proces "Krok słownikowy" albo
      inny samodzielny obieg, np. "Lista terminów", "Kontrahent"). Jeden
@@ -32,6 +38,9 @@ danych:
      do czasu własnej migracji każdego z nich.
   4. **Frappe Education** (`FrappeDictionary`) - słownik odpowiada Doctype
      w systemie dziekanatowym (connector/frappe_education), np. "Studenci".
+  6. **ERPNext** (`ErpNextDictionary`, 2026-11-13) - słownik = jeden
+     albo kilka Doctype w ERPNext (connector/erpnext), np. "kontrahenci" =
+     dostawcy (`Supplier`) i odbiorcy (`Customer`).
   5. **Niepodłączone** (`NOT_CONNECTED`) - `source-name` wskazuje na system,
      dla którego w tym repozytorium nie ma jeszcze konektora (ERP,
      EZD, "Spółki" uczelni) - zwracamy jawny błąd 501 z wyjaśnieniem,
@@ -56,8 +65,10 @@ from sqlalchemy import or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from connector.base import ConnectorConfigError, ConnectorError
+from connector.erpnext.erpnext import get_connector as get_erpnext_connector
 from connector.frappe_education.connector import get_connector as get_frappe_connector
-from wf.models import Contact, ContactAddress, ProcessInstance, ProcessModel, ProcessModelVersion
+from wf.models import Contact, ContactAddress, HumanTask, ProcessInstance, ProcessModel, ProcessModelVersion
+from wf.schemas.wf_schemas import HumanTaskStatus
 from wf.schemas.wf_schemas import OptionRead
 from wf.services.dictionary_entry_service import list_entries as list_dictionary_entries
 
@@ -108,6 +119,9 @@ class InternalDictionary:
 
     process_model_key: str
     source_name: str
+    # 2026-11-13: tylko instancje z otwartym zadaniem o tej nazwie
+    # (np. procedury skreślenia czekające na odwołanie).
+    open_task_name: str | None = None
 
 
 @dataclass(frozen=True)
@@ -118,6 +132,8 @@ class FrappeDictionary:
     label_field: str
     source_name: str
 
+# TODO: przenieść do plików konfiguracyjnych, by ułatwić wdrażanie oraz
+# dodawanie nowych słowników bez zmiany kodu (np. w config/dictionaries.json).
 
 # ---------------------------------------------------------------------
 # 1. Słowniki płaskie w tabeli `dictionary_entry` (decyzja 2026-10-18) -
@@ -183,6 +199,9 @@ TABLE_DICTIONARIES: dict[str, TableDictionary] = {
     "dzien-tygodnia": TableDictionary("dzien-tygodnia", "Dzień tygodnia"),
     "grupy-ad": TableDictionary("grupy-ad", "Grupy AD"),
     "stopien-pokrewienstwa": TableDictionary("stopien-pokrewienstwa", "Stopień pokrewieństwa"),
+    # 2026-11-12: wariant formularza "Zgłoszenie" (dziekanat/prosba_studenta) -
+    # kod rodzaju wybiera sekcje warunkowe jednego schematu (allOf/if/then).
+    "rodzaj-pisma-studenta": TableDictionary("rodzaj-pisma-studenta", "Rodzaj pisma studenta"),
     "rodzaj-centrum-kosztow": TableDictionary("rodzaj-centrum-kosztow", "Rodzaj centrum kosztów"),
     "nowe-wyjasnienie": TableDictionary("nowe-wyjasnienie", "Nowe wyjaśnienie"),
     "slowa-kluczowe": TableDictionary("slowa-kluczowe", "Słowa kluczowe"),
@@ -194,6 +213,18 @@ TABLE_DICTIONARIES: dict[str, TableDictionary] = {
     "rodzaj-umowy": TableDictionary("rodzaj-umowy", "Rodzaj umowy"),
     "forma-platnosci": TableDictionary("forma-platnosci", "Forma płatności"),
     "rodzaj-wniosku": TableDictionary("rodzaj-wniosku", "Rodzaj wniosku"),
+    # BEGIN 2026-11-13: decyzje z TODO/SLOWNIKI_BRAKUJACE.md (galwork-dev-jw)
+    "powod-skreslenia": TableDictionary("powod-skreslenia", "Powód skreślenia z listy studentów"),
+    "szablony-skreslen": TableDictionary("szablony-skreslen", "Szablony decyzji o skreśleniu"),
+    "sale": TableDictionary("sale", "Sale"),
+    "budynki": TableDictionary("budynki", "Budynki"),
+    "klasa-zdarzen": TableDictionary("klasa-zdarzen", "Klasa zdarzeń IT"),
+    "rodzaje-urlopow": TableDictionary("rodzaje-urlopow", "Rodzaje urlopów"),
+    "jrwa": TableDictionary("jrwa", "Jednolity rzeczowy wykaz akt"),
+    "kategoria-archiwizacji": TableDictionary("kategoria-archiwizacji", "Kategoria archiwalna"),
+    "sprawy-formularze": TableDictionary("sprawy-formularze", "Formularze spraw"),
+    "rejestr-systemow": TableDictionary("rejestr-systemow", "Rejestr systemów IT"),
+    # -END
 }
 
 # ---------------------------------------------------------------------
@@ -219,6 +250,21 @@ INTERNAL_DICTIONARIES: dict[str, InternalDictionary] = {
     "trm-terminarze": InternalDictionary("trm-terminarze", "[TRM] Terminarze"),
     "umowy-karta-kontrahenta": InternalDictionary("umowy-karta-kontrahenta", "[Umowy] Karta kontrahenta"),
     "teczki-spraw": InternalDictionary("teczki-spraw", "Teczki Spraw"),
+    # BEGIN 2026-11-13
+    "podrodzaj-umowy": InternalDictionary("podrodzaj-umowy", "Podrodzaj umowy"),
+    "rejestr-serwerow": InternalDictionary("nserwer", "Rejestr serwerów"),
+    "elementy-do-przegladu": InternalDictionary("slownik-elementow-do-przegladu", "Elementy do przeglądu"),
+    "projekty": InternalDictionary("projekt", "Projekty"),
+    "wnioski-zakupowe": InternalDictionary("wniosek-zakupowy", "Wnioski zakupowe"),
+    "dokumenty-uczelni": InternalDictionary("dokumenty", "Dokumenty uczelni"),
+    "procedury-skreslenia-czeka-na-odwolanie": InternalDictionary(
+        "realizacja-procedury-skreslenia", "Procedury skreślenia czekające na odwołanie",
+        open_task_name="Czekanie na odwołanie"),
+    "szablony-planu-rzeczowo-finansowego": InternalDictionary(
+        "szablon-planu-rzeczowo-finansowego-dzialu", "Szablony planu rzeczowo-finansowego"),
+    "plany-rzeczowo-finansowe-dzialow": InternalDictionary(
+        "plan-rzeczowo-finansowy-dzialu", "Plany rzeczowo-finansowe działów"),
+    # -END
 }
 
 # ---------------------------------------------------------------------
@@ -229,7 +275,82 @@ INTERNAL_DICTIONARIES: dict[str, InternalDictionary] = {
 FRAPPE_DICTIONARIES: dict[str, FrappeDictionary] = {
     "studenci": FrappeDictionary("Student", "student_name", "Studenci"),
     "rok-akademicki": FrappeDictionary("Academic Term", "term_name", "rok akademicki"),
+    # 2026-11-13: kadra i przedmioty z Frappe Education, ogłoszenia z Frappe HR.
+    "kadra": FrappeDictionary("Instructor", "instructor_name", "Kadra dydaktyczna"),
+    "przedmioty": FrappeDictionary("Course", "course_name", "Przedmioty"),
+    "ogloszenia-rekrutacji": FrappeDictionary("Job Opening", "job_title", "Ogłoszenia rekrutacji"),
 }
+
+# BEGIN 2026-11-13
+@dataclass(frozen=True)
+class ErpNextSource:
+    """Jeden Doctype ERPNext w słowniku: pole etykiety i rola w etykiecie opcji."""
+
+    doctype: str
+    label_field: str
+    role: str = ""
+    filters: tuple[tuple[str, str, object], ...] = ()
+    # "tylko aktywne" - zależy od Doctype (Location nie ma `disabled`)
+    active: tuple[tuple[str, str, object], ...] = (("disabled", "=", 0),)
+
+
+@dataclass(frozen=True)
+class ErpNextDictionary:
+    """Słownik z ERPNext (connector/erpnext). Opcje kilku Doctype są łączone;
+    `value` = `name` dokumentu, a ten sam `name` w kilku Doctype to jedna
+    opcja (np. firma, która jest i dostawcą, i odbiorcą)."""
+
+    sources: tuple[ErpNextSource, ...]
+    source_name: str
+    # parametr zapytania -> pole Doctype, porównanie "like" (np. ?department=)
+    query_fields: tuple[tuple[str, str], ...] = ()
+
+
+# Środek trwały w użyciu: zatwierdzony, nie zlikwidowany i nie sprzedany.
+_ASSET_ACTIVE = (("docstatus", "=", 1), ("status", "not in", ["Scrapped", "Sold"]))
+
+# 6. Słowniki z ERPNext. Kontrahenci to dostawcy i odbiorcy - nie książka
+#    adresowa e-Doręczeń (`adres-e-doreczen`).
+ERPNEXT_DICTIONARIES: dict[str, ErpNextDictionary] = {
+    "kontrahenci": ErpNextDictionary(
+        (ErpNextSource("Supplier", "supplier_name", "dostawca"),
+         ErpNextSource("Customer", "customer_name", "odbiorca")),
+        "Kontrahenci (ERPNext)",
+    ),
+    # BEGIN 2026-11-13: struktura organizacyjna i środki trwałe w ERPNext
+    # Pracownik = Employee; filtr działu
+    # lub stanowiska w adresie pola, np. /pracownicy?designation=Radca%20prawny.
+    "pracownicy": ErpNextDictionary(
+        (ErpNextSource("Employee", "employee_name", active=(("status", "=", "Active"),)),),
+        "Pracownicy (ERPNext)",
+        query_fields=(("department", "department"), ("designation", "designation")),
+    ),
+    "lokalizacje": ErpNextDictionary(
+        (ErpNextSource("Location", "location_name", active=()),),
+        "Lokalizacje (ERPNext)",
+    ),
+    "srodki-trwale": ErpNextDictionary(
+        (ErpNextSource("Asset", "asset_name", active=_ASSET_ACTIVE),),
+        "Środki trwałe (ERPNext)",
+        query_fields=(("category", "asset_category"), ("location", "location")),
+    ),
+    # Sprzęt IT = środki trwałe z kategorii zaczynającej się od "IT"
+    # (konwencja nazw Asset Category przy wdrożeniu).
+    "sprzet-it": ErpNextDictionary(
+        (ErpNextSource("Asset", "asset_name", filters=(("asset_category", "like", "IT%"),),
+                       active=_ASSET_ACTIVE),),
+        "Sprzęt IT (ERPNext)",
+        query_fields=(("category", "asset_category"), ("location", "location")),
+    ),
+    # -END
+    # Konta zespołu 4 (koszty rodzajowe) z planu kont ERPNext, bez kont grupujących.
+    "konta-kosztowe": ErpNextDictionary(
+        (ErpNextSource("Account", "account_name", "konto",
+                       (("account_number", "like", "4%"), ("is_group", "=", 0))),),
+        "Konta kosztowe (zespół 4, ERPNext)",
+    ),
+}
+# -END
 
 # ---------------------------------------------------------------------
 # 5. Źródła zewnętrzne bez konektora w tym repozytorium - zob.
@@ -237,25 +358,6 @@ FRAPPE_DICTIONARIES: dict[str, FrappeDictionary] = {
 # ---------------------------------------------------------------------
 NOT_CONNECTED: dict[str, str] = {
     "companies": "Pole 'Wybór spółki' nie ma jeszcze konektora do tego źródła - TODO: dodaj go w connector/.",
-    "k-kontrahenci": (
-        "source-name='[K] Kontrahenci', source-type='REST Web Service' "
-        "(pole 'z systemu ERP' w kontrahent-k-uischema.json). W "
-        "repozytorium nie ma jeszcze konektora do ERP z kontrahentami."
-    ),
-    "konta-kontrahentow": (
-        "source-name='Konta kontrahentów w ERP - TODO: brak konektora."
-    ),
-    "ezd-jrwa": (
-        "source-name='[EZD] JRWA', source-type='Baza MSSQL' - rejestr "
-        "Jednolitego Rzeczowego Wykazu Akt zewnętrznego systemu EZD. Nie "
-        "znaleziono odpowiadającego obiegu w spiffworkflow-all ani "
-        "konektora w connector/ - do potwierdzenia u właściciela integracji "
-        "EZD."
-    ),
-    "ezd-kategoria-archiwizacji": (
-        "source-name='[EZD] Kategoria archiwizacji' - jak wyżej (system "
-        "EZD, brak konektora)."
-    ),
 }
 
 
@@ -323,6 +425,12 @@ def _internal_options(db: Session, dictionary: InternalDictionary, q: str | None
               ProcessInstance.process_model_version_id == ProcessModelVersion.id)
         .where(ProcessModelVersion.process_model_id == model.id)
     )
+    if dictionary.open_task_name:
+        # 2026-11-13: filtr kroku, w którym instancja teraz czeka.
+        stmt = stmt.where(ProcessInstance.id.in_(
+            select(HumanTask.process_instance_id).where(
+                HumanTask.name == dictionary.open_task_name,
+                HumanTask.status.in_((HumanTaskStatus.OPEN, HumanTaskStatus.CLAIMED)))))
     if q:
         stmt = stmt.where(ProcessInstance.title.ilike(f"%{q}%"))
     stmt = stmt.order_by(ProcessInstance.title).limit(limit)
@@ -353,7 +461,41 @@ def _frappe_options(dictionary: FrappeDictionary, q: str | None, limit: int) -> 
     ]
 
 
-def list_options(db: Session, slug: str, q: str | None = None, limit: int = 50) -> list[OptionRead]:
+# BEGIN 2026-11-13
+def _erpnext_options(dictionary: ErpNextDictionary, q: str | None, limit: int,
+                     params: dict[str, str] | None = None) -> list[OptionRead]:
+    connector = get_erpnext_connector()
+    extra = [[field, "like", f"%{params[name]}%"] for name, field in dictionary.query_fields
+             if (params or {}).get(name)]
+    labels: dict[str, str] = {}
+    roles: dict[str, list[str]] = {}
+    for source in dictionary.sources:
+        filters: list[list] = ([list(f) for f in source.active] + [list(f) for f in source.filters]
+                               + extra)
+        if q:
+            filters.append([source.label_field, "like", f"%{q}%"])
+        try:
+            rows = connector.get_list(source.doctype, filters=filters,
+                                      fields=["name", source.label_field], limit=limit)
+        except ConnectorConfigError as exc:
+            raise DictionaryNotSeededError(
+                f"ERPNext nie skonfigurowany ([erpnext] w config/config.ini) - "
+                f"słownik '{dictionary.source_name}': {exc}") from exc
+        except ConnectorError as exc:
+            raise DictionaryError(f"ERPNext ({source.doctype}): {exc}") from exc
+        for row in rows:
+            name = row["name"]
+            labels.setdefault(name, row.get(source.label_field) or name)
+            roles.setdefault(name, []).append(source.role)
+    options = [OptionRead(value=name, label=(f"{label} ({', '.join(r for r in roles[name] if r)})"
+                                             if any(roles[name]) else label))
+               for name, label in labels.items()]
+    return sorted(options, key=lambda option: option.label.lower())[:limit]
+# -END
+
+
+def list_options(db: Session, slug: str, q: str | None = None, limit: int = 50,
+                 params: dict[str, str] | None = None) -> list[OptionRead]:
     """Opcje {value, label} dla jednego pola `AsyncSelectWidget`/
     `TreeSelectWidget` (`ui:options.endpoint` = `/v1/wf/dictionaries/{slug}`
     w `*-uischema.json`)."""
@@ -365,6 +507,8 @@ def list_options(db: Session, slug: str, q: str | None = None, limit: int = 50) 
         return _internal_options(db, INTERNAL_DICTIONARIES[slug], q, limit)
     if slug in FRAPPE_DICTIONARIES:
         return _frappe_options(FRAPPE_DICTIONARIES[slug], q, limit)
+    if slug in ERPNEXT_DICTIONARIES:  # 2026-11-13
+        return _erpnext_options(ERPNEXT_DICTIONARIES[slug], q, limit, params)
     if slug in NOT_CONNECTED:
         raise DictionaryNotConnectedError(NOT_CONNECTED[slug])
     raise DictionaryNotFoundError(f"Nieznany słownik '{slug}'")

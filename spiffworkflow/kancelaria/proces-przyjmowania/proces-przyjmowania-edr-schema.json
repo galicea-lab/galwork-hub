@@ -24,16 +24,6 @@
         "Archiwum": "none"
       }
     },
-    "Wybór spółki": {
-      "type": "string",
-      "title": "Wybór spółki",
-      "x-permissions": {
-        "Nowa przesyłka": "editable",
-        "Rejestr otrzymanych": "editable",
-        "Kosz": "editable",
-        "Archiwum": "editable"
-      }
-    },
     "Nadawca": {
       "type": "object",
       "properties": {
