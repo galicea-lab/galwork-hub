@@ -1,10 +1,15 @@
 {
   "ui:order": [
     "Rodzaj pisma",
+    "Studia studenta",
     "*",
     "Kto obsługuje",
     "Kto podpisuje",
-    "wydruk z Uczelni10"
+    "wydruk z Uczelni10",
+    "adresat",
+    "opinia_promotora",
+    "opinia_dyrektora",
+    "opinia_dziekana"
   ],
   "Rodzaj pisma": {
     "ui:widget": "AsyncSelectWidget",
@@ -12,6 +17,14 @@
       "endpoint": "/v1/wf/dictionaries/rodzaj-pisma-studenta",
       "sourceName": "Rodzaj pisma"
     }
+  },
+  "Studia studenta": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/studia-studenta",
+      "sourceName": "Studia studenta"
+    },
+    "ui:help": "Student i kierunek, którego dotyczy pismo"
   },
   "Kto obsługuje": {
     "ui:help": "Osoba obsługująca  sprawę, sekretariat",
@@ -37,8 +50,21 @@
       "sourceType": "REST Web Service"
     }
   },
+  "adresat": {
+    "ui:help": "Domyślnie wg rodzaju pisma (słownik rodzaj-pisma-studenta); puste - adresata wskazuje sekcja ADRESAT"
+  },
+  "opinia_promotora": {
+    "ui:help": "Domyślnie wg rodzaju pisma; kieruje sprawę po weryfikacji BOS"
+  },
   "IDENTYFIKACJA": {
-    "ui:help": "Zaświadczenie dlastudenta w związku ze studiowaniemna konkretnymkierunku",
+    "ui:help": "Rejestracja sprawy w dziekanacie",
+    "Kategoria spraw": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/grupa-formularzy",
+        "sourceName": "Grupa formularzy"
+      }
+    },
     "Rodzaj sprawy": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
@@ -46,34 +72,11 @@
         "sourceName": "Rodzaje spraw"
       }
     },
-    "Kierunek": {
-      "ui:widget": "AsyncSelectWidget",
-      "ui:options": {
-        "endpoint": "/v1/wf/dictionaries/kierunki",
-        "sourceName": "Kierunki"
-      }
-    },
     "Instytut": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
         "endpoint": "/v1/wf/dictionaries/instytuty",
-        "sourceName": "instytuty",
-        "sourceType": "REST Web Service"
-      }
-    },
-    "Student(ka)": {
-      "ui:widget": "AsyncSelectWidget",
-      "ui:options": {
-        "endpoint": "/v1/wf/dictionaries/studenci",
-        "sourceName": "Studenci",
-        "sourceType": "Baza MSSQL"
-      }
-    },
-    "Kategoria spraw": {
-      "ui:widget": "AsyncSelectWidget",
-      "ui:options": {
-        "endpoint": "/v1/wf/dictionaries/grupa-formularzy",
-        "sourceName": "Grupa formularzy"
+        "sourceName": "instytuty"
       }
     }
   },
@@ -146,60 +149,33 @@
       "ui:help": "Skreślenie"
     },
     "W roku akademickim": {
-      "ui:help": "Skreślenie",
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
         "endpoint": "/v1/wf/dictionaries/rok-akademicki",
-        "sourceName": "rok akademicki",
-        "sourceType": "REST Web Service"
-      }
+        "sourceName": "Rok akademicki"
+      },
+      "ui:help": "Skreślenie"
     }
   },
   "DANE STUDENTA": {
-    "Nr_albumu": {
-      "ui:help": "Numer albumu"
-    },
+    "ui:help": "Dane z systemu dziekanatowego - zmień telefon lub adres, jeśli są nieaktualne",
     "Email": {
       "ui:help": "Mail studencki"
-    },
-    "ui:help": "Dane studenta",
-    "Numer dokumentu tożsamości": {
-      "ui:readonly": true
-    },
-    "Miejsce wydania dokumentu tożsamości": {
-      "ui:readonly": true
-    },
-    "Obywatelstwo": {
-      "ui:readonly": true
-    },
-    "Data urodzenia": {
-      "ui:readonly": true
-    },
-    "DocumentId": {
-      "ui:help": "Identyfikator w systemie podpisywania Signius"
-    },
-    "Okres studiowania": {
-      "ui:help": "??? można złożyć z dat rozpoczęciai do  jkiedy studia"
     }
   },
   "TOK STUDIÓW": {
-    "Tryb studiów": {
-      "ui:help": "stacjonarne / niestacjonarne"
-    },
-    "ui:help": "Dane ostudiowaniu",
     "Rok akademicki": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
         "endpoint": "/v1/wf/dictionaries/rok-akademicki",
-        "sourceName": "rok akademicki",
-        "sourceType": "REST Web Service"
+        "sourceName": "Rok akademicki"
       }
     },
-    "Poziom studiów": {
+    "Semestr akademicki": {
       "ui:widget": "AsyncSelectWidget",
       "ui:options": {
-        "endpoint": "/v1/wf/dictionaries/poziom-studiow",
-        "sourceName": "Poziom studiów"
+        "endpoint": "/v1/wf/dictionaries/semestr-akademicki",
+        "sourceName": "Semestr akademicki"
       }
     }
   },
@@ -232,6 +208,22 @@
         "endpoint": "/v1/wf/users",
         "sourceName": "<Użytkownicy i grupy>",
         "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "WYBÓR OPCJI": {
+    "Rok akademicki wznawiania studiów": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/rok-akademicki",
+        "sourceName": "Rok akademicki"
+      }
+    },
+    "W roku akademickim": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/rok-akademicki",
+        "sourceName": "Rok akademicki"
       }
     }
   },
@@ -301,16 +293,6 @@
     },
     "Przyznać/nie przyznać": {
       "ui:readonly": true
-    }
-  },
-  "WYBÓR OPCJI": {
-    "W roku akademickim": {
-      "ui:widget": "AsyncSelectWidget",
-      "ui:options": {
-        "endpoint": "/v1/wf/dictionaries/rok-akademicki",
-        "sourceName": "rok akademicki",
-        "sourceType": "REST Web Service"
-      }
     }
   },
   "Zwracam się z uprzejmą prośbą o:": {

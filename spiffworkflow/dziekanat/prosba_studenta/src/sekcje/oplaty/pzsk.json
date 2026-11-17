@@ -1,0 +1,35 @@
+{
+  "nazwa": "OPŁATY",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Nr zarządzenia Rektora": {
+        "type": "integer",
+        "title": "Nr zarządzenia Rektora",
+        "readOnly": true,
+        "x-permissions": "p23"
+      },
+      "Termin wniesienia opłaty": {
+        "type": "string",
+        "format": "date",
+        "title": "Termin wniesienia opłaty",
+        "x-permissions": "p35"
+      }
+    },
+    "title": "OPŁATY",
+    "readOnly": true,
+    "x-permissions": "p23"
+  },
+  "ui": {
+    "Nr zarządzenia Rektora": {
+      "ui:help": "Zarządzenie zgodnie z którym jest naliczana opłata za powtarzanie semestru.",
+      "ui:readonly": true
+    },
+    "ui:readonly": true
+  },
+  "uzywaja": [
+    "pzsk",
+    "za",
+    "zps"
+  ]
+}

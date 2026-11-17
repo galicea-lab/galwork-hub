@@ -16,6 +16,7 @@ tylko jego wiersze. Skrypt:
      `_internal_options` - wartości zapisane już w formularzach zostają
      ważne), `label` = `ProcessInstance.title`;
   2. seeduje wartości oczywiste z natury słownika (dziś: "dzien-tygodnia");
+     2026-11-15: i atrybuty wpisów (`extra`, STATIC_EXTRA);
   3. wypisuje raport: słownik -> liczba wierszy / czy został stary obieg.
 
 Idempotentny (istniejąca para dictionary_key+code jest pomijana).
@@ -111,6 +112,52 @@ STATIC_ENTRIES: dict[str, list[tuple[str, str]]] = {
 }
 
 
+# 2026-11-15: atrybuty wpisów (`DictionaryEntry.extra`), uzupełniane także
+# w wierszach już istniejących. "rodzaj-pisma-studenta": adresat (szczebel,
+# który rozstrzyga; None = wskazuje student w sekcji ADRESAT) i opinie
+# potrzebne przed decyzją - czyta je krok `edu.studia-studenta`
+# (wf/services/edu_service_tasks.py), bramki procesu prosby studenta kierują
+# wg nich sprawę. Wyznaczone z pól sekcji DECYZJA każdego rodzaju (kto ma tam
+# opinię/decyzję) - DO WERYFIKACJI przez dziekanat.
+STATIC_EXTRA: dict[str, dict[str, dict]] = {
+    "rodzaj-pisma-studenta": {
+        "F-ISS": {"adresat": "dyrektor", "opinia_promotora": False, "opinia_dyrektora": True, "opinia_dziekana": False},
+        "PMDS": {"adresat": "rektor", "opinia_promotora": False, "opinia_dyrektora": True, "opinia_dziekana": True},
+        "POD": {"adresat": None, "opinia_promotora": False, "opinia_dyrektora": True, "opinia_dziekana": True},
+        "PPT": {"adresat": "dziekan", "opinia_promotora": False, "opinia_dyrektora": True, "opinia_dziekana": True},
+        "PSS": {"adresat": "rektor", "opinia_promotora": False, "opinia_dyrektora": True, "opinia_dziekana": True},
+        "PZSK": {"adresat": "rektor", "opinia_promotora": True, "opinia_dyrektora": True, "opinia_dziekana": True},
+        "TZPD": {"adresat": "dziekan", "opinia_promotora": True, "opinia_dyrektora": False, "opinia_dziekana": True},
+        "UUZ": {"adresat": "rektor", "opinia_promotora": False, "opinia_dyrektora": True, "opinia_dziekana": True},
+        "WS": {"adresat": "rektor", "opinia_promotora": False, "opinia_dyrektora": True, "opinia_dziekana": True},
+        "ZA": {"adresat": "rektor", "opinia_promotora": True, "opinia_dyrektora": True, "opinia_dziekana": True},
+        "ZKS": {"adresat": "rektor", "opinia_promotora": False, "opinia_dyrektora": False, "opinia_dziekana": False},
+        "ZOS": {"adresat": "rektor", "opinia_promotora": False, "opinia_dyrektora": True, "opinia_dziekana": True},
+        "ZPD": {"adresat": "dyrektor", "opinia_promotora": True, "opinia_dyrektora": True, "opinia_dziekana": False},
+        "ZPS": {"adresat": "rektor", "opinia_promotora": True, "opinia_dyrektora": True, "opinia_dziekana": True},
+        "ZS": {"adresat": "dziekan", "opinia_promotora": False, "opinia_dyrektora": True, "opinia_dziekana": True},
+        "ZWW": {"adresat": "rektor", "opinia_promotora": False, "opinia_dyrektora": True, "opinia_dziekana": True},
+    },
+}
+
+
+def seed_extra(db, key: str, dry_run: bool) -> int:
+    """Uzupełnia `extra` wierszy wg STATIC_EXTRA (inne klucze `extra` zostają)."""
+    wanted = STATIC_EXTRA.get(key) or {}
+    if not wanted:
+        return 0
+    db.flush()
+    changed = 0
+    for entry in db.execute(select(DictionaryEntry).where(
+            DictionaryEntry.dictionary_key == key, DictionaryEntry.code.in_(wanted))).scalars():
+        merged = {**(entry.extra or {}), **wanted[entry.code]}
+        if merged != (entry.extra or {}):
+            changed += 1
+            if not dry_run:
+                entry.extra = merged
+    return changed
+
+
 def _existing_codes(db, key: str) -> set[str]:
     return set(db.execute(
         select(DictionaryEntry.code).where(DictionaryEntry.dictionary_key == key)
@@ -167,6 +214,7 @@ def main() -> None:
         for key, dictionary in TABLE_DICTIONARIES.items():
             has_model, migrated = migrate_process_instances(db, dictionary.dictionary_key, args.dry_run)
             seeded = seed_static(db, dictionary.dictionary_key, args.dry_run)
+            seed_extra(db, dictionary.dictionary_key, args.dry_run)
             report.append((key, dictionary.source_name, has_model, migrated, seeded))
         if args.dry_run:
             db.rollback()

@@ -1,0 +1,31 @@
+{
+  "nazwa": "OKRES",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Od semestru": {
+        "x-pole": "semestr",
+        "title": "Od semestru",
+        "x-permissions": "p27"
+      },
+      "W roku akademickim": {
+        "x-pole": "rok-akademicki",
+        "title": "W roku akademickim",
+        "x-permissions": "p27"
+      }
+    },
+    "title": "OKRES",
+    "x-permissions": "p06"
+  },
+  "ui": {
+    "Od semestru": {
+      "ui:help": "Skreślenie"
+    },
+    "W roku akademickim": {
+      "ui:help": "Skreślenie"
+    }
+  },
+  "uzywaja": [
+    "f-iss"
+  ]
+}

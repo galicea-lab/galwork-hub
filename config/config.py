@@ -120,10 +120,14 @@ class KeycloakSettings(BaseModel):
 
 class EtalarSettings(BaseModel):
     """Sekcja [etalar] - konfiguracja connector/etalar/etalar.py."""
+    # 2026-11-16: klient OAuth2 (client_credentials) zamiast api_key/api_secret
     base_url: str = ''
-    api_key: str = ''
-    api_secret: str = ''
+    token_url: str = ''
+    client_id: str = ''
+    client_secret: str = ''
+    redirect_uri: str = ''
     timeout: int = 30
+    verify_tls: bool = True
 
 
 # Sekcja [edu] - grupy Keycloak pracowników dziekanatu,

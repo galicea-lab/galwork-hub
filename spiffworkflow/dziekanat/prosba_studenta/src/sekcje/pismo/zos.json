@@ -1,0 +1,113 @@
+{
+  "nazwa": "PISMO",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Data": {
+        "type": "string",
+        "format": "date",
+        "title": "Data",
+        "x-permissions": "p09"
+      },
+      "Uzasadnienie prośby": {
+        "type": "string",
+        "title": "Uzasadnienie prośby",
+        "x-permissions": "p14"
+      },
+      "Zwracam się o zwolnienie z opłat z powodu:": {
+        "type": "string",
+        "title": "Zwracam się o zwolnienie z opłat z powodu:",
+        "x-permissions": "p08"
+      },
+      "Konieczna forma papierowa": {
+        "type": "boolean",
+        "title": "Konieczna forma papierowa",
+        "readOnly": true,
+        "x-permissions": "p16"
+      },
+      "Do niniejszego podania dołączam": {
+        "type": "string",
+        "title": "Do niniejszego podania dołączam",
+        "x-permissions": "p08"
+      },
+      "Dane dotyczące członków rodziny": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "Imię i nazwisko": {
+              "type": "string",
+              "title": "Imię i nazwisko",
+              "x-permissions": "p07"
+            },
+            "Stopień pokrewieństwa": {
+              "type": "string",
+              "title": "Stopień pokrewieństwa",
+              "x-permissions": "p07"
+            },
+            "Data urodzenia": {
+              "type": "string",
+              "format": "date-time",
+              "title": "Data urodzenia",
+              "x-permissions": "p07"
+            }
+          }
+        },
+        "title": "Dane dotyczące członków rodziny",
+        "x-permissions": "p34"
+      },
+      "Data przesunięcia pracy dyplomowej przez Dyrektora": {
+        "type": "string",
+        "format": "date",
+        "title": "Data przesunięcia pracy dyplomowej przez Dyrektora",
+        "x-permissions": "p03"
+      },
+      "Data decyzji Dyrektora Instytutu": {
+        "type": "string",
+        "format": "date",
+        "title": "Data decyzji Dyrektora Instytutu",
+        "x-permissions": "p03"
+      },
+      "Brak zaliczenia z powodu:": {
+        "type": "string",
+        "title": "Brak zaliczenia z powodu:",
+        "x-permissions": "p15"
+      }
+    },
+    "title": "PISMO",
+    "x-permissions": "p06"
+  },
+  "ui": {
+    "Uzasadnienie prośby": {
+      "ui:widget": "textarea"
+    },
+    "Konieczna forma papierowa": {
+      "ui:help": "Należy wydrukować, podpisać i złożyć w dziekanacie (sekretariacie)",
+      "ui:readonly": true
+    },
+    "Do niniejszego podania dołączam": {
+      "ui:widget": "textarea",
+      "ui:help": "Opis załączników"
+    },
+    "Dane dotyczące członków rodziny": {
+      "items": {},
+      "ui:options": {
+        "addable": true
+      },
+      "ui:help": "w tym dzieci do 26 lat"
+    },
+    "Brak zaliczenia z powodu:": {
+      "ui:widget": "textarea"
+    },
+    "Zwracam się o zwolnienie z opłat z powodu:": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/zwolnienie-z-oplat",
+        "sourceName": "Zwolnienie z opłat"
+      }
+    }
+  },
+  "uzywaja": [
+    "zos"
+  ]
+}

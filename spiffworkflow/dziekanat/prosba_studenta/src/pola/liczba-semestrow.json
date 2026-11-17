@@ -1,0 +1,9 @@
+{
+  "opis": "Liczba semestrów (1-12).",
+  "schema": {
+    "type": "integer",
+    "minimum": 1,
+    "maximum": 12
+  },
+  "ui": {}
+}

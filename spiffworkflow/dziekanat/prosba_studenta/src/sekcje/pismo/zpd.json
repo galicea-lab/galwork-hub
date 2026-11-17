@@ -1,0 +1,29 @@
+{
+  "nazwa": "PISMO",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Data": {
+        "type": "string",
+        "format": "date",
+        "title": "Data",
+        "x-permissions": "p09"
+      },
+      "Uzasadnienie prośby": {
+        "type": "string",
+        "title": "Uzasadnienie prośby",
+        "x-permissions": "p14"
+      }
+    },
+    "title": "PISMO",
+    "x-permissions": "p06"
+  },
+  "ui": {
+    "Uzasadnienie prośby": {
+      "ui:widget": "textarea"
+    }
+  },
+  "uzywaja": [
+    "zpd"
+  ]
+}

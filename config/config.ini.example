@@ -93,6 +93,30 @@ sender=xxxxx<xxxxx@xxxxxxxxxx.pl>
 # cron (domyślnie [edr] system_user).
 [wf]
 system_user=
+# pliki obiegów edytowane w arenie (wf/services/process_files.py).
+# process_files_dir - katalog obiegów; pusty = spiffworkflow/ w katalogu huba
+#   (w kontenerze /app/spiffworkflow, wolumen SPIFFWORKFLOW_DIR).
+# process_files_git_commit - commit każdego zapisu, jeśli katalog obiegów jest
+#   korzeniem repozytorium Git (autor = zalogowany użytkownik, bez push).
+process_files_dir=
+process_files_git_commit=true
+
+# wydruki PDF z formularzy obiegów (wf/services/print_service.py).
+# Dane organizacji w nagłówku druków (jedna konfiguracja dla całej instalacji):
+# organization - pełna nazwa, short_name - skrót (stopka), city - miejscowość
+# wystawienia, city_locative - ta sama nazwa w miejscowniku ("w Krakowie"),
+# address - adres do nagłówka i klauzuli RODO, logo - plik PNG/SVG (ścieżka
+# absolutna albo względna do katalogu huba) lub data URI.
+# library_dir - wspólna biblioteka szablonów (_base, _wzory) względem katalogu
+#   obiegów ([wf] process_files_dir).
+[print]
+organization=
+short_name=
+city=
+city_locative=
+address=
+logo=
+library_dir=wspolne/druki
 
 [edr]
 test_db=false
@@ -282,13 +306,23 @@ server=
 # Konektor do e-Talar (connector/etalar/etalar.py). Dzisiejsze M2M API
 # (issue/deposit/charge/consent) + miejsce na przyszłe /v3/settlement/*
 # z barter.md rozdz. 11-12, kiedy e-Talar je dostanie.
-# HASŁA CELOWO PUSTE - zmienne środowiskowe: ETALAR_BASE_URL, ETALAR_API_KEY,
-# ETALAR_API_SECRET, ETALAR_TIMEOUT.
+# 2026-11-16: uwierzytelnianie tokenem OAuth2 client_credentials klienta
+# aplikacji zarejestrowanej w panelu e-Talar (Aplikacje -> Nowa aplikacja;
+# keycloakClientId i clientSecret z odpowiedzi rejestracji).
+# base_url - API e-Talar (bez /v2), token_url - endpoint tokenu Keycloak e-Talar,
+# redirect_uri - domyślny adres powrotu z ekranu zgody (musi być zarejestrowany
+#   w aplikacji; wymagany dla charge-user i zgód stałych).
+# SEKRET CELOWO PUSTY - zmienne środowiskowe: ETALAR_BASE_URL, ETALAR_TOKEN_URL,
+# ETALAR_CLIENT_ID, ETALAR_CLIENT_SECRET, ETALAR_REDIRECT_URI, ETALAR_TIMEOUT,
+# ETALAR_VERIFY_TLS.
 [etalar]
-base_url=
-api_key=
-api_secret=
+base_url=https://api.e-talar.com
+token_url=https://login.e-talar.com/realms/et/protocol/openid-connect/token
+client_id=
+client_secret=
+redirect_uri=
 timeout=30
+verify_tls=true
 
 # usługa kodów jednorazowych (konto/) - kod służy tylko do
 # założenia konta w Keycloak albo zmiany hasła, nigdy do logowania.

@@ -1,0 +1,29 @@
+{
+  "nazwa": "POLA REDAKCYJNE",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Uzyskać zaliczenie/przystąpić do egzaminu": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "uzyskać zaliczenie"
+          },
+          {
+            "const": "2",
+            "title": "przystąpić do egzaminu"
+          }
+        ],
+        "title": "Uzyskać zaliczenie/przystąpić do egzaminu",
+        "x-permissions": "p38"
+      }
+    },
+    "title": "POLA REDAKCYJNE",
+    "x-permissions": "p33"
+  },
+  "ui": {},
+  "uzywaja": [
+    "ppt"
+  ]
+}

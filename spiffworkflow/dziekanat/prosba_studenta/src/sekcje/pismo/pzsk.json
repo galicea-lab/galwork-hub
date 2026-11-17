@@ -1,0 +1,261 @@
+{
+  "nazwa": "PISMO",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Data": {
+        "type": "string",
+        "format": "date",
+        "title": "Data",
+        "x-permissions": "p09"
+      },
+      "Odległość miejsca zamieszkania od uczelni w km": {
+        "type": "integer",
+        "title": "Odległość miejsca zamieszkania od uczelni w km",
+        "x-permissions": "p22"
+      },
+      "Ilość osób w rodzinie": {
+        "type": "string",
+        "title": "Ilość osób w rodzinie",
+        "x-permissions": "p29"
+      },
+      "Dochód netto na jednego członka gospodarstwa": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "poniżej 650,00 zł"
+          },
+          {
+            "const": "2",
+            "title": "od 651,00 zł do 1000 zł"
+          },
+          {
+            "const": "3",
+            "title": "powyżej 1000 zł"
+          }
+        ],
+        "title": "Dochód netto na jednego członka gospodarstwa",
+        "readOnly": true,
+        "x-permissions": "p16"
+      },
+      "Planowany wyjazd na ERASMUS": {
+        "type": "string",
+        "title": "Planowany wyjazd na ERASMUS",
+        "x-permissions": "p22"
+      },
+      "Trudności w dojazdach": {
+        "type": "string",
+        "title": "Trudności w dojazdach",
+        "x-permissions": "p22"
+      },
+      "Zwracam się z uprzejmą prośbą o": {
+        "type": "string",
+        "title": "Zwracam się z uprzejmą prośbą o",
+        "x-permissions": "p30"
+      },
+      "Cel wydania": {
+        "type": "string",
+        "title": "Cel wydania",
+        "x-permissions": "p29"
+      },
+      "Uzasadnienie prośby": {
+        "type": "string",
+        "title": "Uzasadnienie prośby",
+        "x-permissions": "p14"
+      },
+      "Dodatkowe uzasadnienie wniosku": {
+        "type": "string",
+        "title": "Dodatkowe uzasadnienie wniosku",
+        "x-permissions": "p30"
+      },
+      "Uzasadnienie prośby o ISS": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "legitymuję się orzeczeniem o niepełnosprawności"
+          },
+          {
+            "const": "2",
+            "title": "spodziewam się dziecka"
+          },
+          {
+            "const": "3",
+            "title": "jestem rodzicem"
+          },
+          {
+            "const": "4",
+            "title": "znajduję się w innej trudnej sytuacji losowej"
+          },
+          {
+            "const": "5",
+            "title": "studiuję na więcej niż jednym kierunku studiów"
+          },
+          {
+            "const": "6",
+            "title": "aktywnie działam w samorządzie studenckim (należy dołączyć opinię URSS"
+          }
+        ],
+        "title": "Uzasadnienie prośby o ISS",
+        "x-permissions": "p01"
+      },
+      "Zwracam się o zwolnienie z opłat z powodu:": {
+        "type": "string",
+        "title": "Zwracam się o zwolnienie z opłat z powodu:",
+        "x-permissions": "p08"
+      },
+      "Nazwa przedmiotu do powtarzania": {
+        "type": "string",
+        "title": "Nazwa przedmiotu do powtarzania",
+        "x-permissions": "p01"
+      },
+      "Nowy/wznowienie kierunek": {
+        "type": "string",
+        "title": "Nowy/wznowienie kierunek",
+        "x-permissions": "p08"
+      },
+      "Konieczna forma papierowa": {
+        "type": "boolean",
+        "title": "Konieczna forma papierowa",
+        "readOnly": true,
+        "x-permissions": "p16"
+      },
+      "Do niniejszego podania dołączam": {
+        "type": "string",
+        "title": "Do niniejszego podania dołączam",
+        "x-permissions": "p08"
+      },
+      "Opis załączników": {
+        "type": "string",
+        "title": "Opis załączników",
+        "x-permissions": "p01"
+      },
+      "Niezaliczone przedmioty": {
+        "type": "string",
+        "title": "Niezaliczone przedmioty",
+        "x-permissions": "p01"
+      },
+      "Data skreślenia": {
+        "type": "string",
+        "format": "date",
+        "title": "Data skreślenia",
+        "x-permissions": "p42"
+      },
+      "Dane dotyczące członków rodziny": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "Imię i nazwisko": {
+              "type": "string",
+              "title": "Imię i nazwisko",
+              "x-permissions": "p07"
+            },
+            "Stopień pokrewieństwa": {
+              "type": "string",
+              "title": "Stopień pokrewieństwa",
+              "x-permissions": "p07"
+            },
+            "Data urodzenia": {
+              "type": "string",
+              "format": "date-time",
+              "title": "Data urodzenia",
+              "x-permissions": "p07"
+            }
+          }
+        },
+        "title": "Dane dotyczące członków rodziny",
+        "x-permissions": "p34"
+      },
+      "Data przesunięcia pracy dyplomowej przez Dyrektora": {
+        "type": "string",
+        "format": "date",
+        "title": "Data przesunięcia pracy dyplomowej przez Dyrektora",
+        "x-permissions": "p03"
+      },
+      "Data decyzji Dyrektora Instytutu": {
+        "type": "string",
+        "format": "date",
+        "title": "Data decyzji Dyrektora Instytutu",
+        "x-permissions": "p03"
+      },
+      "Brak zaliczenia z powodu:": {
+        "type": "string",
+        "title": "Brak zaliczenia z powodu:",
+        "x-permissions": "p15"
+      }
+    },
+    "title": "PISMO",
+    "x-permissions": "p06"
+  },
+  "ui": {
+    "Dochód netto na jednego członka gospodarstwa": {
+      "ui:readonly": true
+    },
+    "Planowany wyjazd na ERASMUS": {
+      "ui:help": "Planowany wyjazd \tna wymianę w ramach programu ERASMUS w terminie"
+    },
+    "Trudności w dojazdach": {
+      "ui:widget": "textarea",
+      "ui:help": "Posiadam trudności w dojazdach (opisać utrudnienia komunikacyjne tj. np. przesiadki, brak połączeń itd.)"
+    },
+    "Zwracam się z uprzejmą prośbą o": {
+      "ui:widget": "textarea"
+    },
+    "Uzasadnienie prośby": {
+      "ui:widget": "textarea"
+    },
+    "Dodatkowe uzasadnienie wniosku": {
+      "ui:widget": "textarea",
+      "ui:help": "(dane dobrowolne) (sieroctwo, orzeczenie o stopniu niepełnosprawności itp.)"
+    },
+    "Nazwa przedmiotu do powtarzania": {
+      "ui:widget": "textarea",
+      "ui:help": "niezaliczone przedmioty"
+    },
+    "Konieczna forma papierowa": {
+      "ui:help": "Należy wydrukować, podpisać i złożyć w dziekanacie (sekretariacie)",
+      "ui:readonly": true
+    },
+    "Do niniejszego podania dołączam": {
+      "ui:widget": "textarea",
+      "ui:help": "Opis załączników"
+    },
+    "Opis załączników": {
+      "ui:widget": "textarea"
+    },
+    "Niezaliczone przedmioty": {
+      "ui:widget": "textarea"
+    },
+    "Dane dotyczące członków rodziny": {
+      "items": {},
+      "ui:options": {
+        "addable": true
+      },
+      "ui:help": "w tym dzieci do 26 lat"
+    },
+    "Brak zaliczenia z powodu:": {
+      "ui:widget": "textarea"
+    },
+    "Zwracam się o zwolnienie z opłat z powodu:": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/zwolnienie-z-oplat",
+        "sourceName": "Zwolnienie z opłat"
+      }
+    },
+    "Nowy/wznowienie kierunek": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    }
+  },
+  "uzywaja": [
+    "pzsk",
+    "za",
+    "zps"
+  ]
+}

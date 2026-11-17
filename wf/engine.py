@@ -240,6 +240,29 @@ def read_start_links(xml_text: str) -> dict[str, dict[str, StartLink]]:
 # -END
 
 
+# 2026-11-15: walidacja pliku .bpmn przy zapisie przez API plików obiegów
+# (wf/services/process_files.py). Błąd XML lub brak procesu blokuje zapis;
+# zastrzeżenia parsera SpiffWorkflow wracają jako ostrzeżenia, bo projektant
+# zapisuje też modele w trakcie pracy.
+def check_bpmn(content: str) -> list[str]:
+  """Zwraca ostrzeżenia parsera; rzuca SpecError, gdy pliku nie da się użyć."""
+  process_ids = sorted(defined_processes(content))
+  if not process_ids:
+    raise SpecError('W pliku nie ma elementu <bpmn:process id="...">')
+  parser = BpmnParser()
+  try:
+    parser.add_bpmn_str(content.encode('utf-8'))
+  except (ValueError, ET.ParseError, XMLSyntaxError) as exc:
+    raise SpecError(f'Nieprawidłowy XML BPMN: {exc}') from exc
+  warnings = []
+  for process_id in process_ids:
+    try:
+      parser.get_spec(process_id)
+    except (KeyError, ValueError, ValidationException) as exc:
+      warnings.append(f'Proces {process_id}: {exc}')
+  return warnings
+
+
 @dataclass(frozen=True)
 class ProcessSpec:
   """Specyfikacja procesu gotowa do uruchomienia."""

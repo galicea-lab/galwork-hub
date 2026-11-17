@@ -24,6 +24,8 @@ from wf.routers import (
     router_erpnext_invoices as router_wf_erpnext_invoices,
     router_notifications as router_wf_notifications,
     router_paperless_documents as router_wf_paperless_documents,
+    router_process_files as router_wf_process_files,
+    router_print as router_wf_print,
     router_process_instances as router_wf_process_instances,
     router_process_models as router_wf_process_models,
     router_purchase_requests as router_wf_purchase_requests,
@@ -92,7 +94,9 @@ v1router.mount("/pm", app_pm)
 
 app_wf = FastAPI()
 app_wf.include_router(router_wf_process_models)
+app_wf.include_router(router_wf_process_files) 
 app_wf.include_router(router_wf_process_instances)
+app_wf.include_router(router_wf_print)
 app_wf.include_router(router_wf_tasks)
 app_wf.include_router(router_wf_comments)
 app_wf.include_router(router_wf_notifications)

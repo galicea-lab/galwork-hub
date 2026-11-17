@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" id="defs_Process_Prosba_Studenta" targetNamespace="http://bpmn" exporter="Camunda Modeler" exporterVersion="5.40.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="defs_Process_Prosba_Studenta" targetNamespace="http://bpmn" exporter="Camunda Modeler" exporterVersion="5.40.0">
   <bpmn:process id="Process_Prosba_Studenta" name="Zgłoszenie" isExecutable="true">
     <bpmn:laneSet id="LaneSet_Prosba_Studenta">
+      <bpmn:lane id="Lane_Student" name="Student">
+        <bpmn:flowNodeRef>Task_15</bpmn:flowNodeRef>
+      </bpmn:lane>
       <bpmn:lane id="Lane_Dziekanat" name="Dziekanat">
         <bpmn:flowNodeRef>Task_02</bpmn:flowNodeRef>
       </bpmn:lane>
@@ -29,6 +32,25 @@
         </spiffworkflow:properties>
       </bpmn:extensionElements>
     </bpmn:startEvent>
+    <!-- 2026-11-15: start = rodzaj pisma + studia studenta; dane studenta
+         i trasę (adresat, opinie wg słownika rodzajów) uzupełnia hub
+         (galwork-hub wf/services/edu_service_tasks.py), resztę wniosku
+         wypełnia składający w "Wypełnienie wniosku". -->
+    <bpmn:serviceTask id="ServiceTask_dane" name="Pobranie danych studenta">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="edu.studia-studenta" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_15" name="Wypełnienie wniosku" camunda:assignee="${wnioskodawca}">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="zgloszenie-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="zgloszenie-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
     <bpmn:userTask id="Task_02" name="Dziekanat - dyspozytor">
       <bpmn:extensionElements>
         <spiffworkflow:property name="formJsonSchemaFilename" value="zgloszenie-schema.json" />
@@ -84,30 +106,14 @@
         <spiffworkflow:property name="formUiSchemaFilename" value="zgloszenie-uischema.json" />
       </bpmn:extensionElements>
     </bpmn:userTask>
-    <bpmn:userTask id="Task_05" name="Czy potrzebna opinia Promotora?">
-      <bpmn:extensionElements>
-        <spiffworkflow:property name="formJsonSchemaFilename" value="zgloszenie-schema.json" />
-        <spiffworkflow:property name="formUiSchemaFilename" value="zgloszenie-uischema.json" />
-      </bpmn:extensionElements>
-    </bpmn:userTask>
-    <bpmn:userTask id="Task_06" name="Czy potrzebna opinia Dyrektora Instytutu">
-      <bpmn:extensionElements>
-        <spiffworkflow:property name="formJsonSchemaFilename" value="zgloszenie-schema.json" />
-        <spiffworkflow:property name="formUiSchemaFilename" value="zgloszenie-uischema.json" />
-      </bpmn:extensionElements>
-    </bpmn:userTask>
-    <bpmn:userTask id="Task_14" name="Czy potrzebna opinia Dziekana">
-      <bpmn:extensionElements>
-        <spiffworkflow:property name="formJsonSchemaFilename" value="zgloszenie-schema.json" />
-        <spiffworkflow:property name="formUiSchemaFilename" value="zgloszenie-uischema.json" />
-      </bpmn:extensionElements>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_1" name="Weryfikacja danych" sourceRef="StartEvent_main" targetRef="Task_02" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_main" targetRef="ServiceTask_dane" />
+    <bpmn:sequenceFlow id="Flow_37" sourceRef="ServiceTask_dane" targetRef="Task_15" />
+    <bpmn:sequenceFlow id="Flow_38" name="Złóż wniosek" sourceRef="Task_15" targetRef="Task_02" />
     <bpmn:sequenceFlow id="Flow_3" name="Przekaż do obsłużenia" sourceRef="Task_02" targetRef="Task_03" />
     <bpmn:exclusiveGateway id="Gateway_01" name="Wybór ścieżki (Weryfikacja BOS)" default="Flow_4" />
     <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_03" targetRef="Gateway_01" />
     <bpmn:sequenceFlow id="Flow_4" name="Odrzuć" sourceRef="Gateway_01" targetRef="Task_04" />
-    <bpmn:sequenceFlow id="Flow_6" name="Prześlij do akceptacji" sourceRef="Gateway_01" targetRef="Task_05">
+    <bpmn:sequenceFlow id="Flow_6" name="Prześlij do akceptacji" sourceRef="Gateway_01" targetRef="Gateway_02">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_6'</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="EndEvent_1" name="Koniec" />
@@ -154,23 +160,20 @@
     <bpmn:sequenceFlow id="Flow_26" name="Gotowy" sourceRef="Task_12" targetRef="Task_11" />
     <bpmn:endEvent id="EndEvent_2" name="Koniec" />
     <bpmn:sequenceFlow id="Flow_27" sourceRef="Task_11" targetRef="EndEvent_2" />
-    <bpmn:exclusiveGateway id="Gateway_02" name="Wybór ścieżki (Czy potrzebna opinia Promotora?)" default="Flow_28" />
-    <bpmn:sequenceFlow id="Flow_29" sourceRef="Task_05" targetRef="Gateway_02" />
-    <bpmn:sequenceFlow id="Flow_30" name="NIE" sourceRef="Gateway_02" targetRef="Task_06">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_30'</bpmn:conditionExpression>
+    <bpmn:exclusiveGateway id="Gateway_02" name="Czy potrzebna opinia Promotora?" default="Flow_30" />
+    <bpmn:sequenceFlow id="Flow_30" name="NIE" sourceRef="Gateway_02" targetRef="Gateway_03" />
+    <bpmn:sequenceFlow id="Flow_28" name="TAK" sourceRef="Gateway_02" targetRef="Task_13">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">opinia_promotora == True</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_28" name="TAK" sourceRef="Gateway_02" targetRef="Task_13" />
-    <bpmn:exclusiveGateway id="Gateway_03" name="Wybór ścieżki (Czy potrzebna opinia Dyrektora Instytutu)" default="Flow_31" />
-    <bpmn:sequenceFlow id="Flow_32" sourceRef="Task_06" targetRef="Gateway_03" />
+    <bpmn:exclusiveGateway id="Gateway_03" name="Czy potrzebna opinia Dyrektora Instytutu?" default="Flow_31" />
     <bpmn:sequenceFlow id="Flow_31" name="Tak" sourceRef="Gateway_03" targetRef="Task_07" />
-    <bpmn:sequenceFlow id="Flow_33" name="Nie" sourceRef="Gateway_03" targetRef="Task_14">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_33'</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_33" name="Nie" sourceRef="Gateway_03" targetRef="Gateway_09">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">opinia_dyrektora == False</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:exclusiveGateway id="Gateway_09" name="Wybór ścieżki (Czy potrzebna opinia Dziekana)" default="Flow_34" />
-    <bpmn:sequenceFlow id="Flow_35" sourceRef="Task_14" targetRef="Gateway_09" />
+    <bpmn:exclusiveGateway id="Gateway_09" name="Czy potrzebna opinia Dziekana?" default="Flow_34" />
     <bpmn:sequenceFlow id="Flow_34" name="Tak" sourceRef="Gateway_09" targetRef="Task_08" />
     <bpmn:sequenceFlow id="Flow_36" name="Nie" sourceRef="Gateway_09" targetRef="Task_09">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_36'</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">opinia_dziekana == False</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="Diagram_Process_Prosba_Studenta">
@@ -180,6 +183,12 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="166" y="1028" width="24" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_ServiceTask_dane" bpmnElement="ServiceTask_dane">
+        <dc:Bounds x="128" y="1110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_15" bpmnElement="Task_15">
+        <dc:Bounds x="270" y="1110" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Task_02" bpmnElement="Task_02">
         <dc:Bounds x="410" y="970" width="100" height="80" />
@@ -210,15 +219,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Task_11" bpmnElement="Task_11">
         <dc:Bounds x="1910" y="1120" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_05" bpmnElement="Task_05">
-        <dc:Bounds x="860" y="760" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_06" bpmnElement="Task_06">
-        <dc:Bounds x="1040" y="500" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_14" bpmnElement="Task_14">
-        <dc:Bounds x="1520" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Gateway_01" bpmnElement="Gateway_01" isMarkerVisible="true">
         <dc:Bounds x="725" y="765" width="50" height="50" />
@@ -287,8 +287,20 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1">
-        <di:waypoint x="196" y="1010" />
-        <di:waypoint x="410" y="1010" />
+        <di:waypoint x="178" y="1028" />
+        <di:waypoint x="178" y="1110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_37" bpmnElement="Flow_37">
+        <di:waypoint x="228" y="1150" />
+        <di:waypoint x="270" y="1150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_38" bpmnElement="Flow_38">
+        <di:waypoint x="370" y="1150" />
+        <di:waypoint x="460" y="1150" />
+        <di:waypoint x="460" y="1050" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="380" y="1130" width="70" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Edge_Flow_3" bpmnElement="Flow_3">
         <di:waypoint x="510" y="1010" />
@@ -312,9 +324,9 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Edge_Flow_6" bpmnElement="Flow_6">
         <di:waypoint x="775" y="790" />
-        <di:waypoint x="818" y="790" />
-        <di:waypoint x="818" y="800" />
-        <di:waypoint x="860" y="800" />
+        <di:waypoint x="940" y="790" />
+        <di:waypoint x="940" y="700" />
+        <di:waypoint x="985" y="700" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="812" y="777" width="51" height="27" />
         </bpmndi:BPMNLabel>
@@ -464,15 +476,11 @@
         <di:waypoint x="1960" y="1200" />
         <di:waypoint x="1960" y="1242" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_29" bpmnElement="Flow_29">
-        <di:waypoint x="910" y="760" />
-        <di:waypoint x="910" y="700" />
-        <di:waypoint x="985" y="700" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Edge_Flow_30" bpmnElement="Flow_30">
         <di:waypoint x="1035" y="700" />
-        <di:waypoint x="1090" y="700" />
-        <di:waypoint x="1090" y="580" />
+        <di:waypoint x="1050" y="700" />
+        <di:waypoint x="1050" y="260" />
+        <di:waypoint x="1065" y="260" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1085" y="689" width="19" height="14" />
         </bpmndi:BPMNLabel>
@@ -485,12 +493,6 @@
           <dc:Bounds x="1004" y="775" width="22" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_32" bpmnElement="Flow_32">
-        <di:waypoint x="1040" y="540" />
-        <di:waypoint x="1010" y="540" />
-        <di:waypoint x="1010" y="260" />
-        <di:waypoint x="1065" y="260" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Edge_Flow_31" bpmnElement="Flow_31">
         <di:waypoint x="1090" y="285" />
         <di:waypoint x="1090" y="350" />
@@ -502,15 +504,11 @@
       <bpmndi:BPMNEdge id="Edge_Flow_33" bpmnElement="Flow_33">
         <di:waypoint x="1090" y="235" />
         <di:waypoint x="1090" y="120" />
-        <di:waypoint x="1520" y="120" />
+        <di:waypoint x="1870" y="120" />
+        <di:waypoint x="1870" y="475" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1274" y="99" width="17" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_35" bpmnElement="Flow_35">
-        <di:waypoint x="1620" y="120" />
-        <di:waypoint x="1870" y="120" />
-        <di:waypoint x="1870" y="475" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Edge_Flow_34" bpmnElement="Flow_34">
         <di:waypoint x="1870" y="525" />

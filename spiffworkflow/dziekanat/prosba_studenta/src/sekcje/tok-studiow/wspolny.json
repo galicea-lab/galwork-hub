@@ -1,0 +1,112 @@
+{
+  "nazwa": "TOK STUDIÓW",
+  "opis": "Wypełnia krok edu.studia-studenta z wybranych studiów (Program Enrollment).",
+  "schema": {
+    "type": "object",
+    "title": "TOK STUDIÓW",
+    "x-permissions": "p04",
+    "properties": {
+      "Kierunek": {
+        "type": "string",
+        "title": "Kierunek",
+        "x-permissions": "p04"
+      },
+      "Poziom studiów": {
+        "type": "string",
+        "title": "Poziom studiów",
+        "x-permissions": "p04"
+      },
+      "Tryb studiów": {
+        "type": "string",
+        "title": "Tryb studiów",
+        "x-permissions": "p04",
+        "oneOf": [
+          {
+            "const": "Full-Time",
+            "title": "Stacjonarne"
+          },
+          {
+            "const": "Part-Time",
+            "title": "Niestacjonarne"
+          }
+        ]
+      },
+      "Specjalność": {
+        "type": "string",
+        "title": "Specjalność",
+        "x-permissions": "p04"
+      },
+      "Rok akademicki": {
+        "x-pole": "rok-akademicki",
+        "title": "Rok akademicki",
+        "x-permissions": "p04"
+      },
+      "Semestr akademicki": {
+        "x-pole": "semestr-akademicki",
+        "title": "Semestr akademicki",
+        "x-permissions": "p04"
+      },
+      "Rok studiów": {
+        "x-pole": "rok-studiow",
+        "title": "Rok studiów",
+        "x-permissions": "p04"
+      },
+      "Semestr": {
+        "x-pole": "semestr",
+        "title": "Semestr",
+        "x-permissions": "p04"
+      },
+      "Ilość semestrów": {
+        "x-pole": "liczba-semestrow",
+        "title": "Ilość semestrów",
+        "x-permissions": "p04"
+      },
+      "Data rozpoczęcia kształcenia": {
+        "type": "string",
+        "title": "Data rozpoczęcia kształcenia",
+        "x-permissions": "p04",
+        "format": "date"
+      },
+      "Planowany termin ukończenia studiów": {
+        "type": "string",
+        "title": "Planowany termin ukończenia studiów",
+        "x-permissions": "p04",
+        "format": "date"
+      },
+      "Zasady studiowania": {
+        "type": "string",
+        "title": "Zasady studiowania",
+        "x-permissions": "p04",
+        "oneOf": [
+          {
+            "const": "nieodplatne",
+            "title": "Studia nieodpłatne"
+          },
+          {
+            "const": "odplatne",
+            "title": "Studia odpłatne"
+          }
+        ]
+      }
+    }
+  },
+  "ui": {},
+  "uzywaja": [
+    "f-iss",
+    "pmds",
+    "pod",
+    "ppt",
+    "pss",
+    "pzsk",
+    "tzpd",
+    "uuz",
+    "ws",
+    "za",
+    "zks",
+    "zos",
+    "zpd",
+    "zps",
+    "zs",
+    "zww"
+  ]
+}

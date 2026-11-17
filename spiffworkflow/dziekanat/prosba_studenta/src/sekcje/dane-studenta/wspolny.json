@@ -1,0 +1,80 @@
+{
+  "nazwa": "DANE STUDENTA",
+  "opis": "Wypełnia krok edu.studia-studenta (Frappe); student potwierdza, może zmienić telefon i adres.",
+  "schema": {
+    "type": "object",
+    "title": "DANE STUDENTA",
+    "x-permissions": "p28",
+    "properties": {
+      "Imię i nazwisko": {
+        "type": "string",
+        "title": "Imię i nazwisko",
+        "x-permissions": "p04"
+      },
+      "Nr albumu": {
+        "type": "string",
+        "title": "Nr albumu",
+        "x-permissions": "p04"
+      },
+      "Email": {
+        "type": "string",
+        "title": "Email",
+        "x-permissions": "p04",
+        "format": "email"
+      },
+      "Numer telefonu": {
+        "type": "string",
+        "title": "Numer telefonu",
+        "x-permissions": "p28"
+      },
+      "Adres zamieszkania": {
+        "type": "string",
+        "title": "Adres zamieszkania",
+        "x-permissions": "p28"
+      },
+      "Data urodzenia": {
+        "type": "string",
+        "title": "Data urodzenia",
+        "x-permissions": "p04",
+        "format": "date"
+      },
+      "Obywatelstwo": {
+        "type": "string",
+        "title": "Obywatelstwo",
+        "x-permissions": "p04"
+      },
+      "Potwierdzam dane": {
+        "type": "boolean",
+        "title": "Potwierdzam aktualność powyższych danych",
+        "x-permissions": "p28",
+        "x-required-in-steps": [
+          "Task_15"
+        ]
+      }
+    }
+  },
+  "ui": {
+    "ui:help": "Dane z systemu dziekanatowego - zmień telefon lub adres, jeśli są nieaktualne",
+    "Email": {
+      "ui:help": "Mail studencki"
+    }
+  },
+  "uzywaja": [
+    "f-iss",
+    "pmds",
+    "pod",
+    "ppt",
+    "pss",
+    "pzsk",
+    "tzpd",
+    "uuz",
+    "ws",
+    "za",
+    "zks",
+    "zos",
+    "zpd",
+    "zps",
+    "zs",
+    "zww"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "nazwa": "DECYZJA",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Decyzja Rektora": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "Wyrażam zgodę"
+          },
+          {
+            "const": "0",
+            "title": "Nie wyrażam zgody"
+          }
+        ],
+        "title": "Decyzja Rektora",
+        "x-permissions": "p05"
+      },
+      "Data Decyzji Rektora": {
+        "type": "string",
+        "format": "date",
+        "title": "Data Decyzji Rektora",
+        "x-permissions": "p05"
+      }
+    },
+    "title": "DECYZJA",
+    "x-permissions": "p10"
+  },
+  "ui": {},
+  "uzywaja": [
+    "zks"
+  ]
+}

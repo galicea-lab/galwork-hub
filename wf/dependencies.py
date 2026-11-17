@@ -88,6 +88,14 @@ ADMIN_GROUPS = frozenset(
 )
 
 
+# 2026-11-16: ten sam test bez zależności FastAPI (np. uprawnienia do wydruku).
+def is_process_admin(current_user: CurrentUser) -> bool:
+  """Czy użytkownik należy do grupy administracyjnej procesów."""
+  principals = {value.lstrip('/').split('/')[-1].lower()
+                for value in current_user.groups | current_user.roles}
+  return bool(ADMIN_GROUPS & principals)
+
+
 def require_process_admin(
   current_user: CurrentUser = Depends(get_current_wf_user),
 ) -> CurrentUser:
@@ -97,9 +105,7 @@ def require_process_admin(
       status_code=403,
       detail=('Brak uprawnień do administracji procesami: ustaw '
               'keycloak.admin_groups w config/config.ini'))
-  principals = {value.lstrip('/').split('/')[-1].lower()
-                for value in current_user.groups | current_user.roles}
-  if not ADMIN_GROUPS & principals:
+  if not is_process_admin(current_user):
     raise HTTPException(
       status_code=403,
       detail='Brak uprawnień do administracji procesami '

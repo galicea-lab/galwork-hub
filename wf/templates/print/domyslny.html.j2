@@ -1,0 +1,82 @@
+{#- szablon standardowy wydruku - nagłówek, tabela "etykieta pola: wartość"
+    w kolejności ui:order, stopka z datą wydruku i numerem strony (CSS @page).
+    Kontekst: meta (organizacja, instancja, zadanie), fields (pola sformatowane
+    w wf/services/print_service.py::format_fields), f (surowe dane formularza). -#}
+{%- macro pola(lista, poziom=0) -%}
+  {%- for p in lista -%}
+    {%- if p.kind == 'section' -%}
+      <tr class="sekcja poziom-{{ poziom }}"><th colspan="2">{{ p.label }}</th></tr>
+      {{ pola(p.fields, poziom + 1) }}
+    {%- elif p.kind == 'table' -%}
+      <tr><td class="etykieta">{{ p.label }}</td><td class="wartosc">
+        {%- if p.rows -%}
+        <table class="lista">
+          <thead><tr>{% for c in p.columns %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+          <tbody>{% for r in p.rows %}<tr>{% for v in r %}<td>{{ v }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+        </table>
+        {%- else %}<span class="puste">—</span>{% endif -%}
+      </td></tr>
+    {%- else -%}
+      <tr><td class="etykieta">{{ p.label }}</td><td class="wartosc">{% if p.value %}{{ p.value }}{% else %}<span class="puste">—</span>{% endif %}</td></tr>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endmacro -%}
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<title>{{ meta.tytul or 'Wydruk' }}</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 20mm 16mm;
+    @bottom-left { content: "Wydrukowano {{ meta.wygenerowano or '' }}"; font-family: "DejaVu Sans", sans-serif; font-size: 8pt; color: #555; }
+    @bottom-right { content: "strona " counter(page) " z " counter(pages); font-family: "DejaVu Sans", sans-serif; font-size: 8pt; color: #555; }
+  }
+  body { font-family: "DejaVu Sans", "Liberation Sans", Arial, sans-serif; font-size: 10pt; color: #111; }
+  header { display: flex; justify-content: space-between; align-items: flex-start;
+           border-bottom: 1px solid #333; padding-bottom: 4mm; margin-bottom: 6mm; }
+  header .organizacja { font-weight: bold; font-size: 11pt; }
+  header .adres { font-size: 8.5pt; color: #333; }
+  header img.logo { max-height: 16mm; max-width: 40mm; margin-right: 4mm; }
+  header .nadawca { display: flex; align-items: center; }
+  header .metryka { text-align: right; font-size: 9pt; }
+  h1 { font-size: 14pt; margin: 0 0 1mm 0; }
+  .podtytul { font-size: 10pt; color: #333; margin: 0 0 5mm 0; }
+  table.pola { width: 100%; border-collapse: collapse; }
+  table.pola td, table.pola th { border-bottom: 0.5pt solid #bbb; padding: 1.6mm 2mm; vertical-align: top; text-align: left; }
+  table.pola td.etykieta { width: 38%; color: #333; }
+  table.pola tr.sekcja th { background: #eee; font-size: 9.5pt; text-transform: uppercase; letter-spacing: 0.3pt; }
+  table.pola tr.sekcja.poziom-1 th { background: #f6f6f6; text-transform: none; }
+  table.lista { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
+  table.lista th, table.lista td { border: 0.5pt solid #bbb; padding: 1mm 1.5mm; }
+  table.lista th { background: #f3f3f3; }
+  .puste { color: #999; }
+  tr { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+<header>
+  <div class="nadawca">
+    {%- if meta.logo %}<img class="logo" src="{{ meta.logo }}" alt="">{% endif %}
+    <div>
+      <div class="organizacja">{{ meta.uczelnia or '' }}</div>
+      {%- if meta.adres_uczelni %}<div class="adres">{{ meta.adres_uczelni }}</div>{% endif %}
+    </div>
+  </div>
+  <div class="metryka">
+    {%- if meta.miejscowosc %}{{ meta.miejscowosc }}, {% endif %}{{ meta.data or '' }}
+    {%- if meta.znak %}<br>Nr: {{ meta.znak }}{% endif %}
+  </div>
+</header>
+<h1>{{ meta.proces or meta.tytul or 'Wydruk' }}</h1>
+<p class="podtytul">
+  {{- meta.instancja_tytul or '' }}{% if meta.zadanie %} · krok: {{ meta.zadanie }}{% endif %}
+</p>
+{%- if fields %}
+<table class="pola">{{ pola(fields) }}</table>
+{%- else %}
+<p class="puste">Formularz nie zawiera danych do wydruku.</p>
+{%- endif %}
+</body>
+</html>

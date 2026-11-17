@@ -28,7 +28,7 @@ from wf.schemas.wf_schemas import CurrentUser
 DEFAULT_RETRY = timedelta(minutes=15)
 
 # moduły z wbudowaną obsługą - importowane leniwie (bez cyklu importów)
-_BUILTIN_MODULES = ('wf.services.signing_service',)
+_BUILTIN_MODULES = ('wf.services.signing_service', 'wf.services.edu_service_tasks')
 
 
 class ServiceTaskError(RuntimeError):

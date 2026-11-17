@@ -1,0 +1,57 @@
+{
+  "nazwa": "PISMO",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Data": {
+        "type": "string",
+        "format": "date",
+        "title": "Data",
+        "x-permissions": "p09"
+      },
+      "Zwracam się z uprzejmą prośbą o": {
+        "type": "string",
+        "title": "Zwracam się z uprzejmą prośbą o",
+        "x-permissions": "p30"
+      },
+      "Uzasadnienie prośby": {
+        "type": "string",
+        "title": "Uzasadnienie prośby",
+        "x-permissions": "p14"
+      },
+      "Data przesunięcia pracy dyplomowej przez Dyrektora": {
+        "type": "string",
+        "format": "date",
+        "title": "Data przesunięcia pracy dyplomowej przez Dyrektora",
+        "x-permissions": "p03"
+      },
+      "Data decyzji Dyrektora Instytutu": {
+        "type": "string",
+        "format": "date",
+        "title": "Data decyzji Dyrektora Instytutu",
+        "x-permissions": "p03"
+      },
+      "Brak zaliczenia z powodu:": {
+        "type": "string",
+        "title": "Brak zaliczenia z powodu:",
+        "x-permissions": "p15"
+      }
+    },
+    "title": "PISMO",
+    "x-permissions": "p06"
+  },
+  "ui": {
+    "Zwracam się z uprzejmą prośbą o": {
+      "ui:widget": "textarea"
+    },
+    "Uzasadnienie prośby": {
+      "ui:widget": "textarea"
+    },
+    "Brak zaliczenia z powodu:": {
+      "ui:widget": "textarea"
+    }
+  },
+  "uzywaja": [
+    "pod"
+  ]
+}

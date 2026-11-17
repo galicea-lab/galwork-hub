@@ -1,0 +1,10 @@
+{
+  "nazwa": "opinia_dziekana",
+  "schema": {
+    "type": "boolean",
+    "title": "Potrzebna opinia Dziekana Wydziału",
+    "x-permissions": "p11"
+  },
+  "ui": {},
+  "uzywaja": []
+}

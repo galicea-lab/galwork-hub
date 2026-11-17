@@ -1,0 +1,16 @@
+{
+  "nazwa": "Kto podpisuje",
+  "schema": {
+    "type": "string",
+    "title": "Kto podpisuje",
+    "x-permissions": "p40"
+  },
+  "ui": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/podpisy-elektroniczne",
+      "sourceName": "Podpisy Elektroniczne"
+    }
+  },
+  "uzywaja": []
+}

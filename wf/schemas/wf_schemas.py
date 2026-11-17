@@ -22,7 +22,7 @@ Zmiany względem pierwotnego schematu (integracja z Paperless-ngx):
 from datetime import date, datetime
 from decimal import Decimal
 from enum import StrEnum
-from typing import Annotated, Any, Generic, TypeVar
+from typing import Annotated, Any, Generic, Literal, TypeVar
 from uuid import UUID
 
 from pydantic import (
@@ -1092,6 +1092,98 @@ class PaperlessDocumentSummary(BaseModel):
 class PaperlessDocumentPage(BaseModel):
     items: list[PaperlessDocumentSummary]
     total: int
+
+
+# 2026-11-15: API plików obiegów (wf/routers/process_file_router.py) -
+# następca serwera plików areny (bpmn-files.mjs).
+class ProcessFileKind(StrEnum):
+    BPMN = "bpmn"
+    FORM = "form"
+    PRINT = "print"
+
+
+class ProcessFileEntry(BaseModel):
+    path: str
+    kind: ProcessFileKind
+
+
+class ProcessFileList(BaseModel):
+    root: str
+    files: list[ProcessFileEntry]
+
+
+class ProcessFormPair(BaseModel):
+    dir: str
+    base: str
+    schemaPath: str | None = None
+    uiSchemaPath: str | None = None
+
+
+class ProcessFormPairList(BaseModel):
+    root: str
+    forms: list[ProcessFormPair]
+
+
+class ProcessFileContentRead(BaseModel):
+    path: str
+    kind: ProcessFileKind
+    content: str
+    sha256: str
+
+
+class ProcessFileWrite(BaseModel):
+    path: str
+    content: str
+    # sha256 treści, którą klient edytował; None = nowy plik
+    base_sha256: str | None = None
+
+
+class ProcessFileSaved(BaseModel):
+    path: str
+    kind: ProcessFileKind
+    sha256: str
+    saved: bool = True
+    created: bool
+    warnings: list[str] = Field(default_factory=list)
+    committed: bool = False
+    commit: str | None = None
+    git_error: str | None = None
+
+
+# -BEGIN 2026-11-16: wydruki PDF (wf/routers/print_router.py)
+class PrintOptionRead(BaseModel):
+    """Wydruk dostępny w instancji: szablon z `x-print` albo standardowy."""
+    key: str                      # nazwa szablonu albo "__default__"
+    label: str
+    template: str | None = None
+    task_id: UUID | None = None
+    bpmn_task_id: str | None = None
+    task_name: str | None = None
+    is_default: bool = False
+
+
+class PrintOptionList(BaseModel):
+    items: list[PrintOptionRead]
+
+
+class PrintArchiveRequest(InputModel):
+    task_id: UUID | None = None
+    template: str | None = None
+    role: DocumentLinkRole = DocumentLinkRole.MAIN
+
+
+class PrintPreviewRequest(InputModel):
+    """Podgląd szablonu z edytora areny. `path` - plik szablonu w katalogu
+    obiegów (szablony obok niego i biblioteka są dostępne dla extends/import),
+    `content` - niezapisana treść (domyślnie: plik z dysku), `data` - dane
+    przykładowe; `schema_path`/`uischema_path` - formularz dla `fields`."""
+    path: str | None = None
+    content: str | None = None
+    data: JsonDict = Field(default_factory=dict)
+    schema_path: str | None = None
+    uischema_path: str | None = None
+    format: Literal["pdf", "html"] = "pdf"
+# -END
 
 
 # Rozwiązanie referencji w przód (TaskFormRead → DocumentRead)

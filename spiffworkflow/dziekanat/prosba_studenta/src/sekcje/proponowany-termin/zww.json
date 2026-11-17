@@ -1,0 +1,20 @@
+{
+  "nazwa": "PROPONOWANY TERMIN",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Do": {
+        "type": "string",
+        "format": "date",
+        "title": "Do",
+        "x-permissions": "p26"
+      }
+    },
+    "title": "PROPONOWANY TERMIN",
+    "x-permissions": "p47"
+  },
+  "ui": {},
+  "uzywaja": [
+    "zww"
+  ]
+}

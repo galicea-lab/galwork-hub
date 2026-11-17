@@ -1,0 +1,40 @@
+{
+  "nazwa": "ADRESAT",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Dyrektor instytutu": {
+        "type": "string",
+        "title": "Dyrektor instytutu",
+        "x-permissions": "p13"
+      },
+      "Promotor": {
+        "type": "string",
+        "title": "Promotor",
+        "x-permissions": "p36"
+      }
+    },
+    "title": "ADRESAT",
+    "x-permissions": "p19"
+  },
+  "ui": {
+    "Dyrektor instytutu": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    },
+    "Promotor": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "uzywaja": [
+    "zpd"
+  ]
+}

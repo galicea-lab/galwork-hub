@@ -60,6 +60,7 @@ config.ini nieskonfigurowana": "jeszcze nie podłączone", nie "zepsute".
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session, selectinload
@@ -131,6 +132,11 @@ class FrappeDictionary:
     doctype: str
     label_field: str
     source_name: str
+    # 2026-11-15: pola dopisywane do etykiety w nawiasie, np. kierunek
+    # i rok przy zapisie na studia: "Jan Kowalski (Informatyka, 2025/26)".
+    detail_fields: tuple[str, ...] = ()
+    # 2026-11-15: stałe filtry Frappe, np. bez anulowanych dokumentów.
+    filters: tuple[tuple[str, str, Any], ...] = ()
 
 # TODO: przenieść do plików konfiguracyjnych, by ułatwić wdrażanie oraz
 # dodawanie nowych słowników bez zmiany kodu (np. w config/dictionaries.json).
@@ -274,7 +280,17 @@ INTERNAL_DICTIONARIES: dict[str, InternalDictionary] = {
 # ---------------------------------------------------------------------
 FRAPPE_DICTIONARIES: dict[str, FrappeDictionary] = {
     "studenci": FrappeDictionary("Student", "student_name", "Studenci"),
-    "rok-akademicki": FrappeDictionary("Academic Term", "term_name", "rok akademicki"),
+    # 2026-11-15: rok akademicki = Academic Year (wcześniej Academic Term,
+    # czyli semestr roku); semestr roku osobno jako "semestr-akademicki".
+    "rok-akademicki": FrappeDictionary("Academic Year", "academic_year_name", "Rok akademicki"),
+    "semestr-akademicki": FrappeDictionary("Academic Term", "term_name", "Semestr akademicki"),
+    # 2026-11-15: studia studenta = zapis na kierunek (Program Enrollment) -
+    # jedno pole zamiast "Student(ka)" + "Kierunek" (student może mieć kilka
+    # kierunków). Dane do formularza pobiera krok `edu.studia-studenta`
+    # (wf/services/edu_service_tasks.py).
+    "studia-studenta": FrappeDictionary(
+        "Program Enrollment", "student_name", "Studia studenta",
+        detail_fields=("program", "academic_year"), filters=(("docstatus", "!=", 2),)),
     # 2026-11-13: kadra i przedmioty z Frappe Education, ogłoszenia z Frappe HR.
     "kadra": FrappeDictionary("Instructor", "instructor_name", "Kadra dydaktyczna"),
     "przedmioty": FrappeDictionary("Course", "course_name", "Przedmioty"),
@@ -440,12 +456,14 @@ def _internal_options(db: Session, dictionary: InternalDictionary, q: str | None
 
 def _frappe_options(dictionary: FrappeDictionary, q: str | None, limit: int) -> list[OptionRead]:
     connector = get_frappe_connector()
-    filters = [[dictionary.label_field, "like", f"%{q}%"]] if q else None
+    filters = [list(f) for f in dictionary.filters]
+    if q:
+        filters.append([dictionary.label_field, "like", f"%{q}%"])
     try:
         rows = connector.get_list(
             dictionary.doctype,
-            filters=filters,
-            fields=["name", dictionary.label_field],
+            filters=filters or None,
+            fields=["name", dictionary.label_field, *dictionary.detail_fields],
             limit_page_length=limit,
         )
     except ConnectorConfigError as exc:
@@ -455,10 +473,13 @@ def _frappe_options(dictionary: FrappeDictionary, q: str | None, limit: int) -> 
         ) from exc
     except ConnectorError as exc:
         raise DictionaryError(f"Frappe Education ({dictionary.doctype}): {exc}") from exc
-    return [
-        OptionRead(value=row["name"], label=row.get(dictionary.label_field) or row["name"])
-        for row in rows
-    ]
+    return [OptionRead(value=row["name"], label=_frappe_label(dictionary, row)) for row in rows]
+
+
+def _frappe_label(dictionary: FrappeDictionary, row: dict) -> str:
+    label = row.get(dictionary.label_field) or row["name"]
+    details = [str(row[f]) for f in dictionary.detail_fields if row.get(f)]
+    return f"{label} ({', '.join(details)})" if details else label
 
 
 # BEGIN 2026-11-13

@@ -1,0 +1,10 @@
+{
+  "nazwa": "opinia_dyrektora",
+  "schema": {
+    "type": "boolean",
+    "title": "Potrzebna opinia Dyrektora Instytutu",
+    "x-permissions": "p11"
+  },
+  "ui": {},
+  "uzywaja": []
+}

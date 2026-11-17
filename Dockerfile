@@ -24,8 +24,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 FROM python:3.12-slim AS runtime
 
 # libpq5/libxml2/libxslt1.1 - biblioteki runtime (bez -dev) dla psycopg2/lxml.
+# 2026-11-15: git - commit zmian plików obiegów zapisanych z areny
+# (wf/services/process_files.py), gdy katalog obiegów jest repozytorium.
+# 2026-11-16: libpango/libharfbuzz - WeasyPrint (wydruki PDF), fonty z polskimi
+# znakami dla szablonów druków (Liberation Serif zamiast Times New Roman, DejaVu).
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      libpq5 libxml2 libxslt1.1 curl \
+      libpq5 libxml2 libxslt1.1 curl git \
+      libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz0b libharfbuzz-subset0 \
+      fonts-dejavu-core fonts-liberation2 \
     && rm -rf /var/lib/apt/lists/* \
     && useradd --create-home --uid 1000 galwork
 

@@ -1,0 +1,71 @@
+{
+  "nazwa": "WYBÓR OPCJI",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Z semestru": {
+        "x-pole": "semestr",
+        "title": "Z semestru",
+        "x-permissions": "p01"
+      },
+      "W letniej/zimowej sesji": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "letniej"
+          },
+          {
+            "const": "2",
+            "title": "zimowej"
+          }
+        ],
+        "title": "W letniej/zimowej sesji",
+        "x-permissions": "p01"
+      },
+      "Zaliczenia/egzaminu?": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "zaliczenia"
+          },
+          {
+            "const": "2",
+            "title": "egzaminu"
+          }
+        ],
+        "title": "Zaliczenia/egzaminu?",
+        "x-permissions": "p01"
+      },
+      "Sesji egzaminacyjnej / poprawkowej?": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "egzaminacyjnej"
+          },
+          {
+            "const": "2",
+            "title": "poprawkowej"
+          }
+        ],
+        "title": "Sesji egzaminacyjnej / poprawkowej?",
+        "x-permissions": "p01"
+      },
+      "W roku akademickim": {
+        "x-pole": "rok-akademicki",
+        "title": "W roku akademickim",
+        "x-permissions": "p25"
+      }
+    },
+    "title": "WYBÓR OPCJI",
+    "x-permissions": "p21"
+  },
+  "ui": {
+    "W roku akademickim": {}
+  },
+  "uzywaja": [
+    "ppt"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "opis": "Rok akademicki (Frappe Education: Academic Year).",
+  "schema": {
+    "type": "string"
+  },
+  "ui": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/rok-akademicki",
+      "sourceName": "Rok akademicki"
+    }
+  }
+}

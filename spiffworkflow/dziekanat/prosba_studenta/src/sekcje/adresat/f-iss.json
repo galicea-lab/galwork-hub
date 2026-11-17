@@ -1,0 +1,27 @@
+{
+  "nazwa": "ADRESAT",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Dyrektor instytutu": {
+        "type": "string",
+        "title": "Dyrektor instytutu",
+        "x-permissions": "p13"
+      }
+    },
+    "title": "ADRESAT",
+    "x-permissions": "p19"
+  },
+  "ui": {
+    "Dyrektor instytutu": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/kierunki",
+        "sourceName": "Kierunki"
+      }
+    }
+  },
+  "uzywaja": [
+    "f-iss"
+  ]
+}

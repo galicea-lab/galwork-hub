@@ -1,0 +1,118 @@
+{
+  "nazwa": "DECYZJA",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Ilość punktów za odłeglość": {
+        "type": "string",
+        "title": "Ilość punktów za odłeglość",
+        "x-permissions": "p12"
+      },
+      "Ilość punktów za dochód": {
+        "type": "string",
+        "title": "Ilość punktów za dochód",
+        "x-permissions": "p12"
+      },
+      "Ilość punktów - szczególna sytuacja": {
+        "type": "string",
+        "title": "Ilość punktów - szczególna sytuacja",
+        "x-permissions": "p12"
+      },
+      "Suma km/zł": {
+        "type": "string",
+        "title": "Suma km/zł",
+        "x-permissions": "p12"
+      },
+      "Suma punktów": {
+        "type": "string",
+        "title": "Suma punktów",
+        "x-permissions": "p12"
+      },
+      "Decyzja Rektora": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "Wyrażam zgodę"
+          },
+          {
+            "const": "0",
+            "title": "Nie wyrażam zgody"
+          }
+        ],
+        "title": "Decyzja Rektora",
+        "x-permissions": "p05"
+      },
+      "Data Decyzji Rektora": {
+        "type": "string",
+        "format": "date",
+        "title": "Data Decyzji Rektora",
+        "x-permissions": "p05"
+      },
+      "Uzasadnienie decyzji": {
+        "type": "string",
+        "title": "Uzasadnienie decyzji",
+        "x-permissions": "p05"
+      },
+      "Uzasadnienie odmowy": {
+        "type": "string",
+        "title": "Uzasadnienie odmowy",
+        "readOnly": true,
+        "x-permissions": "p16"
+      },
+      "Decyzja Dziekana Wydziału": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "Wyrażam zgodę"
+          },
+          {
+            "const": "0",
+            "title": "Nie wyrażam zgody"
+          }
+        ],
+        "title": "Decyzja Dziekana Wydziału",
+        "x-permissions": "p02"
+      },
+      "Data decyzji Dziekana Wydziału": {
+        "type": "string",
+        "format": "date",
+        "title": "Data decyzji Dziekana Wydziału",
+        "x-permissions": "p02"
+      },
+      "Opinia Dyrektora Instytutu": {
+        "type": "string",
+        "title": "Opinia Dyrektora Instytutu",
+        "x-permissions": "p17"
+      },
+      "Opinia Dziekana Wydziału": {
+        "type": "string",
+        "title": "Opinia Dziekana Wydziału",
+        "x-permissions": "p02"
+      }
+    },
+    "title": "DECYZJA",
+    "x-permissions": "p10"
+  },
+  "ui": {
+    "Uzasadnienie decyzji": {
+      "ui:widget": "textarea",
+      "ui:help": "dostosować do indywidualnej sytuacji studenta i odpowiednio rozwinąć uzasadnienie"
+    },
+    "Uzasadnienie odmowy": {
+      "ui:widget": "textarea",
+      "ui:help": "należy opisać regulaminową przesłankę lub inne okoliczności, które w odniesieniu do regulaminu nie pozwalają na realizację studiów wg indywidualnego systemu studiowania, uzasadnienie musi uwzględniając indywidulaną sytuację studenta, proszę także sprawdzić czy wniosek został złożony w terminie zgodnie z § 9 ust. 7 Regulaminu",
+      "ui:readonly": true
+    },
+    "Opinia Dyrektora Instytutu": {
+      "ui:widget": "textarea"
+    },
+    "Opinia Dziekana Wydziału": {
+      "ui:widget": "textarea"
+    }
+  },
+  "uzywaja": [
+    "pmds"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "nazwa": "opinia_promotora",
+  "schema": {
+    "type": "boolean",
+    "title": "Potrzebna opinia Promotora",
+    "x-permissions": "p11"
+  },
+  "ui": {
+    "ui:help": "Domyślnie wg rodzaju pisma; kieruje sprawę po weryfikacji BOS"
+  },
+  "uzywaja": []
+}

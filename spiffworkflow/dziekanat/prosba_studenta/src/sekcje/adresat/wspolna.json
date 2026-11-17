@@ -1,0 +1,26 @@
+{
+  "nazwa": "adresat",
+  "schema": {
+    "type": "string",
+    "title": "Adresat pisma",
+    "x-permissions": "p11",
+    "oneOf": [
+      {
+        "const": "dyrektor",
+        "title": "Dyrektor Instytutu"
+      },
+      {
+        "const": "dziekan",
+        "title": "Dziekan Wydziału"
+      },
+      {
+        "const": "rektor",
+        "title": "Rektor"
+      }
+    ]
+  },
+  "ui": {
+    "ui:help": "Domyślnie wg rodzaju pisma (słownik rodzaj-pisma-studenta); puste - adresata wskazuje sekcja ADRESAT"
+  },
+  "uzywaja": []
+}

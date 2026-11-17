@@ -1,0 +1,26 @@
+{
+  "nazwa": "OKRES",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Od": {
+        "type": "string",
+        "format": "date",
+        "title": "Od",
+        "x-permissions": "p37"
+      },
+      "Do": {
+        "type": "string",
+        "format": "date",
+        "title": "Do",
+        "x-permissions": "p26"
+      }
+    },
+    "title": "OKRES",
+    "x-permissions": "p06"
+  },
+  "ui": {},
+  "uzywaja": [
+    "uuz"
+  ]
+}

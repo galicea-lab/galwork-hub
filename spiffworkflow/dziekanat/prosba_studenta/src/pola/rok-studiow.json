@@ -1,0 +1,9 @@
+{
+  "opis": "Rok studiów (1-6).",
+  "schema": {
+    "type": "integer",
+    "minimum": 1,
+    "maximum": 6
+  },
+  "ui": {}
+}

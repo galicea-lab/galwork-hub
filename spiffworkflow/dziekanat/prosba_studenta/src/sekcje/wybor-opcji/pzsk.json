@@ -1,0 +1,167 @@
+{
+  "nazwa": "WYBÓR OPCJI",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Z semestru": {
+        "x-pole": "semestr",
+        "title": "Z semestru",
+        "x-permissions": "p01"
+      },
+      "W letniej/zimowej sesji": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "letniej"
+          },
+          {
+            "const": "2",
+            "title": "zimowej"
+          }
+        ],
+        "title": "W letniej/zimowej sesji",
+        "x-permissions": "p01"
+      },
+      "Do tej pory wznawiałem/am": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "wznawiałem studia"
+          },
+          {
+            "const": "2",
+            "title": "wznawiałam studia"
+          },
+          {
+            "const": "3",
+            "title": "nie wznawiałem studia"
+          },
+          {
+            "const": "4",
+            "title": "nie wznawiałam studia"
+          }
+        ],
+        "title": "Do tej pory wznawiałem/am",
+        "x-permissions": "p08"
+      },
+      "Zaliczenia/egzaminu?": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "zaliczenia"
+          },
+          {
+            "const": "2",
+            "title": "egzaminu"
+          }
+        ],
+        "title": "Zaliczenia/egzaminu?",
+        "x-permissions": "p01"
+      },
+      "Sesji egzaminacyjnej / poprawkowej?": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "egzaminacyjnej"
+          },
+          {
+            "const": "2",
+            "title": "poprawkowej"
+          }
+        ],
+        "title": "Sesji egzaminacyjnej / poprawkowej?",
+        "x-permissions": "p01"
+      },
+      "Rodzaj pracy dyplomowej": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "inżynierskiej"
+          },
+          {
+            "const": "2",
+            "title": "licencjackiej"
+          },
+          {
+            "const": "3",
+            "title": "magisterskiej"
+          }
+        ],
+        "title": "Rodzaj pracy dyplomowej",
+        "x-permissions": "p01"
+      },
+      "Na studiach pierwszego/drugiego stopnia": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "pierwszego"
+          },
+          {
+            "const": "2",
+            "title": "drugiego"
+          }
+        ],
+        "title": "Na studiach pierwszego/drugiego stopnia",
+        "x-permissions": "p08"
+      },
+      "Rok akademicki wznawiania studiów": {
+        "x-pole": "rok-akademicki",
+        "title": "Rok akademicki wznawiania studiów",
+        "x-permissions": "p08"
+      },
+      "Okoliczności uniemożliwiające udział w zajęciach": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "1",
+            "title": "jestem rodzicem"
+          },
+          {
+            "const": "2",
+            "title": "ciąża"
+          },
+          {
+            "const": "3",
+            "title": "długotrwała choroba potwierdzona zaświadczeniem lekarskim"
+          },
+          {
+            "const": "4",
+            "title": "wyjazd na studia za granicę"
+          },
+          {
+            "const": "5",
+            "title": "konieczność oczekiwania na powtarzanie semestru"
+          },
+          {
+            "const": "6",
+            "title": "wystąpienie ważnych okoliczności losowych, tj:"
+          }
+        ],
+        "title": "Okoliczności uniemożliwiające udział w zajęciach",
+        "x-permissions": "p20"
+      },
+      "W roku akademickim": {
+        "x-pole": "rok-akademicki",
+        "title": "W roku akademickim",
+        "x-permissions": "p25"
+      }
+    },
+    "title": "WYBÓR OPCJI",
+    "x-permissions": "p21"
+  },
+  "ui": {
+    "W roku akademickim": {}
+  },
+  "uzywaja": [
+    "pzsk",
+    "ws",
+    "za",
+    "zps"
+  ]
+}

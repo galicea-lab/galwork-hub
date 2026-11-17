@@ -1,46 +1,144 @@
 # connector/etalar/etalar.py
-"""Konektor do e-Talar - wzorzec 1:1 z galwork-hub/connector/erpnext/erpnext.py.
+# 2026-11-16: token client_credentials, pola zgodne z API M2M e-Talar,
+# nowe metody (issue, saldo użytkownika, wymiana kodu zgody), błędy z kodem.
+"""Konektor do e-Talar.
 
-Dwie grupy metod, odpowiadające mapowaniu z ../barter.md §18.1:
+2026-11-16: konektor dostosowany do API M2M e-Talar
+  * uwierzytelnianie tokenem OAuth2 `client_credentials` z Keycloak e-Talar
+    (klient aplikacji zarejestrowanej w panelu e-Talar), a nie nagłówkiem
+    `token klucz:sekret` - endpointy `/v2/apps/m2m/*` przyjmują wyłącznie
+    token M2M; token jest trzymany do wygaśnięcia i odnawiany raz po 401,
+  * użytkownik e-Talar jest wskazywany adresem e-mail (`userEmail`),
+  * `charge-user/initiate` i `consent/request` wymagają `redirectUri`
+    zarejestrowanego dla aplikacji (domyślnie `[etalar] redirect_uri`),
+  * metody: `issue`, `get_owner_balance`, `get_user_balance`,
+    `deposit_to_user`, `charge_user_initiate`, `request_consent`,
+    `exchange_consent_code`,
+  * błąd 403 `CONSENT_REQUIRED` jako `EtalarConsentRequired` (stan
+    oczekiwany - użytkownik nie udzielił albo odwołał zgodę),
+  * kwoty jako `Decimal` zaokrąglone do 0,01, w JSON jako liczby.
 
-1. Dzisiejsze M2M API e-Talar (`/v2/apps/m2m/*`) - realne, działa. Przydatne
-   tylko dla Phase 0/1 (pilot ręczny z pre-fundingiem, bez automatyzacji
-   środków) - `issue`/`deposit_to_user` na konto właściciela aplikacji,
-   NIGDY jako emisja ET per transakcja barterowa (../barter.md §0.2/§3
-   zasada 4).
+e-Talar nie obsługuje jeszcze nagłówka `Idempotency-Key` (konektor go
+wysyła na przyszłość). Ponowienie `issue` albo `deposit_to_user` po błędzie
+sieci może więc zdublować operację - wołający musi to rozstrzygnąć sam
+(np. sprawdzając saldo albo historię transakcji przed ponowieniem).
+
+Dwie grupy metod:
+
+1. Dzisiejsze M2M API e-Talar (`/v2/apps/m2m/*`). W BCS przydatne tylko dla
+   Phase 0/1 (pilot ręczny z pre-fundingiem) - `issue`/`deposit_to_user` na
+   konto właściciela aplikacji, NIGDY jako emisja ET per transakcja
+   barterowa (../barter.md §0.2/§3 zasada 4).
 2. Przyszłe `/v3/settlement/*` (batch, mandaty, holdy) - e-Talar ich jeszcze
-   NIE MA (../barter.md §11.1, zmiany P0). Metody poniżej są zaślepkami:
-   budują żądanie w kształcie z §12, ale `test_connection`/wywołanie zwróci
-   `ConnectorError`, dopóki e-Talar nie wystawi tych endpointów - to jest
-   świadome, nie błąd implementacji.
+   NIE MA (../barter.md §11.1, zmiany P0). Metody są zaślepkami: budują
+   żądanie w kształcie z §12, ale wywołanie zwraca `ConnectorError`, dopóki
+   e-Talar nie wystawi tych endpointów - to jest świadome.
 """
 from __future__ import annotations
 
 import json
 import threading
+import time
+from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 from typing import Any
 
 import requests
 
 from connector.base import BaseConnector, ConnectorError
 
+#: typy zgody stałej obsługiwane dziś przez e-Talar (`ConsentType`)
+CONSENT_TYPES = ("DEPOSIT_FROM_APP", "BALANCE_SHARE")
+
+_TOKEN_MARGIN = 30  # s - odnowienie tokenu przed wygaśnięciem
+_CENT = Decimal("0.01")
+
+
+class EtalarError(ConnectorError):
+    """Odpowiedź błędu e-Talar (`status_code`, `detail` z `{"detail": ...}`)."""
+
+    def __init__(self, what: str, status_code: int | None = None, detail: Any = None):
+        self.what = what
+        self.status_code = status_code
+        self.detail = detail
+        text = detail if isinstance(detail, str) else json.dumps(detail, ensure_ascii=False) if detail else ""
+        super().__init__(f"e-Talar {what} -> {status_code}{': ' + text[:300] if text else ''}")
+
+
+class EtalarConsentRequired(EtalarError):
+    """403 `CONSENT_REQUIRED` - brak aktywnej zgody użytkownika
+    (`consent_type`: `DEPOSIT_FROM_APP` albo `BALANCE_SHARE`)."""
+
+    @property
+    def consent_type(self) -> str | None:
+        return self.detail.get("consent_type") if isinstance(self.detail, dict) else None
+
+
+def _amount(value: Any) -> float:
+    """Kwota ET: dodatnia, zaokrąglona do 0,01; w JSON jako liczba (e-Talar
+    przyjmuje `float`)."""
+    try:
+        amount = Decimal(str(value)).quantize(_CENT, rounding=ROUND_HALF_UP)
+    except (InvalidOperation, ValueError) as exc:
+        raise ValueError(f"Niepoprawna kwota ET: {value!r}") from exc
+    if amount <= 0:
+        raise ValueError(f"Kwota ET musi być dodatnia: {value!r}")
+    return float(amount)
+
+
+def _detail(resp: requests.Response) -> Any:
+    try:
+        body = resp.json()
+    except ValueError:
+        return (resp.text or "")[:300]
+    return body.get("detail", body) if isinstance(body, dict) else body
+
 
 class EtalarConnector(BaseConnector):
+    """Konfiguracja: sekcja `[etalar]` w config.ini albo zmienne
+    `ETALAR_<KLUCZ>`:
+
+      * `base_url` - adres API, np. `https://api.e-talar.com`,
+      * `token_url` - endpoint tokenu Keycloak e-Talar, np.
+        `https://login.e-talar.com/realms/et/protocol/openid-connect/token`,
+      * `client_id`, `client_secret` - klient aplikacji z rejestracji
+        w e-Talar (`keycloakClientId`, `clientSecret`),
+      * `redirect_uri` - domyślny adres powrotu z ekranu zgody (musi być
+        zarejestrowany dla aplikacji),
+      * `timeout` (s, domyślnie 30), `verify_tls` (domyślnie true).
+    """
+
     name = "etalar"
+
+    def __init__(self, config=None) -> None:
+        super().__init__(config)
+        self._token: str | None = None
+        self._token_expires = 0.0
+        self._token_lock = threading.Lock()
+
+    # --- połączenie i token ---------------------------------------------
+
+    @property
+    def base_url(self) -> str:
+        return self.config.require("base_url").rstrip("/")
+
+    @property
+    def timeout(self) -> int:
+        return int(self.config.get("timeout") or 30)
 
     def connect(self) -> requests.Session:
         if self._client is None:
-            base_url = self.config.require("base_url")
-            api_key = self.config.require("api_key")
-            api_secret = self.config.require("api_secret")
             session = requests.Session()
-            session.headers.update({
-                "Authorization": f"token {api_key}:{api_secret}",
-                "Accept": "application/json",
-            })
-            session.base_url = base_url.rstrip("/")  # type: ignore[attr-defined]
+            session.headers.update({"Accept": "application/json"})
+            session.verify = str(self.config.get("verify_tls") or "true").lower() not in ("0", "false", "no")
             self._client = session
         return self._client
+
+    def close(self) -> None:
+        if self._client is not None:
+            self._client.close()
+        self._client = None
+        self._token = None
+        self._token_expires = 0.0
 
     def test_connection(self) -> bool:
         try:
@@ -50,51 +148,120 @@ class EtalarConnector(BaseConnector):
             self.logger.warning("e-Talar test_connection nieudany: %s", e)
             return False
 
-    def _url(self, path: str) -> str:
-        session = self.connect()
-        return f"{session.base_url}/{path.lstrip('/')}"  # type: ignore[attr-defined]
+    def _access_token(self, *, refresh: bool = False) -> str:
+        with self._token_lock:
+            if not refresh and self._token and time.monotonic() < self._token_expires:
+                return self._token
+            try:
+                resp = self.connect().post(self.config.require("token_url"), data={
+                    "grant_type": "client_credentials",
+                    "client_id": self.config.require("client_id"),
+                    "client_secret": self.config.require("client_secret"),
+                }, timeout=self.timeout)
+            except requests.RequestException as exc:
+                raise EtalarError("token", None, type(exc).__name__) from exc
+            if not resp.ok:
+                body = _detail(resp)
+                # bez treści żądania (sekret) - tylko kod błędu OAuth2
+                error = body.get("error") if isinstance(body, dict) else None
+                raise EtalarError("token", resp.status_code, error)
+            data = resp.json()
+            token = data.get("access_token")
+            if not token:
+                raise EtalarError("token", resp.status_code, "brak access_token w odpowiedzi")
+            self._token = token
+            self._token_expires = time.monotonic() + max(int(data.get("expires_in") or 60) - _TOKEN_MARGIN, 5)
+            return token
 
-    def _post(self, path: str, payload: dict, *, idempotency_key: str | None = None) -> dict:
-        session = self.connect()
-        headers = {"Idempotency-Key": idempotency_key} if idempotency_key else {}
-        resp = session.post(self._url(path), json=payload, headers=headers, timeout=30)
-        if not resp.ok:
-            raise ConnectorError(f"e-Talar POST {path} -> {resp.status_code}: {resp.text}")
-        return resp.json()
+    def _request(self, method: str, path: str, *, json_body: dict | None = None,
+                 params: dict | None = None, idempotency_key: str | None = None) -> dict:
+        url = f"{self.base_url}/{path.lstrip('/')}"
+        for attempt in (0, 1):
+            headers = {"Authorization": f"Bearer {self._access_token(refresh=attempt == 1)}"}
+            if idempotency_key:
+                headers["Idempotency-Key"] = idempotency_key
+            try:
+                resp = self.connect().request(method, url, json=json_body, params=params,
+                                              headers=headers, timeout=self.timeout)
+            except requests.RequestException as exc:
+                raise EtalarError(f"{method} {path}", None, type(exc).__name__) from exc
+            if resp.status_code == 401 and attempt == 0:
+                continue  # token wygasł albo został unieważniony - jeden ponowny token
+            break
+        if resp.ok:
+            return resp.json() if resp.content else {}
+        detail = _detail(resp)
+        if resp.status_code == 403 and isinstance(detail, dict) and detail.get("error") == "CONSENT_REQUIRED":
+            raise EtalarConsentRequired(f"{method} {path}", resp.status_code, detail)
+        raise EtalarError(f"{method} {path}", resp.status_code, detail)
 
-    # --- M2M dzisiejsze (barter.md §18.1) -----------------------------
+    def _redirect_uri(self, redirect_uri: str | None) -> str:
+        return redirect_uri or self.config.require("redirect_uri")
+
+    # --- M2M dzisiejsze (/v2/apps/m2m/*, integrator_sdk.md §4-§9) --------
+
+    def issue(self, amount: Any, *, idempotency_key: str | None = None) -> dict:
+        """POST /v2/apps/m2m/issue - emisja na konto WŁAŚCICIELA aplikacji
+        (limit `issueLimit`, przekroczenie: 422). Zwraca `{"balanceEtalar": ...}`."""
+        return self._request("POST", "/v2/apps/m2m/issue", json_body={"amount": _amount(amount)},
+                             idempotency_key=idempotency_key)
 
     def get_owner_balance(self) -> dict:
-        """GET /v2/apps/m2m/balance/owner - saldo aplikacji BCS w e-Talar."""
-        session = self.connect()
-        resp = session.get(self._url("/v2/apps/m2m/balance/owner"), timeout=30)
-        if not resp.ok:
-            raise ConnectorError(f"e-Talar get_owner_balance -> {resp.status_code}: {resp.text}")
-        return resp.json()
+        """GET /v2/apps/m2m/balance/owner - saldo właściciela aplikacji."""
+        return self._request("GET", "/v2/apps/m2m/balance/owner")
 
-    def deposit_to_user(self, user_id: str, amount: str, *, idempotency_key: str) -> dict:
-        """POST /v2/apps/m2m/deposit-to-user - wypłata netto na konto
-        uczestnika. Wymaga uprzedniej zgody DEPOSIT_FROM_APP (../barter.md
-        §2.1) - BCS nie sprawdza tego sam, e-Talar odrzuci bez zgody."""
-        return self._post(
-            "/v2/apps/m2m/deposit-to-user",
-            {"userId": user_id, "amount": amount},
-            idempotency_key=idempotency_key,
-        )
+    def get_user_balance(self, user_email: str) -> dict:
+        """GET /v2/apps/m2m/balance/user - saldo użytkownika; wymaga zgody
+        `BALANCE_SHARE` (inaczej `EtalarConsentRequired`)."""
+        return self._request("GET", "/v2/apps/m2m/balance/user", params={"user_email": user_email})
 
-    def charge_user_initiate(self, user_id: str, amount: str) -> dict:
-        """POST /v2/apps/m2m/charge-user/initiate - OBCIĄŻENIE JEDNORAZOWE.
-        NIE używać w pętli cyklu clearingowego (wymaga zgody człowieka przy
-        KAŻDYM wywołaniu) - zob. ../barter.md §10.3 'Uwaga'. Pozostaje tylko
-        dla Phase 0/pilota ręcznego."""
-        return self._post("/v2/apps/m2m/charge-user/initiate", {"userId": user_id, "amount": amount})
+    def deposit_to_user(self, user_email: str, amount: Any, *, description: str | None = None,
+                        idempotency_key: str | None = None) -> dict:
+        """POST /v2/apps/m2m/deposit-to-user - przelew z konta właściciela
+        aplikacji na konto użytkownika. Wymaga zgody `DEPOSIT_FROM_APP`
+        (inaczej `EtalarConsentRequired`); brak środków właściciela: 400.
+        Zwraca nowe saldo użytkownika."""
+        body: dict[str, Any] = {"userEmail": user_email, "amount": _amount(amount)}
+        if description:
+            body["description"] = description
+        return self._request("POST", "/v2/apps/m2m/deposit-to-user", json_body=body,
+                             idempotency_key=idempotency_key)
 
-    def request_consent(self, user_id: str, consent_type: str) -> dict:
-        """POST /v2/apps/m2m/consent/request - dzisiejsze typy
-        (DEPOSIT_FROM_APP, BALANCE_SHARE). `CLEARING_DEBIT` (mandat
-        clearingowy, §10.3) NIE istnieje jeszcze po stronie e-Talar - to
-        wywołanie zwróci błąd e-Talar, nie błąd tego konektora."""
-        return self._post("/v2/apps/m2m/consent/request", {"userId": user_id, "consentType": consent_type})
+    def charge_user_initiate(self, user_email: str, amount: Any, *, description: str | None = None,
+                             redirect_uri: str | None = None, state: str | None = None) -> dict:
+        """POST /v2/apps/m2m/charge-user/initiate - OBCIĄŻENIE JEDNORAZOWE,
+        zawsze z potwierdzeniem użytkownika na ekranie zgody. Zwraca
+        `{"requestId", "consentUrl"}` - przeglądarkę użytkownika trzeba
+        przekierować na `consentUrl`, a kod z powrotu wymienić
+        `exchange_consent_code`. NIE używać w pętli cyklu clearingowego
+        (../barter.md §10.3)."""
+        body: dict[str, Any] = {"userEmail": user_email, "amount": _amount(amount),
+                                "redirectUri": self._redirect_uri(redirect_uri)}
+        if description:
+            body["description"] = description
+        if state:
+            body["state"] = state
+        return self._request("POST", "/v2/apps/m2m/charge-user/initiate", json_body=body)
+
+    def request_consent(self, consent_type: str, *, redirect_uri: str | None = None,
+                        state: str | None = None) -> dict:
+        """POST /v2/apps/m2m/consent/request - zgoda stała
+        (`DEPOSIT_FROM_APP` albo `BALANCE_SHARE`). Żądanie nie wskazuje
+        użytkownika: zgody udziela osoba zalogowana na ekranie zgody, a jej
+        e-mail zwraca `exchange_consent_code`. Zwraca `{"requestId", "consentUrl"}`."""
+        if consent_type not in CONSENT_TYPES:
+            raise ValueError(f"Nieobsługiwany typ zgody e-Talar: {consent_type!r} (dozwolone: {', '.join(CONSENT_TYPES)})")
+        body: dict[str, Any] = {"consentType": consent_type, "redirectUri": self._redirect_uri(redirect_uri)}
+        if state:
+            body["state"] = state
+        return self._request("POST", "/v2/apps/m2m/consent/request", json_body=body)
+
+    def exchange_consent_code(self, exchange_code: str) -> dict:
+        """POST /v2/apps/consent/exchange - wynik zgody po powrocie na
+        `redirectUri?code=...`: `{"status": "APPROVED"|"REJECTED",
+        "operationType", "amount", "userEmail"}`. Kod jest jednorazowy
+        (ponownie: 409) i ważny 5 minut (potem: 410). Wołać z backendu."""
+        return self._request("POST", "/v2/apps/consent/exchange", json_body={"exchangeCode": exchange_code})
 
     # --- /v3/settlement/* przyszłe (barter.md §11.5/§12) --------------
 

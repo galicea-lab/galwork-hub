@@ -1,0 +1,18 @@
+{
+  "nazwa": "Kto obsługuje",
+  "schema": {
+    "type": "string",
+    "title": "Kto obsługuje",
+    "x-permissions": "p44"
+  },
+  "ui": {
+    "ui:help": "Osoba obsługująca  sprawę, sekretariat",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/users",
+      "sourceName": "sl_sekretariat",
+      "sourceType": "Baza MSSQL"
+    }
+  },
+  "uzywaja": []
+}

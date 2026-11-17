@@ -1,0 +1,24 @@
+{
+  "nazwa": "OPŁATY",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "Termin wniesienia opłaty": {
+        "type": "string",
+        "format": "date",
+        "title": "Termin wniesienia opłaty",
+        "x-permissions": "p35"
+      }
+    },
+    "title": "OPŁATY",
+    "readOnly": true,
+    "x-permissions": "p23"
+  },
+  "ui": {
+    "ui:readonly": true
+  },
+  "uzywaja": [
+    "ws",
+    "zos"
+  ]
+}

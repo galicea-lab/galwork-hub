@@ -16,7 +16,9 @@ from .erpnext_invoice_api import router as router_erpnext_invoices
 from .human_task_router import router as router_tasks
 from .notification_router import router as router_notifications
 from .paperless_document_api import router as router_paperless_documents
+from .process_file_router import router as router_process_files  
 from .process_instance_router import router as router_process_instances
+from .print_router import router as router_print 
 from .process_model_router import router as router_process_models
 from .purchase_request_api import router as router_purchase_requests
 from .signius_api import router as router_signius
@@ -37,4 +39,6 @@ __all__ = [
     "router_dictionary_entries",
     "router_contacts",
     "router_purchase_requests",
+    "router_process_files",
+    "router_print",
 ]
