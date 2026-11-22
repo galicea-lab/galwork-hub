@@ -1,0 +1,51 @@
+{
+  "ui:order": [
+    "numer_faktury",
+    "dostawca",
+    "nip_dostawcy",
+    "data_wystawienia",
+    "termin_platnosci",
+    "kwota_netto",
+    "kwota_brutto",
+    "waluta",
+    "numer_ksef",
+    "faktura_erp",
+    "link_erp",
+    "status_erp",
+    "projekt",
+    "rodzaj_kosztu",
+    "opis_merytoryczny",
+    "zgodnosc",
+    "uwagi_akceptacji",
+    "*"
+  ],
+  "projekt": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/projekty-erp",
+      "sourceName": "Projekty (ERPNext)"
+    },
+    "ui:help": "Projekt ERPNext, w którym koszt ma być rozliczony (ten sam co w kartach czasu)."
+  },
+  "rodzaj_kosztu": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/konta-kosztowe",
+      "sourceName": "Konta kosztowe (ERPNext)"
+    }
+  },
+  "opis_merytoryczny": {
+    "ui:widget": "textarea",
+    "ui:options": {
+      "rows": 4
+    },
+    "ui:help": "Czego dotyczy zakup i dlaczego – trafia do uwag faktury w ERPNext."
+  },
+  "uwagi_akceptacji": {
+    "ui:widget": "textarea",
+    "ui:help": "Przy „Do poprawy” i „Odrzuć” – powód."
+  },
+  "link_erp": {
+    "ui:help": "Adres dokumentu w ERPNext."
+  }
+}

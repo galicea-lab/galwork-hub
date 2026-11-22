@@ -1,0 +1,64 @@
+{#- Wzorzec: podanie studenta / słuchacza skierowane do organu uczelni. -#}
+{#-  układ podania: dane studenta, adresat (Dyrektor/Dziekan/Rektor),
+    prośba, uzasadnienie, oświadczenie, podpis studenta, adnotacja o decyzji. -#}
+{% extends "_base/strona.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set klasa = klasa | default('podanie', true) -%}
+{%- set tytul = tytul | default('PODANIE', true) -%}
+
+{% block przed_dokumentem %}
+{%- if dane_studenta %}
+{{ m.siatka(dane, dane_studenta, 2) }}
+{%- endif %}
+{% endblock %}
+
+{% block adresat %}
+{%- if adresat_linie %}
+{{ m.adresat(adresat_linie) }}
+{%- endif %}
+{% endblock %}
+
+{% block lead %}
+<p class="lead">{{ prosba | default('Zwracam się z uprzejmą prośbą o rozpatrzenie niniejszego podania.') }}</p>
+{% endblock %}
+
+{% block tresc %}
+{{ self.uzasadnienie() }}
+{% block dane_sprawy %}{% endblock %}
+{% block oswiadczenie %}{% endblock %}
+{{ self.zalaczniki_podania() }}
+{% endblock %}
+
+{% block uzasadnienie %}
+{%- if uzasadnienie_text %}
+{{ m.sekcja("Uzasadnienie") }}
+<p>{{ uzasadnienie_text }}</p>
+{%- endif %}
+{% endblock %}
+
+{% block zalaczniki_podania %}
+{{ m.zalaczniki(zalaczniki_lista) }}
+{% endblock %}
+
+{% block podpisy %}
+{{ m.podpisy([(podpis_rola | default('Wnioskodawca (student/ka)'), osoba_skladajaca | default(''), data | default(''))], 'pionowo') }}
+{% endblock %}
+
+{% block adnotacje %}
+{%- if adnotacja_decyzja %}
+<div class="ramka">
+  <div class="ramka-tytul">Adnotacja organu</div>
+  <p>{{ adnotacja_decyzja }}</p>
+  <div class="podpisy pionowo">
+    <div class="podpis duzy"><div class="linia-podpisu"></div><div class="rola">(data, pieczęć i podpis {{ organ_adnotacji | default('Dyrektora Instytutu') }})</div></div>
+  </div>
+</div>
+{%- endif %}
+{% endblock %}
+
+{% block rodo %}
+{{ m.klauzula_rodo(uczelnia, miejscowosc_m,
+   cel='rozpatrzenie podania i prowadzenie dokumentacji przebiegu studiów',
+   podstawa='art. 6 ust. 1 lit. c i e RODO w związku z ustawą – Prawo o szkolnictwie wyższym i nauce',
+   iod=iod | default('iod@uczelnia.pl')) }}
+{% endblock %}

@@ -1,0 +1,10 @@
+{
+    "description": "Przegląd tygodnia rozliczeń projektu przez PM: godziny z Taigi (dziennik galwork-pm), przypisanie rodzajów pracy, zatwierdzenie tygodni i wysyłka Timesheetów do ERPNext (integracja Taiga - galwork-pm - ERPNext). Uruchamiany przez galwork-hub (scripts/pm_taiga.py review-start).",
+    "display_name": "Przegląd tygodnia rozliczeń",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "przeglad-tygodnia.bpmn",
+    "primary_process_id": "Process_PM_Przeglad_Tygodnia",
+    "key": "pm-przeglad-tygodnia"
+}

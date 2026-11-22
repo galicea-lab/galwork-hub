@@ -1,0 +1,22 @@
+{
+  "ui:order": [
+    "Tytuł zgłoszenia",
+    "Opis / uzasadnienie",
+    "Termin",
+    "Zakres"
+  ],
+  "Opis / uzasadnienie": {
+    "ui:widget": "textarea"
+  },
+  "Zakres": {
+    "items": {
+      "ui:order": [
+        "Funkcjonalność",
+        "Pilność / etap"
+      ]
+    },
+    "ui:options": {
+      "addable": true
+    }
+  }
+}

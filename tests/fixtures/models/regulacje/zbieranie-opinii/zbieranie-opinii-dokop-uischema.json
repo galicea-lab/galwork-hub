@@ -1,0 +1,19 @@
+{
+  "ui:order": [
+    "Dokument, który opiniujemy",
+    "Tytuł",
+    "Istotność",
+    "Cyfryzacja"
+  ],
+  "Tytuł": {
+    "ui:readonly": true
+  },
+  "Dokument, który opiniujemy": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/dokumenty-uczelni",
+      "sourceName": "Dokumenty uczelni",
+      "sourceType": "Widok z bazy"
+    }
+  }
+}

@@ -251,9 +251,13 @@ def submit_staged_documents(db: Session, paperless: PaperlessConnector, *,
     Paperless-ngx wszystkie `DocumentVersion` w stanie `staged`. Wołane z
     tego samego miejsca co `sync_inbox`/`fetch_evidences` (np. crona),
     bo konsumpcja Paperless jest asynchroniczna."""
+    # 2026-11-17: tylko dokumenty e-Doręczeń - dokumenty huba (pliki,wydruki) 
+    # wysyła wf/services/document_ingest.py z własnymi tagami
     versions = db.execute(
         select(DocumentVersion)
-        .where(DocumentVersion.ingest_status == IngestStatus.STAGED)
+        .join(Document, Document.id == DocumentVersion.document_id)
+        .where(DocumentVersion.ingest_status == IngestStatus.STAGED,
+               Document.doc_type.in_((DOC_TYPE_IN, DOC_TYPE_OUT, DOC_TYPE_EVIDENCE)))
         .limit(limit)
     ).scalars().all()
     submitted = 0
@@ -436,8 +440,10 @@ def link_paperless_documents(db: Session, paperless: PaperlessConnector,
     Pierwszy z listy dostaje rolę `main`, kolejne `attachment`. Dokument
     znany już hubowi (`Document.paperless_document_id`) jest używany ponownie,
     inny dostaje nowy `Document` + `DocumentVersion` w stanie `done`. Powiązania
-    `main`/`attachment` spoza listy są usuwane (po "Popraw dane przesyłki").
-    Nie wywołuje `db.commit()`."""
+    `main`/`attachment` spoza listy dostają rolę `related` (po "Popraw dane
+    przesyłki") - nie są usuwane, bo `process_instance_document` jest chronione
+    przed DELETE (`wf.models.immutability`), a wysyłka bierze tylko
+    `main`/`attachment`. Nie wywołuje `db.commit()`."""
     ids: list[int] = []
     for value in paperless_ids or []:
         if value in (None, ''):
@@ -456,7 +462,7 @@ def link_paperless_documents(db: Session, paperless: PaperlessConnector,
     ).scalars().all()
     for link in links:
         if link.document.paperless_document_id not in ids:
-            db.delete(link)
+            link.role = DocumentLinkRole.RELATED
     db.flush()
 
     documents: list[Document] = []

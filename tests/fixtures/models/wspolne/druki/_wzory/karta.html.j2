@@ -1,0 +1,51 @@
+{#- Wzorzec: karta / zestawienie / rejestr tabelaryczny. -#}
+{#-  układ karty: identyfikacja dokumentu w siatce pól,
+    zestawienia tabelaryczne, podsumowanie, podpisy. -#}
+{% extends "_base/strona.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set klasa = klasa | default('karta', true) -%}
+{%- set tytul = tytul | default('KARTA', true) -%}
+
+{% block adresat %}
+{%- if adresat_linie %}
+{{ m.adresat(adresat_linie) }}
+{%- endif %}
+{%- if dane_identyfikacyjne %}
+{{ m.siatka(dane, dane_identyfikacyjne, kolumny_siatki | default(2)) }}
+{%- endif %}
+{% endblock %}
+
+{% block lead %}
+{%- if wstep %}
+<p class="lead">{{ wstep }}</p>
+{%- endif %}
+{% endblock %}
+
+{% block tresc %}
+{{ self.tresc_karty() }}
+{% block podsumowanie %}{% endblock %}
+{% block uwagi %}{% endblock %}
+{{ m.zalaczniki(zalaczniki_lista) }}
+{% endblock %}
+
+{% block tresc_karty %}
+<p>{{ akapit | default('') }}</p>
+{% endblock %}
+
+{% block adnotacje %}
+{%- if dane_formalne %}
+{{ m.adnotacje(dane_formalne) }}
+{%- endif %}
+{% endblock %}
+
+{% block podpisy %}
+{%- if podpisy_lista %}
+{{ m.podpisy(podpisy_lista) }}
+{%- endif %}
+{% endblock %}
+
+{% block rodo %}
+{%- if rodo_cel %}
+{{ m.klauzula_rodo(uczelnia, miejscowosc_m, cel=rodo_cel, podstawa=rodo_podstawa | default('art. 6 ust. 1 lit. c i e RODO'), iod=iod | default('iod@uczelnia.pl')) }}
+{%- endif %}
+{% endblock %}

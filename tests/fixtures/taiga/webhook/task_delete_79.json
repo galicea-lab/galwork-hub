@@ -1,0 +1,150 @@
+{
+  "by": {
+    "id": 6,
+    "username": "user6",
+    "full_name": "User 6",
+    "permalink": "https://taiga.example.org/profile/user6",
+    "photo": null,
+    "gravatar_id": null
+  },
+  "data": {
+    "id": 79,
+    "ref": 63,
+    "tags": [
+      "at:test"
+    ],
+    "owner": {
+      "id": 6,
+      "username": "user6",
+      "full_name": "User 6",
+      "permalink": "https://taiga.example.org/profile/user6",
+      "photo": null,
+      "gravatar_id": null
+    },
+    "status": {
+      "id": 31,
+      "name": "Backlog / Pomysły",
+      "slug": "backlog-pomysly",
+      "color": "#70728F",
+      "is_closed": false
+    },
+    "project": {
+      "id": 7,
+      "name": "Galwork",
+      "permalink": "https://taiga.example.org/project/galwork",
+      "logo_big_url": null
+    },
+    "subject": "zadanie",
+    "due_date": null,
+    "us_order": 1795207699516,
+    "watchers": [],
+    "milestone": null,
+    "permalink": "https://taiga.example.org/project/galwork/task/63",
+    "is_blocked": false,
+    "is_iocaine": false,
+    "user_story": {
+      "id": 64,
+      "ref": 62,
+      "tags": [],
+      "owner": {
+        "id": 6,
+        "username": "user6",
+        "full_name": "User 6",
+        "permalink": "https://taiga.example.org/profile/user6",
+        "photo": null,
+        "gravatar_id": null
+      },
+      "points": [
+        {
+          "name": "?",
+          "role": "UX",
+          "value": null
+        },
+        {
+          "name": "?",
+          "role": "Design",
+          "value": null
+        },
+        {
+          "name": "?",
+          "role": "Front",
+          "value": null
+        },
+        {
+          "name": "?",
+          "role": "Back",
+          "value": null
+        }
+      ],
+      "status": {
+        "id": 37,
+        "name": "Nowe / Pomysły",
+        "slug": "nowe-pomysly",
+        "color": "#70728F",
+        "is_closed": false,
+        "is_archived": false
+      },
+      "project": {
+        "id": 7,
+        "name": "Galwork",
+        "permalink": "https://taiga.example.org/project/galwork",
+        "logo_big_url": null
+      },
+      "subject": "test2",
+      "due_date": null,
+      "watchers": [],
+      "is_closed": false,
+      "milestone": null,
+      "permalink": "https://taiga.example.org/project/galwork/us/62",
+      "tribe_gig": null,
+      "is_blocked": false,
+      "assigned_to": {
+        "id": 6,
+        "username": "user6",
+        "full_name": "User 6",
+        "permalink": "https://taiga.example.org/profile/user6",
+        "photo": null,
+        "gravatar_id": null
+      },
+      "description": "",
+      "finish_date": null,
+      "blocked_note": "",
+      "created_date": "2026-11-20T20:42:51.812Z",
+      "from_task_ref": null,
+      "modified_date": "2026-11-20T20:51:54.068Z",
+      "assigned_users": [
+        6
+      ],
+      "due_date_reason": "",
+      "team_requirement": false,
+      "client_requirement": false,
+      "external_reference": null,
+      "generated_from_task": null,
+      "generated_from_issue": null,
+      "custom_attributes_values": {
+        "Czas [h]": 3.5
+      }
+    },
+    "assigned_to": {
+      "id": 6,
+      "username": "user6",
+      "full_name": "User 6",
+      "permalink": "https://taiga.example.org/profile/user6",
+      "photo": null,
+      "gravatar_id": null
+    },
+    "description": "",
+    "promoted_to": [],
+    "blocked_note": "",
+    "created_date": "2026-11-20T20:48:19.537Z",
+    "finished_date": null,
+    "modified_date": "2026-11-20T21:06:54.466Z",
+    "due_date_reason": "",
+    "taskboard_order": 1795207699516,
+    "external_reference": null,
+    "custom_attributes_values": null
+  },
+  "date": "2026-11-20T21:08:23.238Z",
+  "type": "task",
+  "action": "delete"
+}

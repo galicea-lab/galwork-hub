@@ -11,4 +11,7 @@ source $VIRTUALENV/bin/activate
 cd $HUB_HOME
 echo "[$(date '+%F %T')] wf_wake.py" >> $LOG
 $VIRTUALENV/bin/python3 scripts/wf_wake.py >> $LOG 2>&1
+# 2026-11-17: dokumenty huba w Paperless-ngx - ponowienia i wyniki konsumpcji
+echo "[$(date '+%F %T')] wf_documents.py" >> $LOG
+$VIRTUALENV/bin/python3 scripts/wf_documents.py >> $LOG 2>&1
 exit 0

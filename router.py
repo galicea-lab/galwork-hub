@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 # coding: utf-8
-# authors: Jerzy Wawro
-# (C) 2026
 
 from fastapi import FastAPI, APIRouter
 from fastapi import Depends
@@ -13,6 +11,8 @@ from pm.routers.calc import router as router_calc
 from pm.routers.dashboard import router as router_dashboard
 from pm.routers.forms import router as router_forms
 from pm.routers.projects import router as router_projects
+# ekrany rozliczeń integracji Taiga - galwork-pm - ERPNext
+from pm.routers.taiga import router as router_pm_taiga
 
 
 from wf.routers import (
@@ -22,7 +22,12 @@ from wf.routers import (
     router_dictionary_entries as router_wf_dictionary_entries,
     router_edr_paperless as router_wf_edr_paperless,
     router_erpnext_invoices as router_wf_erpnext_invoices,
+    router_instance_documents as router_wf_instance_documents,
+    router_legal_acts as router_wf_legal_acts,
+    router_rollouts as router_wf_rollouts,
+    router_discussions as router_wf_discussions,
     router_notifications as router_wf_notifications,
+    router_permissions as router_wf_permissions,
     router_paperless_documents as router_wf_paperless_documents,
     router_process_files as router_wf_process_files,
     router_print as router_wf_print,
@@ -36,8 +41,7 @@ from wf.routers import (
 from wf.routers.calendar_api import router_calendar as router_wf_calendar
 
 
-# 2026-11-05: moduł edu (Frappe Education) pod /v1/edu.
-# 2026-11-08: plan zajęć, oceny, frekwencja, opłaty i legitymacja.
+# moduł edu (Frappe Education) pod /v1/edu.
 from edu.routers import (
     router_frekwencja,
     router_ja,
@@ -90,6 +94,7 @@ app_pm.include_router(router_dashboard)
 app_pm.include_router(router_projects)
 app_pm.include_router(router_auth)
 app_pm.include_router(router_forms)
+app_pm.include_router(router_pm_taiga)
 v1router.mount("/pm", app_pm)
 
 app_wf = FastAPI()
@@ -97,6 +102,11 @@ app_wf.include_router(router_wf_process_models)
 app_wf.include_router(router_wf_process_files) 
 app_wf.include_router(router_wf_process_instances)
 app_wf.include_router(router_wf_print)
+app_wf.include_router(router_wf_instance_documents)
+app_wf.include_router(router_wf_legal_acts)
+app_wf.include_router(router_wf_permissions)
+app_wf.include_router(router_wf_rollouts)
+app_wf.include_router(router_wf_discussions)
 app_wf.include_router(router_wf_tasks)
 app_wf.include_router(router_wf_comments)
 app_wf.include_router(router_wf_notifications)
@@ -125,12 +135,6 @@ app_bcs.include_router(router_source_systems)
 app_bcs.include_router(router_statements)
 v1router.mount("/bcs", app_bcs)
 
-# Moduł edu - korespondencja z dziekanatem, dane studenta,
-# słowniki i zajęcia (Frappe Education).
-# Plan, oceny, frekwencja, opłaty i legitymacja - patrz
-# edu/routers/*_api.py oraz connector/frappe_education/*.
-# Wywołania Frappe w imieniu użytkownika (przełącznik
-# [frappe_education] forward_user_token, domyślnie wyłączony).
 app_edu = FastAPI(dependencies=[Depends(frappe_as_user)])
 # role użytkownika (student/wykładowca/dziekanat/administrator) -
 app_edu.include_router(router_ja)
@@ -166,22 +170,24 @@ else:
   logging.getLogger(__name__).warning(
     '/v1/konto nie jest zamontowane w hubie - ustaw [konto] mount_in_hub=true '
     '(albo KONTO_MOUNT_IN_HUB=true) lub uruchom osobno: uvicorn konto.app:app')
-# /
 
-# 2026-11-10: kalendarz użytkownika - agregator terminów
-# (zajęcia, kalendarz akademicki, terminy zadań, kalendarz uczelni z ICS).
-# Wywołania Frappe jak w /v1/edu (frappe_as_user).
 from kalendarz.router import router as router_kalendarz
 
 app_kalendarz = FastAPI(dependencies=[Depends(frappe_as_user)])
 app_kalendarz.include_router(router_kalendarz)
 v1router.mount('/kalendarz', app_kalendarz)
-# /
 
-# portal kandydata (realm kandydatów, admissions_poland).
 from rekrutacja.router import router as router_rekrutacja
 
 app_rekrutacja = FastAPI()
 app_rekrutacja.include_router(router_rekrutacja)
 v1router.mount('/rekrutacja', app_rekrutacja)
-# /
+
+# webhooki systemów zewnętrznych (podpisane, bez logowania
+# użytkownika) - integracja Taiga - galwork-pm - ERPNext
+from pm.integrations.taiga.router import router as router_integrations_taiga
+
+app_integrations = FastAPI()
+app_integrations.include_router(router_integrations_taiga)
+v1router.mount('/integrations', app_integrations)
+

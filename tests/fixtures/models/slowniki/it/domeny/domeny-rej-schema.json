@@ -1,0 +1,59 @@
+{
+  "title": "Domena",
+  "type": "object",
+  "required": [
+    "domena",
+    "rejestrator",
+    "data_wygasniecia"
+  ],
+  "properties": {
+    "domena": {
+      "type": "string",
+      "title": "Domena",
+      "minLength": 3
+    },
+    "rejestrator": {
+      "type": "string",
+      "title": "Rejestrator"
+    },
+    "abonent": {
+      "type": "string",
+      "title": "Abonent (na kogo zarejestrowana)"
+    },
+    "wlasciciel": {
+      "type": "string",
+      "title": "Osoba odpowiedzialna"
+    },
+    "data_wygasniecia": {
+      "type": "string",
+      "format": "date",
+      "title": "Data wygaśnięcia"
+    },
+    "autoodnowienie": {
+      "type": "boolean",
+      "title": "Automatyczne odnowienie",
+      "default": false
+    },
+    "dns": {
+      "type": "string",
+      "title": "Serwery DNS / dostawca DNS"
+    },
+    "certyfikat": {
+      "type": "string",
+      "title": "Certyfikat TLS (wystawca, np. Let's Encrypt)"
+    },
+    "certyfikat_wygasa": {
+      "type": "string",
+      "format": "date",
+      "title": "Certyfikat ważny do"
+    },
+    "uslugi": {
+      "type": "string",
+      "title": "Usługi na domenie (www, poczta, systemy)"
+    },
+    "uwagi": {
+      "type": "string",
+      "title": "Uwagi"
+    }
+  }
+}

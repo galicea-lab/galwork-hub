@@ -37,6 +37,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import fnmatch
 import re
 from dataclasses import dataclass
 
@@ -46,7 +47,8 @@ from sqlalchemy.orm import Session
 from wf.models import ProcessModel, ProcessModelFile, ProcessModelVersion
 from wf.schemas.wf_schemas import ProcessFileType, ProcessModelVersionStatus
 from wf.services.print_service import library_dir
-from wf.services.process_service import build_spec_json
+from wf.services.model_git import source_info
+from wf.services.process_service import MODEL_META_FILE, FormRenderError, build_spec_json
 
 #: domyślny katalog ze zdefiniowanymi obiegami, względny do repo galwork-hub.
 DEFAULT_ROOT = os.path.join(
@@ -81,7 +83,45 @@ def _bpmn_process_id(content: str) -> str:
     return match.group(1)
 
 
-def discover_process_folders(root: str) -> list[str]:
+# -BEGIN 2026-11-17: profile obiegów - podzbiór katalogu obiegów do
+# synchronizacji (np. start "od zera" tylko z obiegami cyfryzacji)
+PROFILES_DIR = 'profiles'
+
+
+def profile_patterns(root: str, name: str) -> list[str]:
+    """Wzorce folderów z `<root>/profiles/<name>.txt`: jedna ścieżka względna
+    na wiersz (glob, np. `regulacje/*`, `cyfryzacja/**`), `#` - komentarz."""
+    path = os.path.join(root, PROFILES_DIR, f'{name}.txt')
+    if not os.path.isfile(path):
+        raise FilesystemSyncError(f'Brak profilu obiegów {name!r}: {path}')
+    patterns = []
+    with open(path, encoding='utf-8') as handle:
+        for line in handle:
+            line = line.split('#', 1)[0].strip().strip('/')
+            if line:
+                patterns.append(line)
+    return patterns
+
+
+def _in_profile(rel: str, patterns: list[str]) -> bool:
+    rel = rel.replace(os.sep, '/')
+    for pattern in patterns:
+        if pattern.endswith('/**'):
+            base = pattern[:-3]
+            if rel == base or rel.startswith(base + '/'):
+                return True
+        elif fnmatch.fnmatchcase(rel, pattern):
+            return True
+    return False
+
+
+def configured_profile() -> str | None:
+    from wf.services.process_files import _config
+    return (_config().get('process_profile') or '').strip() or None
+# -END
+
+
+def discover_process_folders(root: str, patterns: list[str] | None = None) -> list[str]:
     """Wszystkie foldery pod `root` zawierające dokładnie jeden plik .bpmn -
     to są "liście" (jeden obieg); foldery-grupy (np. "kancelaria/") bez
     własnego .bpmn są pomijane. Folder z >1 plikiem .bpmn to błąd konfiguracji
@@ -91,6 +131,9 @@ def discover_process_folders(root: str) -> list[str]:
     for dirpath, _dirnames, filenames in os.walk(root):
         bpmn_files = [f for f in filenames if f.endswith('.bpmn')]
         if len(bpmn_files) >= 1:
+            # 2026-11-17:  profil obiegów - tylko foldery pasujące do wzorców
+            if patterns is not None and not _in_profile(os.path.relpath(dirpath, root), patterns):
+                continue
             found.append(dirpath)
     return sorted(found)
 
@@ -143,6 +186,20 @@ def _load_files(folder: str, library: str | None = None) -> list[tuple[str, Proc
     if any(name.endswith('.html.j2') for name, _, _ in loaded):
         own = {name for name, _, _ in loaded}
         loaded += [item for item in _library_files(library) if item[0] not in own]
+    # 2026-11-22: process_model.json z blokiem `galwork` (albo ścieżkami metadanych) jest plikiem wersji -
+    # zmiana widoczności daje nową wersję (content_hash), a po publikacji jest
+    # chroniona jak reszta definicji. Bez bloku plik pomijamy (hashe bez zmian).
+    meta_path = os.path.join(folder, MODEL_META_FILE)
+    if os.path.isfile(meta_path):
+        with open(meta_path, encoding='utf-8') as f:
+            meta = f.read()
+        try:
+            parsed = json.loads(meta) or {}
+        except ValueError as exc:
+            raise FilesystemSyncError(f'{meta_path}: niepoprawny JSON ({exc})') from exc
+        # 2026-11-22: także `metadata_extraction_paths` (kolumny listy, H1)
+        if 'galwork' in parsed or parsed.get('metadata_extraction_paths'):
+            loaded.append((MODEL_META_FILE, ProcessFileType.OTHER, meta))
     bpmn_count = sum(1 for _, t, _ in loaded if t == ProcessFileType.BPMN)
     if bpmn_count == 0:
         raise FilesystemSyncError(f'Brak pliku .bpmn w {folder}')
@@ -188,6 +245,10 @@ def sync_folder(db: Session, folder: str, *, dry_run: bool = False,
         return SyncResult(folder, key, 'error', str(exc))
 
     content_hash, with_sha = _content_hash(files_content)
+    try:
+        spec_json = build_spec_json((n, t, c) for n, t, c, _ in with_sha)
+    except FormRenderError as exc:
+        return SyncResult(folder, key, 'error', str(exc))
 
     model = db.execute(select(ProcessModel).where(ProcessModel.key == key)).scalars().first()
     if model is None:
@@ -210,27 +271,32 @@ def sync_folder(db: Session, folder: str, *, dry_run: bool = False,
         return SyncResult(folder, key, 'would-create-draft')
 
     next_version = (latest.version if latest else 0) + 1
+    # 2026-11-17:  pochodzenie wersji z gita (commit HEAD, niezacommitowane zmiany)
+    source = source_info(folder, library_dir(root) if root else None)
     files = [ProcessModelFile(file_name=file_name, file_type=file_type, content=content, sha256=sha)
              for file_name, file_type, content, sha in with_sha]
     version = ProcessModelVersion(
         process_model_id=model.id, version=next_version,
         status=ProcessModelVersionStatus.DRAFT, bpmn_process_id=bpmn_process_id,
         content_hash=content_hash, files=files,
-        spec_json=build_spec_json(
-            (file_name, file_type, content) for file_name, file_type, content, _ in with_sha),
+        spec_json=spec_json,
+        git_commit=source.commit, git_dirty=source.dirty,
     )
     db.add(version)
     db.flush()
     return SyncResult(folder, key, 'draft-created', f'wersja {next_version}')
 
 
-def sync_all(db: Session, root: str = DEFAULT_ROOT, *, dry_run: bool = False) -> list[SyncResult]:
+def sync_all(db: Session, root: str = DEFAULT_ROOT, *, dry_run: bool = False,
+             profile: str | None = None) -> list[SyncResult]:
     """Synchronizuje wszystkie obiegi pod `root`. Commituje na końcu (albo
     nic, jeśli `dry_run`) - jeden folder z błędem (`FilesystemSyncError`) nie
     przerywa pozostałych, ale cała transakcja jest spójna (albo wszystkie
     poprawne zmiany, albo żadna, jeśli coś inne wywali wyjątek niżej)."""
+    # 2026-11-17:  profil obiegów (wołający podaje jawnie, np. `[wf] process_profile`)
+    patterns = profile_patterns(root, profile) if profile else None
     results = [sync_folder(db, folder, dry_run=dry_run, root=root)
-               for folder in discover_process_folders(root)]
+               for folder in discover_process_folders(root, patterns)]
     if not dry_run:
         db.commit()
     return results

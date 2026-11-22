@@ -1,0 +1,123 @@
+{#-  zestawienie potwierdzeń zapoznania się z informacją (polecenie z potwierdzeniem). -#}
+{#- Obieg: komunikacja/informacja-z-potwierdzeniem | krok: Task_03 "Wykonane" | formularz: informacja-z-potwierdzeniem-schema.json | priorytet: C #}
+{% extends "_wzory/karta.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set dane = f if (f is defined and f) else {} -%}
+
+{%- set tytul = "ZESTAWIENIE POTWIERDZEŃ ZAPOZNANIA SIĘ Z INFORMACJĄ" -%}
+
+{%- set nazwa = m.w1(dane, "Nazwa") | trim -%}
+{%- set informacja = m.w1(dane, "Informacja:") | trim -%}
+{%- set adresaci_uzytkownicy = m.w(dane, "Do kogo", "Adresaci: (Użytkownicy Systemu)") | trim -%}
+{%- set adresaci_grupy = m.w(dane, "Do kogo", "Adresaci: (grupy)") | trim -%}
+{%- set wymagany_podpis = m.w1(dane, "Wymagany podpis załącznika") | trim -%}
+{%- set wymagane_potwierdzenie = m.w1(dane, "Wymagane potwierdzenie") | trim -%}
+{%- set potwierdzam_ze = m.w1(dane, "Potwierdzam że:") | trim -%}
+{%- set potwierdzam = m.w1(dane, "Potwierdzam") | trim -%}
+{%- set termin = m.w1(dane, "termin") | trim -%}
+{%- set widoczne_dla = m.w1(dane, "Listy realizacj widoczne dla:") | trim -%}
+{%- set dodatkowy_link = m.w1(dane, "Dodatkowy Link") | trim -%}
+{%- set uwagi = m.w1(dane, "Uwagi") | trim -%}
+{%- set osoby = dane.get("Lista") or [] -%}
+{%- set potwierdzenia = dane.get("Lista 2") or [] -%}
+{%- set metryka = dane.get("Metryka") or [] -%}
+{%- set brakuje = (osoby | length) - (potwierdzenia | length) -%}
+{%- set brakuje = brakuje if brakuje > 0 else 0 -%}
+
+{%- set forma_brak = "potwierdzenia" if brakuje == 1 else "potwierdzeń" -%}
+{%- set termin_r = (termin ~ " r.") if (termin and termin[-1:] not in ('.', 'r')) else termin -%}
+{%- set podtytul = ("Dotyczy: " ~ nazwa) if nazwa else '' -%}
+{%- set nr_dokumentu = ("Termin potwierdzenia: " ~ termin) if termin else '' -%}
+{%- set znak = ("WPP/" ~ nazwa) if nazwa else '' -%}
+
+{%- set dane_identyfikacyjne = [
+     ("Do kogo", "Adresaci: (Użytkownicy Systemu)", "Adresaci – użytkownicy systemu"),
+     ("Do kogo", "Adresaci: (grupy)", "Adresaci – grupy")] -%}
+
+{%- set rodo_cel = "ewidencjonowanie faktu zapoznania się pracowników i innych adresatów z informacją wewnętrzną Uczelni oraz wykazanie, że informacja została przekazana w sposób skuteczny" -%}
+{%- set rodo_podstawa = "art. 6 ust. 1 lit. c i e RODO w związku z art. 68 i art. 84 ustawy z dnia 20 lipca 2018 r. – Prawo o szkolnictwie wyższym i nauce oraz przepisami o narodowym zasobie archiwalnym i archiwach" -%}
+
+{% block tresc_karty %}
+{{ m.sekcja("Informacja podlegająca potwierdzeniu") }}
+{%- if informacja %}
+{{ m.ramka(informacja, "Treść informacji") }}
+{%- else %}
+<p>Informacja została przekazana w systemie obiegu dokumentów; jej treść stanowi załącznik do niniejszego zestawienia{% if dodatkowy_link %} i jest dostępna pod adresem: <span class="wypelnienie">{{ dodatkowy_link }}</span>{% endif %}.</p>
+{%- endif %}
+{%- if potwierdzam_ze %}
+<p>Osoba potwierdzająca zapoznanie się z informacją przyjmuje oświadczenie następującej treści: <span class="cytat">{{ potwierdzam_ze }}</span></p>
+{%- endif %}
+
+{{ m.sekcja("Warunki przekazania informacji") }}
+{{ m.tabela(["Element", "Wartość"], [
+  ["Nazwa informacji", nazwa or "……"],
+  ["Adresaci – użytkownicy systemu", adresaci_uzytkownicy or "……"],
+  ["Adresaci – grupy", adresaci_grupy or "……"],
+  ["Wymagane potwierdzenie zapoznania", wymagane_potwierdzenie],
+  ["Wymagany podpis załącznika", wymagany_podpis],
+  ["Wskazane potwierdzenie w formularzu", potwierdzam],
+  ["Termin, w którym należy potwierdzić", termin or "……"],
+  ["Listy realizacji widoczne dla", widoczne_dla or "……"],
+  ["Dodatkowy link do informacji", dodatkowy_link or "……"],
+], "kompaktowa") }}
+
+{{ m.sekcja("Zestawienie osób objętych informacją") }}
+<table class="tabela">
+  <thead><tr><th>Lp.</th><th>Imię i nazwisko / identyfikator</th><th>Jednostka organizacyjna</th><th>Data potwierdzenia</th><th>Podpis</th></tr></thead>
+  <tbody>
+  {%- for osoba in osoby %}
+    <tr><td>{{ loop.index }}</td><td>{{ osoba }}</td><td>……</td><td>……</td><td>&nbsp;</td></tr>
+  {%- else %}
+    <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+  {%- endfor %}
+  </tbody>
+</table>
+<p class="drobny">Zestawienie sporządza się na podstawie list formularza informacji: „Lista” (adresaci objęci informacją) oraz „Lista 2” (zarejestrowane potwierdzenia). Kolumny „Jednostka organizacyjna”, „Data potwierdzenia” i „Podpis” uzupełnia się na podstawie danych z listy realizacji zadania w systemie; podpis adresata jest wymagany, jeżeli wymagane jest potwierdzenie w formie pisemnej.</p>
+
+{%- if potwierdzenia %}
+{{ m.sekcja("Zarejestrowane potwierdzenia") }}
+<ol class="zalaczniki">
+  {%- for wpis in potwierdzenia %}
+  <li>{{ wpis }}</li>
+  {%- endfor %}
+</ol>
+{%- endif %}
+{% endblock %}
+
+{% block podsumowanie %}
+{{ m.sekcja("Podsumowanie") }}
+{{ m.tabela(["Pozycja", "Liczba"], [
+  ["Osób objętych informacją", osoby | length],
+  ["Potwierdzeń zarejestrowanych", potwierdzenia | length],
+  ["Brakujących potwierdzeń", brakuje],
+]) }}
+<p>{% if adresaci_grupy or adresaci_uzytkownicy %}Informację przekazano {% endif %}{% if adresaci_grupy %}do grup: {{ adresaci_grupy }}{% endif %}{% if adresaci_grupy and adresaci_uzytkownicy %}, {% endif %}{% if adresaci_uzytkownicy %}do użytkowników: {{ adresaci_uzytkownicy }}{% endif %}. Zarejestrowano {{ potwierdzenia | length }} z {{ osoby | length }} wymaganych potwierdzeń; brakuje {{ brakuje }} {{ forma_brak }}{% if termin %} – oświadczenia złożone po terminie {{ termin_r }} odnotowuje się jako złożone po terminie{% endif %}.</p>
+<p>Zestawienie uznaje się za zamknięte, gdy liczba potwierdzeń odpowiada liczbie adresatów objętych informacją; w przeciwnym razie osobę, która nie potwierdziła zapoznania się z informacją, wzywa się do złożenia oświadczenia w terminie 7 dni od dnia otrzymania wezwania.</p>
+{% endblock %}
+
+{% block uwagi %}
+{%- if uwagi or metryka %}
+{{ m.sekcja("Uwagi i adnotacje") }}
+{%- if uwagi %}<p>{{ uwagi }}</p>{% endif %}
+{%- if metryka %}
+<ul class="zwykle">
+  {%- for wpis in metryka %}
+  <li>{{ wpis }}</li>
+  {%- endfor %}
+</ul>
+{%- endif %}
+{%- endif %}
+{% endblock %}
+
+{% block adnotacje %}
+{{ m.adnotacje([
+  ("Zestawienie sporządzono", data),
+  ("Liczba adresatów objętych informacją", osoby | length),
+  ("Liczba zarejestrowanych potwierdzeń", potwierdzenia | length),
+]) }}
+{% endblock %}
+
+{% block podpisy %}
+{{ m.podpisy([("Sporządził(a) zestawienie", "", data), ("Zatwierdził(a) kierownik komórki organizacyjnej", "", "")]) }}
+<p class="pieczec">(podpisy osób sporządzającej i zatwierdzającej zestawienie)</p>
+{% endblock %}

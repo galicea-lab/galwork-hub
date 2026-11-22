@@ -159,6 +159,9 @@ class StartLink:
   automatic: bool
   inputs: tuple[tuple[str, str], ...] = ()
   title: str | None = None
+  # 2026-11-17:  `startOnce` - najwyżej jedna (nieanulowana) instancja danego
+  # modelu na instancję nadrzędną, np. jedna rejestracja aktu w repozytorium.
+  once: bool = False
 
 
 HANDLER_PROP = 'handler'
@@ -166,6 +169,7 @@ START_PROCESS_PROP = 'startProcess'
 QUICK_ACTION_PROP = 'quickAction'
 START_INPUT_PROP = 'startInput'
 START_TITLE_PROP = 'startTitle'
+START_ONCE_PROP = 'startOnce'
 _AUTO_START_TAGS = (f'{{{BPMN_NS}}}sendTask', f'{{{BPMN_NS}}}intermediateThrowEvent')
 _ACTION_TAGS = (f'{{{BPMN_NS}}}userTask', f'{{{BPMN_NS}}}manualTask')
 
@@ -233,7 +237,8 @@ def read_start_links(xml_text: str) -> dict[str, dict[str, StartLink]]:
           element_id=element.get('id'), name=element.get('name') or element.get('id'),
           process_keys=keys, automatic=automatic,
           inputs=_parse_inputs(props.get(START_INPUT_PROP)),
-          title=props.get(START_TITLE_PROP))
+          title=props.get(START_TITLE_PROP),
+          once=(props.get(START_ONCE_PROP) or '').strip().lower() in ('true', '1', 'tak', 'yes'))
     if process.get('id') and links:
       result[process.get('id')] = links
   return result

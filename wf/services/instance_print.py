@@ -28,7 +28,6 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from wf.dependencies import is_process_admin
 from wf.models import (
     Document,
     DocumentVersion,
@@ -71,18 +70,10 @@ class PrintResult:
 # --- uprawnienia ----------------------------------------------------------
 
 def can_print(instance: ProcessInstance, user: CurrentUser) -> bool:
-    if is_process_admin(user):
-        return True
-    acting = user.acting_user_ids
-    if instance.started_by_id in acting:
-        return True
-    principals = {user.username} | set(user.groups) | set(user.roles)
-    for task in instance.tasks or []:
-        if task.claimed_by_id in acting or task.completed_by_id in acting:
-            return True
-        if any(c.principal_value in principals for c in (task.candidates or [])):
-            return True
-    return False
+    # 2026-11-22: jedna reguła dostępu do sprawy (wf/services/instance_access.py)
+    # bez reguły rejestru jawnego - dokumenty i wydruki tylko dla uczestników
+    from wf.services.instance_access import is_participant
+    return is_participant(instance, user)
 
 
 # --- zadanie i dane -------------------------------------------------------
@@ -202,6 +193,7 @@ def _meta(instance: ProcessInstance, task: HumanTask | None, user: CurrentUser,
         'zadanie': task.name if task else '',
         'zadanie_bpmn': task.bpmn_task_id if task else '',
         'uzytkownik': user.display_name,
+        'tryb': instance.usage_mode or '',
     }
 
 
@@ -226,6 +218,9 @@ def build_print(db: Session, instance: ProcessInstance, user: CurrentUser, *,
         template=entry.template if entry else None, data=data, meta=meta,
         schema=schema, ui_schema=ui, title=(entry.title if entry else None) or meta['tytul'],
         db=db)
+    rollout = instance.rollout if instance.usage_mode else None
+    rendered.html = ps.mark_usage(rendered.html, instance.usage_mode,
+                                  rollout.previous_procedure if rollout is not None else None)
     return PrintResult(rendered=rendered, pdf=ps.html_to_pdf(rendered.html) if pdf else None, task=task)
 
 

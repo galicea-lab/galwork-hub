@@ -23,7 +23,6 @@ from __future__ import annotations
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from api.dependencies import get_db
@@ -44,13 +43,10 @@ from wf.schemas.wf_schemas import (
 router = APIRouter(prefix="/edr", tags=["edr"])
 
 
-def _get_instance_or_404(db: Session, instance_id: UUID) -> ProcessInstance:
-    instance = db.execute(
-        select(ProcessInstance).where(ProcessInstance.id == instance_id)
-    ).scalars().first()
-    if instance is None:
-        raise HTTPException(status_code=404, detail="Instancja procesu nie znaleziona")
-    return instance
+def _get_instance_or_404(db: Session, instance_id: UUID, user: CurrentUser) -> ProcessInstance:
+    # 2026-11-22: 403, gdy użytkownik nie widzi sprawy (instance_access.can_view)
+    from wf.services.instance_access import get_visible_instance
+    return get_visible_instance(db, instance_id, user, write=True)
 
 
 @router.post("/sync-inbox", response_model=EdrSyncInboxResponse)
@@ -76,7 +72,7 @@ def refresh_evidences(instance_id: UUID, test: bool = False, db: Session = Depen
                        current_user: CurrentUser = Depends(get_current_wf_user)):
     """Dociąga potwierdzenia (evidences) dla JEDNEJ sprawy na żądanie -
     zob. `edr_paperless.fetch_evidences_for_instance`."""
-    instance = _get_instance_or_404(db, instance_id)
+    instance = _get_instance_or_404(db, instance_id, current_user)
     if not instance.business_key:
         raise HTTPException(
             status_code=409, detail="Instancja nie ma messageId (business_key) - nie da "
@@ -102,7 +98,7 @@ def send_document(instance_id: UUID, payload: EdrSendRequest, db: Session = Depe
     """Wysyła główny dokument sprawy przez EDR - zob.
     `edr_paperless.send_document` (wymaga `ade_to` w `instance.summary` i
     zaingestowanego do Paperless-ngx dokumentu głównego, inaczej 409)."""
-    instance = _get_instance_or_404(db, instance_id)
+    instance = _get_instance_or_404(db, instance_id, current_user)
     try:
         message_id = edr_paperless.send_document(
             db, get_paperless_connector(), instance, actor=current_user, test=payload.test)

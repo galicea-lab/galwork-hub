@@ -11,6 +11,7 @@ import unittest
 from datetime import UTC, datetime, timedelta
 from unittest import mock
 
+from tests.fixture_paths import fixture_model
 from tests.base import ApiTestCase
 from wf.models import Document, DocumentVersion, HumanTask, ProcessEvent, ProcessInstance
 from wf.schemas.wf_schemas import CurrentUser
@@ -18,7 +19,7 @@ from wf.services.filesystem_sync import _load_files
 from wf.services.process_service import get_service
 
 HUB = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PODPIS = os.path.join(HUB, 'spiffworkflow', 'wspolne', 'podpis-dokumentu')
+PODPIS = fixture_model('wspolne', 'podpis-dokumentu')
 
 PARENT = '''<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="d_u" targetNamespace="x">

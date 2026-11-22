@@ -20,14 +20,16 @@ def _section_values(section: str) -> dict:
     Zmienna środowiskowa ma postać <SEKCJA>_<KLUCZ>, np. DB_PASSWORD,
     KEYCLOAK_SERVER_URL, APP_CORS_ORIGINS. Używane dla sekcji krytycznych
     (zwłaszcza haseł), żeby nie trzymać poświadczeń w pliku.
+
+    2026-11-22: zmienna działa także dla klucza (albo całej sekcji), którego
+    nie ma w config.ini - wcześniej była pomijana, więc np. na serwerze CI bez
+    `[wf] act_editor_groups` w pliku `WF_ACT_EDITOR_GROUPS` nie miało skutku.
     """
-    if not _parser.has_section(section):
-        return {}
-    values = {k: v for k, v in _parser[section].items()}
-    for key in list(values):
-        env_value = os.environ.get(f"{section.upper()}_{key.upper()}")
-        if env_value is not None:
-            values[key] = env_value
+    values = {k: v for k, v in _parser[section].items()} if _parser.has_section(section) else {}
+    prefix = f"{section.upper()}_"
+    for name, env_value in os.environ.items():
+        if name.startswith(prefix) and len(name) > len(prefix):
+            values[name[len(prefix):].lower()] = env_value
     return values
 
 

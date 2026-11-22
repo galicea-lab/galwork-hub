@@ -1,0 +1,68 @@
+{#- Wzorzec: umowa i aneks (§). -#}
+{#-  układ umowy: strony, paragrafy, postanowienia końcowe,
+    podpisy stron, informacja o administratorach danych. -#}
+{% extends "_base/strona.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set klasa = klasa | default('umowa', true) -%}
+{%- set tytul = tytul | default('UMOWA', true) -%}
+
+{% block adresat %}{% endblock %}
+
+{% block lead %}
+<div class="lead">
+{{ self.strony() }}
+</div>
+{% endblock %}
+
+{% block tresc %}
+{{ self.paragrafy() }}
+{% block postanowienia_koncowe %}
+<h2 class="sekcja">Postanowienia końcowe</h2>
+<p>W sprawach nieuregulowanych niniejszą umową stosuje się przepisy Kodeksu cywilnego oraz Regulaminu {{ przedmiot_umowy | default('zamówień') }} obowiązującego w Uczelni.</p>
+<p>Wszelkie zmiany umowy wymagają formy pisemnej pod rygorem nieważności.</p>
+<p>Umowę sporządzono w dwóch jednobrzmiących egzemplarzach, po jednym dla każdej ze stron.</p>
+{% endblock %}
+{% block klauzule_dodatkowe %}{% endblock %}
+<div class="podpisy" style="margin-top:12mm">
+  <div class="podpis">
+    <div class="osoba">{{ strona_a_osoba | default('') }}</div>
+    <div class="linia-podpisu"></div>
+    <div class="rola">{{ strona_a_rola | default('(podpis i pieczęć ' ~ uczelnia ~ ')') }}</div>
+  </div>
+  <div class="podpis">
+    <div class="osoba">{{ strona_b_osoba | default('') }}</div>
+    <div class="linia-podpisu"></div>
+    <div class="rola">{{ strona_b_rola | default('(podpis i pieczęć kontrahenta)') }}</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block strony %}
+<p>zawarta w dniu {{ data }} w {{ miejscowosc_m }} pomiędzy:</p>
+<p><strong>{{ uczelnia }}</strong>, {{ adres_uczelni }}, NIP: {{ nip_uczelni | default('…') }}, REGON: {{ regon_uczelni | default('…') }}, reprezentowaną przez {{ przedstawiciel_uczelni | default('Rektora') }}, zwaną dalej „Zamawiającym”,</p>
+<p>a</p>
+<p><strong>{{ kontrahent_nazwa | default('…') }}</strong>, {{ kontrahent_adres | default('…') }}
+{%- if nip_kontrahenta %}, NIP: {{ nip_kontrahenta }}{% endif %}
+{%- if regon_kontrahenta %}, REGON: {{ regon_kontrahenta }}{% endif %}
+, reprezentowanym przez {{ kontrahent_reprezentant | default('…') }}, zwanym dalej „Wykonawcą”,</p>
+<p>o następującej treści:</p>
+{% endblock %}
+
+{% block paragrafy %}
+<h2 class="sekcja">§ 1. Przedmiot umowy</h2>
+<p>{{ przedmiot_umowy_opis | default('Zamawiający zleca, a Wykonawca zobowiązuje się do wykonania przedmiotu umowy zgodnie z opisem zawartym w ofercie i specyfikacji stanowiącej załącznik do umowy.') }}</p>
+<h2 class="sekcja">§ 2. Termin wykonania</h2>
+<p>Przedmiot umowy zostanie wykonany w terminie od {{ termin_od | default('…') }} do {{ termin_do | default('…') }}.</p>
+<h2 class="sekcja">§ 3. Wynagrodzenie</h2>
+<p>Strony ustalają wynagrodzenie za wykonanie przedmiotu umowy w wysokości {{ wynagrodzenie | default('…') }} zł brutto. Wynagrodzenie zostanie zapłacone na podstawie prawidłowo wystawionej faktury, w terminie 30 dni od dnia jej doręczenia.</p>
+<h2 class="sekcja">§ 4. Odpowiedzialność i jakość</h2>
+<p>Wykonawca odpowiada za jakość wykonania przedmiotu umowy zgodnie z obowiązującymi przepisami i normami. Zamawiający może żądać usunięcia stwierdzonych wad w wyznaczonym terminie.</p>
+{% endblock %}
+
+{% block rodo %}
+<section class="rodo">
+  <div class="rodo-tytul">Informacja o przetwarzaniu danych osobowych</div>
+  <p>Strony umowy ustalają, że przetwarzają dane osobowe osób wskazanych w niniejszej umowie jako odrębni administratorzy danych, w celach związanych z realizacją i rozliczeniem umowy. Dane przetwarzane są na podstawie art. 6 ust. 1 lit. b RODO (wykonanie umowy) oraz art. 6 ust. 1 lit. c RODO (obowiązki rachunkowe i archiwizacyjne). Administratorami danych są: {{ uczelnia }} oraz {{ kontrahent_nazwa | default('kontrahent') }}.</p>
+  <p>Każdej osobie przysługuje prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, sprzeciwu oraz wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych. Kontakt z Inspektorem Ochrony Danych: iod@uczelnia.pl.</p>
+</section>
+{% endblock %}

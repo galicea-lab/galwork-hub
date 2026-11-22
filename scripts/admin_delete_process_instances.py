@@ -4,7 +4,7 @@
 """
 Narzędzie administratora: usuwa pojedyncze, błędnie wystartowane instancje
 procesów (np. uruchomione z generycznego ekranu "Modele procesów" bez
-wymaganych danych wejściowych - zob. galwork-book, czesc-3-obszary/dzialy/
+wymaganych danych wejściowych - zob. galwork-models-book, obszary/dzialy/
 zakupy.md). W przeciwieństwie do `clear_process_data.py` (który czyści
 CAŁE modele/wersje procesów - dane testowe przed wdrożeniem) ten skrypt
 NIE dotyka definicji procesu (ProcessModel/ProcessModelVersion/pliki BPMN)
@@ -43,7 +43,7 @@ import uuid
 from dataclasses import dataclass
 from typing import Any
 
-from sqlalchemy import delete, func, select, update
+from sqlalchemy import delete, func, select, text, update
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _ROOT not in sys.path:
@@ -245,6 +245,10 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
         print("\nWykonuję...")
+        # 2026-11-17: wyjątek od wyzwalaczy niezmienności (wf/models/immutability.py)
+        # - tylko w tej transakcji, tylko dla narzędzi administratora
+        if session.get_bind().dialect.name == "postgresql":
+            session.execute(text("SET LOCAL galwork.allow_purge = 'on'"))
         for step, count in counts:
             if step.action == "delete":
                 stmt = delete(step.model)

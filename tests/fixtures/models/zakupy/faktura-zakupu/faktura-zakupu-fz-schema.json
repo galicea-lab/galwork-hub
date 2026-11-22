@@ -1,0 +1,125 @@
+{
+  "title": "Faktura zakupu",
+  "description": "Dane faktury pochodzą z ERPNext (KSeF) i są tylko do odczytu. Opis merytoryczny wskazuje projekt i rodzaj kosztu; akceptacja decyduje o zatwierdzeniu faktury w ERPNext.",
+  "type": "object",
+  "x-permission-profiles": {
+    "erp": {
+      "Faktura z ERPNext": "readonly",
+      "Opis merytoryczny": "readonly",
+      "Akceptacja": "readonly"
+    },
+    "opis": {
+      "Faktura z ERPNext": "none",
+      "Opis merytoryczny": "editable",
+      "Akceptacja": "readonly"
+    },
+    "akceptacja": {
+      "Faktura z ERPNext": "none",
+      "Opis merytoryczny": "readonly",
+      "Akceptacja": "editable"
+    }
+  },
+  "properties": {
+    "numer_faktury": {
+      "type": "string",
+      "title": "Numer faktury",
+      "x-permissions": "erp"
+    },
+    "dostawca": {
+      "type": "string",
+      "title": "Dostawca",
+      "x-permissions": "erp"
+    },
+    "nip_dostawcy": {
+      "type": "string",
+      "title": "NIP dostawcy",
+      "x-permissions": "erp"
+    },
+    "data_wystawienia": {
+      "type": "string",
+      "title": "Data wystawienia",
+      "format": "date",
+      "x-permissions": "erp"
+    },
+    "termin_platnosci": {
+      "type": "string",
+      "title": "Termin płatności",
+      "format": "date",
+      "x-permissions": "erp"
+    },
+    "kwota_netto": {
+      "type": "number",
+      "title": "Kwota netto",
+      "x-permissions": "erp"
+    },
+    "kwota_brutto": {
+      "type": "number",
+      "title": "Kwota brutto",
+      "x-permissions": "erp"
+    },
+    "waluta": {
+      "type": "string",
+      "title": "Waluta",
+      "x-permissions": "erp"
+    },
+    "numer_ksef": {
+      "type": "string",
+      "title": "Numer KSeF",
+      "x-permissions": "erp"
+    },
+    "faktura_erp": {
+      "type": "string",
+      "title": "Faktura w ERPNext",
+      "x-permissions": "erp"
+    },
+    "link_erp": {
+      "type": "string",
+      "title": "Otwórz w ERPNext",
+      "x-permissions": "erp"
+    },
+    "status_erp": {
+      "type": "string",
+      "title": "Status w ERPNext",
+      "x-permissions": "erp"
+    },
+    "projekt": {
+      "type": "string",
+      "title": "Projekt",
+      "x-permissions": "opis",
+      "x-required-in-steps": [
+        "Opis merytoryczny"
+      ]
+    },
+    "rodzaj_kosztu": {
+      "type": "string",
+      "title": "Rodzaj kosztu (konto)",
+      "x-permissions": "opis",
+      "x-required-in-steps": [
+        "Opis merytoryczny"
+      ]
+    },
+    "opis_merytoryczny": {
+      "type": "string",
+      "title": "Opis merytoryczny",
+      "x-permissions": "opis",
+      "x-required-in-steps": [
+        "Opis merytoryczny"
+      ]
+    },
+    "zgodnosc": {
+      "type": "string",
+      "title": "Zgodność z zamówieniem / umową",
+      "enum": [
+        "zgodna z zamówieniem lub umową",
+        "bez zamówienia (zakup jednorazowy)",
+        "rozbieżność - opis w uwagach"
+      ],
+      "x-permissions": "opis"
+    },
+    "uwagi_akceptacji": {
+      "type": "string",
+      "title": "Uwagi akceptującego",
+      "x-permissions": "akceptacja"
+    }
+  }
+}

@@ -14,7 +14,12 @@ from .dictionary_entry_api import router as router_dictionary_entries
 from .edr_paperless_api import router as router_edr_paperless
 from .erpnext_invoice_api import router as router_erpnext_invoices
 from .human_task_router import router as router_tasks
+from .instance_document_router import router as router_instance_documents
+from .legal_act_router import router as router_legal_acts
+from .rollout_router import router as router_rollouts
+from .discussion_router import router as router_discussions
 from .notification_router import router as router_notifications
+from .permissions_router import router as router_permissions
 from .paperless_document_api import router as router_paperless_documents
 from .process_file_router import router as router_process_files  
 from .process_instance_router import router as router_process_instances
@@ -41,4 +46,9 @@ __all__ = [
     "router_purchase_requests",
     "router_process_files",
     "router_print",
+    "router_instance_documents",
+    "router_legal_acts",
+    "router_permissions",
+    "router_rollouts",
+    "router_discussions",
 ]

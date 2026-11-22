@@ -1,0 +1,207 @@
+{
+  "title": "Wdrożenie obiegów",
+  "description": "2026-11-17: decyzja o wdrożeniu obiegów w trybie testowym, pomocniczym albo produkcyjnym (galwork-hub wf/services/rollouts.py)",
+  "type": "object",
+  "required": [
+    "Tytuł",
+    "Działanie",
+    "Obiegi",
+    "Od"
+  ],
+  "properties": {
+    "Tytuł": {
+      "type": "string",
+      "title": "Tytuł decyzji",
+      "x-permissions": {
+        "Wniosek o wdrożenie": "editable",
+        "Konsultacje z IOD": "readonly",
+        "Decyzja": "readonly",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Nr decyzji": {
+      "type": "string",
+      "title": "Nr decyzji",
+      "x-permissions": {
+        "Wniosek o wdrożenie": "editable",
+        "Konsultacje z IOD": "readonly",
+        "Decyzja": "editable",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Typ dokumentu": {
+      "type": "string",
+      "title": "Typ dokumentu",
+      "default": "Decyzja wdrożeniowa",
+      "x-permissions": {
+        "Wniosek o wdrożenie": "editable",
+        "Konsultacje z IOD": "readonly",
+        "Decyzja": "readonly",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Działanie": {
+      "type": "string",
+      "title": "Działanie",
+      "default": "wdrożenie",
+      "oneOf": [
+        {
+          "const": "wdrożenie",
+          "title": "Wdrożenie (nowe lub zmiana trybu)"
+        },
+        {
+          "const": "zakończenie",
+          "title": "Zakończenie wdrożenia"
+        }
+      ],
+      "x-permissions": {
+        "Wniosek o wdrożenie": "editable",
+        "Konsultacje z IOD": "readonly",
+        "Decyzja": "readonly",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Obiegi": {
+      "type": "array",
+      "title": "Obiegi",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "description": "Obiegi (procesy) objęte decyzją - jedna decyzja może wprowadzić kilka obiegów",
+      "x-permissions": {
+        "Wniosek o wdrożenie": "editable",
+        "Konsultacje z IOD": "readonly",
+        "Decyzja": "readonly",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Tryb": {
+      "type": "string",
+      "title": "Tryb użycia",
+      "oneOf": [
+        {
+          "const": "testowy",
+          "title": "Testowy - równolegle, obowiązuje procedura dotychczasowa"
+        },
+        {
+          "const": "pomocniczy",
+          "title": "Pomocniczy - dokument źródłowy poza systemem"
+        },
+        {
+          "const": "produkcyjny",
+          "title": "Produkcyjny - obieg jest trybem obowiązującym"
+        }
+      ],
+      "x-permissions": {
+        "Wniosek o wdrożenie": "editable",
+        "Konsultacje z IOD": "readonly",
+        "Decyzja": "readonly",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Jednostki": {
+      "type": "array",
+      "title": "Jednostki organizacyjne",
+      "items": {
+        "type": "string"
+      },
+      "description": "Puste = cała organizacja. Jednostki podległe są objęte wdrożeniem. Na potrzeby pilotażu można powołać jednostkę tymczasową.",
+      "x-permissions": {
+        "Wniosek o wdrożenie": "editable",
+        "Konsultacje z IOD": "readonly",
+        "Decyzja": "readonly",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Od": {
+      "type": "string",
+      "format": "date",
+      "title": "Od kiedy",
+      "x-permissions": {
+        "Wniosek o wdrożenie": "editable",
+        "Konsultacje z IOD": "readonly",
+        "Decyzja": "readonly",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Do": {
+      "type": "string",
+      "format": "date",
+      "title": "Do kiedy",
+      "description": "Wymagane w trybie testowym",
+      "x-permissions": {
+        "Wniosek o wdrożenie": "editable",
+        "Konsultacje z IOD": "readonly",
+        "Decyzja": "readonly",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Procedura dotychczasowa": {
+      "type": "string",
+      "title": "Procedura dotychczasowa / dokument źródłowy",
+      "description": "Tryb testowy: co nadal obowiązuje (np. instrukcja papierowa). Tryb pomocniczy: gdzie jest dokument źródłowy (np. oryginał w archiwum zakładowym).",
+      "x-permissions": {
+        "Wniosek o wdrożenie": "editable",
+        "Konsultacje z IOD": "readonly",
+        "Decyzja": "readonly",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "dane_osobowe": {
+      "type": "boolean",
+      "title": "Obieg przetwarza dane osobowe (konsultacja z IOD)",
+      "default": false,
+      "x-permissions": {
+        "Wniosek o wdrożenie": "editable",
+        "Konsultacje z IOD": "readonly",
+        "Decyzja": "readonly",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Uzasadnienie": {
+      "type": "string",
+      "title": "Uzasadnienie",
+      "x-permissions": {
+        "Wniosek o wdrożenie": "editable",
+        "Konsultacje z IOD": "readonly",
+        "Decyzja": "readonly",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Opinia IOD": {
+      "type": "string",
+      "title": "Opinia IOD",
+      "x-permissions": {
+        "Wniosek o wdrożenie": "none",
+        "Konsultacje z IOD": "editable",
+        "Decyzja": "readonly",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    },
+    "Uwagi do decyzji": {
+      "type": "string",
+      "title": "Uwagi do decyzji",
+      "x-permissions": {
+        "Wniosek o wdrożenie": "none",
+        "Konsultacje z IOD": "none",
+        "Decyzja": "editable",
+        "Archiwum": "readonly",
+        "Odrzucone": "readonly"
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "ui:order": [
+    "domena",
+    "rejestrator",
+    "abonent",
+    "wlasciciel",
+    "data_wygasniecia",
+    "autoodnowienie",
+    "dns",
+    "certyfikat",
+    "certyfikat_wygasa",
+    "uslugi",
+    "uwagi",
+    "*"
+  ],
+  "uslugi": {
+    "ui:widget": "textarea"
+  },
+  "uwagi": {
+    "ui:widget": "textarea"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "ui:order": [
+    "Dane identyfikacyjne",
+    "Plan pracy"
+  ],
+  "Dane identyfikacyjne": {
+    "ui:order": [
+      "Dział",
+      "Rok"
+    ],
+    "Dział": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/dzialy",
+        "sourceName": "Działy"
+      }
+    }
+  },
+  "Plan pracy": {
+    "items": {
+      "ui:order": [
+        "Uwagi",
+        "Planowane koszty w zł",
+        "Cel strategiczny / cele operacyjne",
+        "Odniesienia do dokumentu/ów o charakterze strategi",
+        "Wskaźnik określający stopień osiągnięcia celu",
+        "Planowana wartość wskaźnika na koniec okresu",
+        "Najważniejsze zadania służące realizacji celu",
+        "Element PSP",
+        "Realizacja"
+      ],
+      "Uwagi": {
+        "ui:widget": "textarea"
+      },
+      "Element PSP": {
+        "ui:widget": "TreeSelectWidget",
+        "ui:options": {
+          "endpoint": "/v1/wf/dictionaries/projekty",
+          "sourceName": "<Baza systemu>",
+          "sourceType": "Systemowe"
+        }
+      }
+    },
+    "ui:options": {
+      "addable": true
+    }
+  }
+}

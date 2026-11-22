@@ -1,0 +1,105 @@
+{
+  "title": "Zgłoszenie-ZCYFR",
+  "description": "Proces: ZCYFR - Zgłoszenia (ID: 374); Obieg: Zgłoszenie (ID: 429); Typ dokumentu: ZCYFR - Zgłoszenia (ID: 538)",
+  "type": "object",
+  "properties": {
+    "Tytuł zgłoszenia": {
+      "type": "string",
+      "title": "Tytuł zgłoszenia",
+      "x-permissions": {
+        "Zgłoszenie": "editable",
+        "W trakcie analizy": "editable",
+        "Zaakceptowane": "readonly",
+        "Anulowane": "readonly"
+      },
+      "x-required-in-steps": [
+        "Zgłoszenie"
+      ]
+    },
+    "Opis / uzasadnienie": {
+      "type": "string",
+      "title": "Opis / uzasadnienie",
+      "x-permissions": {
+        "Zgłoszenie": "editable",
+        "W trakcie analizy": "editable",
+        "Zaakceptowane": "readonly",
+        "Anulowane": "readonly"
+      }
+    },
+    "Termin": {
+      "type": "string",
+      "format": "date",
+      "title": "Termin",
+      "x-permissions": {
+        "Zgłoszenie": "editable",
+        "W trakcie analizy": "editable",
+        "Zaakceptowane": "readonly",
+        "Anulowane": "readonly"
+      }
+    },
+    "Zakres": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Funkcjonalność": {
+            "type": "string",
+            "title": "Funkcjonalność",
+            "x-permissions": {
+              "Zgłoszenie": "editable",
+              "W trakcie analizy": "editable",
+              "Zaakceptowane": "readonly",
+              "Anulowane": "readonly"
+            }
+          },
+          "Pilność / etap": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "0",
+                "title": "Poza projektem"
+              },
+              {
+                "const": "1",
+                "title": "Etap 1"
+              },
+              {
+                "const": "2",
+                "title": "Etap 2"
+              },
+              {
+                "const": "3",
+                "title": "Etap 3"
+              },
+              {
+                "const": "4",
+                "title": "Etap 4"
+              },
+              {
+                "const": "5",
+                "title": "Etap 5"
+              }
+            ],
+            "title": "Pilność / etap",
+            "x-permissions": {
+              "Zgłoszenie": "editable",
+              "W trakcie analizy": "editable",
+              "Zaakceptowane": "readonly",
+              "Anulowane": "readonly"
+            }
+          }
+        }
+      },
+      "title": "Zakres",
+      "x-permissions": {
+        "Zgłoszenie": "editable",
+        "W trakcie analizy": "editable",
+        "Zaakceptowane": "readonly",
+        "Anulowane": "readonly"
+      }
+    }
+  },
+  "required": [
+    "Tytuł zgłoszenia"
+  ]
+}

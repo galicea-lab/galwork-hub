@@ -1,9 +1,9 @@
 # wf/routers/purchase_request_api.py
 # coding: utf-8
 """
-Wniosek zakupowy (zob. wf/models/wf.py::PurchaseRequest,
-wf/services/purchase_request_service.py) - galwork-book,
-czesc-3-obszary/dzialy/zakupy.md.
+2026-11-18: Wniosek zakupowy (zob. wf/models/wf.py::PurchaseRequest,
+wf/services/purchase_request_service.py) - galwork-models-book,
+obszary/dzialy/zakupy.md.
 
 Tworzenie wniosku (`POST /purchase-requests`) wymaga tylko zalogowania -
 każdy pracownik może złożyć wniosek. Dalszy przebieg (akceptacje) idzie

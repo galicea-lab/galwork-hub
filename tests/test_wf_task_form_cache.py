@@ -189,3 +189,39 @@ class TaskFormCacheTest(ApiTestCase):
         self.assertEqual(first.json()['json_schema'], second.json()['json_schema'])
         filter_spy.assert_called_once()
         self.assertEqual(len(self.fake_redis.store), 1)
+
+    # -BEGIN 2026-11-19
+    def test_form_data_hides_values_of_fields_hidden_in_step(self):
+        """`form_data` nie niesie wartości pól ukrytych w kroku, a wysłany
+        formularz nie zmienia pól tylko do odczytu."""
+        self._create_model()
+        instance_id, task_id = self._start_instance_and_get_task_id()
+        lock_version = self.client.get(f'/v1/wf/process-instances/{instance_id}').json()['lock_version']
+
+        with patch('wf.services.process_service.cache_get_json', self.fake_redis.get), \
+             patch('wf.services.process_service.cache_set_json', self.fake_redis.set):
+            complete = self.client.post(f'/v1/wf/tasks/{task_id}/complete', json={
+                'data': {'widoczne_zawsze': 'x', 'tylko_recenzja': 'tajne'},
+                'expected_lock_version': lock_version,
+            })
+            self.assertEqual(complete.status_code, 200, complete.text)
+            next_task_id = self.client.get('/v1/wf/tasks/my').json()['items'][0]['id']
+            body = self.client.get(f'/v1/wf/tasks/{next_task_id}/form').json()
+
+            self.assertEqual(body['form_data'].get('widoczne_zawsze'), 'x')
+            self.assertNotIn('tylko_recenzja', body['form_data'])
+
+            # Krok "Podpis": próba nadpisania pola readonly i ukrytego.
+            done = self.client.post(f'/v1/wf/tasks/{next_task_id}/complete', json={
+                'data': {'widoczne_zawsze': 'podrobione', 'tylko_recenzja': 'podrobione'},
+                'expected_lock_version': body['process_lock_version'],
+            })
+            self.assertEqual(done.status_code, 200, done.text)
+
+        from wf.models import HumanTask
+        from uuid import UUID
+        task = self.db.get(HumanTask, UUID(next_task_id))
+        self.db.refresh(task)
+        self.assertNotIn('widoczne_zawsze', task.submitted_data)
+        self.assertNotIn('tylko_recenzja', task.submitted_data)
+    # -END

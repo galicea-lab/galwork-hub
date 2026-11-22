@@ -1,0 +1,57 @@
+{#- Wzorzec: formularz do wypełnienia (kwestionariusz, oświadczenie, zgłoszenie). -#}
+{#-  układ formularza: sekcje danych w siatce, oświadczenia
+    i zgody, podpis osoby składającej, klauzula RODO. -#}
+{% extends "_base/strona.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set klasa = klasa | default('formularz', true) -%}
+{%- set tytul = tytul | default('FORMULARZ', true) -%}
+
+{% block adresat %}
+{%- if adresat_linie %}
+{{ m.adresat(adresat_linie) }}
+{%- endif %}
+{% endblock %}
+
+{% block lead %}
+{%- if wstep %}
+<p class="lead">{{ wstep }}</p>
+{%- endif %}
+{% endblock %}
+
+{% block tresc %}
+{{ self.sekcje() }}
+{{ self.oswiadczenia() }}
+{{ m.zalaczniki(zalaczniki_lista) }}
+{% endblock %}
+
+{% block sekcje %}
+{%- for tytul_sekcji, pola in (formularz or []) %}
+{{ m.sekcja(tytul_sekcji) }}
+{{ m.siatka(dane, pola, kolumny_sekcji | default(2)) }}
+{%- endfor %}
+{% endblock %}
+
+{% block oswiadczenia %}
+{%- if oswiadczenia_tekst %}
+{{ m.ramka(oswiadczenia_tekst, 'Oświadczenia i zgody') }}
+{%- endif %}
+{% block zgody %}{% endblock %}
+{% endblock %}
+
+{% block adnotacje %}
+{%- if dane_formalne %}
+{{ m.adnotacje(dane_formalne) }}
+{%- endif %}
+{% endblock %}
+
+{% block podpisy %}
+{{ m.podpisy(podpisy_lista or [(podpis_rola | default('Osoba składająca oświadczenie'), osoba_skladajaca | default(''), data | default(''))]) }}
+{% endblock %}
+
+{% block rodo %}
+{{ m.klauzula_rodo(uczelnia, miejscowosc_m,
+   cel=rodo_cel | default('prowadzenie akt osobowych i rozliczeń związanych z zatrudnieniem'),
+   podstawa=rodo_podstawa | default('art. 6 ust. 1 lit. b i c RODO w związku z art. 221 Kodeksu pracy'),
+   iod=iod | default('iod@uczelnia.pl'),
+   dobrowolnosc=rodo_dobrowolnosc | default(none)) }}
+{% endblock %}

@@ -1,0 +1,60 @@
+{
+  "title": "Przegląd tygodnia rozliczeń",
+  "description": "Godziny pochodzą z atrybutu „Czas [h]” zadań w Taidze (godziny umowne, nie ewidencja czasu pracy). Przypisz rodzaj pracy pozycjom bez niego i wybierz decyzję: zatwierdzenie wyśle Timesheety do ERPNext, odłożenie zapisze tylko przypisania. Wybór decyzji dodaje silnik (wf/decisions.py).",
+  "type": "object",
+  "properties": {
+    "projekt": { "type": "string", "title": "Projekt Taigi", "readOnly": true },
+    "projekt_erp": { "type": "string", "title": "Projekt ERPNext", "readOnly": true },
+    "komunikat": { "type": "string", "title": "Uwaga", "readOnly": true },
+    "tygodnie_do_zatwierdzenia": {
+      "type": "array",
+      "title": "Tygodnie do zatwierdzenia",
+      "readOnly": true,
+      "items": { "type": "string" }
+    },
+    "suma_godzin": { "type": "number", "title": "Razem godzin", "readOnly": true },
+    "podsumowanie": {
+      "type": "array",
+      "title": "Godziny: tydzień × osoba × rodzaj pracy",
+      "readOnly": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "tydzien": { "type": "string", "title": "Tydzień" },
+          "osoba": { "type": "string", "title": "Osoba" },
+          "pracownik": { "type": "string", "title": "Pracownik ERPNext" },
+          "rodzaj_pracy": { "type": "string", "title": "Rodzaj pracy" },
+          "godziny": { "type": "number", "title": "Godziny" }
+        }
+      }
+    },
+    "nieprzypisane": {
+      "type": "array",
+      "title": "Pozycje bez rodzaju pracy",
+      "description": "Przypisanie na poziomie historyjki obejmuje wszystkie jej zadania, także przyszłe.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "zakres": { "type": "string", "title": "Zakres" },
+          "obiekt": { "type": "integer", "title": "Obiekt" },
+          "pozycja": { "type": "string", "title": "Pozycja", "readOnly": true },
+          "godziny": { "type": "number", "title": "Godziny", "readOnly": true },
+          "rodzaj_pracy": { "type": "string", "title": "Rodzaj pracy" }
+        }
+      }
+    },
+    "korekty_niezrealizowane": {
+      "type": "array",
+      "title": "Korekty niezrealizowane (do decyzji PM, np. faktura korygująca)",
+      "readOnly": true,
+      "items": { "type": "string" }
+    },
+    "uwagi": {
+      "type": "array",
+      "title": "Uwagi do przeglądu",
+      "readOnly": true,
+      "items": { "type": "string" }
+    },
+    "komentarz": { "type": "string", "title": "Komentarz PM" }
+  }
+}

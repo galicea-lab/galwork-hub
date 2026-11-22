@@ -1,0 +1,86 @@
+{#- Strona dokumentu: wspólny szkielet wszystkich druków. -#}
+{#-  układ, nagłówek, stopka i kontekst szablonów druków.
+    Kontekst (wszystko opcjonalne, z wartościami domyślnymi):
+      f / dane       - słownik danych formularza (patrz `makra.j2`),
+      meta           - słownik metadanych sprawy: uczelnia, skrot, miejscowosc,
+                       adres_uczelni, logo, data, znak, dokument_id, wygenerowano,
+      zmienne szablonu ustawiane przez `{% set %}` w pliku druku:
+                       tytul, podtytul, nr_dokumentu, jednostka, klasa, orientacja,
+                       znak, data, miejscowosc (nadpisują metadane). -#}
+{% import "_base/makra.j2" as m %}
+{%- set meta_ = meta if (meta is defined and meta) else {} -%}
+{%- set dane = dane if (dane is defined and dane) else (f if (f is defined and f) else {}) -%}
+{%- set uczelnia = uczelnia | default(meta_.get('uczelnia') or 'Nazwa Uczelni', true) -%}
+{%- set skrot = skrot | default(meta_.get('skrot') or '', true) -%}
+{%- set miejscowosc = miejscowosc | default(meta_.get('miejscowosc') or 'Miejscowość', true) -%}
+{%- set adres_uczelni = adres_uczelni | default(meta_.get('adres_uczelni') or '', true) -%}
+{%- set miejscowosc_m = miejscowosc_m | default(meta_.get('miejscowosc_miejscownik') or miejscowosc, true) -%}
+{%- set logo = logo | default(meta_.get('logo') or '', true) -%}
+{%- set jednostka = jednostka | default(meta_.get('jednostka') or '', true) -%}
+{%- set data = data | default(meta_.get('data') or '', true) -%}
+{%- set znak = znak | default(meta_.get('znak') or '', true) -%}
+{%- set tytul = tytul | default('Dokument', true) -%}
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ tytul }}</title>
+{% include "_base/styl.html.j2" %}
+{% block style_dodatkowy %}{% endblock %}
+</head>
+<body class="{{ klasa | default('dokument') }}">
+<div class="arkusz">
+{%- if znak %}<span class="string-znak">{{ znak }}</span>{% endif %}
+
+{%- block przed_dokumentem %}{% endblock %}
+<header class="naglowek">
+  {%- block naglowek %}
+  <div class="nadawca">
+    {%- if logo %}<img class="logo" src="{{ logo }}" alt="">{% endif %}
+    <div class="dane-uczelni">
+      <div class="nazwa">{{ uczelnia }}</div>
+      {%- if adres_uczelni %}<div>{{ adres_uczelni }}</div>{% endif %}
+      {%- if jednostka %}<div class="jednostka">{{ jednostka }}</div>{% endif %}
+    </div>
+  </div>
+  <div class="metryka">
+    <div>{{ miejscowosc }}{% if data %}, {{ data }}{% endif %}</div>
+    {%- if znak %}<div class="znak">{{ znak }}</div>{% endif %}
+    {%- block metryka_dodatkowa %}{% endblock %}
+  </div>
+  {%- endblock %}
+</header>
+
+{%- block adresat %}{% endblock %}
+
+<div class="tytul-blok">
+{%- block tytul %}
+  <h1 class="tytul">{{ tytul }}</h1>
+  {%- if podtytul %}<p class="podtytul">{{ podtytul }}</p>{% endif %}
+  {%- if nr_dokumentu %}<p class="nr-dokumentu">{{ nr_dokumentu }}</p>{% endif %}
+{%- endblock %}
+</div>
+
+{%- block lead %}{% endblock %}
+
+{%- block tresc %}{% endblock %}
+
+{%- block pouczenie %}{% endblock %}
+
+{%- block adnotacje %}{% endblock %}
+
+{%- block podpisy %}{% endblock %}
+
+{%- block rodo %}{% endblock %}
+
+<footer class="stopka">
+  {%- block stopka %}
+  <span class="lewa">{% if znak %}{{ znak }} · {% endif %}{% if meta_.get('dokument_id') %}dokument nr {{ meta_.get('dokument_id') }} · {% endif %}dokument elektroniczny</span>
+  <span class="srodek">{{ skrot or uczelnia }}</span>
+  <span class="prawa">{% if meta_.get('wygenerowano') %}wygenerowano {{ meta_.get('wygenerowano') }}{% elif data %}{{ data }}{% endif %}</span>
+  {%- endblock %}
+</footer>
+</div>
+</body>
+</html>

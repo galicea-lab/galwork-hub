@@ -2,7 +2,7 @@
 
 One API for many applications - central hub
 
-**Version v0.1.3** (beta)
+**Wersja v0.1.4**
 
 Serwis (hub integracyjny) łączący różne systemy przedsiębiorstwa/uczelni w
 jedno API REST (FastAPI). Zamiast każdej aplikacji frontendowej integrującej

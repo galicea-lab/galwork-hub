@@ -1,0 +1,532 @@
+{
+  "title": "Przygotuj zarządzenie-F-ZR",
+  "type": "object",
+  "x-print": [
+    {
+      "template": "przygotuj-zarzadzenie_Task_05.html.j2",
+      "label": "Zarządzenie",
+      "tasks": [
+        "Task_05"
+      ]
+    },
+    {
+      "template": "przygotuj-zarzadzenie_Task_05_ogolny.html.j2",
+      "label": "Akt wewnętrzny (ogólny)",
+      "title": "Akt wewnętrzny",
+      "tasks": [
+        "Task_05"
+      ]
+    }
+  ],
+  "properties": {
+    "Data rejestracji": {
+      "type": "string",
+      "format": "date",
+      "title": "Data rejestracji",
+      "readOnly": true,
+      "x-permissions": {
+        "Opis zarządzenia": "readonly",
+        "Przygotowanie zarządzenia": "readonly",
+        "Konsultacje merytoryczne": "readonly",
+        "Konsultacje z IOD": "readonly",
+        "Opinia prawna": "readonly",
+        "Akceptacja": "readonly",
+        "Publikacja": "readonly",
+        "Na BIP": "readonly",
+        "Do wykonania": "readonly",
+        "Generuj zadania do potwierdzenia": "readonly",
+        "Archiwum": "readonly",
+        "Anulowane przed publikacją": "readonly"
+      }
+    },
+    "Kto zarejestrował": {
+      "type": "string",
+      "title": "Kto zarejestrował",
+      "readOnly": true,
+      "x-permissions": {
+        "Opis zarządzenia": "readonly",
+        "Przygotowanie zarządzenia": "readonly",
+        "Konsultacje merytoryczne": "readonly",
+        "Konsultacje z IOD": "readonly",
+        "Opinia prawna": "readonly",
+        "Akceptacja": "readonly",
+        "Publikacja": "readonly",
+        "Na BIP": "readonly",
+        "Do wykonania": "readonly",
+        "Generuj zadania do potwierdzenia": "readonly",
+        "Archiwum": "readonly",
+        "Anulowane przed publikacją": "readonly"
+      }
+    },
+    "Szczegóły dokumentu": {
+      "type": "object",
+      "properties": {
+        "Tytuł": {
+          "type": "string",
+          "title": "Tytuł",
+          "x-permissions": {
+            "Opis zarządzenia": "editable",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          },
+          "x-required-in-steps": [
+            "Opis zarządzenia",
+            "Przygotowanie zarządzenia"
+          ]
+        },
+        "Kto redaguje": {
+          "type": "string",
+          "title": "Kto redaguje",
+          "x-permissions": {
+            "Opis zarządzenia": "editable",
+            "Przygotowanie zarządzenia": "readonly",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          },
+          "x-required-in-steps": [
+            "Opis zarządzenia"
+          ]
+        },
+        "Kogo obowiązuje": {
+          "type": "string",
+          "title": "Kogo obowiązuje",
+          "x-permissions": {
+            "Opis zarządzenia": "editable",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Od kiedy obowiązuje": {
+          "type": "string",
+          "format": "date",
+          "title": "Od kiedy obowiązuje",
+          "x-permissions": {
+            "Opis zarządzenia": "editable",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Zmienia akty": {
+          "type": "array",
+          "title": "Zmienia akty",
+          "description": "Akty z repozytorium zmieniane przez ten dokument (od daty wejścia w życie)",
+          "items": {
+            "type": "string"
+          },
+          "x-permissions": {
+            "Opis zarządzenia": "editable",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Uchyla akty": {
+          "type": "array",
+          "title": "Uchyla akty",
+          "description": "Akty z repozytorium uchylane przez ten dokument (od daty wejścia w życie)",
+          "items": {
+            "type": "string"
+          },
+          "x-permissions": {
+            "Opis zarządzenia": "editable",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Termin do": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Termin do",
+          "x-permissions": {
+            "Opis zarządzenia": "editable",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Opinia merytoryczna": {
+          "type": "string",
+          "title": "Opinia merytoryczna",
+          "x-permissions": {
+            "Opis zarządzenia": "editable",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "none",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Data wydania": {
+          "type": "string",
+          "format": "date",
+          "title": "Data wydania",
+          "x-permissions": {
+            "Opis zarządzenia": "none",
+            "Przygotowanie zarządzenia": "none",
+            "Konsultacje merytoryczne": "none",
+            "Konsultacje z IOD": "none",
+            "Opinia prawna": "none",
+            "Akceptacja": "none",
+            "Publikacja": "editable",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Dział": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "0",
+              "title": "-"
+            },
+            {
+              "const": "1",
+              "title": "DZ1"
+            },
+            {
+              "const": "2",
+              "title": "DZ2"
+            },
+            {
+              "const": "3",
+              "title": "DZ3"
+            }
+          ],
+          "title": "Dział",
+          "x-permissions": {
+            "Opis zarządzenia": "none",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Nr dokumentu": {
+          "type": "string",
+          "title": "Nr dokumentu",
+          "x-permissions": {
+            "Opis zarządzenia": "none",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Słowa kluczowe": {
+          "type": "string",
+          "title": "Słowa kluczowe",
+          "x-permissions": {
+            "Opis zarządzenia": "none",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Status": {
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "1",
+              "title": "Obowiązujący"
+            },
+            {
+              "const": "0",
+              "title": "Nieustalony"
+            },
+            {
+              "const": "2",
+              "title": "Unieważniony"
+            },
+            {
+              "const": "3",
+              "title": "Uchylony"
+            },
+            {
+              "const": "4",
+              "title": "Wygasły"
+            },
+            {
+              "const": "5",
+              "title": "Zmieniony"
+            }
+          ],
+          "title": "Status",
+          "x-permissions": {
+            "Opis zarządzenia": "none",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Typ dokumentu": {
+          "type": "string",
+          "title": "Typ dokumentu",
+          "x-permissions": {
+            "Opis zarządzenia": "none",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Uwagi": {
+          "type": "string",
+          "title": "Uwagi",
+          "x-permissions": {
+            "Opis zarządzenia": "none",
+            "Przygotowanie zarządzenia": "editable",
+            "Konsultacje merytoryczne": "readonly",
+            "Konsultacje z IOD": "readonly",
+            "Opinia prawna": "readonly",
+            "Akceptacja": "readonly",
+            "Publikacja": "readonly",
+            "Na BIP": "readonly",
+            "Do wykonania": "readonly",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        },
+        "Wybór osoby": {
+          "type": "string",
+          "title": "Wybór osoby",
+          "x-permissions": {
+            "Opis zarządzenia": "none",
+            "Przygotowanie zarządzenia": "none",
+            "Konsultacje merytoryczne": "none",
+            "Konsultacje z IOD": "none",
+            "Opinia prawna": "none",
+            "Akceptacja": "none",
+            "Publikacja": "editable",
+            "Na BIP": "readonly",
+            "Do wykonania": "none",
+            "Generuj zadania do potwierdzenia": "none",
+            "Archiwum": "none",
+            "Anulowane przed publikacją": "none"
+          }
+        }
+      },
+      "required": [
+        "Tytuł",
+        "Kto redaguje",
+        "Od kiedy obowiązuje"
+      ],
+      "title": "Szczegóły dokumentu",
+      "x-permissions": {
+        "Opis zarządzenia": "editable",
+        "Przygotowanie zarządzenia": "editable",
+        "Konsultacje merytoryczne": "readonly",
+        "Konsultacje z IOD": "readonly",
+        "Opinia prawna": "editable",
+        "Akceptacja": "readonly",
+        "Publikacja": "editable",
+        "Na BIP": "readonly",
+        "Do wykonania": "readonly",
+        "Generuj zadania do potwierdzenia": "readonly",
+        "Archiwum": "editable",
+        "Anulowane przed publikacją": "editable"
+      }
+    },
+    "Dystrybucja": {
+      "type": "object",
+      "properties": {
+        "Powiadom osoby": {
+          "type": "string",
+          "title": "Powiadom osoby",
+          "x-permissions": {
+            "Opis zarządzenia": "none",
+            "Przygotowanie zarządzenia": "none",
+            "Konsultacje merytoryczne": "none",
+            "Konsultacje z IOD": "none",
+            "Opinia prawna": "none",
+            "Akceptacja": "none",
+            "Publikacja": "editable",
+            "Na BIP": "none",
+            "Do wykonania": "none",
+            "Generuj zadania do potwierdzenia": "readonly",
+            "Archiwum": "readonly",
+            "Anulowane przed publikacją": "readonly"
+          }
+        }
+      },
+      "title": "Dystrybucja",
+      "x-permissions": {
+        "Opis zarządzenia": "none",
+        "Przygotowanie zarządzenia": "none",
+        "Konsultacje merytoryczne": "none",
+        "Konsultacje z IOD": "none",
+        "Opinia prawna": "none",
+        "Akceptacja": "none",
+        "Publikacja": "editable",
+        "Na BIP": "none",
+        "Do wykonania": "none",
+        "Generuj zadania do potwierdzenia": "readonly",
+        "Archiwum": "readonly",
+        "Anulowane przed publikacją": "readonly"
+      }
+    },
+    "Analiza prawna": {
+      "type": "object",
+      "properties": {
+        "Akceptacja pod względem prawnym": {
+          "type": "string",
+          "title": "Akceptacja pod względem prawnym",
+          "x-permissions": {
+            "Opis zarządzenia": "none",
+            "Przygotowanie zarządzenia": "none",
+            "Konsultacje merytoryczne": "none",
+            "Konsultacje z IOD": "none",
+            "Opinia prawna": "editable",
+            "Akceptacja": "none",
+            "Publikacja": "none",
+            "Na BIP": "none",
+            "Do wykonania": "none",
+            "Generuj zadania do potwierdzenia": "none",
+            "Archiwum": "none",
+            "Anulowane przed publikacją": "none"
+          }
+        },
+        "Data akceptacji prawnej": {
+          "type": "string",
+          "format": "date",
+          "title": "Data akceptacji prawnej",
+          "x-permissions": {
+            "Opis zarządzenia": "none",
+            "Przygotowanie zarządzenia": "none",
+            "Konsultacje merytoryczne": "none",
+            "Konsultacje z IOD": "none",
+            "Opinia prawna": "editable",
+            "Akceptacja": "none",
+            "Publikacja": "none",
+            "Na BIP": "none",
+            "Do wykonania": "none",
+            "Generuj zadania do potwierdzenia": "none",
+            "Archiwum": "none",
+            "Anulowane przed publikacją": "none"
+          }
+        }
+      },
+      "title": "Analiza prawna",
+      "x-permissions": {
+        "Opis zarządzenia": "none",
+        "Przygotowanie zarządzenia": "none",
+        "Konsultacje merytoryczne": "none",
+        "Konsultacje z IOD": "none",
+        "Opinia prawna": "editable",
+        "Akceptacja": "none",
+        "Publikacja": "none",
+        "Na BIP": "none",
+        "Do wykonania": "none",
+        "Generuj zadania do potwierdzenia": "none",
+        "Archiwum": "none",
+        "Anulowane przed publikacją": "none"
+      }
+    }
+  }
+}

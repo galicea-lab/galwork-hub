@@ -1,0 +1,59 @@
+{#- Wzorzec: protokół (odbioru, przeglądu, komisji, ustaleń). -#}
+{#-  układ protokołu: miejsce i data, uczestnicy, przedmiot,
+    ustalenia (tabela/listy), wnioski, podpisy uczestników, załączniki. -#}
+{% extends "_base/strona.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set klasa = klasa | default('protokol', true) -%}
+{%- set tytul = tytul | default('PROTOKÓŁ', true) -%}
+
+{% block adresat %}{% endblock %}
+
+{% block lead %}
+<p class="lead">{{ wstep | default('Sporządzono w dniu ' ~ data ~ ' w ' ~ miejscowosc_m ~ '.') }}</p>
+{% endblock %}
+
+{% block tresc %}
+{{ self.uczestnicy() }}
+{{ self.przedmiot() }}
+{{ self.ustalenia() }}
+{{ self.wnioski() }}
+{{ m.zalaczniki(zalaczniki_lista) }}
+{% endblock %}
+
+{% block uczestnicy %}
+{{ m.sekcja("Uczestnicy") }}
+{{ m.tabela(["Lp.", "Imię i nazwisko", "Funkcja / instytucja"], uczestnicy or [], 'kompaktowa') }}
+{% endblock %}
+
+{% block przedmiot %}
+{{ m.sekcja("Przedmiot protokołu") }}
+<p>{{ przedmiot | default('') }}</p>
+{% endblock %}
+
+{% block ustalenia %}
+{{ m.sekcja("Ustalenia") }}
+<p>{{ ustalenia | default('') }}</p>
+{% endblock %}
+
+{% block wnioski %}
+{%- if wnioski_tekst %}
+{{ m.sekcja("Wnioski i rekomendacje") }}
+<p>{{ wnioski_tekst }}</p>
+{%- endif %}
+{% endblock %}
+
+{% block adnotacje %}
+{%- if dane_formalne %}
+{{ m.adnotacje(dane_formalne) }}
+{%- endif %}
+{% endblock %}
+
+{% block podpisy %}
+{{ m.podpisy(podpisy_lista or [('Przewodniczący komisji', '', ''), ('Członek komisji', '', ''), ('Członek komisji', '', '')]) }}
+{% endblock %}
+
+{% block rodo %}
+{%- if rodo_cel %}
+{{ m.klauzula_rodo(uczelnia, miejscowosc_m, cel=rodo_cel, podstawa=rodo_podstawa | default('art. 6 ust. 1 lit. c i e RODO'), iod=iod | default('iod@uczelnia.pl')) }}
+{%- endif %}
+{% endblock %}

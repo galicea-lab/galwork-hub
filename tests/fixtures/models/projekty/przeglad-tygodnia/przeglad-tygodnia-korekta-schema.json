@@ -1,0 +1,22 @@
+{
+  "title": "Korekta - Timesheety odrzucone przez ERPNext",
+  "description": "ERPNext odrzucił część dokumentów (np. zamknięty projekt, nieaktywny pracownik, brak rodzaju pracy). Popraw dane w ERPNext albo w galwork-pm i ponów wysyłkę. Zakończenie zostawia dokumenty do wysłania przez kolejną synchronizację.",
+  "type": "object",
+  "properties": {
+    "projekt": { "type": "string", "title": "Projekt Taigi", "readOnly": true },
+    "zatwierdzone_tygodnie": {
+      "type": "array",
+      "title": "Zatwierdzone tygodnie",
+      "readOnly": true,
+      "items": { "type": "string" }
+    },
+    "erp_status": { "type": "string", "title": "Wynik wysyłki", "readOnly": true },
+    "erp_errors": {
+      "type": "array",
+      "title": "Odrzucone dokumenty",
+      "readOnly": true,
+      "items": { "type": "string" }
+    },
+    "komentarz": { "type": "string", "title": "Komentarz PM" }
+  }
+}

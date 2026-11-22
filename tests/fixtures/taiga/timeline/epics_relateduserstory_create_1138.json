@@ -1,0 +1,47 @@
+{
+  "data": {
+    "epic": {
+      "id": 27,
+      "ref": 64,
+      "subject": "etest"
+    },
+    "user": {
+      "id": 6,
+      "username": "user6",
+      "full_name": "User 6",
+      "photo": null
+    },
+    "comment": "",
+    "project": {
+      "id": 7,
+      "name": "Galwork",
+      "slug": "galwork",
+      "description": ""
+    },
+    "userstory": {
+      "id": 66,
+      "ref": 67,
+      "project": {
+        "id": 7,
+        "name": "Galwork",
+        "slug": "galwork",
+        "description": ""
+      },
+      "subject": "test_uc"
+    },
+    "values_diff": {},
+    "comment_html": "",
+    "relateduserstory": {
+      "id": 58,
+      "subject": "test_uc"
+    }
+  },
+  "id": 1138,
+  "content_type": 15,
+  "object_id": 7,
+  "namespace": "project:7",
+  "event_type": "epics.relateduserstory.create",
+  "project": 7,
+  "data_content_type": 51,
+  "created": "2026-11-20T21:16:08.968Z"
+}

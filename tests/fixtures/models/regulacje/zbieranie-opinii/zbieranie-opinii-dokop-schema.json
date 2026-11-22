@@ -1,0 +1,39 @@
+{
+  "title": "Zbieranie opinii-DOKOP",
+  "type": "object",
+  "properties": {
+    "Dokument, który opiniujemy": {
+      "type": "string",
+      "title": "Dokument, który opiniujemy",
+      "x-permissions": {
+        "Start": "editable",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    },
+    "Tytuł": {
+      "type": "string",
+      "title": "Tytuł",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    },
+    "Istotność": {
+      "type": "string",
+      "title": "Istotność",
+      "x-permissions": {
+        "Start": "editable",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    },
+    "Cyfryzacja": {
+      "type": "string",
+      "title": "Cyfryzacja",
+      "x-permissions": {
+        "Start": "editable",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    }
+  }
+}

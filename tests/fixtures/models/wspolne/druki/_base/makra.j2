@@ -1,0 +1,193 @@
+{#- Makra wspólne dla wszystkich druków. -#}
+{#-  biblioteka makr ujednolicających formę druków (nagłówek, pola, tabele, podpisy, RODO). -#}
+{#- Konwencja: pierwszy argument `dane` to słownik danych formularza (`f` w kontekście szablonu). -#}
+
+{#- ── wartości ─────────────────────────────────────────────────────────── #}
+
+{%- macro w(dane, sekcja, pole) -%}
+{%- set sek = (dane or {}).get(sekcja) or {} -%}
+{%- set wartosc = sek.get(pole) if sek is mapping else none -%}
+{%- if wartosc is none -%}{%- elif wartosc is boolean -%}{{ 'tak' if wartosc else 'nie' }}{%- elif wartosc is iterable and wartosc is not string -%}{{ wartosc | join(', ') }}{%- else -%}{{ wartosc }}{%- endif -%}
+{%- endmacro -%}
+
+{#- Wartość pola; gdy puste, wstawia kropki (do druków wypelnianych ręcznie). #}
+{%- macro wk(dane, sekcja, pole, kropki=45) -%}
+{%- set wartosc = w(dane, sekcja, pole) | trim -%}
+{%- if wartosc -%}{{ wartosc }}{%- else -%}{{ '…' * 3 }}{{ '·' * (kropki // 2) }}{%- endif -%}
+{%- endmacro -%}
+
+{#- Wartość pola prostego z klucza najwyższego poziomu schematu. #}
+{%- macro w1(dane, pole) -%}
+{%- set wartosc = (dane or {}).get(pole) -%}
+{%- if wartosc is none -%}{%- elif wartosc is boolean -%}{{ 'tak' if wartosc else 'nie' }}{%- elif wartosc is iterable and wartosc is not string -%}{{ wartosc | join(', ') }}{%- else -%}{{ wartosc }}{%- endif -%}
+{%- endmacro -%}
+
+{#- Pole wyboru: zamienia kod ze schematu (``oneOf``/``const``) na etykietę z mapy. #}
+{%- macro wm(dane, sekcja, pole, mapa, domyslne='') -%}
+{%- set wartosc = w(dane, sekcja, pole) | trim -%}
+{%- if wartosc -%}{{ mapa.get(wartosc, wartosc) }}{%- else -%}{{ domyslne }}{%- endif -%}
+{%- endmacro -%}
+
+{#- Forma gramatyczna: kod ``K``/``M`` z pola „Forma gramatyczna" wybiera wariant tekstu. #}
+{%- macro forma(dane, zenski, meski, sekcja='Dane studenta', pole='Forma gramatyczna') -%}
+{%- if (w(dane, sekcja, pole) | trim) in ('K', 'k', 'żeńska') -%}{{ zenski }}{%- else -%}{{ meski }}{%- endif -%}
+{%- endmacro -%}
+
+{#- ── pola formularza ──────────────────────────────────────────────────── #}
+
+{#- Wiersz „Etykieta: wartość” z linią kropkowaną pod wartością. #}
+{%- macro p(dane, sekcja, pole, etykieta=None) -%}
+<p class="pole"><span class="etykieta">{{ etykieta or pole }}:</span> <span class="wartosc">{{ w(dane, sekcja, pole) }}</span></p>
+{%- endmacro -%}
+
+{#- Jak `p()`, ale w siatce dwukolumnowej (dane osobowe, identyfikacyjne). #}
+{%- macro p2(dane, sekcja, pole, etykieta=None) -%}
+<div class="pole"><span class="etykieta">{{ etykieta or pole }}:</span> <span class="wartosc">{{ w(dane, sekcja, pole) }}</span></div>
+{%- endmacro -%}
+
+{#- Siatka pól: lista krotek (sekcja, pole) lub (sekcja, pole, etykieta). #}
+{%- macro siatka(dane, pola, kolumny=2) -%}
+<div class="siatka kol-{{ kolumny }}">
+{%- for element in pola %}
+{%- if element | length == 3 %}{{ p2(dane, element[0], element[1], element[2]) }}
+{%- else %}{{ p2(dane, element[0], element[1]) }}
+{%- endif %}
+{%- endfor %}
+</div>
+{%- endmacro -%}
+
+{#- Pole w toku zdania: „na kierunku <wartość>”. #}
+{%- macro wp(dane, sekcja, pole, domyslne='') -%}
+{%- set wartosc = w(dane, sekcja, pole) | trim -%}
+<span class="wypelnienie">{{ wartosc if wartosc else domyslne }}</span>
+{%- endmacro -%}
+
+{#- Pusta linia do wpisania odręcznego (dla druków papierowych). #}
+{%- macro linia(szerokosc='12em') -%}
+<span class="linia" style="min-width:{{ szerokosc }}">&nbsp;</span>
+{%- endmacro -%}
+
+{#- Pole wyboru z listy (checkbox przy etykiecie). #}
+{%- macro wybor(etykieta, zaznaczone=false) -%}
+<span class="wybor">{{ '☒' if zaznaczone else '☐' }} {{ etykieta }}</span>
+{%- endmacro -%}
+
+{#- ── tabele ───────────────────────────────────────────────────────────── #}
+
+{#- Tabela danych: `kolumny` to lista nagłówków, `wiersze` lista list (albo lista
+    słowników z kluczami `kolumny`). #}
+{%- macro tabela(kolumny, wiersze, klasa='', stopka=None) -%}
+<table class="tabela {{ klasa }}">
+  <thead><tr>{% for kolumna in kolumny %}<th>{{ kolumna }}</th>{% endfor %}</tr></thead>
+  <tbody>
+  {%- for wiersz in (wiersze or []) %}
+    <tr>{% for kolumna in kolumny %}<td>{{ (wiersz[kolumna] if wiersz is mapping and kolumna in wiersz else (wiersz[loop.index0] if wiersz is not mapping and wiersz | length > loop.index0 else '')) }}</td>{% endfor %}</tr>
+  {%- else %}
+    <tr>{% for kolumna in kolumny %}<td>&nbsp;</td>{% endfor %}</tr>
+  {%- endfor %}
+  </tbody>
+  {%- if stopka %}
+  <tfoot><tr>{% for komorka in stopka %}<td>{{ komorka or '' }}</td>{% endfor %}</tr></tfoot>
+  {%- endif %}
+</table>
+{%- endmacro -%}
+
+{#- Tabela z listy obiektów formularza: `kolumny` to krotki (klucz, etykieta). #}
+{%- macro tabela_pol(lista, kolumny, klasa='') -%}
+<table class="tabela {{ klasa }}">
+  <thead><tr>{% for klucz, etykieta in kolumny %}<th>{{ etykieta }}</th>{% endfor %}</tr></thead>
+  <tbody>
+  {%- for wiersz in (lista or []) %}
+    <tr>{% for klucz, etykieta in kolumny %}<td>{{ wiersz.get(klucz) if wiersz is mapping else '' }}</td>{% endfor %}</tr>
+  {%- else %}
+    <tr>{% for klucz, etykieta in kolumny %}<td>&nbsp;</td>{% endfor %}</tr>
+  {%- endfor %}
+  </tbody>
+</table>
+{%- endmacro -%}
+
+{#- ── struktura dokumentu ──────────────────────────────────────────────── #}
+
+{#- Śródtytuł sekcji (wersaliki, rozstrzelone). #}
+{%- macro sekcja(tytul) -%}
+<h2 class="sekcja">{{ tytul }}</h2>
+{%- endmacro -%}
+
+{#- Formuła rozstrzygająca („s k r e ś l a m”, „z a w i a d a m i a m”). #}
+{%- macro formula(tresc) -%}
+<p class="formula">{{ tresc }}</p>
+{%- endmacro -%}
+
+{#- Blok adresata pisma. `linie` to lista wierszy (string lub krotka (wyróżnienie, tekst)). #}
+{%- macro adresat(linie) -%}
+<div class="adresat">
+{%- for linia_ in linie %}
+{%- if linia_ is string %}
+  <div>{{ linia_ }}</div>
+{%- else %}
+  <div class="{{ linia_[0] }}">{{ linia_[1] }}</div>
+{%- endif %}
+{%- endfor %}
+</div>
+{%- endmacro -%}
+
+{#- Obszar podpisów: lista krotek (rola, osoba) lub (rola, osoba, data).
+    `klasa` pozwala ustawić odmianę: `pionowo` (jedna kolumna pod prawą krawędzią). #}
+{%- macro podpisy(lista, klasa='') -%}
+<div class="podpisy {{ klasa }}">
+{%- for element in lista %}
+  <div class="podpis">
+    <div class="osoba">{{ element[1] or '' }}</div>
+    <div class="linia-podpisu"></div>
+    <div class="rola">{{ element[0] }}</div>
+    {%- if element | length > 2 and element[2] %}<div class="data">{{ element[2] }}</div>{% endif %}
+  </div>
+{%- endfor %}
+</div>
+{%- endmacro -%}
+
+{#- Adnotacje urzędowe (doręczenie, data odczytu, wpływ). #}
+{%- macro adnotacje(lista) -%}
+<div class="adnotacje">
+{%- for etykieta, wartosc in lista %}
+  <div class="adnotacja"><span class="etykieta">{{ etykieta }}:</span> <span class="wartosc">{{ wartosc or '' }}</span></div>
+{%- endfor %}
+</div>
+{%- endmacro -%}
+
+{#- Ramka informacyjna / zrzeczenie / oświadczenie. #}
+{%- macro ramka(tresc, tytul=None) -%}
+<div class="ramka">
+{%- if tytul %}<div class="ramka-tytul">{{ tytul }}</div>{% endif %}
+{{ tresc }}
+</div>
+{%- endmacro -%}
+
+{#- Lista załączników. #}
+{%- macro zalaczniki(lista) -%}
+{%- if lista %}
+<h2 class="sekcja">Załączniki</h2>
+<ol class="zalaczniki">{% for pozycja in lista %}<li>{{ pozycja }}</li>{% endfor %}</ol>
+{%- endif %}
+{%- endmacro -%}
+
+{#- ── RODO ─────────────────────────────────────────────────────────────── #}
+
+{#- Skrócona klauzula informacyjna (art. 13 RODO) do druków z danymi osobowymi.
+    `cel` – cel przetwarzania, `podstawa` – podstawa prawna, `odbiorcy` – opcjonalnie. #}
+{%- macro klauzula_rodo(uczelnia, miejscowosc_m, cel, podstawa, administrator=None, iod='iod@uczelnia.pl', odbiorcy=None, dobrowolnosc=None) -%}
+<section class="rodo">
+  <div class="rodo-tytul">Klauzula informacyjna o przetwarzaniu danych osobowych</div>
+  <p>Zgodnie z art. 13 ust. 1 i 2 rozporządzenia Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. w sprawie ochrony osób fizycznych w związku z przetwarzaniem danych osobowych i w sprawie swobodnego przepływu takich danych oraz uchylenia dyrektywy 95/46/WE (dalej: RODO) informujemy, że:</p>
+  <ol>
+    <li><strong>Administrator danych:</strong> {{ administrator or (uczelnia ~ ', z siedzibą w ' ~ miejscowosc_m) }}.</li>
+    <li><strong>Inspektor Ochrony Danych:</strong> kontakt pod adresem {{ iod }} oraz pisemnie na adres siedziby Administratora.</li>
+    <li><strong>Cel i podstawa prawna przetwarzania:</strong> {{ cel }}. Podstawa prawna: {{ podstawa }}.</li>
+    <li><strong>Odbiorcy danych:</strong> {{ odbiorcy or 'podmioty uprawnione na podstawie przepisów prawa oraz podmioty przetwarzające dane w imieniu Administratora na podstawie umowy powierzenia przetwarzania' }}.</li>
+    <li><strong>Okres przechowywania:</strong> przez czas niezbędny do realizacji celu, nie dłużej niż wynika to z przepisów prawa i jednolitego rzeczowego wykazu akt obowiązującego w {{ uczelnia }}.</li>
+    <li><strong>Prawa osoby:</strong> dostęp do danych, sprostowanie, usunięcie, ograniczenie przetwarzania, sprzeciw, przenoszenie danych oraz skarga do Prezesa Urzędu Ochrony Danych Osobowych.</li>
+    <li><strong>Dobrowolność podania danych:</strong> {{ dobrowolnosc or 'podanie danych jest dobrowolne, jednak niezbędne do realizacji wskazanego celu; niepodanie danych uniemożliwi załatwienie sprawy' }}.</li>
+    <li>Dane nie są przetwarzane w sposób zautomatyzowany, w tym nie są przedmiotem profilowania.</li>
+  </ol>
+</section>
+{%- endmacro -%}

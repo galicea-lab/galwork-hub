@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" id="defs_Process_Wdrozenie_obiegow" targetNamespace="http://bpmn">
+  <bpmn:process id="Process_Wdrozenie_obiegow" name="Wdrożenie obiegów" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_Wdrozenie">
+      <bpmn:lane id="Lane_1" name="Wnioskodawca">
+        <bpmn:flowNodeRef>Task_01</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_08</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_09</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_2" name="IOD">
+        <bpmn:flowNodeRef>Task_02</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_3" name="Pełnomocnik ds. cyfryzacji">
+        <bpmn:flowNodeRef>Task_03</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_main" name="Start">
+      <bpmn:documentation>decyzja o wdrożeniu obiegów (tryb testowy / pomocniczy / produkcyjny) - jedyna droga wprowadzenia obiegu do użytku. Pierwszą decyzję (wdrożenie obiegów regulacji i tego obiegu) prowadzi administrator procesów bez wdrożenia (tryb deweloperski).</bpmn:documentation>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_01" name="Wniosek o wdrożenie">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="wdrozenie-obiegow-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="wdrozenie-obiegow-uischema.json" />
+          <spiffworkflow:property name="lane" value="Wnioskodawca" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_IOD" name="Konsultacja z IOD?" default="Flow_3" />
+    <bpmn:userTask id="Task_02" name="Konsultacje z IOD">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="wdrozenie-obiegow-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="wdrozenie-obiegow-uischema.json" />
+          <spiffworkflow:property name="lane" value="IOD" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_03" name="Decyzja">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="wdrozenie-obiegow-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="wdrozenie-obiegow-uischema.json" />
+          <spiffworkflow:property name="lane" value="Pełnomocnik ds. cyfryzacji" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_Decyzja" name="Wybór ścieżki (Decyzja)" default="Flow_7" />
+    <bpmn:serviceTask id="Service_Dokument" name="Dokument decyzji">
+      <bpmn:documentation>dokument decyzji (wydruk albo wgrany plik) - dokument_id. Obsługa: galwork-hub wf/services/signing_service.py.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="dokumenty.glowny" />
+          <spiffworkflow:property name="retryMinutes" value="60" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_Od" name="Obowiązuje od">
+      <bpmn:documentation>data wejścia w życie decyzji. Obsługa: galwork-hub wf/services/legal_acts.py.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="akty.obowiazuje_od" />
+          <spiffworkflow:property name="dateField" value="Od" />
+          <spiffworkflow:property name="retryMinutes" value="60" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_Pieczec" name="Pieczęć elektroniczna">
+      <bpmn:documentation>pieczęć decyzji (pomijana, gdy sama decyzja jest sprawą testową). Obsługa: galwork-hub wf/services/seal_service_tasks.py.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="pieczec.dokument" />
+          <spiffworkflow:property name="source" value="regulacje" />
+          <spiffworkflow:property name="reason" value="Decyzja wdrożeniowa zarejestrowana w repozytorium dokumentów" />
+          <spiffworkflow:property name="retryMinutes" value="60" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_Wdrozenie" name="Wdrożenie obiegów">
+      <bpmn:documentation>zapis wdrożeń (albo ich zakończenia) wskazujących opieczętowaną wersję decyzji. Nowe wdrożenie w tych samych jednostkach zamyka poprzednie. Obsługa: galwork-hub wf/services/rollouts.py.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="obiegi.wdrozenie" />
+          <spiffworkflow:property name="modelsField" value="Obiegi" />
+          <spiffworkflow:property name="modeField" value="Tryb" />
+          <spiffworkflow:property name="unitsField" value="Jednostki" />
+          <spiffworkflow:property name="fromField" value="Od" />
+          <spiffworkflow:property name="toField" value="Do" />
+          <spiffworkflow:property name="procedureField" value="Procedura dotychczasowa" />
+          <spiffworkflow:property name="actionField" value="Działanie" />
+          <spiffworkflow:property name="retryMinutes" value="60" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sendTask id="Send_Rejestr" name="Rejestracja w repozytorium">
+      <bpmn:documentation>decyzja jako akt w repozytorium regulacji (ten sam dokument).</bpmn:documentation>
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="startProcess" value="dokumenty" />
+          <spiffworkflow:property name="startOnce" value="true" />
+          <spiffworkflow:property name="startInput" value="dokument_id-&gt;dokument_id, Tytuł-&gt;Tytuł dokumentu, Nr decyzji-&gt;Nr dokumentu, Typ dokumentu-&gt;Typ dokumentu, Od-&gt;Obowiązuje od" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:sendTask>
+    <bpmn:userTask id="Task_08" name="Archiwum">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="wdrozenie-obiegow-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="wdrozenie-obiegow-uischema.json" />
+          <spiffworkflow:property name="lane" value="Wnioskodawca" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_09" name="Odrzucone">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="wdrozenie-obiegow-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="wdrozenie-obiegow-uischema.json" />
+          <spiffworkflow:property name="lane" value="Wnioskodawca" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_1" name="Koniec" />
+    <bpmn:endEvent id="EndEvent_2" name="Koniec" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_main" targetRef="Task_01" />
+    <bpmn:sequenceFlow id="Flow_2" name="Złóż wniosek" sourceRef="Task_01" targetRef="Gateway_IOD" />
+    <bpmn:sequenceFlow id="Flow_3" name="Do decyzji" sourceRef="Gateway_IOD" targetRef="Task_03" />
+    <bpmn:sequenceFlow id="Flow_4" name="Dane osobowe - konsultacja z IOD" sourceRef="Gateway_IOD" targetRef="Task_02">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">dane_osobowe == True</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_5" name="Przekaż opinię" sourceRef="Task_02" targetRef="Task_03" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_03" targetRef="Gateway_Decyzja" />
+    <bpmn:sequenceFlow id="Flow_7" name="Zatwierdź" sourceRef="Gateway_Decyzja" targetRef="Service_Dokument" />
+    <bpmn:sequenceFlow id="Flow_8" name="Do poprawy" sourceRef="Gateway_Decyzja" targetRef="Task_01">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_8'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_9" name="Odrzuć" sourceRef="Gateway_Decyzja" targetRef="Task_09">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_9'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Service_Dokument" targetRef="Service_Od" />
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Service_Od" targetRef="Service_Pieczec" />
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Service_Pieczec" targetRef="Service_Wdrozenie" />
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="Service_Wdrozenie" targetRef="Send_Rejestr" />
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="Send_Rejestr" targetRef="Task_08" />
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="Task_08" targetRef="EndEvent_1" />
+    <bpmn:sequenceFlow id="Flow_16" sourceRef="Task_09" targetRef="EndEvent_2" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_Wdrozenie_obiegow">
+    <bpmndi:BPMNPlane id="Plane_Wdrozenie_obiegow" bpmnElement="Process_Wdrozenie_obiegow">
+      <bpmndi:BPMNShape id="Shape_StartEvent_main" bpmnElement="StartEvent_main">
+        <dc:Bounds x="100" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_01" bpmnElement="Task_01">
+        <dc:Bounds x="190" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_IOD" bpmnElement="Gateway_IOD" isMarkerVisible="true">
+        <dc:Bounds x="340" y="215" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_02" bpmnElement="Task_02">
+        <dc:Bounds x="440" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_03" bpmnElement="Task_03">
+        <dc:Bounds x="600" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_Decyzja" bpmnElement="Gateway_Decyzja" isMarkerVisible="true">
+        <dc:Bounds x="750" y="215" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Service_Dokument" bpmnElement="Service_Dokument">
+        <dc:Bounds x="850" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Service_Od" bpmnElement="Service_Od">
+        <dc:Bounds x="1000" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Service_Pieczec" bpmnElement="Service_Pieczec">
+        <dc:Bounds x="1150" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Service_Wdrozenie" bpmnElement="Service_Wdrozenie">
+        <dc:Bounds x="1300" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Send_Rejestr" bpmnElement="Send_Rejestr">
+        <dc:Bounds x="1450" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_08" bpmnElement="Task_08">
+        <dc:Bounds x="1600" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_1" bpmnElement="EndEvent_1">
+        <dc:Bounds x="1750" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_09" bpmnElement="Task_09">
+        <dc:Bounds x="850" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_2" bpmnElement="EndEvent_2">
+        <dc:Bounds x="1000" y="402" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_1" bpmnElement="Flow_1">
+        <di:waypoint x="136" y="240" />
+        <di:waypoint x="190" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_2" bpmnElement="Flow_2">
+        <di:waypoint x="290" y="240" />
+        <di:waypoint x="340" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_3" bpmnElement="Flow_3">
+        <di:waypoint x="390" y="240" />
+        <di:waypoint x="600" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_4" bpmnElement="Flow_4">
+        <di:waypoint x="365" y="215" />
+        <di:waypoint x="365" y="100" />
+        <di:waypoint x="440" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_5" bpmnElement="Flow_5">
+        <di:waypoint x="540" y="100" />
+        <di:waypoint x="650" y="100" />
+        <di:waypoint x="650" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_6" bpmnElement="Flow_6">
+        <di:waypoint x="700" y="240" />
+        <di:waypoint x="750" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_7" bpmnElement="Flow_7">
+        <di:waypoint x="800" y="240" />
+        <di:waypoint x="850" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_8" bpmnElement="Flow_8">
+        <di:waypoint x="775" y="215" />
+        <di:waypoint x="775" y="30" />
+        <di:waypoint x="240" y="30" />
+        <di:waypoint x="240" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_9" bpmnElement="Flow_9">
+        <di:waypoint x="775" y="265" />
+        <di:waypoint x="775" y="420" />
+        <di:waypoint x="850" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_10" bpmnElement="Flow_10">
+        <di:waypoint x="950" y="240" />
+        <di:waypoint x="1000" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_11" bpmnElement="Flow_11">
+        <di:waypoint x="1100" y="240" />
+        <di:waypoint x="1150" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_12" bpmnElement="Flow_12">
+        <di:waypoint x="1250" y="240" />
+        <di:waypoint x="1300" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_13" bpmnElement="Flow_13">
+        <di:waypoint x="1400" y="240" />
+        <di:waypoint x="1450" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_14" bpmnElement="Flow_14">
+        <di:waypoint x="1550" y="240" />
+        <di:waypoint x="1600" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_15" bpmnElement="Flow_15">
+        <di:waypoint x="1700" y="240" />
+        <di:waypoint x="1750" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_16" bpmnElement="Flow_16">
+        <di:waypoint x="950" y="420" />
+        <di:waypoint x="1000" y="420" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

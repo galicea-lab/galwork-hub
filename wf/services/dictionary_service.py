@@ -41,6 +41,17 @@ danych:
   6. **ERPNext** (`ErpNextDictionary`, 2026-11-13) - słownik = jeden
      albo kilka Doctype w ERPNext (connector/erpnext), np. "kontrahenci" =
      dostawcy (`Supplier`) i odbiorcy (`Customer`).
+  7. **Rejestr** (`RegisterDictionary`, 2026-11-22) - słownik deklaruje
+     MODEL w `process_model.json` (`galwork.dictionary`), a nie ten moduł.
+     Opcje = wpisy rejestru (instancje modelu, np. `rejestr-systemow`):
+     `value` = `ProcessInstance.id` (stały przy zmianie nazwy), `label` =
+     kolumna metadanych (`label`) z dopiskiem w nawiasie (`detail`), tylko
+     wpisy aktywne (`active_step` - otwarte zadanie o tej nazwie, np. „Wpis
+     w rejestrze”; bez niego - wszystkie nieanulowane). Deklaracja jest
+     częścią opublikowanej wersji modelu. Etykiety są dostępne dla każdego
+     zalogowanego (jak pozostałe słowniki) - deklaracja słownika to decyzja
+     o ich udostępnieniu; reszta danych wpisu podlega widoczności sprawy.
+     `?value=<id>` zwraca jedną opcję (etykieta dla zapisanej wartości).
   5. **Niepodłączone** (`NOT_CONNECTED`) - `source-name` wskazuje na system,
      dla którego w tym repozytorium nie ma jeszcze konektora (ERP,
      EZD, "Spółki" uczelni) - zwracamy jawny błąd 501 z wyjaśnieniem,
@@ -229,7 +240,8 @@ TABLE_DICTIONARIES: dict[str, TableDictionary] = {
     "jrwa": TableDictionary("jrwa", "Jednolity rzeczowy wykaz akt"),
     "kategoria-archiwizacji": TableDictionary("kategoria-archiwizacji", "Kategoria archiwalna"),
     "sprawy-formularze": TableDictionary("sprawy-formularze", "Formularze spraw"),
-    "rejestr-systemow": TableDictionary("rejestr-systemow", "Rejestr systemów IT"),
+    # 2026-11-22: "rejestr-systemow" - słownik z rejestru (galwork.dictionary
+    # w it/zarzadzanie-it/rejestr-systemow/process_model.json), nie tabela.
     # -END
 }
 
@@ -360,6 +372,16 @@ ERPNEXT_DICTIONARIES: dict[str, ErpNextDictionary] = {
     ),
     # -END
     # Konta zespołu 4 (koszty rodzajowe) z planu kont ERPNext, bez kont grupujących.
+    # 2026-11-21: integracja Taiga - galwork-pm - ERPNext: rodzaj pracy
+    # (Activity Type, nieaktywne = disabled) i projekt rozliczeniowy (otwarty)
+    "rodzaje-aktywnosci": ErpNextDictionary(
+        (ErpNextSource("Activity Type", "activity_type"),),
+        "Rodzaje prac (ERPNext Activity Type)",
+    ),
+    "projekty-erp": ErpNextDictionary(
+        (ErpNextSource("Project", "project_name", active=(("status", "=", "Open"),)),),
+        "Projekty (ERPNext)",
+    ),
     "konta-kosztowe": ErpNextDictionary(
         (ErpNextSource("Account", "account_name", "konto",
                        (("account_number", "like", "4%"), ("is_group", "=", 0))),),
@@ -515,8 +537,72 @@ def _erpnext_options(dictionary: ErpNextDictionary, q: str | None, limit: int,
 # -END
 
 
+# BEGIN 2026-11-22: słowniki zasilane z rejestru (galwork.dictionary w modelu)
+def static_dictionary_slugs() -> set[str]:
+    """Slugi słowników zdefiniowanych w tym module - deklaracja w modelu nie
+    może ich przesłonić (sprawdzane przy tworzeniu wersji modelu)."""
+    return (set(TABLE_DICTIONARIES) | set(CONTACT_ADDRESS_DICTIONARIES) | set(INTERNAL_DICTIONARIES)
+            | set(FRAPPE_DICTIONARIES) | set(ERPNEXT_DICTIONARIES) | set(NOT_CONNECTED))
+
+
+def _register_dictionary(db: Session, slug: str) -> tuple[ProcessModelVersion, dict] | None:
+    from wf.schemas.wf_schemas import ProcessModelVersionStatus
+    versions = db.execute(
+        select(ProcessModelVersion)
+        .where(ProcessModelVersion.status == ProcessModelVersionStatus.PUBLISHED,
+               ProcessModelVersion.spec_json['galwork']['dictionary']['slug'].as_string() == slug)
+    ).scalars().all()
+    if not versions:
+        return None
+    if len(versions) > 1:
+        keys = ', '.join(sorted(v.process_model.key for v in versions))
+        raise DictionaryError(f"Słownik '{slug}' deklarują modele: {keys} - zostaw jedną deklarację")
+    version = versions[0]
+    return version, dict(version.spec_json['galwork']['dictionary'])
+
+
+def _register_label(instance: ProcessInstance, config: dict) -> str:
+    metadata = instance.extracted_metadata or {}
+    label = str(metadata.get(config.get('label') or '') or instance.title)
+    details = [str(metadata[k]) for k in config.get('detail') or () if metadata.get(k) not in (None, '')]
+    return f"{label} ({', '.join(details)})" if details else label
+
+
+def _register_options(db: Session, version: ProcessModelVersion, config: dict, q: str | None,
+                      limit: int, value: str | None) -> list[OptionRead]:
+    import uuid
+    from sqlalchemy import String, cast, func
+    from wf.schemas.wf_schemas import ProcessInstanceStatus
+    stmt = (
+        select(ProcessInstance)
+        .join(ProcessModelVersion, ProcessInstance.process_model_version_id == ProcessModelVersion.id)
+        .where(ProcessModelVersion.process_model_id == version.process_model_id,
+               ProcessInstance.status != ProcessInstanceStatus.CANCELLED)
+    )
+    if config.get('active_step'):
+        stmt = stmt.where(ProcessInstance.id.in_(
+            select(HumanTask.process_instance_id).where(
+                HumanTask.name == config['active_step'],
+                HumanTask.status.in_((HumanTaskStatus.OPEN, HumanTaskStatus.CLAIMED)))))
+    if value is not None:
+        try:
+            stmt = stmt.where(ProcessInstance.id == uuid.UUID(value))
+        except ValueError:
+            return []
+    if q:
+        pattern = f"%{q.lower()}%"
+        stmt = stmt.where(or_(func.lower(ProcessInstance.title).like(pattern),
+                              func.lower(cast(ProcessInstance.extracted_metadata, String)).like(pattern)))
+    label_key = config.get('label')
+    order = (ProcessInstance.extracted_metadata[label_key].as_string() if label_key
+             else ProcessInstance.title)
+    instances = db.execute(stmt.order_by(order, ProcessInstance.title).limit(limit)).scalars().all()
+    return [OptionRead(value=str(i.id), label=_register_label(i, config)) for i in instances]
+# -END
+
+
 def list_options(db: Session, slug: str, q: str | None = None, limit: int = 50,
-                 params: dict[str, str] | None = None) -> list[OptionRead]:
+                 params: dict[str, str] | None = None, value: str | None = None) -> list[OptionRead]:
     """Opcje {value, label} dla jednego pola `AsyncSelectWidget`/
     `TreeSelectWidget` (`ui:options.endpoint` = `/v1/wf/dictionaries/{slug}`
     w `*-uischema.json`)."""
@@ -532,4 +618,7 @@ def list_options(db: Session, slug: str, q: str | None = None, limit: int = 50,
         return _erpnext_options(ERPNEXT_DICTIONARIES[slug], q, limit, params)
     if slug in NOT_CONNECTED:
         raise DictionaryNotConnectedError(NOT_CONNECTED[slug])
+    register = _register_dictionary(db, slug)  # 2026-11-22
+    if register is not None:
+        return _register_options(db, *register, q, limit, value)
     raise DictionaryNotFoundError(f"Nieznany słownik '{slug}'")

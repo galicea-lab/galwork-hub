@@ -203,3 +203,27 @@ class SyncFromDiskEndpointTest(ApiTestCase):
 
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(mocked.call_args.kwargs.get('dry_run'), False)
+
+
+class ProcessProfileTest(unittest.TestCase):
+    """2026-11-17: profil obiegów - podzbiór katalogu obiegów."""
+
+    def test_profile_selects_folders(self):
+        import tempfile
+        from wf.services.filesystem_sync import (
+            FilesystemSyncError, discover_process_folders, profile_patterns)
+        with tempfile.TemporaryDirectory() as root:
+            for rel in ('regulacje/dokumenty', 'regulacje/zarzadzenie', 'cyfryzacja/a/b',
+                        'zakupy/wniosek', 'wspolne/podpis', 'wspolne/inny'):
+                os.makedirs(os.path.join(root, rel))
+                open(os.path.join(root, rel, 'p.bpmn'), 'w').close()
+            os.makedirs(os.path.join(root, 'profiles'))
+            with open(os.path.join(root, 'profiles', 'cyfryzacja.txt'), 'w') as handle:
+                handle.write('# komentarz\nregulacje/*\ncyfryzacja/**\nwspolne/podpis  # podproces\n')
+            selected = [os.path.relpath(f, root) for f in
+                        discover_process_folders(root, profile_patterns(root, 'cyfryzacja'))]
+            self.assertEqual(selected, ['cyfryzacja/a/b', 'regulacje/dokumenty',
+                                        'regulacje/zarzadzenie', 'wspolne/podpis'])
+            self.assertEqual(len(discover_process_folders(root)), 6)
+            with self.assertRaises(FilesystemSyncError):
+                profile_patterns(root, 'brak')

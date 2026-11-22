@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="defs_Process_Faktura_zakupu" targetNamespace="http://bpmn">
+  <bpmn:process id="Process_Faktura_zakupu" name="Faktura zakupu (KSeF / ERPNext)" isExecutable="true">
+    <bpmn:documentation>Obieg faktury zakupu (ZAK.1). KSeF obsługuje ERPNext; informacja o nowej fakturze (n8n albo webhook ERPNext -&gt; POST /v1/wf/erpnext/invoices/notify, cron scripts/erpnext_invoices.py sync) uruchamia sprawę z danymi faktury. Opis merytoryczny (projekt, rodzaj kosztu, opis) -&gt; akceptacja: Zatwierdź (zapis opisu w ERPNext i akcja workflow), Do poprawy (powrót do opisu) albo Odrzuć. Grupy zadań z konfiguracji huba: [erpnext] invoice_describer_group, approver_groups.</bpmn:documentation>
+    <bpmn:startEvent id="StartEvent_main" name="Faktura z ERPNext">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="faktura-zakupu-fz-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="faktura-zakupu-fz-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_Opis" name="Opis merytoryczny" camunda:candidateGroups="${grupa_opisu}">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="faktura-zakupu-fz-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="faktura-zakupu-fz-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_Akceptacja" name="Akceptacja" camunda:candidateGroups="${grupa_akceptacji}">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="faktura-zakupu-fz-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="faktura-zakupu-fz-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="GW_Decyzja" name="Decyzja (Akceptacja)" default="Flow_Zatwierdz" />
+    <bpmn:serviceTask id="Service_Zatwierdz" name="Zapis w ERPNext">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="erpnext.faktura_akceptacja" />
+          <spiffworkflow:property name="retryMinutes" value="30" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_Odrzuc" name="Odrzucenie w ERPNext">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="erpnext.faktura_odrzucenie" />
+          <spiffworkflow:property name="retryMinutes" value="30" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="End_Zaakceptowana" name="Zaakceptowana" />
+    <bpmn:endEvent id="End_Odrzucona" name="Odrzucona" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_main" targetRef="Task_Opis" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_Opis" targetRef="Task_Akceptacja" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_Akceptacja" targetRef="GW_Decyzja" />
+    <bpmn:sequenceFlow id="Flow_Zatwierdz" name="Zatwierdź" sourceRef="GW_Decyzja" targetRef="Service_Zatwierdz" />
+    <bpmn:sequenceFlow id="Flow_Poprawa" name="Do poprawy" sourceRef="GW_Decyzja" targetRef="Task_Opis">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Poprawa'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Odrzuc" name="Odrzuć" sourceRef="GW_Decyzja" targetRef="Service_Odrzuc">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Odrzuc'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Service_Zatwierdz" targetRef="End_Zaakceptowana" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Service_Odrzuc" targetRef="End_Odrzucona" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_Process_Faktura_zakupu">
+    <bpmndi:BPMNPlane id="Plane_Process_Faktura_zakupu" bpmnElement="Process_Faktura_zakupu">
+      <bpmndi:BPMNShape id="StartEvent_main_di" bpmnElement="StartEvent_main"><dc:Bounds x="60" y="122" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Opis_di" bpmnElement="Task_Opis"><dc:Bounds x="160" y="100" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Akceptacja_di" bpmnElement="Task_Akceptacja"><dc:Bounds x="320" y="100" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_Decyzja_di" bpmnElement="GW_Decyzja" isMarkerVisible="true"><dc:Bounds x="480" y="115" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Service_Zatwierdz_di" bpmnElement="Service_Zatwierdz"><dc:Bounds x="590" y="40" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Service_Odrzuc_di" bpmnElement="Service_Odrzuc"><dc:Bounds x="590" y="200" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Zaakceptowana_di" bpmnElement="End_Zaakceptowana"><dc:Bounds x="752" y="62" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Odrzucona_di" bpmnElement="End_Odrzucona"><dc:Bounds x="752" y="222" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1"><di:waypoint x="78" y="140" /><di:waypoint x="210" y="140" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2"><di:waypoint x="210" y="140" /><di:waypoint x="370" y="140" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3"><di:waypoint x="370" y="140" /><di:waypoint x="505" y="140" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Zatwierdz_di" bpmnElement="Flow_Zatwierdz"><di:waypoint x="505" y="140" /><di:waypoint x="640" y="80" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Poprawa_di" bpmnElement="Flow_Poprawa"><di:waypoint x="505" y="165" /><di:waypoint x="505" y="320" /><di:waypoint x="210" y="320" /><di:waypoint x="210" y="180" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Odrzuc_di" bpmnElement="Flow_Odrzuc"><di:waypoint x="505" y="140" /><di:waypoint x="640" y="240" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4"><di:waypoint x="640" y="80" /><di:waypoint x="770" y="80" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5"><di:waypoint x="640" y="240" /><di:waypoint x="770" y="240" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,43 @@
+{#- Wzorzec: pismo wychodzące (odpowiedź, wezwanie, informacja, zamówienie). -#}
+{#-  układ pisma: nadawca, adresat, znak sprawy, wstęp (odpowiedź na
+    pismo / działając w imieniu), treść, załączniki, podpis, fakultatywnie RODO. -#}
+{% extends "_base/strona.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set klasa = klasa | default('pismo', true) -%}
+{%- set tytul = tytul | default('PISMO', true) -%}
+
+{% block adresat %}
+{%- if adresat_linie %}
+{{ m.adresat(adresat_linie) }}
+{%- endif %}
+{% endblock %}
+
+{% block lead %}
+{%- if wstep %}
+<p class="lead">{{ wstep }}</p>
+{%- endif %}
+{%- block wstep_dodatkowy %}{% endblock %}
+{% endblock %}
+
+{% block tresc %}
+{{ self.tresc_pisma() }}
+{% block zestawienie %}{% endblock %}
+{% block zalaczniki %}{% endblock %}
+{% endblock %}
+
+{% block tresc_pisma %}
+<p>{{ akapit | default('') }}</p>
+{% endblock %}
+
+{% block podpisy %}
+{{ m.podpisy([(podpis_rola | default('Rektor'), osoba_podpisujaca | default(''), data | default(''))], 'pionowo') }}
+{%- if podpis_dodatkowy %}
+<p class="pieczec">{{ podpis_dodatkowy }}</p>
+{%- endif %}
+{% endblock %}
+
+{% block rodo %}
+{%- if rodo_cel %}
+{{ m.klauzula_rodo(uczelnia, miejscowosc_m, cel=rodo_cel, podstawa=rodo_podstawa | default('art. 6 ust. 1 lit. c i e RODO'), iod=iod | default('iod@uczelnia.pl')) }}
+{%- endif %}
+{% endblock %}

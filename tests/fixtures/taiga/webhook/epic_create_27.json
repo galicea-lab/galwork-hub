@@ -1,0 +1,51 @@
+{
+  "by": {
+    "id": 6,
+    "username": "user6",
+    "full_name": "User 6",
+    "permalink": "https://taiga.example.org/profile/user6",
+    "photo": null,
+    "gravatar_id": null
+  },
+  "data": {
+    "id": 27,
+    "ref": 64,
+    "tags": [],
+    "color": "#51D381",
+    "owner": {
+      "id": 6,
+      "username": "user6",
+      "full_name": "User 6",
+      "permalink": "https://taiga.example.org/profile/user6",
+      "photo": null,
+      "gravatar_id": null
+    },
+    "status": {
+      "id": 31,
+      "name": "New",
+      "slug": "new",
+      "color": "#70728F",
+      "is_closed": false
+    },
+    "project": {
+      "id": 7,
+      "name": "Galwork",
+      "permalink": "https://taiga.example.org/project/galwork",
+      "logo_big_url": null
+    },
+    "subject": "etest",
+    "watchers": [],
+    "permalink": "https://taiga.example.org/project/galwork/epic/64",
+    "assigned_to": null,
+    "description": "",
+    "epics_order": 1795208966383,
+    "created_date": "2026-11-20T21:09:26.404Z",
+    "modified_date": "2026-11-20T21:09:26.408Z",
+    "team_requirement": false,
+    "client_requirement": false,
+    "custom_attributes_values": {}
+  },
+  "date": "2026-11-20T21:09:26.481Z",
+  "type": "epic",
+  "action": "create"
+}

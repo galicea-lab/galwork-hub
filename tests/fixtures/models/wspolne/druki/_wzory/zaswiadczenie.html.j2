@@ -1,0 +1,50 @@
+{#- Wzorzec: zaświadczenie. -#}
+{#-  układ zaświadczenia: formuła „zaświadcza się”, treść,
+    cel wydania, podpis z pieczęcią, adnotacje rejestrowe. -#}
+{% extends "_base/strona.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set klasa = klasa | default('zaswiadczenie', true) -%}
+{%- set tytul = tytul | default('ZAŚWIADCZENIE', true) -%}
+
+{% block adresat %}
+{%- if adresat_linie %}
+{{ m.adresat(adresat_linie) }}
+{%- endif %}
+{% endblock %}
+
+{% block lead %}
+{{ m.formula(formula | default('z a ś w i a d c z a   s i ę ,   ż e')) }}
+{% endblock %}
+
+{% block tresc %}
+{{ self.tresc_zaswiadczenia() }}
+{{ self.cel_wydania() }}
+{% endblock %}
+
+{% block tresc_zaswiadczenia %}
+<p>{{ tresc_zaswiadczenia | default('') }}</p>
+{% endblock %}
+
+{% block cel_wydania %}
+<p>Zaświadczenie wydaje się na wniosek zainteresowanego, w celu przedłożenia {{ cel | default('w miejscu wskazanym przez wnioskodawcę') }}. Zaświadczenie nie wymaga legalizacji ani apostille.</p>
+{% endblock %}
+
+{% block adnotacje %}
+{{ m.adnotacje([
+  ("Numer w rejestrze zaświadczeń", numer_rejestru | default('')),
+  ("Data wydania", data | default('')),
+  ("Opłata skarbowa", opla_skarbowa | default('nie pobrano')),
+]) }}
+{% endblock %}
+
+{% block podpisy %}
+{{ m.podpisy([(podpis_rola | default('Kierownik jednostki'), osoba_upowazniona | default(''), '')], 'pionowo') }}
+<p class="pieczec">(pieczęć {{ jednostka or uczelnia }} i podpis osoby upoważnionej do wydania zaświadczenia)</p>
+{% endblock %}
+
+{% block rodo %}
+{{ m.klauzula_rodo(uczelnia, miejscowosc_m,
+   cel='wydanie zaświadczenia o przebiegu studiów / zatrudnienia oraz prowadzenie dokumentacji',
+   podstawa='art. 6 ust. 1 lit. c RODO w związku z art. 217 ustawy – Kodeks postępowania administracyjnego oraz przepisami o szkolnictwie wyższym',
+   iod=iod | default('iod@uczelnia.pl')) }}
+{% endblock %}

@@ -43,6 +43,8 @@ def get_dictionary_options(
     designation: str | None = Query(default=None, max_length=200),
     category: str | None = Query(default=None, max_length=200),
     location: str | None = Query(default=None, max_length=200),
+    # 2026-11-22: słownik z rejestru - opcja dla zapisanej wartości (id wpisu)
+    value: str | None = Query(default=None, max_length=64),
     db: Session = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_wf_user),
 ):
@@ -52,7 +54,7 @@ def get_dictionary_options(
         params = {name: value for name, value in (
             ("department", department), ("designation", designation),
             ("category", category), ("location", location)) if value}
-        return list_options(db, slug, q=q, limit=limit, params=params)
+        return list_options(db, slug, q=q, limit=limit, params=params, value=value)
     except DictionaryNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except DictionaryNotConnectedError as exc:

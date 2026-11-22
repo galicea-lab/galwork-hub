@@ -1,0 +1,24 @@
+{
+  "ui:order": ["projekt", "projekt_erp", "komunikat", "tygodnie_do_zatwierdzenia", "suma_godzin", "podsumowanie",
+               "nieprzypisane", "korekty_niezrealizowane", "uwagi", "komentarz", "*"],
+  "komunikat": { "ui:widget": "textarea" },
+  "tygodnie_do_zatwierdzenia": { "ui:options": { "addable": false, "removable": false, "orderable": false } },
+  "podsumowanie": { "ui:options": { "addable": false, "removable": false, "orderable": false } },
+  "nieprzypisane": {
+    "ui:options": { "addable": false, "removable": false, "orderable": false },
+    "items": {
+      "zakres": { "ui:widget": "hidden" },
+      "obiekt": { "ui:widget": "hidden" },
+      "rodzaj_pracy": {
+        "ui:widget": "AsyncSelectWidget",
+        "ui:options": {
+          "endpoint": "/v1/wf/dictionaries/rodzaje-aktywnosci",
+          "sourceName": "Rodzaje prac (ERPNext)"
+        }
+      }
+    }
+  },
+  "korekty_niezrealizowane": { "ui:options": { "addable": false, "removable": false, "orderable": false } },
+  "uwagi": { "ui:options": { "addable": false, "removable": false, "orderable": false } },
+  "komentarz": { "ui:widget": "textarea", "ui:options": { "rows": 3 } }
+}

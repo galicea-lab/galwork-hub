@@ -1,0 +1,54 @@
+{
+  "data": {
+    "task": {
+      "id": 68,
+      "ref": 30,
+      "subject": "Uporządkowanie nawigacji zależne od grup (kandydat/student/nauczyciel/administracja/admin)",
+      "userstory": {
+        "id": 43,
+        "ref": 26,
+        "subject": "Dodanie funkcji rekrutacji"
+      }
+    },
+    "user": {
+      "id": 5,
+      "username": "user5",
+      "full_name": "User 5",
+      "photo": null
+    },
+    "comment": "",
+    "project": {
+      "id": 7,
+      "name": "Galwork",
+      "slug": "galwork",
+      "description": ""
+    },
+    "values_diff": {
+      "custom_attributes": {
+        "new": [
+          {
+            "id": 1,
+            "name": "Czas [h]",
+            "type": "number",
+            "value": 12,
+            "value_diff": [
+              null,
+              12
+            ]
+          }
+        ],
+        "changed": [],
+        "deleted": []
+      }
+    },
+    "comment_html": ""
+  },
+  "id": 1160,
+  "content_type": 15,
+  "object_id": 7,
+  "namespace": "project:7",
+  "event_type": "tasks.task.change",
+  "project": 7,
+  "data_content_type": 54,
+  "created": "2026-11-20T21:43:01.139Z"
+}

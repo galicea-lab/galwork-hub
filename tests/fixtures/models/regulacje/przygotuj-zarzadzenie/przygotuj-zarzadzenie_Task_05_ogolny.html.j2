@@ -1,0 +1,126 @@
+{#- uogólniony wydruk aktu wewnętrznego; dane podmiotu z sekcji [print]. -#}
+{#- Obieg: regulacje/przygotuj-zarzadzenie | krok: Task_05 "Akceptacja" | formularz: przygotuj-zarzadzenie-f-zr-schema.json | priorytet: A #}
+{% extends "_wzory/pismo.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set dane = f if (f is defined and f) else {} -%}
+{%- set meta_ = meta if (meta is defined and meta) else {} -%}
+
+{%- set tytul_dokumentu = m.w(dane, "Szczegóły dokumentu", "Tytuł") | trim -%}
+{%- set nr_dok = m.w(dane, "Szczegóły dokumentu", "Nr dokumentu") | trim -%}
+{%- set data_wydania = m.w(dane, "Szczegóły dokumentu", "Data wydania") | trim -%}
+{%- set data_rejestracji = m.w1(dane, "Data rejestracji") | trim -%}
+{%- set kto_rejestrowal = m.w1(dane, "Kto zarejestrował") | trim -%}
+{%- set kto_redaguje = m.w(dane, "Szczegóły dokumentu", "Kto redaguje") | trim -%}
+{%- set wybor_osoby = m.w(dane, "Szczegóły dokumentu", "Wybór osoby") | trim -%}
+{%- set kogo_obowiazuje = m.w(dane, "Szczegóły dokumentu", "Kogo obowiązuje") | trim -%}
+{%- set od_kiedy = m.w(dane, "Szczegóły dokumentu", "Od kiedy obowiązuje") | trim -%}
+{%- set termin_do = m.w(dane, "Szczegóły dokumentu", "Termin do") | trim -%}
+{%- set opinia = m.w(dane, "Szczegóły dokumentu", "Opinia merytoryczna") | trim -%}
+{%- set slowa_kluczowe = m.w(dane, "Szczegóły dokumentu", "Słowa kluczowe") | trim -%}
+{%- set typ_dokumentu = m.w(dane, "Szczegóły dokumentu", "Typ dokumentu") | trim -%}
+{%- set uwagi = m.w(dane, "Szczegóły dokumentu", "Uwagi") | trim -%}
+{%- set podstawa = m.w1(dane, "Podstawa prawna") | trim -%}
+{%- set mapa_statusow = {"0": "nieustalony", "1": "obowiązujący", "2": "unieważniony", "3": "uchylony", "4": "wygasły", "5": "zmieniony"} -%}
+{%- set status = m.wm(dane, "Szczegóły dokumentu", "Status", mapa_statusow, "obowiązujący") -%}
+{%- set mapa_dzialow = {"0": "……", "1": "DZ1", "2": "DZ2", "3": "DZ3"} -%}
+{%- set dzial_kod = m.w(dane, "Szczegóły dokumentu", "Dział") | trim -%}
+{%- set dzial = (mapa_dzialow.get(dzial_kod, dzial_kod) if dzial_kod else "……") -%}
+{%- set powiadom_osoby = m.w(dane, "Dystrybucja", "Powiadom osoby") | trim -%}
+{%- set akceptacja_prawna = m.w(dane, "Analiza prawna", "Akceptacja pod względem prawnym") | trim -%}
+{%- set data_akceptacji = m.w(dane, "Analiza prawna", "Data akceptacji prawnej") | trim -%}
+
+{%- set podmiot = podmiot | default(meta_.get('uczelnia') or 'Organ wydający', true) -%}
+{%- set uczelnia = podmiot -%}
+{%- set organ_podpisujacy = organ_podpisujacy | default(podmiot, true) -%}
+{%- set organ_nadzorujacy = organ_nadzorujacy | default(podmiot, true) -%}
+{%- set formulka = formulka | default('postanawia się, co następuje') -%}
+{%- set tytul = (typ_dokumentu | upper) if typ_dokumentu else 'AKT WEWNĘTRZNY' -%}
+
+{%- set rok_a = data_wydania[:4] -%}
+{%- set rok_b = data_wydania[-5:-1] -%}
+{%- set rok = rok_a if rok_a.isdigit() else (rok_b if rok_b.isdigit() else "……") -%}
+{%- set nr_pelny = nr_dok if "/" in nr_dok else ((nr_dok ~ "/" ~ rok) if nr_dok else ("……/" ~ rok)) -%}
+{%- set nr_dokumentu = "Nr " ~ nr_pelny -%}
+{%- set podtytul = tytul_dokumentu -%}
+{%- set od_kiedy_r = (od_kiedy ~ " r.") if (od_kiedy and od_kiedy[-1:] not in ('.', 'r')) else od_kiedy -%}
+{%- set termin_do_r = (termin_do ~ " r.") if (termin_do and termin_do[-1:] not in ('.', 'r')) else termin_do -%}
+{%- set obowiazuje_od = od_kiedy_r or data_wydania or "……" -%}
+{%- set obowiazuje_od_ = obowiazuje_od[:-1] if obowiazuje_od[-1:] == '.' else obowiazuje_od -%}
+{%- set znak = nr_pelny -%}
+
+{% block wstep_dodatkowy %}
+{%- if podstawa %}
+<p>Na podstawie {{ podstawa }} oraz w celu jednolitego uregulowania spraw objętych przedmiotem aktu, wydaje się niniejszy akt.</p>
+{%- else %}
+<p>W celu jednolitego uregulowania spraw objętych przedmiotem aktu wydaje się niniejszy akt.</p>
+{%- endif %}
+{{ m.formula(formulka) }}
+{% endblock %}
+
+{% block tresc_pisma %}
+<h3 class="podsekcja">§ 1. Przedmiot aktu</h3>
+<p>Akt określa zasady i tryb postępowania oraz zadania i odpowiedzialność osób oraz komórek organizacyjnych podmiotu w zakresie objętym przedmiotem aktu.</p>
+<p>Przedmiot aktu: <span class="wypelnienie">{{ tytul_dokumentu or "……" }}</span></p>
+<p>Akt obowiązuje: <span class="wypelnienie">{{ kogo_obowiazuje or "……" }}</span>.{% if slowa_kluczowe %} Zakres przedmiotowy obejmuje w szczególności zagadnienia wskazane słowami kluczowymi: <span class="wypelnienie">{{ slowa_kluczowe }}</span>.{% endif %}</p>
+{%- if opinia %}
+<p>Przyjęte rozwiązania są zgodne z opinią merytoryczną komórki właściwej dla sprawy: {{ opinia }}</p>
+{%- endif %}
+
+<h3 class="podsekcja">§ 2. Wykonanie aktu</h3>
+<p>Wykonanie aktu powierza się: <span class="wypelnienie">{{ kto_redaguje or wybor_osoby or "……" }}</span>.</p>
+<p>Nadzór nad wykonaniem aktu sprawuje <span class="wypelnienie">{{ organ_nadzorujacy }}</span>. Osoby i komórki organizacyjne wskazane w akcie obowiązane są do dostosowania dotychczasowej praktyki do jego postanowień w terminie do dnia <span class="wypelnienie">{{ termin_do_r or "……" }}</span></p>
+<p>Treść aktu przekazuje się do wiadomości osób wskazanych w dystrybucji dokumentu: <span class="wypelnienie">{{ powiadom_osoby or "……" }}</span>.</p>
+
+<h3 class="podsekcja">§ 3. Wejście w życie</h3>
+<p>Akt wchodzi w życie z dniem <span class="wypelnienie">{{ obowiazuje_od_ }}</span>.</p>
+
+{{ m.sekcja("Publikacja aktu") }}
+<p>Akt podlega udostępnieniu w sposób przyjęty u podmiotu, w tym w intranecie oraz – jeżeli podmiot prowadzi BIP – w Biuletynie Informacji Publicznej. Datą ogłoszenia jest data opublikowania, nie wcześniej niż <span class="wypelnienie">{{ obowiazuje_od_ }}</span>.</p>
+<p>Informację o publikacji aktu odnotowuje się w rejestrze aktów wewnętrznych podmiotu; akt otrzymuje status: <strong>{{ status }}</strong>.</p>
+{%- if uwagi %}
+<p class="drobny">Uwagi do dokumentu: {{ uwagi }}</p>
+{%- endif %}
+{% endblock %}
+
+{% block zestawienie %}
+{{ m.sekcja("Metryka dokumentu") }}
+{{ m.tabela(["Element", "Wartość"], [
+  ["Numer aktu", nr_pelny],
+  ["Typ dokumentu", typ_dokumentu or "Akt wewnętrzny"],
+  ["Status", status],
+  ["Tytuł", tytul_dokumentu or "……"],
+  ["Kto redaguje", kto_redaguje or "……"],
+  ["Kogo obowiązuje", kogo_obowiazuje or "……"],
+  ["Od kiedy obowiązuje", od_kiedy or "……"],
+  ["Termin do", termin_do or "……"],
+  ["Data wydania", data_wydania or "……"],
+  ["Data rejestracji", data_rejestracji or "……"],
+  ["Zarejestrował", kto_rejestrowal or "……"],
+  ["Komórka organizacyjna", dzial],
+  ["Słowa kluczowe", slowa_kluczowe or "……"],
+], "kompaktowa") }}
+{% endblock %}
+
+{% block zalaczniki %}
+{%- if opinia %}
+{{ m.sekcja("Załączniki") }}
+<ol class="zalaczniki">
+  <li>Opinia merytoryczna – {{ opinia }}</li>
+</ol>
+{%- endif %}
+{% endblock %}
+
+{% block podpisy %}
+{{ m.podpisy([(organ_podpisujacy, "", data_wydania or data)], 'pionowo') }}
+<p class="pieczec">(pieczęć podmiotu i podpis osoby upoważnionej)</p>
+{% endblock %}
+
+{% block adnotacje %}
+{{ m.adnotacje([
+  ("Projekt aktu przygotował", kto_redaguje or "……"),
+  ("Akceptacja pod względem prawnym", akceptacja_prawna or ""),
+  ("Data akceptacji prawnej", data_akceptacji or ""),
+  ("Data rejestracji dokumentu", data_rejestracji or ""),
+  ("Data publikacji aktu", ""),
+]) }}
+{% endblock %}

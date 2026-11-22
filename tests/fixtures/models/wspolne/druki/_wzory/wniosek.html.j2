@@ -1,0 +1,52 @@
+{#- Wzorzec: wniosek wewnętrzny (pracowniczy, zakupowy, socjalny, urzędowy). -#}
+{#-  układ wniosku: dane wnioskodawcy, przedmiot wniosku,
+    uzasadnienie, zestawienie (tabela), akceptacje przełożonych. -#}
+{% extends "_base/strona.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set klasa = klasa | default('wniosek', true) -%}
+{%- set tytul = tytul | default('WNIOSEK', true) -%}
+
+{% block adresat %}
+{%- if adresat_linie %}
+{{ m.adresat(adresat_linie) }}
+{%- endif %}
+{%- if dane_wnioskodawcy %}
+{{ m.siatka(dane, dane_wnioskodawcy, 2) }}
+{%- endif %}
+{% endblock %}
+
+{% block lead %}
+<p class="lead">{{ przedmiot | default('Wnoszę o rozpatrzenie niniejszego wniosku.') }}</p>
+{% endblock %}
+
+{% block tresc %}
+{{ self.uzasadnienie() }}
+{% block zestawienie %}{% endblock %}
+{% block dodatkowe_informacje %}{% endblock %}
+{{ m.zalaczniki(zalaczniki_lista) }}
+{% endblock %}
+
+{% block uzasadnienie %}
+{%- if uzasadnienie_text %}
+{{ m.sekcja("Uzasadnienie wniosku") }}
+<p>{{ uzasadnienie_text }}</p>
+{%- endif %}
+{% endblock %}
+
+{% block adnotacje %}
+{%- if akceptacje %}
+{{ m.sekcja("Akceptacje") }}
+{{ m.tabela(["Stanowisko", "Imię i nazwisko", "Data", "Podpis", "Decyzja"], akceptacje, 'krzyzowa') }}
+{%- endif %}
+{% endblock %}
+
+{% block podpisy %}
+{{ m.podpisy([(podpis_rola | default('Wnioskodawca'), osoba_wnioskujaca | default(''), data | default(''))]) }}
+{% endblock %}
+
+{% block rodo %}
+{{ m.klauzula_rodo(uczelnia, miejscowosc_m,
+   cel=rodo_cel | default('rozpatrzenie wniosku i realizacja wynikających z niego czynności'),
+   podstawa=rodo_podstawa | default('art. 6 ust. 1 lit. b i c RODO w związku z przepisami prawa pracy oraz Regulaminem wynagradzania i świadczeń obowiązującym w Uczelni'),
+   iod=iod | default('iod@uczelnia.pl')) }}
+{% endblock %}

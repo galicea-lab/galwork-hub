@@ -1,0 +1,43 @@
+{
+  "description": "Obieg faktury zakupu (ZAK.1). KSeF obsługuje ERPNext; informacja o nowej fakturze (n8n albo webhook ERPNext -> POST /v1/wf/erpnext/invoices/notify, cron scripts/erpnext_invoices.py sync) uruchamia sprawę z danymi faktury. Opis merytoryczny (projekt, rodzaj kosztu, opis) -> akceptacja: Zatwierdź (zapis opisu w ERPNext i akcja workflow), Do poprawy (powrót do opisu) albo Odrzuć. Grupy zadań z konfiguracji huba: [erpnext] invoice_describer_group, approver_groups.",
+  "display_name": "Faktura zakupu (KSeF / ERPNext)",
+  "exception_notification_addresses": [],
+  "fault_or_suspend_on_exception": "fault",
+  "metadata_extraction_paths": [
+    {
+      "key": "numer_faktury",
+      "path": "numer_faktury"
+    },
+    {
+      "key": "dostawca",
+      "path": "dostawca"
+    },
+    {
+      "key": "kwota_brutto",
+      "path": "kwota_brutto"
+    },
+    {
+      "key": "waluta",
+      "path": "waluta"
+    },
+    {
+      "key": "termin_platnosci",
+      "path": "termin_platnosci"
+    },
+    {
+      "key": "projekt",
+      "path": "projekt"
+    },
+    {
+      "key": "status_erp",
+      "path": "status_erp"
+    }
+  ],
+  "primary_file_name": "faktura-zakupu.bpmn",
+  "primary_process_id": "Process_Faktura_zakupu",
+  "key": "faktura-zakupu",
+  "galwork": {
+    "record_step": "Akceptacja",
+    "edit_step": "Opis merytoryczny"
+  }
+}

@@ -93,6 +93,7 @@ sender=xxxxx<xxxxx@xxxxxxxxxx.pl>
 # cron (domyślnie [edr] system_user).
 [wf]
 system_user=
+
 # pliki obiegów edytowane w arenie (wf/services/process_files.py).
 # process_files_dir - katalog obiegów; pusty = spiffworkflow/ w katalogu huba
 #   (w kontenerze /app/spiffworkflow, wolumen SPIFFWORKFLOW_DIR).
@@ -100,6 +101,18 @@ system_user=
 #   korzeniem repozytorium Git (autor = zalogowany użytkownik, bez push).
 process_files_dir=
 process_files_git_commit=true
+
+# 2026-11-17: cyfryzacja przez regulacje
+# process_profile - profil obiegów synchronizowanych z katalogu obiegów
+#   (<process_files_dir>/profiles/<nazwa>.txt), np. "cyfryzacja" - start "od zera"
+#   tylko z obiegami regulacji i wdrożeń; pusty = wszystkie obiegi.
+# process_release_tags - tag git model/<klucz>/v<wersja> przy publikacji.
+# rollout_enforcement - start obiegu bez wdrożenia (aktu) w jednostce
+#   użytkownika: off / warn (dozwolony, wpis w dzienniku) / on (tylko
+#   administratorzy procesów).
+process_profile=
+process_release_tags=true
+rollout_enforcement=warn
 
 # wydruki PDF z formularzy obiegów (wf/services/print_service.py).
 # Dane organizacji w nagłówku druków (jedna konfiguracja dla całej instalacji):
@@ -169,6 +182,24 @@ invoice_approve_action=Zatwierdź
 # wf/routers/erpnext_invoice_api.py::require_invoice_approver); dopasowanie
 # po leściu ścieżki grupy, jak [keycloak] admin_groups. Puste = nikt.
 approver_groups=faktury_zakupu
+# (ZAK.1): obieg faktury zakupu (wf/services/purchase_invoice_flow.py).
+# Informacja o nowej fakturze: POST /v1/wf/erpnext/invoices/notify {"name": "..."}
+# z n8n (nagłówek X-Galwork-Webhook-Token: <sekret>) albo z Webhooka ERPNext
+# (nagłówek X-Frappe-Webhook-Signature, ten sam sekret); cron zabezpieczający:
+# scripts/erpnext_invoices.py sync. Sekret trzymaj w env (ERPNEXT_INVOICE_WEBHOOK_SECRET).
+invoice_webhook_secret=
+invoice_process_key=faktura-zakupu
+# grupa Keycloak opisu merytorycznego; akceptacja = pierwsza z approver_groups
+invoice_describer_group=faktury_opis
+# po akceptacji: workflow (invoice_approve_action) | submit | none
+invoice_accept=workflow
+# akcja workflow przy odrzuceniu; puste = bez zmian w ERPNext
+invoice_reject_action=
+# pola zapisywane w fakturze po akceptacji: pole_erpnext=pole_sprawy, ...
+# projekt = wymiar księgowy w nagłówku Purchase Invoice (pole `project`)
+invoice_write_fields=remarks=opis_merytoryczny, project=projekt
+# pole z numerem KSeF w Purchase Invoice (zależy od aplikacji KSeF); puste = brak
+invoice_ksef_field=
 
 # reguły akceptacji wniosku zakupowego (wf/services/
 # purchase_request_service.py, - progi i flaga PZP są per-instalacja
@@ -189,6 +220,30 @@ domyslna_waluta=PLN
 [n8n]
 base_url=https://n8n.example.com
 api_key=xxxxxxxxxxxxxxxxxxxx
+
+# 2026-11-21: integracja Taiga - galwork-pm - ERPNext (connector/taiga,
+# pm/integrations/taiga, scripts/pm_taiga.py). Konto techniczne Taigi musi
+# być administratorem rozliczanych projektów (webhooki, atrybuty, e-maile
+# członków). HASŁO I SEKRETY w zmiennych środowiskowych: TAIGA_PASSWORD,
+# TAIGA_WEBHOOK_SECRET_<id projektu> (sekret generuje `pm_taiga.py register`).
+[taiga]
+base_url=https://taiga.example.com
+username=galwork-hub
+password=
+# id konta technicznego w Taidze - jego zmiany są ignorowane (ochrona przed pętlą)
+technical_user_id=
+# 2026-11-21: adres bazowy webhooka (projekt dopisywany na końcu: .../webhook/<id>);
+# puste = bez webhooka, zmiany tylko z timeline'u (rekoncyliacja)
+webhook_url=https://hub.example.com/v1/integrations/taiga/webhook
+timeout=30
+# 2026-11-21: dozwolone rodzaje prac (Activity Type) - domyślnie wszystkie aktywne
+# w ERPNext; lista po przecinku zawęża słownik integracji
+activity_types=
+# 2026-11-21: zapis Timesheetów do ERPNext (pm_taiga.py erp-sync) - celowo wyłączony,
+# dopóki wdrożenie go nie włączy (erp-sync --dry-run działa zawsze)
+erp_sync=false
+# 2026-11-21: adres galwork-pm - link w przypomnieniach (pm_taiga.py remind)
+pm_url=
 
 # konektor do Frappe Education (connector/frappe_education) -
 # dziekanat prowadzony we Frappe  Education (../education w tym samym katalogu nadrzędnym).
@@ -220,6 +275,11 @@ forward_user_token=false
 # Hasło: password_file (sekret Dockera) albo password.
 # Zmienne środowiskowe: SEAL_ENABLED, SEAL_HOST, SEAL_PORT, SEAL_PASSWORD_FILE,
 # SEAL_KEYID, SEAL_PRINT_FORMAT, SEAL_TSPURL itd.
+# 2026-11-17: enabled dotyczy też kroku obiegu `pieczec.dokument`
+# (wf/services/seal_service_tasks.py, np. regulacje/*) - przy enabled=false
+# krok czeka (albo jest pomijany, gdy w BPMN required=false). Źródło zlecenia
+# to właściwość `source` kroku (regulacje) albo klucz modelu procesu - musi
+# być w `sources` klucza w konfiguracji galwork-seal (seal.toml).
 [seal]
 enabled=false
 models=edu-pismo
@@ -458,3 +518,12 @@ audience=
 candidate_group=kandydaci
 leeway=30
 
+# 2026-11-17: dyskusje o sprawie w komunikatorze (wf/services/discussions.py) -
+# tylko link, bez integracji zwrotnej. provider - nazwa w interfejsie (domyślnie
+# Mattermost); start_url - adres "Rozpocznij dyskusję" (szablon: {business_key},
+# {instance_id}, {title}, {model_key}), np. https://chat.example.pl/uczelnia/channels/sprawy;
+# allowed_hosts - hosty dopuszczalnych linków (puste = host z start_url).
+[chat]
+provider=Mattermost
+start_url=
+allowed_hosts=

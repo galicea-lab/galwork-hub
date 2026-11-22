@@ -1,0 +1,58 @@
+{
+  "data": {
+    "task": {
+      "id": 81,
+      "ref": 68,
+      "subject": "zadanie 1",
+      "userstory": {
+        "id": 66,
+        "ref": 67,
+        "subject": "test_uc"
+      }
+    },
+    "user": {
+      "id": 6,
+      "username": "user6",
+      "full_name": "User 6",
+      "photo": null
+    },
+    "comment": "",
+    "project": {
+      "id": 7,
+      "name": "Galwork",
+      "slug": "galwork",
+      "description": ""
+    },
+    "values_diff": {
+      "custom_attributes": {
+        "new": [],
+        "changed": [
+          {
+            "name": "Czas [h]",
+            "type": "number",
+            "changes": {
+              "value": [
+                12,
+                null
+              ]
+            },
+            "value_diff": [
+              12,
+              null
+            ]
+          }
+        ],
+        "deleted": []
+      }
+    },
+    "comment_html": ""
+  },
+  "id": 1150,
+  "content_type": 15,
+  "object_id": 7,
+  "namespace": "project:7",
+  "event_type": "tasks.task.change",
+  "project": 7,
+  "data_content_type": 54,
+  "created": "2026-11-20T21:30:24.749Z"
+}

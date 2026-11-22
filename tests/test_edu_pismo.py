@@ -5,10 +5,10 @@
 # mockowane; model procesu wczytujemy z dysku (filesystem_sync) i publikujemy.
 from __future__ import annotations
 
-import os
 import unittest
 from unittest.mock import patch
 
+from tests.fixture_paths import fixture_model
 from tests.base import ApiTestCase
 
 from wf.engine import UNRESOLVED_PRINCIPAL, TaskAssignment
@@ -16,8 +16,7 @@ from wf.schemas.wf_schemas import CurrentUser, ProcessInstanceStatus
 
 KOR = 'edu.routers.korespondencja_api'
 SYNC = 'edu.services.case_sync'
-MODEL_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                         'spiffworkflow', 'edu', 'edu-pismo')
+MODEL_DIR = fixture_model('edu', 'edu-pismo')
 
 
 def make_case(**extra) -> dict:

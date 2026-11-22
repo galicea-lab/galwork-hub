@@ -8,13 +8,13 @@ from __future__ import annotations
 import os
 from unittest.mock import MagicMock, patch
 
+from tests.fixture_paths import fixture_model
 from tests.base import ApiTestCase
 
 from connector.paperless.connector import PaperlessConnector
 from wf.schemas.wf_schemas import CurrentUser, DocumentLinkRole, ProcessInstanceStatus
 
-MODEL_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                         'spiffworkflow', 'kancelaria', 'edr-wysylka')
+MODEL_DIR = fixture_model('kancelaria', 'edr-wysylka')
 EDR = 'connector.edoreczenia.edr_paperless.EdrConnector'
 ADE = 'AE:PL-12345-67890-ABCDE-12'
 
@@ -167,7 +167,9 @@ class EdrWysylkaTest(EdrWysylkaBase):
     _ade, subject, _body, attachments = edrc.send.call_args[0]
     self.assertEqual(subject, 'Odpowiedź - poprawiona')
     self.assertEqual([a['filename'] for a in attachments], ['pismo-12.pdf'])
-    self.assertEqual(self.linked(), {12: DocumentLinkRole.MAIN})
+    # powiązań nie można usuwać - poprzednie dokumenty zostają w sprawie jako `related`
+    self.assertEqual(self.linked(), {10: DocumentLinkRole.RELATED, 11: DocumentLinkRole.RELATED,
+                                     12: DocumentLinkRole.MAIN})
 
   def test_invalid_ade_is_rejected_by_form(self):
     response = self.client.post('/v1/wf/process-instances', json={
@@ -243,7 +245,7 @@ class EdrReplyTest(EdrWysylkaBase):
     from wf.models import ProcessModel, ProcessModelFile, ProcessModelVersion
     from wf.schemas.wf_schemas import ProcessFileType, ProcessModelVersionStatus
     from wf.services.process_service import build_spec_json
-    folder = os.path.join(os.path.dirname(MODEL_DIR), '..', '..', 'scripts', 'process_definitions')
+    folder = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'scripts', 'process_definitions')
     files = []
     for name, kind in (('edr_korespondencja.bpmn', ProcessFileType.BPMN),
                        ('przeglad.json', ProcessFileType.JSON_SCHEMA),

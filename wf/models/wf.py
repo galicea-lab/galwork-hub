@@ -354,9 +354,91 @@ class DocumentVersion(Base):
     uploaded_at: Mapped[datetime] = created_at_col()
     human_task_id: Mapped[uuid.UUID | None] = mapped_column(
         Uuid(as_uuid=True), ForeignKey("human_task.id"))
+    # 2026-11-17: data wejścia w życie treści tej wersji (redakcji aktu);
+    # brak = wersja nieobowiązująca (projekt, skan pomocniczy). Wersja
+    # opieczętowana dziedziczy datę wersji źródłowej.
+    effective_from: Mapped[date | None] = mapped_column(Date)
 
     document: Mapped[Document] = relationship(back_populates="versions")
     uploaded_by: Mapped[User] = relationship(foreign_keys=[uploaded_by_id])
+
+
+class RolloutMode(StrEnum):
+    TEST = "test"              # równolegle; obowiązuje procedura dotychczasowa
+    AUXILIARY = "auxiliary"    # pomocniczo; dokument źródłowy poza systemem
+    PRODUCTION = "production"  # obieg jest trybem obowiązującym
+
+
+class ProcessRollout(Base):
+    """2026-11-17: wdrożenie obiegu - tryb użycia modelu procesu w jednostkach
+    organizacyjnych w okresie, na podstawie aktu (konkretna wersja dokumentu).
+    Niezmienne poza wcześniejszym zamknięciem (wf/models/immutability.py)."""
+    __tablename__ = "process_rollout"
+    __table_args__ = (
+        CheckConstraint("mode <> 'test' OR valid_to IS NOT NULL", name="ck_rollout_test_has_end"),
+        CheckConstraint("valid_to IS NULL OR valid_to >= valid_from", name="ck_rollout_period"),
+        Index("ix_rollout_model", "process_model_id", "valid_from"),
+    )
+
+    id: Mapped[uuid.UUID] = uuid_pk()
+    process_model_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("process_model.id"), nullable=False)
+    mode: Mapped[RolloutMode] = mapped_column(
+        str_enum(RolloutMode, "process_rollout_mode_check"), nullable=False)
+    # id jednostek (OrgUnit); pusta lista = cała organizacja
+    org_unit_ids: Mapped[list[str]] = mapped_column(json_type(), nullable=False, default=list)
+    valid_from: Mapped[date] = mapped_column(Date, nullable=False)
+    valid_to: Mapped[date | None] = mapped_column(Date)
+    act_document_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("document.id"), nullable=False)
+    act_version_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    previous_procedure: Mapped[str | None] = mapped_column(Text)
+    process_instance_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("process_instance.id", ondelete="SET NULL"))
+    created_by_id: Mapped[int | None] = user_fk("created_by")
+    created_at: Mapped[datetime] = created_at_col()
+    closed_at: Mapped[datetime | None] = mapped_column(TZ)
+    closed_by_id: Mapped[int | None] = user_fk("closed_by")
+    close_reason: Mapped[str | None] = mapped_column(Text)
+
+    process_model: Mapped["ProcessModel"] = relationship()
+    act_document: Mapped[Document] = relationship(foreign_keys=[act_document_id])
+
+
+class DocumentRelationType(StrEnum):
+    """2026-11-17: relacje między aktami (wf/services/legal_acts.py)."""
+    AMENDS = "amends"     # akt źródłowy zmienia akt docelowy
+    REPEALS = "repeals"   # akt źródłowy uchyla akt docelowy
+
+
+class DocumentRelation(Base):
+    """2026-11-17: akt `source` zmienia/uchyla akt `target` od `effective_from`.
+    `target_version_no` - wersja aktu docelowego (tekst jednolity) powstała
+    w wyniku zmiany; uzupełniana, gdy redakcja zostanie dodana."""
+    __tablename__ = "document_relation"
+    __table_args__ = (
+        UniqueConstraint("source_document_id", "target_document_id", "relation_type",
+                         name="uq_document_relation"),
+        CheckConstraint("source_document_id <> target_document_id", name="ck_document_relation_self"),
+        Index("ix_document_relation_target", "target_document_id", "effective_from"),
+    )
+
+    id: Mapped[uuid.UUID] = uuid_pk()
+    source_document_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("document.id"), nullable=False)
+    target_document_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("document.id"), nullable=False)
+    relation_type: Mapped[DocumentRelationType] = mapped_column(
+        str_enum(DocumentRelationType, "document_relation_type_check"), nullable=False)
+    effective_from: Mapped[date] = mapped_column(Date, nullable=False)
+    target_version_no: Mapped[int | None] = mapped_column(Integer)
+    process_instance_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("process_instance.id", ondelete="SET NULL"))
+    created_by_id: Mapped[int | None] = user_fk("created_by")
+    created_at: Mapped[datetime] = created_at_col()
+
+    source: Mapped[Document] = relationship(foreign_keys=[source_document_id])
+    target: Mapped[Document] = relationship(foreign_keys=[target_document_id])
 
 
 class ProcessInstanceDocument(Base):
@@ -395,6 +477,25 @@ class Comment(Base):
     created_at: Mapped[datetime] = created_at_col()
 
     author: Mapped[User] = relationship(foreign_keys=[author_id])
+
+
+class ProcessDiscussion(Base):
+    """2026-11-17: link do dyskusji o sprawie w komunikatorze (domyślnie
+    Mattermost; wf/services/discussions.py) - bez integracji zwrotnej."""
+    __tablename__ = "process_discussion"
+    __table_args__ = (Index("ix_discussion_instance", "process_instance_id", "created_at"),)
+
+    id: Mapped[uuid.UUID] = uuid_pk()
+    process_instance_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("process_instance.id", ondelete="CASCADE"), nullable=False)
+    human_task_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("human_task.id", ondelete="SET NULL"))
+    url: Mapped[str] = mapped_column(Text, nullable=False)
+    title: Mapped[str | None] = mapped_column(Text)
+    created_by_id: Mapped[int] = user_fk("created_by", nullable=False)
+    created_at: Mapped[datetime] = created_at_col()
+
+    created_by: Mapped[User] = relationship(foreign_keys=[created_by_id])
 
 
 # =====================================================================
@@ -566,6 +667,12 @@ class ProcessModelVersion(Base):
     published_at: Mapped[datetime | None] = mapped_column(TZ)
     published_by: Mapped[int | None] = user_fk()   # users.id (publikujący)
     created_at: Mapped[datetime] = created_at_col()
+    # 2026-11-17: pochodzenie wersji z gita (wf/services/model_git.py):
+    # commit HEAD przy synchronizacji z katalogu obiegów, niezacommitowane
+    # zmiany w folderze modelu i tag wydania nadany przy publikacji
+    git_commit: Mapped[str | None] = mapped_column(Text)
+    git_dirty: Mapped[bool | None] = mapped_column(Boolean)
+    git_tag: Mapped[str | None] = mapped_column(Text)
 
     process_model: Mapped[ProcessModel] = relationship(back_populates="versions")
     files: Mapped[list["ProcessModelFile"]] = relationship(
@@ -639,6 +746,9 @@ class ProcessInstance(Base):
         nullable=False, default=ProcessInstanceStatus.RUNNING,
         server_default=ProcessInstanceStatus.RUNNING.value)
     summary: Mapped[dict[str, Any]] = json_col()
+    # 2026-11-22: kolumny listy z `metadata_extraction_paths` wersji, liczone
+    # z bieżących danych przy zapisie stanu (wf/services/instance_metadata.py)
+    extracted_metadata: Mapped[dict[str, Any]] = json_col()
     started_by_id: Mapped[int | None] = user_fk("started_by")
     started_at: Mapped[datetime] = created_at_col()
     completed_at: Mapped[datetime | None] = mapped_column(TZ)
@@ -649,15 +759,23 @@ class ProcessInstance(Base):
     error_task_id: Mapped[uuid.UUID | None] = mapped_column(Uuid(as_uuid=True))
     lock_version: Mapped[int] = mapped_column(Integer, nullable=False,
                                               server_default=text("0"))
-    # BEGIN 2026-11-13: instancja uruchomiona przez inną (sendTask
+    # 2026-11-13: instancja uruchomiona przez inną (sendTask
     # z `startProcess` albo szybka akcja zadania) - żyje niezależnie od
     # rodzica; `parent_task_id` = zadanie Spiffa/HumanTask, które ją uruchomiło.
     parent_instance_id: Mapped[uuid.UUID | None] = mapped_column(
         Uuid(as_uuid=True), ForeignKey("process_instance.id", ondelete="SET NULL"))
     parent_task_id: Mapped[uuid.UUID | None] = mapped_column(Uuid(as_uuid=True))
-    # -END
+    # 2026-11-17: tryb użycia obiegu w chwili startu (wf/services/rollouts.py);
+    # NULL = obieg bez wdrożenia (tryb deweloperski). Niezmienne po starcie.
+    rollout_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("process_rollout.id", use_alter=True,
+                                       name="fk_process_instance_rollout"))
+    usage_mode: Mapped[str | None] = mapped_column(Text)
 
     __mapper_args__ = {"version_id_col": lock_version}
+
+    # 2026-11-17: wdrożenie obiegu, w którego trybie prowadzona jest sprawa
+    rollout: Mapped["ProcessRollout | None"] = relationship(foreign_keys=[rollout_id])
 
     version: Mapped[ProcessModelVersion] = relationship()
     started_by: Mapped[User | None] = relationship(foreign_keys=[started_by_id])
@@ -824,7 +942,7 @@ Index("uq_contact_address_ade", ContactAddress.__table__.c.ade, unique=True,
 
 
 # =====================================================================
-# 6. Wniosek zakupowy (galwork-book, czesc-3-obszary/dzialy/zakupy.md)
+# 2026-11-18: 6. Wniosek zakupowy (galwork-models-book, obszary/dzialy/zakupy.md)
 # =====================================================================
 
 class PurchaseRequest(Base):
@@ -893,3 +1011,9 @@ class PurchaseRequest(Base):
     tender_process_instance: Mapped["ProcessInstance | None"] = relationship(
         foreign_keys=[tender_process_instance_id])
     created_by: Mapped[User | None] = relationship(foreign_keys=[created_by_id])
+
+
+# 2026-11-17: wyzwalacze niezmienności także przy `create_all` (testy, nowa baza)
+from wf.models.immutability import install as _install_immutability  # noqa: E402
+
+_install_immutability(Base.metadata)

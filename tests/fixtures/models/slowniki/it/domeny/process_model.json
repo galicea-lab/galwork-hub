@@ -1,0 +1,49 @@
+{
+  "description": "Domeny internetowe i certyfikaty TLS organizacji: rejestrator, właściciel, terminy odnowienia. Jeden wpis = jedna instancja, która pozostaje w rejestrze: wpis przy starcie, przegląd (grupa it), potem krok „Wpis w rejestrze” – aktualizacja („Zapisz zmiany”, wraca do wpisu) albo „Wycofaj z rejestru” (koniec). Karta obiektu i edycja: galwork.record_step / edit_step w process_model.json.",
+  "display_name": "Domeny i certyfikaty",
+  "exception_notification_addresses": [],
+  "fault_or_suspend_on_exception": "fault",
+  "metadata_extraction_paths": [
+    {
+      "key": "domena",
+      "path": "domena"
+    },
+    {
+      "key": "rejestrator",
+      "path": "rejestrator"
+    },
+    {
+      "key": "wlasciciel",
+      "path": "wlasciciel"
+    },
+    {
+      "key": "data_wygasniecia",
+      "path": "data_wygasniecia"
+    },
+    {
+      "key": "autoodnowienie",
+      "path": "autoodnowienie"
+    },
+    {
+      "key": "certyfikat_wygasa",
+      "path": "certyfikat_wygasa"
+    }
+  ],
+  "primary_file_name": "domeny.bpmn",
+  "primary_process_id": "Process_Domeny",
+  "key": "domeny",
+  "galwork": {
+    "visibility": "all",
+    "record_step": "Wpis w rejestrze",
+    "edit_step": "Wpis w rejestrze",
+    "dictionary": {
+      "slug": "domeny",
+      "title": "Domeny i certyfikaty",
+      "label": "domena",
+      "detail": [
+        "data_wygasniecia"
+      ],
+      "active_step": "Wpis w rejestrze"
+    }
+  }
+}

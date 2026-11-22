@@ -1,0 +1,125 @@
+{
+  "title": "System lub usługa IT",
+  "type": "object",
+  "required": [
+    "nazwa",
+    "cel",
+    "wlasciciel",
+    "model_utrzymania",
+    "dane_osobowe"
+  ],
+  "properties": {
+    "nazwa": {
+      "type": "string",
+      "title": "Nazwa systemu / usługi",
+      "minLength": 2
+    },
+    "cel": {
+      "type": "string",
+      "title": "Cel i zakres użycia"
+    },
+    "wlasciciel": {
+      "type": "string",
+      "title": "Właściciel biznesowy (odpowiada za system)"
+    },
+    "administrator_techniczny": {
+      "type": "string",
+      "title": "Administrator techniczny"
+    },
+    "dostawca": {
+      "type": "string",
+      "title": "Dostawca / producent"
+    },
+    "model_utrzymania": {
+      "type": "string",
+      "title": "Model utrzymania",
+      "enum": [
+        "SaaS",
+        "hosting zewnętrzny (IaaS/VPS)",
+        "serwer własny",
+        "oprogramowanie na stacjach"
+      ]
+    },
+    "lokalizacja_danych": {
+      "type": "string",
+      "title": "Lokalizacja danych",
+      "enum": [
+        "EOG",
+        "poza EOG",
+        "nieznana - do ustalenia"
+      ]
+    },
+    "adres": {
+      "type": "string",
+      "title": "Adres usługi (URL) / host"
+    },
+    "krytycznosc": {
+      "type": "string",
+      "title": "Krytyczność dla działalności",
+      "enum": [
+        "niska",
+        "średnia",
+        "wysoka"
+      ]
+    },
+    "dane_osobowe": {
+      "type": "boolean",
+      "title": "Przetwarza dane osobowe",
+      "default": false
+    },
+    "czynnosci_przetwarzania": {
+      "type": "string",
+      "title": "Czynności przetwarzania (z rejestru czynności)"
+    },
+    "kategorie_danych": {
+      "type": "string",
+      "title": "Kategorie danych osobowych"
+    },
+    "umowa": {
+      "type": "string",
+      "title": "Umowa / warunki korzystania (numer, link)"
+    },
+    "umowa_powierzenia": {
+      "type": "string",
+      "title": "Umowa powierzenia (art. 28 RODO)",
+      "enum": [
+        "nie dotyczy",
+        "zawarta",
+        "do zawarcia",
+        "warunki dostawcy (DPA online)"
+      ]
+    },
+    "kopia_zapasowa": {
+      "type": "string",
+      "title": "Kopia zapasowa - zakres, częstotliwość, miejsce"
+    },
+    "test_odtworzenia": {
+      "type": "string",
+      "format": "date",
+      "title": "Data ostatniego testu odtworzenia"
+    },
+    "logowanie": {
+      "type": "string",
+      "title": "Logowanie",
+      "enum": [
+        "Keycloak (SSO)",
+        "konto lokalne z MFA",
+        "konto lokalne bez MFA",
+        "klucz API / konto techniczne"
+      ]
+    },
+    "koszt": {
+      "type": "string",
+      "title": "Koszt i konto księgowe (np. import usług)"
+    },
+    "data_przegladu": {
+      "type": "string",
+      "format": "date",
+      "title": "Data przeglądu wpisu"
+    },
+    "uwagi": {
+      "type": "string",
+      "title": "Uwagi"
+    }
+  }
+}

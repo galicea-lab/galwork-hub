@@ -16,12 +16,49 @@ Konfiguracja - sekcja [erpnext] w config/config.ini:
 from __future__ import annotations
 
 import json
+import re
 import threading
 from typing import Any
 
 import requests
 
 from connector.base import BaseConnector, ConnectorError
+
+
+class ErpNextValidationError(ConnectorError):
+    """2026-11-21: odrzucenie merytoryczne przez ERPNext (HTTP 4xx poza 401/403/404).
+
+    Ponowienie nic nie da (np. zamknięty projekt, godziny <= 0, dokument
+    zatwierdzony, powiązana faktura) - w odróżnieniu od błędu technicznego
+    (sieć, 5xx), który warto ponowić. `exc_type` to klasa wyjątku Frappe,
+    `messages` - komunikaty z `_server_messages` bez znaczników HTML.
+    """
+
+    def __init__(self, message: str, *, status_code: int, exc_type: str | None, messages: list[str]):
+        super().__init__(message)
+        self.status_code = status_code
+        self.exc_type = exc_type
+        self.messages = messages
+
+
+def _raise_for(resp, context: str) -> None:
+    """2026-11-21: ConnectorError / ErpNextValidationError dla odpowiedzi z błędem."""
+    if resp.ok:
+        return
+    if 400 <= resp.status_code < 500 and resp.status_code not in (401, 403, 404):
+        exc_type, messages = None, []
+        try:
+            body = resp.json()
+            exc_type = body.get("exc_type")
+            for raw in json.loads(body.get("_server_messages") or "[]"):
+                text = json.loads(raw).get("message", "") if isinstance(raw, str) else str(raw)
+                messages.append(re.sub(r"<[^>]+>", "", text).strip())
+        except (ValueError, AttributeError, TypeError):
+            pass
+        raise ErpNextValidationError(
+            f"{context} -> {resp.status_code}: {exc_type or ''} {'; '.join(messages) or resp.text[:300]}",
+            status_code=resp.status_code, exc_type=exc_type, messages=messages)
+    raise ConnectorError(f"{context} -> {resp.status_code}: {resp.text}")
 
 
 class ErpNextConnector(BaseConnector):
@@ -100,6 +137,41 @@ class ErpNextConnector(BaseConnector):
         resp = session.delete(self._url(f"/api/resource/{doctype}/{name}"), timeout=30)
         if not resp.ok:
             raise ConnectorError(f"ERPNext delete_doc({doctype}, {name}) -> {resp.status_code}: {resp.text}")
+
+    # -BEGIN 2026-11-21: zatwierdzanie, anulowanie i poprawka dokumentu (Timesheet - integracja Taiga)
+    def submit_doc(self, doctype: str, name: str) -> dict:
+        """Zatwierdza dokument (docstatus 0 -> 1) - PUT `{"docstatus": 1}`."""
+        session = self.connect()
+        resp = session.put(self._url(f"/api/resource/{doctype}/{name}"), json={"docstatus": 1}, timeout=30)
+        _raise_for(resp, f"ERPNext submit_doc({doctype}, {name})")
+        return resp.json().get("data", {})
+
+    def cancel_doc(self, doctype: str, name: str) -> dict:
+        """Anuluje zatwierdzony dokument (docstatus 1 -> 2) - `frappe.client.cancel`."""
+        session = self.connect()
+        resp = session.post(self._url("/api/method/frappe.client.cancel"),
+                            json={"doctype": doctype, "name": name}, timeout=30)
+        _raise_for(resp, f"ERPNext cancel_doc({doctype}, {name})")
+        return resp.json().get("message", {})
+
+    def amend_doc(self, doctype: str, cancelled_name: str, data: dict) -> dict:
+        """Poprawka anulowanego dokumentu: nowy Draft z `amended_from` (nazwa `…-1`)."""
+        session = self.connect()
+        resp = session.post(self._url(f"/api/resource/{doctype}"),
+                            json={**data, "amended_from": cancelled_name}, timeout=30)
+        _raise_for(resp, f"ERPNext amend_doc({doctype}, {cancelled_name})")
+        return resp.json().get("data", {})
+
+    def save_doc(self, doctype: str, data: dict, name: str | None = None) -> dict:
+        """Utworzenie (bez `name`) albo aktualizacja dokumentu z rozróżnieniem błędów (K11)."""
+        session = self.connect()
+        if name is None:
+            resp = session.post(self._url(f"/api/resource/{doctype}"), json=data, timeout=30)
+        else:
+            resp = session.put(self._url(f"/api/resource/{doctype}/{name}"), json=data, timeout=30)
+        _raise_for(resp, f"ERPNext save_doc({doctype}, {name or 'nowy'})")
+        return resp.json().get("data", {})
+    # -END
 
     def apply_workflow_action(self, doctype: str, name: str, action: str) -> dict:
         """POST /api/method/frappe.model.workflow.apply_workflow - wykonuje

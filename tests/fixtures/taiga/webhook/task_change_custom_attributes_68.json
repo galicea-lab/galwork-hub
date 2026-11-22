@@ -1,0 +1,173 @@
+{
+  "by": {
+    "id": 5,
+    "username": "user5",
+    "full_name": "User 5",
+    "permalink": "https://taiga.example.org/profile/user5",
+    "photo": null,
+    "gravatar_id": null
+  },
+  "data": {
+    "id": 68,
+    "ref": 30,
+    "tags": [],
+    "owner": {
+      "id": 6,
+      "username": "user6",
+      "full_name": "User 6",
+      "permalink": "https://taiga.example.org/profile/user6",
+      "photo": null,
+      "gravatar_id": null
+    },
+    "status": {
+      "id": 31,
+      "name": "Backlog / Pomysły",
+      "slug": "backlog-pomysly",
+      "color": "#70728F",
+      "is_closed": false
+    },
+    "project": {
+      "id": 7,
+      "name": "Galwork",
+      "permalink": "https://taiga.example.org/project/galwork",
+      "logo_big_url": null
+    },
+    "subject": "Uporządkowanie nawigacji zależne od grup (kandydat/student/nauczyciel/administracja/admin)",
+    "due_date": null,
+    "us_order": 1794299536503,
+    "watchers": [],
+    "milestone": null,
+    "permalink": "https://taiga.example.org/project/galwork/task/30",
+    "is_blocked": false,
+    "is_iocaine": false,
+    "user_story": {
+      "id": 43,
+      "ref": 26,
+      "tags": [],
+      "owner": {
+        "id": 6,
+        "username": "user6",
+        "full_name": "User 6",
+        "permalink": "https://taiga.example.org/profile/user6",
+        "photo": null,
+        "gravatar_id": null
+      },
+      "points": [
+        {
+          "name": "?",
+          "role": "UX",
+          "value": null
+        },
+        {
+          "name": "?",
+          "role": "Design",
+          "value": null
+        },
+        {
+          "name": "?",
+          "role": "Front",
+          "value": null
+        },
+        {
+          "name": "?",
+          "role": "Back",
+          "value": null
+        }
+      ],
+      "status": {
+        "id": 40,
+        "name": "Testy / Weryfikacja",
+        "slug": "testy-weryfikacja",
+        "color": "#E4CE40",
+        "is_closed": false,
+        "is_archived": false
+      },
+      "project": {
+        "id": 7,
+        "name": "Galwork",
+        "permalink": "https://taiga.example.org/project/galwork",
+        "logo_big_url": null
+      },
+      "subject": "Dodanie funkcji rekrutacji",
+      "due_date": null,
+      "watchers": [],
+      "is_closed": false,
+      "milestone": null,
+      "permalink": "https://taiga.example.org/project/galwork/us/26",
+      "tribe_gig": null,
+      "is_blocked": false,
+      "assigned_to": {
+        "id": 6,
+        "username": "user6",
+        "full_name": "User 6",
+        "permalink": "https://taiga.example.org/profile/user6",
+        "photo": null,
+        "gravatar_id": null
+      },
+      "description": "",
+      "finish_date": null,
+      "blocked_note": "",
+      "created_date": "2026-11-09T15:48:56.816Z",
+      "from_task_ref": null,
+      "modified_date": "2026-11-10T08:41:48.538Z",
+      "assigned_users": [
+        6
+      ],
+      "due_date_reason": "",
+      "team_requirement": false,
+      "client_requirement": false,
+      "external_reference": null,
+      "generated_from_task": null,
+      "generated_from_issue": null,
+      "custom_attributes_values": {}
+    },
+    "assigned_to": {
+      "id": 6,
+      "username": "user6",
+      "full_name": "User 6",
+      "permalink": "https://taiga.example.org/profile/user6",
+      "photo": null,
+      "gravatar_id": null
+    },
+    "description": "",
+    "promoted_to": [],
+    "blocked_note": "",
+    "created_date": "2026-11-10T08:32:16.531Z",
+    "finished_date": null,
+    "modified_date": "2026-11-10T08:32:16.538Z",
+    "due_date_reason": "",
+    "taskboard_order": 1794299536503,
+    "external_reference": null,
+    "custom_attributes_values": {
+      "Czas [h]": 12
+    }
+  },
+  "date": "2026-11-20T21:43:01.153Z",
+  "type": "task",
+  "action": "change",
+  "change": {
+    "diff": {
+      "custom_attributes": {
+        "new": [
+          {
+            "id": 1,
+            "name": "Czas [h]",
+            "type": "number",
+            "value": 12,
+            "value_diff": [
+              null,
+              12
+            ]
+          }
+        ],
+        "changed": [],
+        "deleted": []
+      }
+    },
+    "comment": "",
+    "comment_html": "",
+    "comment_versions": null,
+    "edit_comment_date": null,
+    "delete_comment_date": null
+  }
+}

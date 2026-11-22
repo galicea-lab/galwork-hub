@@ -32,7 +32,6 @@ dysku" w Narzędziach twórcy (galwork-dashboard). Admin-only
 from __future__ import annotations
 
 import hashlib
-from datetime import UTC, datetime
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -55,6 +54,8 @@ from wf.schemas.wf_schemas import (
     ProcessModelVersionStatus,
     CurrentUser,
 )
+from wf.services import model_publication, process_files  # 2026-11-22: publikacja wspólna z seed_process_model.py
+from wf.services.filesystem_sync import FilesystemSyncError, configured_profile
 from wf.services.filesystem_sync import sync_all as sync_process_models
 from wf.services.process_service import (
     FormRenderError,
@@ -105,7 +106,13 @@ def sync_process_models_from_disk(payload: ProcessModelSyncRequest | None = None
     publikacja nowo utworzonych wersji draft to osobny, ręczny krok
     (POST .../versions/{id}/publish, jak zawsze)."""
     dry_run = bool(payload and payload.dry_run)
-    return sync_process_models(db, dry_run=dry_run)
+    # 2026-11-17:  ten sam katalog obiegów co edytor (`[wf] process_files_dir`)
+    # i profil obiegów (`[wf] process_profile`, np. tylko obiegi cyfryzacji)
+    try:
+        return sync_process_models(db, process_files.files_root(), dry_run=dry_run,
+                                   profile=configured_profile())
+    except FilesystemSyncError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @router.get("/{process_model_id}", response_model=ProcessModelRead)
@@ -186,6 +193,13 @@ def create_process_model_version(process_model_id: UUID, payload: ProcessModelVe
             sha256=digest,
         ))
 
+    # Indeks formularzy (pliki JSON_SCHEMA/UI_SCHEMA + rozszerzenia BPMN):
+    # `spec_json` jest później nakładany na wersje tworzone bez plików.
+    # 2026-11-22: plik `process_model.json` (typ other) niesie blok `galwork`.
+    try:
+        spec_json = build_spec_json((file.file_name, file.file_type, file.content) for file in files)
+    except FormRenderError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     version = ProcessModelVersion(
         process_model_id=process_model_id,
         version=next_version,
@@ -193,10 +207,7 @@ def create_process_model_version(process_model_id: UUID, payload: ProcessModelVe
         bpmn_process_id=payload.bpmn_process_id,
         content_hash=combined.hexdigest(),
         files=files,
-        # Indeks formularzy (pliki JSON_SCHEMA/UI_SCHEMA + rozszerzenia BPMN):
-        # `spec_json` jest później nakładany na wersje tworzone bez plików.
-        spec_json=build_spec_json(
-            (file.file_name, file.file_type, file.content) for file in files),
+        spec_json=spec_json,
     )
     db.add(version)
     db.commit()
@@ -215,31 +226,31 @@ def publish_process_model_version(process_model_id: UUID, version_id: UUID,
     if version is None or version.process_model_id != process_model_id:
         raise HTTPException(status_code=404, detail="Wersja procesu nie znaleziona")
 
-    # 2026-11-13: przypięcie wersji procesów wywoływanych (callActivity)
-    # - brak opublikowanego procesu wywoływanego blokuje publikację.
+    # 2026-11-22: wspólna implementacja z scripts/seed_process_model.py --publish
+    # (przypięcie callActivity, wycofanie poprzedniej, tag wydania, dziennik wdrożeń)
     try:
-        warnings = get_service().pin_called_versions(db, version)
+        warnings = model_publication.publish_version(db, version, current_user)
     except ProcessServiceError as exc:
         db.rollback()
         raise HTTPException(status_code=409, detail=str(exc)) from exc
-
-    previous = db.execute(
-        select(ProcessModelVersion).where(
-            ProcessModelVersion.process_model_id == process_model_id,
-            ProcessModelVersion.status == ProcessModelVersionStatus.PUBLISHED,
-        )
-    ).scalars().first()
-    if previous is not None:
-        previous.status = ProcessModelVersionStatus.RETIRED
-        # 2026-10-15: flush PRZED ustawieniem nowej wersji na published -
-        db.flush()
-
-    version.status = ProcessModelVersionStatus.PUBLISHED
-    version.published_at = datetime.now(UTC)
     db.commit()
     db.refresh(version)
     version.warnings = warnings  # 2026-11-13: tylko w odpowiedzi, nie w bazie
     return version
+
+
+# 2026-11-22 (H2): kolumny listy spraw modelu - `metadata_extraction_paths`
+# opublikowanej wersji z tytułem, typem, formatem i enum z formularzy modelu.
+@router.get("/{process_model_key}/metadata-fields")
+def get_metadata_fields(process_model_key: str,
+                        db: Session = Depends(get_db),
+                        current_user: CurrentUser = Depends(get_current_wf_user)) -> list[dict]:
+    from wf.services import instance_metadata
+    try:
+        version = get_service().published_version(db, process_model_key)
+    except ProcessServiceError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+    return instance_metadata.field_info(version.spec_json)
 
 
 @router.get("/{process_model_key}/start-form", response_model=ProcessFormRead)

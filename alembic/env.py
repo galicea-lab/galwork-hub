@@ -71,6 +71,10 @@ from pm.models.milestone import Milestone, MilestoneForecast
 from pm.models.risk import Risk
 from pm.models.schedule import WbsItem, ScheduleTask
 from pm.models.business_case import BusinessCaseVariant
+# 2026-11-21: integracja Taiga - galwork-pm - ERPNext
+from pm.models.taiga import PersonLink, TaigaEvent, TaigaProjectLink  # noqa: F401
+from pm.models.taiga_ledger import (ActivityMap, ErpPosting, ErpTimesheet, PeriodClose,  # noqa: F401
+                                    TaigaItem, WeekApproval, WorkLedger)
 
 #from wf.models.bpmn import BpmnWorkflowSpec, BpmnWorkflow, BpmnTaskSpec, \
 #    BpmnTask, BpmnTaskData,BpmnTaskTransition

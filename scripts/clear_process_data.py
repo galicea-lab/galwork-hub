@@ -42,7 +42,7 @@ import sys
 from dataclasses import dataclass, field
 from typing import Any
 
-from sqlalchemy import create_engine, delete, func, select, update
+from sqlalchemy import create_engine, delete, func, select, text, update
 
 OLD_CHOSEN_PATH_RE = re.compile(r'chosen_path\s*==\s*\d+')
 
@@ -333,6 +333,10 @@ def main(argv: list[str] | None = None) -> int:
       return 0
 
     print('\nWykonuję...')
+    # 2026-11-17: wyjątek od wyzwalaczy niezmienności (wf/models/immutability.py)
+    # - tylko w tej transakcji, tylko dla narzędzi administratora
+    if session.get_bind().dialect.name == 'postgresql':
+      session.execute(text("SET LOCAL galwork.allow_purge = 'on'"))
     for step, count in counts:
       if step.action == 'delete':
         stmt = delete(step.model)

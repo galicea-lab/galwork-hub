@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="defs_Process_PM_Przeglad_Tygodnia" targetNamespace="http://bpmn">
+  <bpmn:process id="Process_PM_Przeglad_Tygodnia" name="Przegląd tygodnia rozliczeń" isExecutable="true">
+    <bpmn:documentation>Przegląd tygodnia rozliczeń projektu przez PM (integracja Taiga - galwork-pm - ERPNext).
+Instancję uruchamia galwork-hub (scripts/pm_taiga.py review-start, cron; business_key
+pm-przeglad:&lt;projekt Taigi&gt;:&lt;tydzień ISO&gt;). Dane startowe: taiga_project_id, tydzien,
+triage_group (grupa Keycloak PM-ów projektu - kandydaci zadań), projekt, projekt_erp.
+Kroki systemowe (pm/integrations/taiga/process_tasks.py): pm.week_snapshot - godziny
+niezatwierdzonych tygodni i pozycje bez rodzaju pracy; pm.apply_triage - zapis przypisań
+rodzaju pracy (z approve=true także zatwierdzenie tygodni, gdy nic nie zostało
+nieprzypisane); erpnext.timesheet_submit - Timesheety projektu w ERPNext (odrzucenie
+merytoryczne -&gt; erp_errors i zadanie "Korekta"; błąd techniczny -&gt; ponowienie kroku).</bpmn:documentation>
+    <bpmn:startEvent id="StartEvent_1" name="Start" />
+    <bpmn:sequenceFlow id="Flow_Start" sourceRef="StartEvent_1" targetRef="Service_Podsumowanie" />
+    <bpmn:serviceTask id="Service_Podsumowanie" name="Podsumowanie tygodnia">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="pm.week_snapshot" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_Do_Przegladu" sourceRef="Service_Podsumowanie" targetRef="Task_Przeglad" />
+    <bpmn:userTask id="Task_Przeglad" name="Przegląd tygodnia" camunda:candidateGroups="${triage_group}">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="przeglad-tygodnia-przeglad-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="przeglad-tygodnia-przeglad-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Do_Decyzji" sourceRef="Task_Przeglad" targetRef="GW_Decyzja" />
+    <bpmn:exclusiveGateway id="GW_Decyzja" name="Decyzja PM" default="Flow_Odloz" />
+    <bpmn:sequenceFlow id="Flow_Zatwierdz" name="Zatwierdź tygodnie i wyślij do ERPNext" sourceRef="GW_Decyzja" targetRef="Service_Zatwierdz">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Zatwierdz'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Odloz" name="Odłóż - zapisz tylko przypisania" sourceRef="GW_Decyzja" targetRef="Service_Zapisz" />
+    <bpmn:serviceTask id="Service_Zatwierdz" name="Zapis przypisań i zatwierdzenie">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="pm.apply_triage" />
+          <spiffworkflow:property name="approve" value="true" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_Do_Kompletnosci" sourceRef="Service_Zatwierdz" targetRef="GW_Kompletne" />
+    <bpmn:exclusiveGateway id="GW_Kompletne" name="Wszystko przypisane?" default="Flow_Do_ERP" />
+    <bpmn:sequenceFlow id="Flow_Nieprzypisane" name="Pozostały pozycje bez rodzaju pracy" sourceRef="GW_Kompletne" targetRef="Service_Podsumowanie">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">not week_approved</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Do_ERP" name="Tygodnie zatwierdzone" sourceRef="GW_Kompletne" targetRef="Service_Wyslij" />
+    <bpmn:serviceTask id="Service_Wyslij" name="Timesheety w ERPNext">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="erpnext.timesheet_submit" />
+          <spiffworkflow:property name="retryMinutes" value="30" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_Do_Wyniku" sourceRef="Service_Wyslij" targetRef="GW_ERP" />
+    <bpmn:exclusiveGateway id="GW_ERP" name="ERPNext przyjął?" default="Flow_Wyslane" />
+    <bpmn:sequenceFlow id="Flow_Odrzucone" name="Odrzucone przez ERPNext" sourceRef="GW_ERP" targetRef="Task_Korekta">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">len(erp_errors) &gt; 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Wyslane" name="Wysłane" sourceRef="GW_ERP" targetRef="End_Zatwierdzone" />
+    <bpmn:userTask id="Task_Korekta" name="Korekta - odrzucone przez ERPNext" camunda:candidateGroups="${triage_group}">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="przeglad-tygodnia-korekta-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="przeglad-tygodnia-korekta-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Do_Korekty" sourceRef="Task_Korekta" targetRef="GW_Korekta" />
+    <bpmn:exclusiveGateway id="GW_Korekta" name="Po korekcie" default="Flow_Zakoncz" />
+    <bpmn:sequenceFlow id="Flow_Ponow" name="Ponów wysyłkę" sourceRef="GW_Korekta" targetRef="Service_Wyslij">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">chosen_path == 'Flow_Ponow'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Zakoncz" name="Zakończ - wyśle kolejna synchronizacja" sourceRef="GW_Korekta" targetRef="End_Korekta" />
+    <bpmn:serviceTask id="Service_Zapisz" name="Zapis przypisań">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="handler" value="pm.apply_triage" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_Do_Odlozone" sourceRef="Service_Zapisz" targetRef="End_Odlozone" />
+    <bpmn:endEvent id="End_Zatwierdzone" name="Zatwierdzone i wysłane" />
+    <bpmn:endEvent id="End_Korekta" name="Zakończone z błędami ERPNext" />
+    <bpmn:endEvent id="End_Odlozone" name="Odłożone" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_PM_Przeglad_Tygodnia">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Service_Podsumowanie_di" bpmnElement="Service_Podsumowanie">
+        <dc:Bounds x="240" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Przeglad_di" bpmnElement="Task_Przeglad">
+        <dc:Bounds x="390" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_Decyzja_di" bpmnElement="GW_Decyzja" isMarkerVisible="true">
+        <dc:Bounds x="545" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Service_Zatwierdz_di" bpmnElement="Service_Zatwierdz">
+        <dc:Bounds x="650" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_Kompletne_di" bpmnElement="GW_Kompletne" isMarkerVisible="true">
+        <dc:Bounds x="805" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Service_Wyslij_di" bpmnElement="Service_Wyslij">
+        <dc:Bounds x="910" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_ERP_di" bpmnElement="GW_ERP" isMarkerVisible="true">
+        <dc:Bounds x="1065" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Korekta_di" bpmnElement="Task_Korekta">
+        <dc:Bounds x="1040" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_Korekta_di" bpmnElement="GW_Korekta" isMarkerVisible="true">
+        <dc:Bounds x="1195" y="345" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Service_Zapisz_di" bpmnElement="Service_Zapisz">
+        <dc:Bounds x="650" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Zatwierdzone_di" bpmnElement="End_Zatwierdzone">
+        <dc:Bounds x="1172" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Korekta_di" bpmnElement="End_Korekta">
+        <dc:Bounds x="1302" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Odlozone_di" bpmnElement="End_Odlozone">
+        <dc:Bounds x="812" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Start_di" bpmnElement="Flow_Start">
+        <di:waypoint x="188" y="220" />
+        <di:waypoint x="240" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Do_Przegladu_di" bpmnElement="Flow_Do_Przegladu">
+        <di:waypoint x="340" y="220" />
+        <di:waypoint x="390" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Do_Decyzji_di" bpmnElement="Flow_Do_Decyzji">
+        <di:waypoint x="490" y="220" />
+        <di:waypoint x="545" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Zatwierdz_di" bpmnElement="Flow_Zatwierdz">
+        <di:waypoint x="595" y="220" />
+        <di:waypoint x="650" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Odloz_di" bpmnElement="Flow_Odloz">
+        <di:waypoint x="570" y="245" />
+        <di:waypoint x="570" y="370" />
+        <di:waypoint x="650" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Do_Kompletnosci_di" bpmnElement="Flow_Do_Kompletnosci">
+        <di:waypoint x="750" y="220" />
+        <di:waypoint x="805" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Nieprzypisane_di" bpmnElement="Flow_Nieprzypisane">
+        <di:waypoint x="830" y="195" />
+        <di:waypoint x="830" y="120" />
+        <di:waypoint x="290" y="120" />
+        <di:waypoint x="290" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Do_ERP_di" bpmnElement="Flow_Do_ERP">
+        <di:waypoint x="855" y="220" />
+        <di:waypoint x="910" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Do_Wyniku_di" bpmnElement="Flow_Do_Wyniku">
+        <di:waypoint x="1010" y="220" />
+        <di:waypoint x="1065" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Odrzucone_di" bpmnElement="Flow_Odrzucone">
+        <di:waypoint x="1090" y="245" />
+        <di:waypoint x="1090" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Wyslane_di" bpmnElement="Flow_Wyslane">
+        <di:waypoint x="1115" y="220" />
+        <di:waypoint x="1172" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Do_Korekty_di" bpmnElement="Flow_Do_Korekty">
+        <di:waypoint x="1140" y="370" />
+        <di:waypoint x="1195" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Ponow_di" bpmnElement="Flow_Ponow">
+        <di:waypoint x="1220" y="395" />
+        <di:waypoint x="1220" y="450" />
+        <di:waypoint x="960" y="450" />
+        <di:waypoint x="960" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Zakoncz_di" bpmnElement="Flow_Zakoncz">
+        <di:waypoint x="1245" y="370" />
+        <di:waypoint x="1302" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Do_Odlozone_di" bpmnElement="Flow_Do_Odlozone">
+        <di:waypoint x="750" y="370" />
+        <di:waypoint x="812" y="370" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

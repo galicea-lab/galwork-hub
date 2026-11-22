@@ -4,7 +4,10 @@
 # realnego Keycloaka (patrz README.md).
 from __future__ import annotations
 
+import json
+import os
 import unittest
+from unittest import mock
 
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -46,19 +49,25 @@ class ApiTestCase(unittest.TestCase):
     # aplikacje są montowane jako osobne FastAPI (router.py:
     # app_wf, app_pm, app_galwork pod v1router), a `dependency_overrides`
     # działa per aplikacja - trzeba podmienić zależności we wszystkich.
-    from router import app_edu, app_galwork, app_kalendarz, app_pm, app_wf, v1router
+    from router import (app_edu, app_galwork, app_integrations, app_kalendarz, app_pm,
+                        app_wf, v1router)
 
     # SQLite ':memory:' + StaticPool - bez tego każde połączenie
     # (a TestClient obsługuje żądania w innym wątku niż create_all) dostałoby
     # własną, pustą bazę i testy padałyby na "no such table".
+    # 2026-11-22: JSON bez \uXXXX - jak JSONB w PostgreSQL (wyszukiwanie `q`
+    # w metadanych instancji porównuje tekst JSON z polskimi znakami).
     self.engine = create_engine('sqlite://', connect_args={'check_same_thread': False},
-                                poolclass=StaticPool)
+                                poolclass=StaticPool,
+                                json_serializer=lambda value: json.dumps(value, ensure_ascii=False))
     self.session_factory = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
     Base.metadata.create_all(self.engine)
 
     self.app = app
 
-    self.sub_apps = (app, v1router, app_wf, app_pm, app_galwork, app_edu, app_kalendarz)
+    # app_integrations - webhooki (pm/integrations)
+    self.sub_apps = (app, v1router, app_wf, app_pm, app_galwork, app_edu, app_kalendarz,
+                     app_integrations)
     self.db = self.session_factory()
 
     from api.dependencies import get_db
@@ -71,6 +80,15 @@ class ApiTestCase(unittest.TestCase):
       sub_app.dependency_overrides[get_db] = _get_db
       sub_app.dependency_overrides[get_current_wf_user] = lambda: self.current_user
     self.client = TestClient(app)
+    # testy nie zależą od lokalnej listy grup z config.ini
+    editor_groups = mock.patch.dict(os.environ, {'WF_ACT_EDITOR_GROUPS': ''})
+    editor_groups.start()
+    self.addCleanup(editor_groups.stop)
+    # 2026-11-17: testy nie tagują repozytorium wskazanego w config.ini
+    # (`[wf] process_files_dir`) - testy tagów włączają je na repozytorium tymczasowym
+    tags = mock.patch('wf.services.model_git._tags_enabled', return_value=False)
+    tags.start()
+    self.addCleanup(tags.stop)
     self.prepare()
 
   def prepare(self) -> None:

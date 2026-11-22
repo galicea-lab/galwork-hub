@@ -1,0 +1,62 @@
+{
+  "ui:order": [
+    "Tytuł",
+    "Nr decyzji",
+    "Typ dokumentu",
+    "Działanie",
+    "Obiegi",
+    "Tryb",
+    "Jednostki",
+    "Od",
+    "Do",
+    "Procedura dotychczasowa",
+    "dane_osobowe",
+    "Uzasadnienie",
+    "Opinia IOD",
+    "Uwagi do decyzji"
+  ],
+  "Obiegi": {
+    "items": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/process-rollouts/options/process-models",
+        "sourceName": "Obiegi",
+        "sourceType": "Galwork"
+      }
+    },
+    "ui:options": {
+      "addable": true
+    }
+  },
+  "Jednostki": {
+    "items": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/process-rollouts/options/org-units",
+        "sourceName": "Jednostki organizacyjne",
+        "sourceType": "Galwork"
+      }
+    },
+    "ui:options": {
+      "addable": true
+    }
+  },
+  "Tryb": {
+    "ui:widget": "radio"
+  },
+  "Działanie": {
+    "ui:widget": "radio"
+  },
+  "Procedura dotychczasowa": {
+    "ui:widget": "textarea"
+  },
+  "Uzasadnienie": {
+    "ui:widget": "textarea"
+  },
+  "Opinia IOD": {
+    "ui:widget": "textarea"
+  },
+  "Uwagi do decyzji": {
+    "ui:widget": "textarea"
+  }
+}

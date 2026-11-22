@@ -1,0 +1,127 @@
+{
+  "title": "Definicja Planu Rocznego-FPLAN",
+  "description": "Proces: PLANDZ - Startegia - Plan Roczny (ID: 356); Obieg: Definicja Planu Rocznego (ID: 406); Typ dokumentu: FPLAN - Formularz Planu Rocznego (ID: 517)",
+  "type": "object",
+  "x-print": [
+    {
+      "template": "definicja-planu-rocznego_Task_02.html.j2",
+      "label": "Plan roczny",
+      "tasks": [
+        "Task_02"
+      ]
+    }
+  ],
+  "properties": {
+    "Dane identyfikacyjne": {
+      "type": "object",
+      "properties": {
+        "Dział": {
+          "type": "string",
+          "title": "Dział",
+          "x-permissions": {
+            "Start": "editable",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        },
+        "Rok": {
+          "type": "integer",
+          "title": "Rok",
+          "x-permissions": {
+            "Start": "editable",
+            "Końcowy (pozytywny)": "readonly"
+          }
+        }
+      },
+      "title": "Dane identyfikacyjne",
+      "x-permissions": {
+        "Start": "editable",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    },
+    "Plan pracy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Uwagi": {
+            "type": "string",
+            "title": "Uwagi",
+            "x-permissions": {
+              "Start": "editable",
+              "Końcowy (pozytywny)": "readonly"
+            }
+          },
+          "Planowane koszty w zł": {
+            "type": "string",
+            "title": "Planowane koszty w zł",
+            "x-permissions": {
+              "Start": "editable",
+              "Końcowy (pozytywny)": "readonly"
+            }
+          },
+          "Cel strategiczny / cele operacyjne": {
+            "type": "string",
+            "title": "Cel strategiczny / cele operacyjne",
+            "x-permissions": {
+              "Start": "editable",
+              "Końcowy (pozytywny)": "readonly"
+            }
+          },
+          "Odniesienia do dokumentu/ów o charakterze strategi": {
+            "type": "string",
+            "title": "Odniesienia do dokumentu/ów o charakterze strategi",
+            "x-permissions": {
+              "Start": "editable",
+              "Końcowy (pozytywny)": "readonly"
+            }
+          },
+          "Wskaźnik określający stopień osiągnięcia celu": {
+            "type": "string",
+            "title": "Wskaźnik określający stopień osiągnięcia celu",
+            "x-permissions": {
+              "Start": "editable",
+              "Końcowy (pozytywny)": "readonly"
+            }
+          },
+          "Planowana wartość wskaźnika na koniec okresu": {
+            "type": "string",
+            "title": "Planowana wartość wskaźnika na koniec okresu",
+            "x-permissions": {
+              "Start": "editable",
+              "Końcowy (pozytywny)": "readonly"
+            }
+          },
+          "Najważniejsze zadania służące realizacji celu": {
+            "type": "string",
+            "title": "Najważniejsze zadania służące realizacji celu",
+            "x-permissions": {
+              "Start": "editable",
+              "Końcowy (pozytywny)": "readonly"
+            }
+          },
+          "Element PSP": {
+            "type": "string",
+            "title": "Element PSP",
+            "x-permissions": {
+              "Start": "editable",
+              "Końcowy (pozytywny)": "readonly"
+            }
+          },
+          "Realizacja": {
+            "type": "string",
+            "title": "Realizacja",
+            "x-permissions": {
+              "Start": "editable",
+              "Końcowy (pozytywny)": "readonly"
+            }
+          }
+        }
+      },
+      "title": "Plan pracy",
+      "x-permissions": {
+        "Start": "editable",
+        "Końcowy (pozytywny)": "readonly"
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "description": "Rejestr systemów i usług IT organizacji: właściciel, dostawca, lokalizacja danych, dane osobowe, umowa powierzenia, kopie zapasowe, dostęp. Źródło dla rejestru czynności przetwarzania (rodo/definicja-czynnosci), umów powierzenia i analizy ryzyka (scenariusz S0 - fundamenty). Jeden wpis = jedna instancja, która pozostaje w rejestrze: wpis przy starcie, przegląd (grupa it), potem krok „Wpis w rejestrze” – aktualizacja („Zapisz zmiany”, wraca do wpisu) albo „Wycofaj z rejestru” (koniec). Karta obiektu i edycja: galwork.record_step / edit_step w process_model.json.",
+  "display_name": "Rejestr systemów i usług IT",
+  "exception_notification_addresses": [],
+  "fault_or_suspend_on_exception": "fault",
+  "metadata_extraction_paths": [
+    {
+      "key": "nazwa",
+      "path": "nazwa"
+    },
+    {
+      "key": "wlasciciel",
+      "path": "wlasciciel"
+    },
+    {
+      "key": "dostawca",
+      "path": "dostawca"
+    },
+    {
+      "key": "model_utrzymania",
+      "path": "model_utrzymania"
+    },
+    {
+      "key": "lokalizacja_danych",
+      "path": "lokalizacja_danych"
+    },
+    {
+      "key": "krytycznosc",
+      "path": "krytycznosc"
+    },
+    {
+      "key": "dane_osobowe",
+      "path": "dane_osobowe"
+    },
+    {
+      "key": "umowa_powierzenia",
+      "path": "umowa_powierzenia"
+    },
+    {
+      "key": "data_przegladu",
+      "path": "data_przegladu"
+    }
+  ],
+  "primary_file_name": "rejestr-systemow.bpmn",
+  "primary_process_id": "Process_Rejestr_systemow",
+  "key": "rejestr-systemow",
+  "galwork": {
+    "record_step": "Wpis w rejestrze",
+    "edit_step": "Wpis w rejestrze",
+    "dictionary": {
+      "slug": "rejestr-systemow",
+      "title": "Rejestr systemów IT",
+      "label": "nazwa",
+      "detail": [
+        "model_utrzymania",
+        "lokalizacja_danych"
+      ],
+      "active_step": "Wpis w rejestrze"
+    }
+  }
+}

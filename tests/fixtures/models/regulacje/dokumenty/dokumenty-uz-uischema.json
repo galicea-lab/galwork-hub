@@ -1,0 +1,154 @@
+{
+  "ui:order": [
+    "Data wydania",
+    "Obowiązuje od",
+    "Czy opieczętować elektronicznie?",
+    "Zmienia akty",
+    "Uchyla akty",
+    "Typ dokumentu",
+    "Nr dokumentu",
+    "Tytuł dokumentu",
+    "Status",
+    "Uwagi",
+    "Osoby odpowiedzialne",
+    "Osoba do weryfikacji",
+    "Utworzony w procesie",
+    "Proces zmiany",
+    "Ograniczenia dostępu",
+    "Działy",
+    "Słowa kluczowe",
+    "Czego dotyczy?",
+    "Opinie",
+    "Chciałbyś coś zmienić?"
+  ],
+  "Tytuł dokumentu": {
+    "ui:widget": "textarea"
+  },
+  "Uwagi": {
+    "ui:widget": "textarea"
+  },
+  "Osoby odpowiedzialne": {
+    "ui:help": "Osoby zarządzające ewentualnymi zmianami",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/users",
+      "sourceName": "Użytkownicy Systemu",
+      "sourceType": "Kartoteka Użytkowników"
+    }
+  },
+  "Osoba do weryfikacji": {
+    "ui:help": "Osoby zarządzające ewentualnymi zmianami",
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/users",
+      "sourceName": "Użytkownicy Systemu",
+      "sourceType": "Kartoteka Użytkowników"
+    }
+  },
+  "Ograniczenia dostępu": {
+    "ui:order": [
+      "do grup osób",
+      "do osób"
+    ],
+    "do grup osób": {
+      "ui:help": "Wymień grupy osób z dostępem",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "Grupy osób",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "do osób": {
+      "ui:help": "Wymień osoby z dostępem",
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "Użytkownicy Systemu",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "Działy": {
+    "items": {
+      "ui:order": [
+        "dział"
+      ]
+    },
+    "ui:options": {
+      "addable": true
+    }
+  },
+  "Czego dotyczy?": {
+    "items": {
+      "ui:order": [
+        "Akt prawny",
+        "opis",
+        "Kierunek studiów",
+        "Dziedzina"
+      ]
+    },
+    "ui:options": {
+      "addable": true
+    }
+  },
+  "Opinie": {
+    "ui:options": {
+      "addable": false,
+      "removable": false
+    },
+    "ui:readonly": true
+  },
+  "Typ dokumentu": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/typ-dokumentu",
+      "sourceName": "Typ dokumentu"
+    }
+  },
+  "Słowa kluczowe": {
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/dictionaries/slowa-kluczowe",
+      "sourceName": "Słowa kluczowe dokumentów"
+    }
+  },
+  "Chciałbyś coś zmienić?": {
+    "ui:widget": "richtext"
+  },
+  "Obowiązuje od": {
+    "ui:help": "Wymagane przy rejestracji. Data wejścia w życie tej redakcji (tekstu) - bez niej nie da się ustalić statusu prawnego aktu. Przy tekście jednolitym po zmianie data zmiany jest brana z aktu zmieniającego."
+  },
+  "Czy opieczętować elektronicznie?": {
+    "ui:help": "Odznacz, aby pominąć pieczęć dla tej sprawy. Zaznaczenie wymaga skonfigurowanego podpisu elektronicznego."
+  },
+  "Status": {
+    "ui:help": "Status prawny (obowiązujący, zmieniony, uchylony) wylicza system z dat wejścia w życie i aktów zmieniających; ręcznie ustawiaj tylko „Unieważniony” lub „Wygasły”."
+  },
+  "Zmienia akty": {
+    "items": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/acts",
+        "sourceName": "Akty wewnętrzne",
+        "sourceType": "Repozytorium dokumentów"
+      }
+    },
+    "ui:options": {
+      "addable": true
+    }
+  },
+  "Uchyla akty": {
+    "items": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/acts",
+        "sourceName": "Akty wewnętrzne",
+        "sourceType": "Repozytorium dokumentów"
+      }
+    },
+    "ui:options": {
+      "addable": true
+    }
+  }
+}

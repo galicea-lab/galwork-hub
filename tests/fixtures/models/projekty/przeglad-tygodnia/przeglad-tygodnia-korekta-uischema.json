@@ -1,0 +1,6 @@
+{
+  "ui:order": ["projekt", "zatwierdzone_tygodnie", "erp_status", "erp_errors", "komentarz", "*"],
+  "zatwierdzone_tygodnie": { "ui:options": { "addable": false, "removable": false, "orderable": false } },
+  "erp_errors": { "ui:options": { "addable": false, "removable": false, "orderable": false } },
+  "komentarz": { "ui:widget": "textarea", "ui:options": { "rows": 3 } }
+}

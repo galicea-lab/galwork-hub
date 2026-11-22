@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from datetime import UTC, datetime, timedelta
 from typing import Any, Iterable, Mapping
 
@@ -49,7 +50,8 @@ from wf.engine import (
   has_io_specification,
   read_form_files,
 )
-from wf.services.form_permissions import filter_form_for_step, has_x_permissions
+from wf.services.form_permissions import (filter_form_for_step, has_x_permissions,
+                                         protect_submitted_data, prune_data_for_step)
 from wf.models import (
     HumanTask,
     HumanTaskCandidate,
@@ -105,6 +107,74 @@ def form_key(file_name: str) -> str:
   return name
 
 
+# 2026-11-22: blok `galwork` w process_model.json (zob. custom_dashboard2.md §3).
+#   `visibility`: "participants" (domyślnie) - sprawę widzą uczestnicy;
+#                 "all" - każdy zalogowany może ją czytać (lista, szczegóły,
+#                 komentarze); działania i dokumenty nadal tylko uczestnicy.
+MODEL_META_FILE = 'process_model.json'
+VISIBILITY_VALUES = ('participants', 'all')
+
+
+def _model_json(content: str) -> Mapping[str, Any]:
+  try:
+    meta = json.loads(content or '{}')
+  except ValueError as exc:
+    raise FormRenderError(f'{MODEL_META_FILE} nie jest poprawnym JSON: {exc}') from exc
+  return meta if isinstance(meta, Mapping) else {}
+
+
+def read_metadata_paths(content: str) -> list[dict[str, str]]:
+  """2026-11-22: `metadata_extraction_paths` z process_model.json (kolumny listy)."""
+  from wf.services.instance_metadata import MetadataPathsError, parse_paths
+  try:
+    return parse_paths(_model_json(content).get('metadata_extraction_paths'))
+  except MetadataPathsError as exc:
+    raise FormRenderError(f'{MODEL_META_FILE}: {exc}') from exc
+
+
+def read_model_meta(content: str) -> dict[str, Any]:
+  """Blok `galwork` z treści process_model.json (pusty, gdy go nie ma)."""
+  meta = _model_json(content)
+  galwork = meta.get('galwork') if isinstance(meta, Mapping) else None
+  if galwork is None:
+    return {}
+  if not isinstance(galwork, Mapping):
+    raise FormRenderError(f'{MODEL_META_FILE}: "galwork" musi być obiektem')
+  for name in ('record_step', 'edit_step', 'list_title'):
+    if name in galwork and not (isinstance(galwork[name], str) and galwork[name].strip()):
+      raise FormRenderError(f'{MODEL_META_FILE}: galwork.{name} musi być niepustym tekstem')
+  visibility = galwork.get('visibility', 'participants')
+  if visibility not in VISIBILITY_VALUES:
+    raise FormRenderError(f'{MODEL_META_FILE}: galwork.visibility = {visibility!r} - '
+                          f'dozwolone: {", ".join(VISIBILITY_VALUES)}')
+  if 'dictionary' in galwork:
+    _check_register_dictionary(galwork['dictionary'])
+  return dict(galwork)
+
+
+_DICT_SLUG_RE = re.compile(r'^[a-z0-9][a-z0-9-]{1,62}$')
+
+
+def _check_register_dictionary(config: Any) -> None:
+  """2026-11-22: `galwork.dictionary` - słownik zasilany z rejestru
+  (wf/services/dictionary_service.py, `RegisterDictionary`)."""
+  prefix = f'{MODEL_META_FILE}: galwork.dictionary'
+  if not isinstance(config, Mapping):
+    raise FormRenderError(f'{prefix} musi być obiektem')
+  slug = config.get('slug')
+  if not isinstance(slug, str) or not _DICT_SLUG_RE.match(slug):
+    raise FormRenderError(f'{prefix}.slug = {slug!r} - małe litery, cyfry i "-"')
+  from wf.services.dictionary_service import static_dictionary_slugs
+  if slug in static_dictionary_slugs():
+    raise FormRenderError(f'{prefix}.slug = {slug!r} jest już słownikiem zdefiniowanym w hubie')
+  for name in ('title', 'label', 'active_step'):
+    if name in config and not (isinstance(config[name], str) and config[name].strip()):
+      raise FormRenderError(f'{prefix}.{name} musi być niepustym tekstem')
+  detail = config.get('detail', [])
+  if not isinstance(detail, list) or not all(isinstance(k, str) and k for k in detail):
+    raise FormRenderError(f'{prefix}.detail musi być listą kluczy metadanych')
+
+
 def build_spec_json(files: Iterable[tuple[str, Any, str]]) -> dict[str, Any]:
   """Indeks formularzy dla `ProcessModelVersion.spec_json`.
 
@@ -113,7 +183,9 @@ def build_spec_json(files: Iterable[tuple[str, Any, str]]) -> dict[str, Any]:
     * `uischemas`  {klucz: treść UI Schema},
     * `form_files` {id elementu BPMN: {'schema': nazwa, 'ui': nazwa}},
     * `start_form` {task_id: id pierwszego startEvent},
-    * `decisions`  {id zadania: wybór ścieżki gatewaya}.
+    * `decisions`  {id zadania: wybór ścieżki gatewaya},
+    * `galwork`    blok z process_model.json (np. `visibility`), gdy jest,
+    * `metadata_paths` kolumny listy (`metadata_extraction_paths`), gdy są.
 
   Treść plików zostaje jako surowy tekst, bo schemat może zawierać szablony
   Jinja i nie być poprawnym JSON przed renderowaniem (`render_form_json`).
@@ -123,9 +195,14 @@ def build_spec_json(files: Iterable[tuple[str, Any, str]]) -> dict[str, Any]:
   form_files: dict[str, dict[str, str]] = {}
   decisions: dict[str, dict[str, Any]] = {}
   start_ids: tuple[str, ...] = ()
+  galwork: dict[str, Any] = {}
+  metadata_paths: list[dict[str, str]] = []
 
   for file_name, file_type, content in files:
-    if file_type == ProcessFileType.JSON_SCHEMA:
+    if file_name == MODEL_META_FILE:
+      galwork = read_model_meta(content)
+      metadata_paths = read_metadata_paths(content)
+    elif file_type == ProcessFileType.JSON_SCHEMA:
       forms[form_key(file_name)] = content
     elif file_type == ProcessFileType.UI_SCHEMA:
       uischemas[form_key(file_name)] = content
@@ -148,6 +225,18 @@ def build_spec_json(files: Iterable[tuple[str, Any, str]]) -> dict[str, Any]:
     spec['form_files'] = form_files
   if decisions:
     spec['decisions'] = decisions
+  if galwork:
+    spec['galwork'] = galwork
+  if metadata_paths:
+    spec['metadata_paths'] = metadata_paths
+  dictionary = galwork.get('dictionary')
+  if dictionary:
+    # etykieta i szczegóły opcji to kolumny listy - muszą istnieć
+    keys = {item['key'] for item in metadata_paths}
+    missing = [k for k in [dictionary.get('label'), *dictionary.get('detail', [])] if k and k not in keys]
+    if missing:
+      raise FormRenderError(f'{MODEL_META_FILE}: galwork.dictionary odwołuje się do kluczy '
+                            f'{", ".join(missing)}, których nie ma w metadata_extraction_paths')
   if start_ids and (form_files or forms or uischemas):
     # Bez plików startowego formularza start_form nie ma sensu - klient i tak
     # dostanie pusty schemat.
@@ -418,21 +507,8 @@ class ProcessService:
         ui_schema = render_form_json(ui_entry, data) if ui_entry is not None else {}
       else:
         ui_obj = _try_parse_json(ui_entry) or {}
-        mapping = (spec['form_files'].get(human_task.bpmn_task_id) or {})
-        schema_file_key = form_key(str(mapping.get('schema') or human_task.bpmn_task_id or ''))
-        # `version.content_hash` w kluczu: nowa (re)publikacja procesu dostaje
-        # inny hash, więc stary wpis w Redis po prostu nigdy nie trafia (nie
-        # trzeba go jawnie unieważniać).
-        cache_key = (f"wf:task-form:{version.content_hash}:{schema_file_key}:"
-                    f"{human_task.bpmn_task_id}")
-
-        cached = cache_get_json(cache_key)
-        if isinstance(cached, Mapping) and 'schema' in cached:
-          filtered_schema, filtered_ui = cached['schema'], cached.get('ui_schema') or {}
-        else:
-          filtered_schema, filtered_ui = filter_form_for_step(schema_obj, ui_obj, human_task.name)
-          cache_set_json(cache_key, {'schema': filtered_schema, 'ui_schema': filtered_ui})
-
+        filtered_schema, filtered_ui = self._filtered_step_form(
+          version, human_task, schema_obj, ui_obj)
         schema = render_form_json(filtered_schema, data)
         ui_schema = render_form_json(filtered_ui, data)
 
@@ -448,6 +524,62 @@ class ProcessService:
       else:
         schema, ui_schema = inject_decision(schema, ui_schema, decision)
     return schema, ui_schema
+
+  def _filtered_step_form(self, version: ProcessModelVersion, human_task: HumanTask,
+                          schema_obj: Mapping[str, Any], ui_obj: Mapping[str, Any]
+                          ) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Schemat i UI Schema przefiltrowane dla kroku, z buforem w Redis."""
+    spec = self.form_spec(version)
+    mapping = (spec['form_files'].get(human_task.bpmn_task_id) or {})
+    schema_file_key = form_key(str(mapping.get('schema') or human_task.bpmn_task_id or ''))
+    # `version.content_hash` w kluczu: nowa (re)publikacja procesu dostaje
+    # inny hash, więc stary wpis w Redis po prostu nigdy nie trafia (nie
+    # trzeba go jawnie unieważniać).
+    cache_key = (f"wf:task-form:{version.content_hash}:{schema_file_key}:"
+                f"{human_task.bpmn_task_id}")
+
+    cached = cache_get_json(cache_key)
+    if isinstance(cached, Mapping) and 'schema' in cached:
+      return cached['schema'], cached.get('ui_schema') or {}
+    filtered_schema, filtered_ui = filter_form_for_step(schema_obj, ui_obj, human_task.name)
+    cache_set_json(cache_key, {'schema': filtered_schema, 'ui_schema': filtered_ui})
+    return filtered_schema, filtered_ui
+
+  # -BEGIN 2026-11-19
+  def _step_schemas(self, version: ProcessModelVersion, human_task: HumanTask
+                    ) -> tuple[dict[str, Any], dict[str, Any]] | None:
+    """(pełny schemat, schemat kroku) formularza z `x-permissions`, inaczej
+    None. Szablonów Jinja nie da się sparsować bez renderowania, więc te
+    formularze - jak w `task_form` - nie są filtrowane."""
+    spec = self.form_spec(version)
+    schema_entry = _form_entry(spec['forms'], spec['form_files'], human_task.bpmn_task_id, 'schema')
+    schema_obj = _try_parse_json(schema_entry) if schema_entry is not None else None
+    if schema_obj is None or not has_x_permissions(schema_obj):
+      return None
+    ui_entry = _form_entry(spec['uischemas'], spec['form_files'], human_task.bpmn_task_id, 'ui')
+    filtered_schema, _ui = self._filtered_step_form(
+      version, human_task, schema_obj, _try_parse_json(ui_entry) or {})
+    return schema_obj, filtered_schema
+
+  def visible_form_data(self, version: ProcessModelVersion, human_task: HumanTask,
+                        data: Mapping[str, Any]) -> dict[str, Any]:
+    """Dane formularza do wysłania przeglądarce: bez wartości pól, które
+    `x-permissions` ukrywa w tym kroku. Pozostałe dane procesu (spoza
+    schematu) przechodzą bez zmian."""
+    schemas = self._step_schemas(version, human_task)
+    if schemas is None:
+      return dict(data or {})
+    return prune_data_for_step(schemas[0], schemas[1], data)
+
+  def protected_form_data(self, version: ProcessModelVersion, human_task: HumanTask,
+                          form_data: Mapping[str, Any],
+                          current: Mapping[str, Any]) -> dict[str, Any]:
+    """Wysłane dane bez zmian w polach ukrytych i tylko do odczytu w kroku."""
+    schemas = self._step_schemas(version, human_task)
+    if schemas is None:
+      return dict(form_data or {})
+    return protect_submitted_data(schemas[0], schemas[1], form_data, current)
+  # -END
 
   def start_form(self, version: ProcessModelVersion,
                  data: Mapping[str, Any] | None = None
@@ -561,7 +693,7 @@ class ProcessService:
                      data: Mapping[str, Any] | None,
                      actor: CurrentUser,
                      parent: ProcessInstance | None = None,
-                     parent_task_id=None) -> ProcessInstance:
+                     parent_task_id=None, rollout_decision=None) -> ProcessInstance:
     """Startuje instancję procesu i zapisuje jej stan w bazie.
 
     2026-11-13: `parent`/`parent_task_id` - instancja uruchomiona przez
@@ -573,7 +705,13 @@ class ProcessService:
       # 2026-11-13: np. brak danych wejścia podprocesu (ioSpecification)
       raise ProcessServiceError(f"Nie udało się uruchomić procesu: {exc}") from exc
 
+    # 2026-11-17:  tryb użycia obiegu (wdrożenie) ustalany przy starcie
+    from wf.services import rollouts
+    decision = rollout_decision or rollouts.decide_start(db, version, actor, parent=parent,
+                                                         check=False)
     instance = ProcessInstance(
+      rollout_id=decision.rollout.id if decision.rollout is not None else None,
+      usage_mode=decision.usage_mode,
       process_model_version_id=version.id,
       business_key=business_key,
       title=title,
@@ -597,6 +735,9 @@ class ProcessService:
     self._save_state(db, instance, workflow)
     self._add_event(db, instance, EventType.INSTANCE_STARTED, actor=actor,
                     payload={'parentInstanceId': str(parent.id)} if parent is not None else None)
+    if decision.warning:
+      self._add_event(db, instance, EventType.ROLLOUT_MISSING, actor=actor,
+                      payload={'message': decision.warning})
     self.sync_tasks(db, instance, workflow, process_spec, actor=actor)
     if completed:
       self._add_event(db, instance, EventType.INSTANCE_COMPLETED, actor=actor)
@@ -756,6 +897,18 @@ class ProcessService:
   def _start_child(self, db: Session, parent: ProcessInstance, link, process_model_key: str,
                    data: Mapping[str, Any], parent_task_id, actor: CurrentUser, *,
                    raise_errors: bool = False) -> ProcessInstance | None:
+    existing = self._existing_child(db, parent, process_model_key) if link.once else None
+    if existing is not None:
+      # 2026-11-17:  `startOnce` - np. powtórny "Zapis do rejestru" nie zakłada
+      # drugiej sprawy w repozytorium regulacji.
+      if raise_errors:
+        raise ProcessServiceError(
+          f"Instancja '{process_model_key}' dla tej sprawy już istnieje ({existing})")
+      self._add_event(db, parent, EventType.CHILD_INSTANCE_SKIPPED, actor=actor, payload={
+        'processModelKey': process_model_key, 'element': link.element_id,
+        'existingInstanceId': str(existing)})
+      db.commit()
+      return None
     try:
       version = self.published_version(db, process_model_key)
       child_data = _map_inputs(link.inputs, data)
@@ -778,6 +931,18 @@ class ProcessService:
       'element': link.element_id})
     db.commit()
     return child
+
+  @staticmethod
+  def _existing_child(db: Session, parent: ProcessInstance, process_model_key: str):
+    """2026-11-17:  id nieanulowanej instancji potomnej danego modelu (`startOnce`)."""
+    return db.execute(
+      select(ProcessInstance.id)
+      .join(ProcessModelVersion, ProcessInstance.process_model_version_id == ProcessModelVersion.id)
+      .join(ProcessModel, ProcessModelVersion.process_model_id == ProcessModel.id)
+      .where(ProcessInstance.parent_instance_id == parent.id,
+             ProcessModel.key == process_model_key,
+             ProcessInstance.status != ProcessInstanceStatus.CANCELLED)
+    ).scalars().first()
   # -END
 
   def load_workflow(self, instance: ProcessInstance) -> tuple[Any, ProcessSpec]:
@@ -808,6 +973,18 @@ class ProcessService:
     state.serializer_version = SERIALIZER_VERSION
     state.state = self.engine.dump_state(workflow)
     state.updated_at = datetime.now(UTC)
+    self._refresh_metadata(instance, workflow)
+
+  def _refresh_metadata(self, instance: ProcessInstance, workflow) -> None:
+    """2026-11-22: kolumny listy z bieżących danych (wf/services/instance_metadata.py)."""
+    from wf.services import instance_metadata
+    version = instance.version
+    paths = instance_metadata.paths_of(version.spec_json if version is not None else None)
+    if not paths:
+      return
+    metadata = instance_metadata.extract(paths, instance_metadata.current_data(self.engine, workflow))
+    if metadata != (instance.extracted_metadata or {}):
+      instance.extracted_metadata = metadata
 
   def refresh_status(self, db: Session, instance: ProcessInstance, workflow) -> None:
     """Ustawia status instancji zgodnie ze stanem silnika."""
@@ -949,9 +1126,12 @@ class ProcessService:
     if human_task.status == HumanTaskStatus.COMPLETED:
       raise ProcessServiceError("Zadanie zostało już wykonane")
 
-    render_data = {**self.task_form_data(workflow, human_task),
-                   **dict(form_data or {})}
+    current_data = self.task_form_data(workflow, human_task)
+    render_data = {**current_data, **dict(form_data or {})}
     self._validate_form_data(human_task, self.task_version(human_task), form_data, render_data)
+    # 2026-11-19: pola ukryte i tylko do odczytu w kroku nie zmieniają danych.
+    form_data = self.protected_form_data(self.task_version(human_task), human_task,
+                                         form_data or {}, current_data)
 
     # 2026-11-06: zadanie bez własnej decyzji czyści `chosen_path`.
     # Inaczej wybór z poprzedniego okrążenia pętli (np. edu-pismo:

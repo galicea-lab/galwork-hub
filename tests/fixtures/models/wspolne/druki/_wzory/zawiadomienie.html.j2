@@ -1,0 +1,70 @@
+{#- Wzorzec: zawiadomienie o wszczęciu postępowania administracyjnego. -#}
+{#-  układ zawiadomienia (art. 61 k.p.a.): strona, przedmiot,
+    okoliczności faktyczne, informacja o aktach sprawy, doręczenie. -#}
+{% extends "_base/strona.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set klasa = klasa | default('zawiadomienie', true) -%}
+{%- set organ = organ | default('Dziekan Wydziału', true) -%}
+{%- set tytul = tytul | default('ZAWIADOMIENIE', true) -%}
+
+{% block adresat %}
+{%- if adresat_linie %}
+{{ m.adresat(adresat_linie) }}
+{%- endif %}
+{% endblock %}
+
+{% block lead %}
+<p class="lead">{% block podstawa %}Na podstawie art. 61 § 1 i 4 ustawy z dnia 14 czerwca 1960 r. – Kodeks postępowania administracyjnego (Dz. U. z 2024 r. poz. 572 z późn. zm.) oraz Regulaminu studiów obowiązującego w Uczelni,{% endblock %}</p>
+{% endblock %}
+
+{% block tresc %}
+{{ m.formula(formula | default('z a w i a d a m i a m')) }}
+{{ self.przedmiot() }}
+{{ self.okolicznosci() }}
+{{ self.dalsze_czynnosci() }}
+{% endblock %}
+
+{% block przedmiot %}
+<p>o wszczęciu z urzędu postępowania administracyjnego w sprawie {{ sprawa | default('skreślenia z listy studentów') }} {{ strony | default('') }}.</p>
+{% endblock %}
+
+{% block okolicznosci %}
+{{ m.sekcja("Okoliczności faktyczne") }}
+<p>{{ okolicznosci | default('') }}</p>
+{% endblock %}
+
+{% block dalsze_czynnosci %}
+{{ m.sekcja("Informacje o toku postępowania") }}
+<p>Strona może w terminie 7 dni od dnia doręczenia niniejszego zawiadomienia zapoznać się z aktami sprawy, złożyć wyjaśnienia oraz wnioski dowodowe (art. 73 i art. 79 k.p.a.). Czynności w sprawie podejmowane są w godzinach pracy sekretariatu jednostki prowadzącej sprawę, po uprzednim uzgodnieniu terminu.</p>
+<p>Zawiadomienie nie rozstrzyga sprawy co do istoty. Rozstrzygnięcie nastąpi w drodze odrębnej decyzji administracyjnej, która zostanie stronie doręczona wraz z pouczeniem o środkach zaskarżenia.</p>
+<p class="drobny">Podstawa faktyczna wskazana w zawiadomieniu może zostać uzupełniona lub zmieniona w toku postępowania w związku z wynikami postępowania dowodowego.</p>
+{% endblock %}
+
+{% block pouczenie %}
+<section class="pouczenie">
+{{ m.sekcja("Pouczenie") }}
+<p>Zawiadomienie o wszczęciu postępowania nie jest decyzją administracyjną i nie służy na nie zażalenie ani odwołanie. Stronie przysługuje prawo do czynnego udziału w każdym stadium postępowania, w tym prawo do wypowiedzenia się co do zebranych dowodów i materiałów oraz zgłoszonych żądań (art. 10 § 1 k.p.a.).</p>
+<p>W przypadku niepodjęcia przesyłki w terminie 14 dni od dnia jej pozostawienia w placówce pocztowej, zawiadomienie uważa się za doręczone (art. 44 § 4 k.p.a.).</p>
+</section>
+{% endblock %}
+
+{% block adnotacje %}
+{{ m.adnotacje([
+  ("Data doręczenia", ''),
+  ("Potwierdzenie odbioru (podpis strony)", ''),
+]) }}
+{% endblock %}
+
+{% block podpisy %}
+{{ m.podpisy([(podpis_rola | default(organ), osoba_podpisujaca | default(''), data | default(''))], 'pionowo') }}
+{%- if z_upowaznienia %}
+<p class="pieczec">z upoważnienia Rektora {{ uczelnia }}</p>
+{%- endif %}
+{% endblock %}
+
+{% block rodo %}
+{{ m.klauzula_rodo(uczelnia, miejscowosc_m,
+   cel=rodo_cel | default('przeprowadzenie postępowania administracyjnego w sprawie skreślenia z listy studentów i prowadzenie dokumentacji przebiegu studiów'),
+   podstawa=rodo_podstawa | default('art. 6 ust. 1 lit. c i e RODO w związku z ustawą – Prawo o szkolnictwie wyższym i nauce oraz Regulaminem studiów obowiązującym w Uczelni'),
+   iod=iod | default('iod@uczelnia.pl')) }}
+{% endblock %}

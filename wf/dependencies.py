@@ -18,6 +18,7 @@ from sqlalchemy.orm import Session
 
 from api.dependencies import get_db
 from api.security import get_current_principal
+from config.config import section
 from core.config import settings
 from models.user import User
 from wf.models import UserSubstitution
@@ -86,6 +87,30 @@ ADMIN_GROUPS = frozenset(
   group.strip().lstrip('/').split('/')[-1].lower()
   for group in settings.keycloak.admin_groups
 )
+
+
+# uprawnienie do zakładania aktów w repozytorium `dokumenty`.
+# Pusta lista w [wf] act_editor_groups zachowuje stare zachowanie (brak
+# blokady); grupa Keycloak `act_editor` jest dodatkową alternatywą.
+ACT_REPOSITORY_MODEL_KEY = 'dokumenty'
+ACT_EDITOR_KEYCLOAK_GROUP = 'act_editor'
+
+
+def _act_editor_groups() -> frozenset[str]:
+  raw = section('wf').get('act_editor_groups') or ''
+  return frozenset(
+    group.strip().lstrip('/').split('/')[-1].lower()
+    for group in raw.split(',') if group.strip()
+  )
+
+
+def can_create_act(current_user: CurrentUser) -> bool:
+  groups = _act_editor_groups()
+  if not groups:
+    return True
+  principals = {value.lstrip('/').split('/')[-1].lower()
+                for value in current_user.groups | current_user.roles}
+  return bool(groups & principals) or ACT_EDITOR_KEYCLOAK_GROUP in principals
 
 
 # 2026-11-16: ten sam test bez zależności FastAPI (np. uprawnienia do wydruku).

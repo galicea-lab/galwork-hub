@@ -522,6 +522,37 @@ class RenderedPrint:
     template: str | None
 
 
+# 2026-11-17: oznaczenie wydruku sprawy prowadzonej w trybie testowym
+# albo pomocniczym (wf/services/rollouts.py) - wstawiane do gotowego HTML,
+# więc obejmuje każdy szablon, także wydruk standardowy.
+_USAGE_CSS = (
+    '<style>.galwork-tryb{border:1.5pt solid #b91c1c;color:#b91c1c;padding:4pt 8pt;'
+    'margin:0 0 8pt 0;font:bold 9pt sans-serif;text-align:center}'
+    '.galwork-tryb.pomocniczy{border-color:#92400e;color:#92400e}'
+    '.galwork-znak-wodny{position:fixed;top:40%;left:0;right:0;text-align:center;'
+    'font:bold 54pt sans-serif;color:rgba(185,28,28,.12);transform:rotate(-30deg);'
+    'z-index:-1}</style>')
+
+
+def mark_usage(html: str, usage_mode: str | None, previous_procedure: str | None) -> str:
+    """Pasek (i znak wodny w trybie testowym) na wydruku sprawy."""
+    from html import escape
+    if usage_mode == 'test':
+        text = 'WYDRUK TESTOWY - nie stanowi dokumentu'
+        if previous_procedure:
+            text += f'. Obowiązuje: {previous_procedure}'
+        mark = (f'<div class="galwork-znak-wodny">TEST</div>'
+                f'<div class="galwork-tryb">{escape(text)}</div>')
+    elif usage_mode == 'auxiliary':
+        text = 'Obieg pomocniczy - dokument źródłowy: ' + (previous_procedure or 'poza systemem')
+        mark = f'<div class="galwork-tryb pomocniczy">{escape(text)}</div>'
+    else:
+        return html
+    html = html.replace('</head>', _USAGE_CSS + '</head>', 1) if '</head>' in html else _USAGE_CSS + html
+    match = re.search(r'<body[^>]*>', html)
+    return (html[:match.end()] + mark + html[match.end():]) if match else mark + html
+
+
 def _file_name(title: str) -> str:
     base = re.sub(r'[^\w.-]+', '_', title, flags=re.UNICODE).strip('_.') or 'wydruk'
     return f'{base[:120]}.pdf'

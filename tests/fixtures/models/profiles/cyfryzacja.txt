@@ -1,0 +1,15 @@
+# 2026-11-17: profil "cyfryzacja" - start galwork-hub "od zera" tylko
+# z obiegami cyfryzacji przez regulacje ([wf] process_profile=cyfryzacja).
+# Kolejne obiegi dochodzą aktem (obieg "Wdrożenie obiegów") - wtedy dopisz je
+# tutaj albo usuń profil. Jeden wzorzec na wiersz: ścieżka względna do katalogu
+# obiegów, glob (*), "katalog/**" - katalog z podkatalogami.
+
+# repozytorium regulacji i przygotowanie aktów
+regulacje/**
+slowniki/regulacje/**
+# potwierdzenie zapoznania się z aktem
+komunikacja/informacja-z-potwierdzeniem
+# podpis kwalifikowany dokumentu (podproces)
+wspolne/podpis-dokumentu
+# strategia, planowanie działań i wdrożenia obiegów
+cyfryzacja/**

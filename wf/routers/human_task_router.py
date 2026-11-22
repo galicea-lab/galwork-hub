@@ -195,7 +195,8 @@ def get_task_form(task_id: UUID,
         task_name=task.name,
         json_schema=schema,
         ui_schema=ui_schema,
-        form_data=data,
+        # 2026-11-19: bez wartości pól ukrytych w kroku (x-permissions).
+        form_data=service.visible_form_data(version, task, data),
         documents=_task_documents(db, task),
         process_lock_version=task.process_instance.lock_version,
         quick_actions=service.quick_actions(db, task, process_spec),  # 2026-11-13

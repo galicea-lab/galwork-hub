@@ -1,0 +1,40 @@
+{
+  "ui:order": [
+    "nazwa",
+    "cel",
+    "wlasciciel",
+    "administrator_techniczny",
+    "dostawca",
+    "model_utrzymania",
+    "lokalizacja_danych",
+    "adres",
+    "krytycznosc",
+    "dane_osobowe",
+    "czynnosci_przetwarzania",
+    "kategorie_danych",
+    "umowa",
+    "umowa_powierzenia",
+    "kopia_zapasowa",
+    "test_odtworzenia",
+    "logowanie",
+    "koszt",
+    "data_przegladu",
+    "uwagi",
+    "*"
+  ],
+  "cel": {
+    "ui:widget": "textarea"
+  },
+  "czynnosci_przetwarzania": {
+    "ui:widget": "textarea"
+  },
+  "kategorie_danych": {
+    "ui:widget": "textarea"
+  },
+  "kopia_zapasowa": {
+    "ui:widget": "textarea"
+  },
+  "uwagi": {
+    "ui:widget": "textarea"
+  }
+}

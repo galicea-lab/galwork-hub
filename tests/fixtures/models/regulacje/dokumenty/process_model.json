@@ -1,0 +1,38 @@
+{
+    "description": "Dokumenty",
+    "display_name": "Dokumenty",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": [
+        {
+            "key": "nr",
+            "path": "Nr dokumentu"
+        },
+        {
+            "key": "typ",
+            "path": "Typ dokumentu"
+        },
+        {
+            "key": "tytul",
+            "path": "Tytuł dokumentu"
+        },
+        {
+            "key": "data_wydania",
+            "path": "Data wydania"
+        },
+        {
+            "key": "obowiazuje_od",
+            "path": "Obowiązuje od"
+        },
+        {
+            "key": "status",
+            "path": "Status"
+        }
+    ],
+    "primary_file_name": "dokumenty.bpmn",
+    "primary_process_id": "Process_Dokumenty",
+    "galwork": {
+        "record_step": "Repozytorium dokumentów",
+        "edit_step": "Repozytorium dokumentów"
+    }
+}

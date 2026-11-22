@@ -23,7 +23,15 @@ Błędy tłumaczone tak jak reszta modułu wf (zob. wf/routers/signius_api.py):
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+import base64
+import hashlib
+import hmac
+import json
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from sqlalchemy.orm import Session
+
+from api.dependencies import get_db
 
 from connector.base import ConnectorConfigError, ConnectorError
 from connector.erpnext import get_connector
@@ -83,3 +91,62 @@ def approve_invoice(
         raise HTTPException(status_code=503, detail=f"ERPNext nie skonfigurowany: {exc}") from exc
     except ConnectorError as exc:
         raise HTTPException(status_code=502, detail=f"ERPNext: {exc}") from exc
+
+
+# BEGIN: ZAK.1 - informacja o nowej fakturze zakupu uruchamia obieg
+# (wf/services/purchase_invoice_flow.py). Wywołuje ją n8n (nagłówek
+# `X-Galwork-Webhook-Token` = `[erpnext] invoice_webhook_secret`) albo - bez n8n -
+# „Webhook” ERPNext na `after_insert` faktury (nagłówek
+# `X-Frappe-Webhook-Signature` = base64(HMAC-SHA256(sekret, treść))). Treść JSON:
+# `{"name": "<nazwa faktury w ERPNext>"}` (Frappe: dokument z polem `name`).
+# Dane faktury hub czyta konektorem ERPNext - treść służy tylko jako wskazanie.
+def _notification_authorized(raw_body: bytes, secret: str, token: str | None, signature: str | None) -> bool:
+    if token and hmac.compare_digest(token.strip(), secret):
+        return True
+    if signature:
+        expected = base64.b64encode(hmac.new(secret.encode('utf-8'), raw_body, hashlib.sha256).digest()).decode()
+        return hmac.compare_digest(expected, signature.strip())
+    return False
+
+
+@router.post("/invoices/notify", status_code=202)
+async def notify_purchase_invoice(request: Request, db: Session = Depends(get_db)):
+    """`POST /v1/wf/erpnext/invoices/notify` - nowa faktura zakupu w ERPNext."""
+    from wf.services import purchase_invoice_flow
+    from wf.services.process_service import FormRenderError, ProcessServiceError
+    from wf.services.system_actor import SystemActorError, get_system_actor
+    try:
+        connector = get_connector()
+        cfg = purchase_invoice_flow.config(connector)
+    except ConnectorConfigError as exc:
+        raise HTTPException(status_code=503, detail=f"ERPNext nie skonfigurowany: {exc}") from exc
+    if not cfg.webhook_secret:
+        raise HTTPException(status_code=503, detail="Ustaw [erpnext] invoice_webhook_secret")
+    raw_body = await request.body()
+    if not _notification_authorized(raw_body, cfg.webhook_secret,
+                                    request.headers.get("x-galwork-webhook-token"),
+                                    request.headers.get("x-frappe-webhook-signature")):
+        raise HTTPException(status_code=403, detail="Niepoprawny token albo podpis")
+    try:
+        payload = json.loads(raw_body or b"{}")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Treść nie jest poprawnym JSON") from None
+    doc = payload.get("doc") if isinstance(payload, dict) and isinstance(payload.get("doc"), dict) else payload
+    name = str((doc or {}).get("name") or "").strip() if isinstance(doc, dict) else ""
+    if not name:
+        raise HTTPException(status_code=400, detail="Brak nazwy faktury (pole name)")
+    try:
+        actor = get_system_actor(db, display_name="ERPNext – faktury")
+        result = purchase_invoice_flow.start_for_invoice(db, name, actor, connector=connector)
+    except SystemActorError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except ConnectorError as exc:
+        db.rollback()
+        raise HTTPException(status_code=502, detail=f"ERPNext: {exc}") from exc
+    except (ProcessServiceError, FormRenderError) as exc:
+        db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return {"invoice": result.invoice, "status": result.status,
+            "process_instance_id": result.instance_id, "detail": result.detail}
+# END
+

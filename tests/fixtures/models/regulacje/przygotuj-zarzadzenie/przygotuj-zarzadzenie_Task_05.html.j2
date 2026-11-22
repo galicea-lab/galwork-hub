@@ -1,0 +1,115 @@
+{#-  zarządzenie Rektora (akt normatywny wewnętrzny) z formułą „zarządza się, co następuje". -#}
+{#- Obieg: regulacje/przygotuj-zarzadzenie | krok: Task_05 "Akceptacja" | formularz: przygotuj-zarzadzenie-f-zr-schema.json | priorytet: A #}
+{% extends "_wzory/pismo.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set dane = f if (f is defined and f) else {} -%}
+
+{%- set tytul = "ZARZĄDZENIE" -%}
+
+{%- set tytul_dokumentu = m.w(dane, "Szczegóły dokumentu", "Tytuł") | trim -%}
+{%- set nr_dok = m.w(dane, "Szczegóły dokumentu", "Nr dokumentu") | trim -%}
+{%- set data_wydania = m.w(dane, "Szczegóły dokumentu", "Data wydania") | trim -%}
+{%- set data_rejestracji = m.w1(dane, "Data rejestracji") | trim -%}
+{%- set kto_rejestrowal = m.w1(dane, "Kto zarejestrował") | trim -%}
+{%- set kto_redaguje = m.w(dane, "Szczegóły dokumentu", "Kto redaguje") | trim -%}
+{%- set wybor_osoby = m.w(dane, "Szczegóły dokumentu", "Wybór osoby") | trim -%}
+{%- set kogo_obowiazuje = m.w(dane, "Szczegóły dokumentu", "Kogo obowiązuje") | trim -%}
+{%- set od_kiedy = m.w(dane, "Szczegóły dokumentu", "Od kiedy obowiązuje") | trim -%}
+{%- set termin_do = m.w(dane, "Szczegóły dokumentu", "Termin do") | trim -%}
+{%- set opinia = m.w(dane, "Szczegóły dokumentu", "Opinia merytoryczna") | trim -%}
+{%- set slowa_kluczowe = m.w(dane, "Szczegóły dokumentu", "Słowa kluczowe") | trim -%}
+{%- set typ_dokumentu = m.w(dane, "Szczegóły dokumentu", "Typ dokumentu") | trim -%}
+{%- set uwagi = m.w(dane, "Szczegóły dokumentu", "Uwagi") | trim -%}
+{%- set mapa_statusow = {"0": "nieustalony", "1": "obowiązujący", "2": "unieważniony", "3": "uchylony", "4": "wygasły", "5": "zmieniony"} -%}
+{%- set status = m.wm(dane, "Szczegóły dokumentu", "Status", mapa_statusow, "obowiązujący") -%}
+{%- set mapa_dzialow = {"0": "……", "1": "DZ1", "2": "DZ2", "3": "DZ3"} -%}
+{%- set dzial_kod = m.w(dane, "Szczegóły dokumentu", "Dział") | trim -%}
+{%- set dzial = (mapa_dzialow.get(dzial_kod, dzial_kod) if dzial_kod else "……") -%}
+{%- set powiadom_osoby = m.w(dane, "Dystrybucja", "Powiadom osoby") | trim -%}
+{%- set akceptacja_prawna = m.w(dane, "Analiza prawna", "Akceptacja pod względem prawnym") | trim -%}
+{%- set data_akceptacji = m.w(dane, "Analiza prawna", "Data akceptacji prawnej") | trim -%}
+
+{%- set rok_a = data_wydania[:4] -%}
+{%- set rok_b = data_wydania[-5:-1] -%}
+{%- set rok = rok_a if rok_a.isdigit() else (rok_b if rok_b.isdigit() else "……") -%}
+{%- set nr_pelny = nr_dok if "/" in nr_dok else ((nr_dok ~ "/" ~ rok) if nr_dok else ("……/" ~ rok)) -%}
+{%- set nr_dokumentu = "Nr " ~ nr_pelny -%}
+{%- set podtytul = tytul_dokumentu -%}
+{%- set od_kiedy_r = (od_kiedy ~ " r.") if (od_kiedy and od_kiedy[-1:] not in ('.', 'r')) else od_kiedy -%}
+{%- set termin_do_r = (termin_do ~ " r.") if (termin_do and termin_do[-1:] not in ('.', 'r')) else termin_do -%}
+{%- set obowiazuje_od = od_kiedy_r or data_wydania or "……" -%}
+{%- set obowiazuje_od_ = obowiazuje_od[:-1] if obowiazuje_od[-1:] == '.' else obowiazuje_od -%}
+{%- set znak = nr_pelny -%}
+
+{% block wstep_dodatkowy %}
+<p>Na podstawie art. 23 ust. 1 i art. 34 ust. 1 pkt 1 ustawy z dnia 20 lipca 2018 r. – Prawo o szkolnictwie wyższym i nauce (Dz. U. z 2024 r. poz. 1089 z późn. zm.) oraz postanowień Statutu Uczelni, mając na uwadze potrzebę jednolitego uregulowania spraw objętych przedmiotem zarządzenia,</p>
+{{ m.formula("z a r z ą d z a   s i ę,   c o   n a s t ę p u j e") }}
+{% endblock %}
+
+{% block tresc_pisma %}
+<h3 class="podsekcja">§ 1. Przedmiot zarządzenia</h3>
+<p>Zarządzenie określa zasady i tryb postępowania oraz zadania i odpowiedzialność osób oraz komórek organizacyjnych Uczelni w zakresie objętym przedmiotem zarządzenia.</p>
+<p>Przedmiot zarządzenia: <span class="wypelnienie">{{ tytul_dokumentu or "……" }}</span></p>
+<p>Zarządzenie obowiązuje: <span class="wypelnienie">{{ kogo_obowiazuje or "……" }}</span>.{% if slowa_kluczowe %} Zakres przedmiotowy zarządzenia obejmuje w szczególności zagadnienia wskazane słowami kluczowymi: <span class="wypelnienie">{{ slowa_kluczowe }}</span>.{% endif %}</p>
+{%- if opinia %}
+<p>Przyjęte rozwiązania są zgodne z opinią merytoryczną komórki właściwej dla sprawy: {{ opinia }}</p>
+{%- endif %}
+
+<h3 class="podsekcja">§ 2. Wykonanie zarządzenia</h3>
+<p>Wykonanie zarządzenia powierza się: <span class="wypelnienie">{{ kto_redaguje or wybor_osoby or "……" }}</span>.</p>
+<p>Nadzór nad wykonaniem zarządzenia sprawuje Rektor Uczelni. Osoby i komórki organizacyjne wskazane w zarządzeniu obowiązane są do dostosowania dotychczasowej praktyki do jego postanowień w terminie do dnia <span class="wypelnienie">{{ termin_do_r or "……" }}</span></p>
+<p>Treść zarządzenia przekazuje się do wiadomości pracownikom wymienionym w dystrybucji dokumentu: <span class="wypelnienie">{{ powiadom_osoby or "……" }}</span>.</p>
+
+<h3 class="podsekcja">§ 3. Wejście w życie</h3>
+<p>Zarządzenie wchodzi w życie z dniem <span class="wypelnienie">{{ obowiazuje_od_ }}</span>.</p>
+
+{{ m.sekcja("Publikacja zarządzenia") }}
+<p>Zarządzenie podlega publikacji w Biuletynie Informacji Publicznej Uczelni w zakładce „Akty prawne” oraz udostępnieniu w intranecie Uczelni. Datą ogłoszenia jest data opublikowania w Biuletynie Informacji Publicznej, nie wcześniej niż <span class="wypelnienie">{{ obowiazuje_od_ }}</span>.</p>
+<p>Informację o publikacji zarządzenia odnotowuje się w rejestrze aktów wewnętrznych Uczelni; zarządzenie otrzymuje status: <strong>{{ status }}</strong>.</p>
+{%- if uwagi %}
+<p class="drobny">Uwagi do dokumentu: {{ uwagi }}</p>
+{%- endif %}
+{% endblock %}
+
+{% block zestawienie %}
+{{ m.sekcja("Metryka dokumentu") }}
+{{ m.tabela(["Element", "Wartość"], [
+  ["Numer zarządzenia", nr_pelny],
+  ["Typ dokumentu", typ_dokumentu or "Zarządzenie Rektora"],
+  ["Status", status],
+  ["Tytuł", tytul_dokumentu or "……"],
+  ["Kto redaguje", kto_redaguje or "……"],
+  ["Kogo obowiązuje", kogo_obowiazuje or "……"],
+  ["Od kiedy obowiązuje", od_kiedy or "……"],
+  ["Termin do", termin_do or "……"],
+  ["Data wydania", data_wydania or "……"],
+  ["Data rejestracji", data_rejestracji or "……"],
+  ["Zarejestrował", kto_rejestrowal or "……"],
+  ["Komórka organizacyjna", dzial],
+  ["Słowa kluczowe", slowa_kluczowe or "……"],
+], "kompaktowa") }}
+{% endblock %}
+
+{% block zalaczniki %}
+{%- if opinia %}
+{{ m.sekcja("Załączniki") }}
+<ol class="zalaczniki">
+  <li>Opinia merytoryczna – {{ opinia }}</li>
+</ol>
+{%- endif %}
+{% endblock %}
+
+{% block podpisy %}
+{{ m.podpisy([("Rektor Uczelni", "", data_wydania or data)], 'pionowo') }}
+<p class="pieczec">(pieczęć urzędowa i podpis Rektora)</p>
+{% endblock %}
+
+{% block adnotacje %}
+{{ m.adnotacje([
+  ("Projekt zarządzenia przygotował", kto_redaguje or "……"),
+  ("Akceptacja pod względem prawnym", akceptacja_prawna or ""),
+  ("Data akceptacji prawnej", data_akceptacji or ""),
+  ("Data rejestracji dokumentu", data_rejestracji or ""),
+  ("Data publikacji w BIP", ""),
+]) }}
+{% endblock %}

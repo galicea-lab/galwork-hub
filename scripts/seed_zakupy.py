@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 """
-Dane startowe dla obszaru "Zakupy" (galwork-book, czesc-3-obszary/dzialy/
+Dane startowe dla obszaru "Zakupy" (galwork-models-book, obszary/dzialy/
 zakupy.md) - NIE schema (to robi alembic), tylko wiersze konfiguracyjne,
 które administrator mógłby też wpisać ręcznie przez istniejące ekrany
 admina (ale "Dział zamówień" nie ma jeszcze własnego ekranu CRUD dla

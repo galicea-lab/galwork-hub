@@ -1,0 +1,436 @@
+{
+  "title": "Dokumenty-UZ",
+  "type": "object",
+  "properties": {
+    "Data wydania": {
+      "type": "string",
+      "format": "date",
+      "title": "Data wydania",
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Obowiązuje od": {
+      "type": "string",
+      "format": "date",
+      "title": "Obowiązuje od",
+      "x-required-in-steps": [
+        "Start"
+      ],
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Czy opieczętować elektronicznie?": {
+      "type": "boolean",
+      "title": "Czy opieczętować elektronicznie?",
+      "default": true,
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "readonly",
+        "Weryfikacja": "readonly",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Zmienia akty": {
+      "type": "array",
+      "title": "Zmienia akty",
+      "description": "Akty z repozytorium zmieniane przez ten dokument (od daty „Obowiązuje od”)",
+      "items": {
+        "type": "string"
+      },
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Uchyla akty": {
+      "type": "array",
+      "title": "Uchyla akty",
+      "description": "Akty z repozytorium uchylane przez ten dokument (od daty „Obowiązuje od”)",
+      "items": {
+        "type": "string"
+      },
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Typ dokumentu": {
+      "type": "string",
+      "title": "Typ dokumentu",
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Nr dokumentu": {
+      "type": "string",
+      "title": "Nr dokumentu",
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Tytuł dokumentu": {
+      "type": "string",
+      "title": "Tytuł dokumentu",
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Status": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "1",
+          "title": "Obowiązujący"
+        },
+        {
+          "const": "0",
+          "title": "Nieustalony"
+        },
+        {
+          "const": "2",
+          "title": "Unieważniony"
+        },
+        {
+          "const": "3",
+          "title": "Uchylony"
+        },
+        {
+          "const": "4",
+          "title": "Wygasły"
+        },
+        {
+          "const": "5",
+          "title": "Zmieniony"
+        }
+      ],
+      "title": "Status",
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "editable",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Uwagi": {
+      "type": "string",
+      "title": "Uwagi",
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Osoby odpowiedzialne": {
+      "type": "string",
+      "title": "Osoby odpowiedzialne",
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Osoba do weryfikacji": {
+      "type": "string",
+      "title": "Osoba do weryfikacji",
+      "x-permissions": {
+        "Start": "none",
+        "Repozytorium dokumentów": "none",
+        "Zmiana statusu": "none",
+        "Zmiany": "editable",
+        "Weryfikacja": "readonly",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Utworzony w procesie": {
+      "type": "string",
+      "title": "Utworzony w procesie",
+      "x-permissions": {
+        "Start": "readonly",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "editable",
+        "Uchylony": "readonly"
+      }
+    },
+    "Proces zmiany": {
+      "type": "string",
+      "title": "Proces zmiany",
+      "x-permissions": {
+        "Start": "none",
+        "Repozytorium dokumentów": "none",
+        "Zmiana statusu": "none",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "editable",
+        "Uchylony": "readonly"
+      }
+    },
+    "Ograniczenia dostępu": {
+      "type": "object",
+      "properties": {
+        "do grup osób": {
+          "type": "string",
+          "title": "do grup osób",
+          "x-permissions": {
+            "Start": "editable",
+            "Repozytorium dokumentów": "readonly",
+            "Zmiana statusu": "readonly",
+            "Zmiany": "editable",
+            "Weryfikacja": "editable",
+            "Przygotowanie uchylenia": "readonly",
+            "Uchylony": "readonly"
+          }
+        },
+        "do osób": {
+          "type": "string",
+          "title": "do osób",
+          "x-permissions": {
+            "Start": "editable",
+            "Repozytorium dokumentów": "readonly",
+            "Zmiana statusu": "readonly",
+            "Zmiany": "editable",
+            "Weryfikacja": "editable",
+            "Przygotowanie uchylenia": "readonly",
+            "Uchylony": "readonly"
+          }
+        }
+      },
+      "title": "Ograniczenia dostępu",
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Działy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "dział": {
+            "type": "string",
+            "title": "dział",
+            "x-permissions": {
+              "Start": "editable",
+              "Repozytorium dokumentów": "editable",
+              "Zmiana statusu": "editable",
+              "Zmiany": "editable",
+              "Weryfikacja": "editable",
+              "Przygotowanie uchylenia": "readonly",
+              "Uchylony": "readonly"
+            }
+          }
+        }
+      },
+      "title": "Działy",
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "editable",
+        "Zmiana statusu": "editable",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Słowa kluczowe": {
+      "type": "string",
+      "title": "Słowa kluczowe",
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "editable",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Czego dotyczy?": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Akt prawny": {
+            "type": "string",
+            "title": "Akt prawny",
+            "x-permissions": {
+              "Start": "editable",
+              "Repozytorium dokumentów": "editable",
+              "Zmiana statusu": "editable",
+              "Zmiany": "editable",
+              "Weryfikacja": "editable",
+              "Przygotowanie uchylenia": "editable",
+              "Uchylony": "readonly"
+            }
+          },
+          "opis": {
+            "type": "string",
+            "title": "opis",
+            "x-permissions": {
+              "Start": "editable",
+              "Repozytorium dokumentów": "editable",
+              "Zmiana statusu": "editable",
+              "Zmiany": "editable",
+              "Weryfikacja": "editable",
+              "Przygotowanie uchylenia": "editable",
+              "Uchylony": "readonly"
+            }
+          },
+          "Kierunek studiów": {
+            "type": "string",
+            "title": "Kierunek studiów",
+            "x-permissions": {
+              "Start": "editable",
+              "Repozytorium dokumentów": "editable",
+              "Zmiana statusu": "editable",
+              "Zmiany": "editable",
+              "Weryfikacja": "editable",
+              "Przygotowanie uchylenia": "editable",
+              "Uchylony": "readonly"
+            }
+          },
+          "Dziedzina": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "1",
+                "title": "Implementacja aktów prawnych"
+              },
+              {
+                "const": "2",
+                "title": "Kierunki studiów i kursy"
+              },
+              {
+                "const": "3",
+                "title": "Organizacja pracy"
+              },
+              {
+                "const": "4",
+                "title": "Zasady i wyjaśnienia"
+              },
+              {
+                "const": "5",
+                "title": "Inne"
+              }
+            ],
+            "title": "Dziedzina",
+            "x-permissions": {
+              "Start": "editable",
+              "Repozytorium dokumentów": "editable",
+              "Zmiana statusu": "editable",
+              "Zmiany": "editable",
+              "Weryfikacja": "editable",
+              "Przygotowanie uchylenia": "editable",
+              "Uchylony": "readonly"
+            }
+          }
+        }
+      },
+      "title": "Czego dotyczy?",
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "editable",
+        "Zmiana statusu": "editable",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "editable",
+        "Uchylony": "readonly"
+      }
+    },
+    "Opinie": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "title": "Opinie",
+      "readOnly": true,
+      "x-permissions": {
+        "Start": "readonly",
+        "Repozytorium dokumentów": "readonly",
+        "Zmiana statusu": "readonly",
+        "Zmiany": "readonly",
+        "Weryfikacja": "readonly",
+        "Przygotowanie uchylenia": "readonly",
+        "Uchylony": "readonly"
+      }
+    },
+    "Chciałbyś coś zmienić?": {
+      "type": "string",
+      "title": "Chciałbyś coś zmienić?",
+      "x-permissions": {
+        "Start": "editable",
+        "Repozytorium dokumentów": "editable",
+        "Zmiana statusu": "editable",
+        "Zmiany": "editable",
+        "Weryfikacja": "editable",
+        "Przygotowanie uchylenia": "editable",
+        "Uchylony": "readonly"
+      }
+    }
+  }
+}

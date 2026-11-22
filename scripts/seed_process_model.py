@@ -1,46 +1,40 @@
 #!/usr/bin/env python3
 # coding: utf-8
 """
-Zakłada (albo aktualizuje i publikuje) ProcessModel z wszystkich plików
-.bpmn/*-schema.json/*-uischema.json jednego katalogu obiegu  - 
-ten sam mechanizm jednorazowego importu
-"ręcznie" co scripts/seed_edr_process.py (POST /process-models + .../publish
-to normalna droga przez API, zob. wf/routers/process_model_router.py), ale
-ogólny: bierze WSZYSTKIE pliki danego typu z katalogu, nie jedną ustaloną
-trójkę nazw, więc działa dla każdego obiegu w spiffworkflow/ bez zmian w
-kodzie.
+Synchronizacja modeli procesów z katalogu obiegów i (opcjonalnie) publikacja.
 
-Idempotentny: jeśli model o kluczu `--key` już istnieje i jego najnowsza
-wersja ma identyczny `content_hash` (te same pliki), nic nie robi (albo -
-jeśli ta wersja nie jest jeszcze opublikowana - tylko ją publikuje, nie
-tworzy duplikatu). Publikacja cofa poprzednio opublikowaną wersję (status
-`retired`), tak jak `POST .../versions/{id}/publish`.
+2026-11-22: oba tryby używają tej samej synchronizacji co przycisk
+„Synchronizuj z dysku” (wf/services/filesystem_sync.py) - wersja zawiera
+`process_model.json` z blokiem `galwork` / `metadata_extraction_paths`
+(kolumny listy, karta, rejestr jawny, słownik z rejestru) i szablony wydruku
+z biblioteki. Publikacja idzie przez wf/services/model_publication.py - tak
+samo jak `POST .../versions/{id}/publish` (przypięcie callActivity, wycofanie
+poprzedniej wersji, `published_by`, tag wydania, dziennik wdrożeń).
 
-Użycie (pojedynczy folder, z publikacją):
-    python3 scripts/seed_process_model.py spiffworkflow/kancelaria/proces-wysylania \
-        --key proces-wysylania --name "Proces wysyłania"
-    python3 scripts/seed_process_model.py spiffworkflow/slowniki/struktura/instytuty \
-        --key instytuty --name "Instytuty" --dry-run
+Klucz modelu pochodzi z `process_model.json` (`key`) albo z nazwy folderu -
+`--key` służy już tylko do kontroli: inny klucz niż w modelu to błąd (dawniej
+tworzył osobny model, np. `rejestr_systemow` obok `rejestr-systemow`).
 
- `--sync-all` - synchronizuje CAŁE drzewo spiffworkflow/ na
-raz (wf/services/filesystem_sync.py), zamiast jednego folderu na wywołanie.
-W przeciwieństwie do trybu pojedynczego folderu NIGDY nie publikuje -
-tworzy/aktualizuje tylko wersje `draft` (zob. docstring tamtego modułu).
-Ten sam kod stoi za przyciskiem "Synchronizuj z dysku" w galwork-dashboard
-(wf/routers/process_model_router.py::sync_process_models_from_disk).
+Jeden folder - synchronizacja i publikacja:
+    python3 scripts/seed_process_model.py spiffworkflow/kancelaria/proces-wysylania
+    python3 scripts/seed_process_model.py ../galwork-models/it/zarzadzanie-it/rejestr-systemow --dry-run
 
-    python3 scripts/seed_process_model.py --sync-all
-    python3 scripts/seed_process_model.py --sync-all --dry-run
-    python3 scripts/seed_process_model.py --sync-all --root spiffworkflow/kancelaria
+Całe drzewo (profil `[wf] process_profile`, katalog `[wf] process_files_dir`):
+    python3 scripts/seed_process_model.py --sync-all              # tylko szkice
+    python3 scripts/seed_process_model.py --sync-all --publish    # szkice + publikacja
+    python3 scripts/seed_process_model.py --sync-all --publish --dry-run
+    python3 scripts/seed_process_model.py --sync-all --profile galicea --publish
+
+`--publish` publikuje NAJNOWSZĄ wersję każdego modelu z zakresu, jeśli jest
+szkicem - także szkic z wcześniejszej synchronizacji. Modele z callActivity
+czekają, aż proces wywoływany zostanie opublikowany (kolejne przebiegi).
+Publikującym jest `--user` albo `[wf] system_user` (`[edr] system_user`).
 """
 from __future__ import annotations
 
 import argparse
-import hashlib
 import os
-import re
 import sys
-from datetime import UTC, datetime
 
 currentdir = os.path.dirname(os.path.abspath(__file__))
 parentdir = os.path.dirname(currentdir)
@@ -48,182 +42,136 @@ sys.path.insert(0, parentdir)
 
 from sqlalchemy import select  # noqa: E402
 
+from connector.base import BaseConnector  # noqa: E402
 from db.session import SessionLocal  # noqa: E402
-from wf.models import ProcessModel, ProcessModelFile, ProcessModelVersion  # noqa: E402
-from wf.schemas.wf_schemas import ProcessFileType, ProcessModelVersionStatus  # noqa: E402
-from wf.services.filesystem_sync import DEFAULT_ROOT, sync_all  # noqa: E402
-from wf.services.process_service import build_spec_json  # noqa: E402
-
-_BPMN_PROCESS_ID_RE = re.compile(r'<bpmn:process\b[^>]*\bid="([^"]+)"')
-
-
-def _file_type(file_name: str) -> ProcessFileType | None:
-    if file_name.endswith('.bpmn'):
-        return ProcessFileType.BPMN
-    if file_name.endswith('-uischema.json'):
-        return ProcessFileType.UI_SCHEMA
-    if file_name.endswith('-schema.json'):
-        return ProcessFileType.JSON_SCHEMA
-    return None
+from models.user import User  # noqa: E402
+from wf.models import ProcessModel, ProcessModelVersion  # noqa: E402
+from wf.schemas.wf_schemas import CurrentUser, ProcessModelVersionStatus  # noqa: E402
+from wf.services import model_publication, process_files  # noqa: E402
+from wf.services.filesystem_sync import _key_name_description, configured_profile, sync_all, sync_folder  # noqa: E402
+from wf.services.process_service import ProcessServiceError  # noqa: E402
 
 
-def _bpmn_process_id(content: str) -> str:
-    match = _BPMN_PROCESS_ID_RE.search(content)
-    if not match:
-        raise SystemExit('Nie znaleziono <bpmn:process id="..."> w pliku .bpmn')
-    return match.group(1)
+def _actor(db, login: str | None) -> CurrentUser:
+    """Publikujący: `--user` albo `[wf] system_user` / `[edr] system_user`."""
+    if not login:
+        for section in ('wf', 'edr'):
+            login = (BaseConnector.load_ini_section(section).get('system_user') or '').strip()
+            if login:
+                break
+    user = db.execute(select(User).where((User.name == login) | (User.email == login))
+                      ).scalars().first() if login else None
+    if user is None:
+        sys.exit('[seed_process_model] publikacja wymaga użytkownika: --user LOGIN albo '
+                 '[wf] system_user (nazwa lub e-mail z tabeli users)')
+    return CurrentUser(id=user.id, sub=user.keycloak_sub or 'sub-seed', username=user.name,
+                       email=user.email, display_name=user.name, groups=frozenset())
 
 
-def _load_files(folder: str) -> list[tuple[str, ProcessFileType, str]]:
-    if not os.path.isdir(folder):
-        raise SystemExit(f'Katalog nie istnieje: {folder}')
-    loaded = []
-    for file_name in sorted(os.listdir(folder)):
-        file_type = _file_type(file_name)
-        if file_type is None:
-            continue
-        with open(os.path.join(folder, file_name), encoding='utf-8') as f:
-            loaded.append((file_name, file_type, f.read()))
-    if not any(file_type == ProcessFileType.BPMN for _, file_type, _ in loaded):
-        raise SystemExit(f'Brak pliku .bpmn w {folder}')
-    return loaded
+def publish_drafts(db, keys: list[str], actor: CurrentUser | None, *, dry_run: bool) -> int:
+    """Publikuje najnowsze szkice modeli `keys`; zwraca liczbę błędów.
+    Kolejne przebiegi publikują modele, które czekały na proces wywoływany."""
+    pending = []
+    for key in dict.fromkeys(keys):
+        model = db.execute(select(ProcessModel).where(ProcessModel.key == key)).scalars().first()
+        version = model_publication.latest_version(db, model.id) if model else None
+        if version is not None and version.status == ProcessModelVersionStatus.DRAFT:
+            pending.append(version.id)
+        elif version is not None:
+            print(f"[publish] {'bez zmian':12s} {key} (wersja {version.version}: {version.status.value})")
+    if dry_run:
+        for version_id in pending:
+            version = db.get(ProcessModelVersion, version_id)
+            print(f"[publish] {'do publikacji':12s} {version.process_model.key} (wersja {version.version}, dry-run)")
+        return 0
+    errors: dict = {}
+    while pending:
+        progress, waiting = False, []
+        for version_id in pending:
+            version = db.get(ProcessModelVersion, version_id)
+            key = version.process_model.key
+            try:
+                warnings = model_publication.publish_version(db, version, actor)
+                db.commit()
+            except ProcessServiceError as exc:
+                db.rollback()
+                errors[version_id] = f'{key}: {exc}'
+                waiting.append(version_id)
+                continue
+            progress = True
+            errors.pop(version_id, None)
+            print(f"[publish] {'opublikowany':12s} {key} (wersja {version.version}"
+                  + (f", tag {version.git_tag}" if version.git_tag else '') + ')')
+            for warning in warnings:
+                print(f"[publish]   UWAGA: {warning}")
+        if not progress:
+            break
+        pending = waiting
+    for message in errors.values():
+        print(f"[publish] {'BŁĄD':12s} {message}")
+    return len(errors)
 
 
-def _content_hash(
-    files_content: list[tuple[str, ProcessFileType, str]]
-) -> tuple[str, list[tuple[str, ProcessFileType, str, str]]]:
-    """Jak create_process_model_version w process_model_router.py - sha256
-    per plik (UTF-8), content_hash = sha256 konkatenacji tych digestów (w
-    kolejności plików na dysku - nieistotne, bo liczone i porównywane tu
-    samo z sobą, konsekwentnie)."""
-    combined = hashlib.sha256()
-    with_sha: list[tuple[str, ProcessFileType, str, str]] = []
-    for file_name, file_type, content in files_content:
-        digest = hashlib.sha256(content.encode('utf-8')).hexdigest()
-        combined.update(digest.encode('ascii'))
-        with_sha.append((file_name, file_type, content, digest))
-    return combined.hexdigest(), with_sha
-
-
-def seed(folder: str, key: str, name: str, dry_run: bool = False) -> str:
-    files_content = _load_files(folder)
-    bpmn_content = next(content for _, file_type, content in files_content
-                        if file_type == ProcessFileType.BPMN)
-    bpmn_process_id = _bpmn_process_id(bpmn_content)
-    content_hash, with_sha = _content_hash(files_content)
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('folder', nargs='?', default=None,
+                        help='Katalog jednego obiegu (względem huba albo absolutny); bez --sync-all')
+    parser.add_argument('--key', default=None,
+                        help='Kontrola klucza: musi być równy kluczowi z process_model.json / nazwie folderu')
+    parser.add_argument('--name', default=None, help='(ignorowane - nazwa z process_model.json: display_name)')
+    parser.add_argument('--sync-all', action='store_true', help='Synchronizuj całe drzewo katalogu obiegów')
+    parser.add_argument('--publish', action='store_true',
+                        help='Z --sync-all: opublikuj najnowsze szkice modeli z zakresu')
+    parser.add_argument('--root', default=None,
+                        help='Katalog obiegów (domyślnie [wf] process_files_dir albo spiffworkflow/)')
+    parser.add_argument('--profile', default=None,
+                        help='Profil obiegów dla --sync-all, np. "galicea"; "-" = bez profilu. '
+                             'Domyślnie [wf] process_profile.')
+    parser.add_argument('--user', default=None, help='Publikujący (nazwa lub e-mail z tabeli users)')
+    parser.add_argument('--dry-run', action='store_true', help='Nic nie zapisuje, wypisuje co by się stało')
+    args = parser.parse_args()
+    root = os.path.realpath(args.root) if args.root else process_files.files_root()
 
     db = SessionLocal()
     try:
-        model = db.execute(select(ProcessModel).where(ProcessModel.key == key)).scalars().first()
-        if model is None:
-            print(f"[seed_process_model] model '{key}' nie istnieje - zakladam nowy" +
-                  (' (dry-run, bez zapisu)' if dry_run else ''))
-            if dry_run:
-                return 'would-create-model'
-            model = ProcessModel(key=key, name=name, description=f'Zaimportowane z {folder}')
-            db.add(model)
-            db.flush()
-
-        latest = db.execute(
-            select(ProcessModelVersion)
-            .where(ProcessModelVersion.process_model_id == model.id)
-            .order_by(ProcessModelVersion.version.desc())
-        ).scalars().first()
-
-        if latest is not None and latest.content_hash == content_hash:
-            if latest.status == ProcessModelVersionStatus.PUBLISHED:
-                print(f"[seed_process_model] model '{key}' juz aktualny "
-                      f"(wersja {latest.version}, opublikowana) - nic do zrobienia")
-                return 'unchanged'
-            version = latest
-            print(f"[seed_process_model] model '{key}' wersja {latest.version} "
-                  f"istnieje, ale nie jest opublikowana - publikuje" +
-                  (' (dry-run)' if dry_run else ''))
+        if args.sync_all:
+            profile = None if args.profile == '-' else (args.profile or configured_profile())
+            results = sync_all(db, root, dry_run=args.dry_run, profile=profile)
+            for result in results:
+                print(f"[sync_all] {result.status:20s} {result.key:30s} {result.folder}"
+                      + (f" ({result.detail})" if result.detail else ''))
+            failed = [r for r in results if r.status == 'error']
+            print(f"[sync_all] {len(results)} folderów, "
+                  f"{sum(1 for r in results if r.status in ('draft-created', 'would-create-draft', 'would-create-model'))}"
+                  f" ze zmianami, {len(failed)} z błędem" + (' (dry-run)' if args.dry_run else ''))
+            if not args.publish:
+                return 1 if failed else 0
+            keys = [r.key for r in results if r.status != 'error']
         else:
-            next_version = (latest.version if latest else 0) + 1
-            print(f"[seed_process_model] model '{key}': tworze wersje {next_version}" +
-                  (' (dry-run, bez zapisu)' if dry_run else ''))
-            if dry_run:
-                return 'would-create-version'
-            files = [ProcessModelFile(file_name=file_name, file_type=file_type,
-                                      content=content, sha256=sha)
-                     for file_name, file_type, content, sha in with_sha]
-            version = ProcessModelVersion(
-                process_model_id=model.id, version=next_version,
-                status=ProcessModelVersionStatus.DRAFT, bpmn_process_id=bpmn_process_id,
-                content_hash=content_hash, files=files,
-                spec_json=build_spec_json(
-                    (file_name, file_type, content) for file_name, file_type, content, _ in with_sha),
-            )
-            db.add(version)
-            db.flush()
-
-        if dry_run:
-            return 'would-publish'
-
-        previous = db.execute(
-            select(ProcessModelVersion).where(
-                ProcessModelVersion.process_model_id == model.id,
-                ProcessModelVersion.status == ProcessModelVersionStatus.PUBLISHED,
-                ProcessModelVersion.id != version.id,
-            )
-        ).scalars().first()
-        if previous is not None:
-            previous.status = ProcessModelVersionStatus.RETIRED
-            # flush przed publikacją nowej wersji - zob. ten
-            # sam komentarz w wf/routers/process_model_router.py
-            db.flush()
-
-        # 2026-11-13: przypięcie wersji procesów wywoływanych (callActivity).
-        from wf.services.process_service import ProcessServiceError, get_service
-        try:
-            for warning in get_service().pin_called_versions(db, version):
-                print(f"[seed_process_model] UWAGA: {warning}")
-        except ProcessServiceError as exc:
-            db.rollback()
-            print(f"[seed_process_model] model '{key}' NIE opublikowany: {exc}")
-            return 'error'
-
-        version.status = ProcessModelVersionStatus.PUBLISHED
-        version.published_at = datetime.now(UTC)
-        db.commit()
-        print(f"[seed_process_model] model '{key}' wersja {version.version} opublikowana.")
-        return 'published'
+            if not args.folder:
+                parser.error('podaj katalog obiegu albo --sync-all')
+            folder = args.folder if os.path.isabs(args.folder) else os.path.join(parentdir, args.folder)
+            folder = os.path.realpath(folder)
+            if not os.path.isdir(folder):
+                parser.error(f'katalog nie istnieje: {folder}')
+            key, _name, _description = _key_name_description(folder)
+            if args.key and args.key != key:
+                parser.error(f"--key '{args.key}' różni się od klucza modelu '{key}' "
+                             f"(process_model.json albo nazwa folderu) - powstałby osobny model")
+            result = sync_folder(db, folder, dry_run=args.dry_run,
+                                 root=root if folder.startswith(root + os.sep) else None)
+            print(f"[sync] {result.status:20s} {result.key:30s} {result.folder}"
+                  + (f" ({result.detail})" if result.detail else ''))
+            if result.status == 'error':
+                return 1
+            if not args.dry_run:
+                db.commit()
+            keys = [key]
+        actor = None if args.dry_run else _actor(db, args.user)
+        return 1 if publish_drafts(db, keys, actor, dry_run=args.dry_run) else 0
     finally:
         db.close()
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('folder', nargs='?', default=None,
-                        help='Katalog obiegu (wzgledem repo albo absolutny) - wymagany, '
-                             'jesli nie podano --sync-all')
-    parser.add_argument('--key', default=None, help='ProcessModel.key (wymagany bez --sync-all)')
-    parser.add_argument('--name', default=None, help='ProcessModel.name (domyslnie = --key)')
-    parser.add_argument('--sync-all', action='store_true',
-                        help='Synchronizuj cale drzewo (tylko draft, nigdy publish) '
-                             'zamiast jednego folderu.')
-    parser.add_argument('--root', default=DEFAULT_ROOT,
-                        help='Katalog startowy dla --sync-all (domyslnie spiffworkflow/).')
-    parser.add_argument('--dry-run', action='store_true',
-                        help='Nie zapisuje nic w bazie, tylko wypisuje co by sie stalo.')
-    args = parser.parse_args()
-
-    if args.sync_all:
-        db = SessionLocal()
-        try:
-            results = sync_all(db, args.root, dry_run=args.dry_run)
-        finally:
-            db.close()
-        for result in results:
-            print(f"[sync_all] {result.status:20s} {result.key:30s} {result.folder}"
-                 + (f" ({result.detail})" if result.detail else ""))
-        changed = sum(1 for r in results if r.status in ('draft-created', 'would-create-draft',
-                                                          'would-create-model'))
-        print(f"[sync_all] {len(results)} folderow, {changed} ze zmianami"
-             + (' (dry-run)' if args.dry_run else ''))
-    else:
-        if not args.folder or not args.key:
-            parser.error('folder i --key sa wymagane, jesli nie podano --sync-all')
-        target_folder = args.folder if os.path.isabs(args.folder) else os.path.join(parentdir, args.folder)
-        seed(target_folder, args.key, args.name or args.key, dry_run=args.dry_run)
+    raise SystemExit(main())

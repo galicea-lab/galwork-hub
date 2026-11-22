@@ -98,9 +98,9 @@ class ProcessInstanceStatus(StrEnum):
 
 
 class PurchaseExpenseType(StrEnum):
-    """Rodzaj wydatku wniosku zakupowego (`PurchaseRequest.expense_type`) -
-    zob. wf/models/wf.py::PurchaseRequest i galwork-book,
-    czesc-3-obszary/dzialy/zakupy.md ("Reguły akceptacji"). Inwestycja
+    """2026-11-18: Rodzaj wydatku wniosku zakupowego (`PurchaseRequest.expense_type`) -
+    zob. wf/models/wf.py::PurchaseRequest i galwork-models-book,
+    obszary/dzialy/zakupy.md ("Reguły akceptacji"). Inwestycja
     wymaga dodatkowej akceptacji niezależnie od kwoty."""
     OPERATING = "operating"
     INVESTMENT = "investment"
@@ -188,6 +188,16 @@ class EventType(StrEnum):
     # 2026-11-13: instancje uruchamiane przez inne (sendTask/szybka akcja)
     CHILD_INSTANCE_STARTED = "child_instance_started"
     CHILD_INSTANCE_FAILED = "child_instance_failed"
+    # 2026-11-17:  `startOnce` - instancja tego modelu już istnieje
+    CHILD_INSTANCE_SKIPPED = "child_instance_skipped"
+    # 2026-11-17:  akty - relacja "zmienia"/"uchyla" (wf/services/legal_acts.py)
+    DOCUMENT_RELATION_ADDED = "document_relation_added"
+    # 2026-11-17:  wdrożenia obiegów (wf/services/rollouts.py)
+    ROLLOUT_CHANGED = "rollout_changed"
+    ROLLOUT_MISSING = "rollout_missing"
+    ROLLOUT_VERSION_PUBLISHED = "rollout_version_published"
+    # 2026-11-17:  link do dyskusji w komunikatorze (wf/services/discussions.py)
+    DISCUSSION_LINKED = "discussion_linked"
     # 2026-11-13: kroki systemowe (serviceTask z `handler`)
     SERVICE_TASK_COMPLETED = "service_task_completed"
     SERVICE_TASK_FAILED = "service_task_failed"
@@ -219,6 +229,11 @@ class CurrentUser(BaseModel):
     @property
     def acting_user_ids(self) -> frozenset[int]:
         return self.substituting_for | {self.id}
+
+
+# kontrakt uprawnień zwracany przez GET /v1/wf/me/permissions.
+class WfPermissions(BaseModel):
+    can_create_act: bool
 
 
 class UserSummary(ReadModel):
@@ -371,8 +386,12 @@ class ProcessModelVersionRead(ReadModel):
     bpmn_process_id: str
     content_hash: Sha256
     published_at: datetime | None
-    published_by: UUID | None
+    published_by: int | None   # 2026-11-17:  users.id (było UUID, kolumna to int)
     created_at: datetime
+    # 2026-11-17:  pochodzenie wersji z gita i tag wydania
+    git_commit: str | None = None
+    git_dirty: bool | None = None
+    git_tag: str | None = None
     files: list[ProcessModelFileRead] = []
     # 2026-11-13: ostrzeżenia publikacji (np. proces wywoływany przez
     # callActivity bez ioSpecification dostaje wszystkie dane rodzica).
@@ -391,6 +410,21 @@ class ProcessInstanceCreate(InputModel):
     document_ids: list[UUID] = Field(default_factory=list)  # dokumenty dołączone na starcie
 
 
+class ProcessRolloutRead(ReadModel):
+    id: UUID
+    process_model_id: UUID
+    mode: str
+    org_unit_ids: list[str] = []
+    valid_from: date
+    valid_to: date | None
+    act_document_id: UUID
+    act_version_no: int
+    previous_procedure: str | None
+    process_instance_id: UUID | None
+    created_at: datetime
+    closed_at: datetime | None
+    close_reason: str | None
+
 class ProcessInstanceRead(ReadModel):
     id: UUID
     process_model_version_id: UUID
@@ -400,6 +434,8 @@ class ProcessInstanceRead(ReadModel):
     title: str
     status: ProcessInstanceStatus
     summary: JsonDict
+    # 2026-11-22: kolumny listy (`metadata_extraction_paths` wersji modelu)
+    metadata: JsonDict = Field(default_factory=dict, validation_alias=AliasChoices('extracted_metadata', 'metadata'))
     started_by: UserSummary | None
     started_at: datetime
     completed_at: datetime | None
@@ -411,6 +447,9 @@ class ProcessInstanceRead(ReadModel):
     parent_task_id: UUID | None = None
     # 2026-11-13: krok systemowy czeka na wynik - kolejne sprawdzenie
     next_wakeup_at: datetime | None = None
+    # 2026-11-17:  tryb użycia obiegu w chwili startu (test/auxiliary/production)
+    usage_mode: str | None = None
+    rollout: ProcessRolloutRead | None = None
 
 
 class ProcessInstanceFilter(Pagination):
@@ -569,6 +608,8 @@ class DocumentVersionRead(ReadModel):
     uploaded_by: UserSummary
     uploaded_at: datetime
     human_task_id: UUID | None
+    # 2026-11-17:  data wejścia w życie redakcji aktu (wf/services/legal_acts.py)
+    effective_from: date | None = None
 
     @property
     def is_available(self) -> bool:
@@ -613,6 +654,46 @@ class ProcessInstanceDocumentRead(ReadModel):
     document: DocumentRead
     role: DocumentLinkRole
     added_at: datetime
+
+
+# -BEGIN 2026-11-17: akty wewnętrzne - status prawny na dzień (wf/services/legal_acts.py)
+class ActRelationRead(ReadModel):
+    document_id: UUID
+    title: str
+    number: str | None
+    relation_type: str
+    effective_from: date
+    target_version_no: int | None
+
+
+class ActVersionRead(ReadModel):
+    version_no: int
+    effective_from: date | None
+    valid_to: date | None
+    file_name: str
+    sha256: Sha256
+    label: str | None
+    sealed: bool
+
+
+class ActStateRead(ReadModel):
+    document_id: UUID
+    title: str
+    number: str | None
+    on: date
+    status_code: str
+    status: str
+    status_manual: bool
+    valid_version_no: int | None
+    valid_from: date | None
+    valid_to: date | None
+    repository_instance_id: UUID | None
+    versions: list[ActVersionRead] = []
+    amended_by: list[ActRelationRead] = []
+    repealed_by: ActRelationRead | None = None
+    amends: list[ActRelationRead] = []
+    repeals: list[ActRelationRead] = []
+# -END
 
 
 # ---------------------------------------------------------------------
@@ -969,8 +1050,8 @@ class ContactPage(BaseModel):
 
 
 # ---------------------------------------------------------------------
-# 2026-10-20: Wniosek zakupowy (wf/models/wf.py::PurchaseRequest) - zob.
-# galwork-book, czesc-3-obszary/dzialy/zakupy.md. `*Create` niesie tylko
+# 2026-11-18: 2026-10-20: Wniosek zakupowy (wf/models/wf.py::PurchaseRequest) - zob.
+# galwork-models-book, obszary/dzialy/zakupy.md. `*Create` niesie tylko
 # pola, które wypełnia zamawiający - `requires_*` liczy
 # wf/services/purchase_request_service.py (nie klient), `status` czyta się
 # z `ProcessInstanceRead` powiązanej instancji (zob. docstring modelu).
@@ -1166,6 +1247,23 @@ class PrintOptionList(BaseModel):
     items: list[PrintOptionRead]
 
 
+# 2026-11-22 (H4): karta obiektu - GET /process-instances/{id}/record
+class ProcessInstanceRecordRead(BaseModel):
+    instance_id: UUID
+    process_model_key: str | None = None
+    title: str
+    status: ProcessInstanceStatus
+    record_step: str | None = None          # krok `x-permissions` karty
+    has_form: bool = False                  # False - klient pokazuje przebieg sprawy
+    json_schema: JsonDict = Field(default_factory=dict)   # tylko do odczytu
+    ui_schema: JsonDict = Field(default_factory=dict)
+    form_data: JsonDict = Field(default_factory=dict)     # bieżące dane, tylko pola schematu
+    metadata: JsonDict = Field(default_factory=dict)
+    edit_task_id: UUID | None = None        # zadanie `galwork.edit_step` dla użytkownika
+    edit_task_name: str | None = None
+    prints: list[PrintOptionRead] = Field(default_factory=list)
+
+
 class PrintArchiveRequest(InputModel):
     task_id: UUID | None = None
     template: str | None = None
@@ -1188,3 +1286,26 @@ class PrintPreviewRequest(InputModel):
 
 # Rozwiązanie referencji w przód (TaskFormRead → DocumentRead)
 TaskFormRead.model_rebuild()
+
+
+# -BEGIN 2026-11-17: dyskusje o sprawie w komunikatorze (wf/services/discussions.py)
+class DiscussionCreate(InputModel):
+    url: Annotated[str, StringConstraints(min_length=8, max_length=2000)]
+    title: Annotated[str, StringConstraints(max_length=300)] | None = None
+    task_id: UUID | None = None
+
+
+class DiscussionRead(ReadModel):
+    id: UUID
+    human_task_id: UUID | None
+    url: str
+    title: str | None
+    created_by: UserSummary
+    created_at: datetime
+
+
+class DiscussionList(BaseModel):
+    provider: str
+    start_url: str | None = None
+    items: list[DiscussionRead] = []
+# -END

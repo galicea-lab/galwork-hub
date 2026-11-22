@@ -44,7 +44,6 @@ from __future__ import annotations
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from api.dependencies import get_db
@@ -66,13 +65,10 @@ router = APIRouter(prefix="/signius", tags=["signius"])
 CORRESPONDENCE_DOCTYPE = "Student Correspondence"
 
 
-def _get_instance_or_404(db: Session, instance_id: UUID) -> ProcessInstance:
-    instance = db.execute(
-        select(ProcessInstance).where(ProcessInstance.id == instance_id)
-    ).scalars().first()
-    if instance is None:
-        raise HTTPException(status_code=404, detail="Instancja procesu nie znaleziona")
-    return instance
+def _get_instance_or_404(db: Session, instance_id: UUID, user: CurrentUser) -> ProcessInstance:
+    # 2026-11-22: 403, gdy użytkownik nie widzi sprawy (instance_access.can_view)
+    from wf.services.instance_access import get_visible_instance
+    return get_visible_instance(db, instance_id, user, write=True)
 
 
 def _business_key_or_409(instance: ProcessInstance) -> str:
@@ -145,7 +141,7 @@ def request_signature(
     identyfikator trzymany we Frappe jako `signius_folder_id`) - prostsze
     niż współdzielenie folderu między sprawami, kosztem większej liczby
     folderów po stronie Signius."""
-    instance = _get_instance_or_404(db, instance_id)
+    instance = _get_instance_or_404(db, instance_id, current_user)
     business_key = _business_key_or_409(instance)
     doc = _get_correspondence_or_404(business_key)
 
@@ -212,7 +208,7 @@ def check_signature_status(
     """Odpytuje Signius o status (brak webhooka w tym API) i - jeśli dokument
     jest już podpisany - ściąga podpisany PDF i odkłada go we Frappe
     (`signed_document`), zamykając pętlę podpisu."""
-    instance = _get_instance_or_404(db, instance_id)
+    instance = _get_instance_or_404(db, instance_id, current_user)
     business_key = _business_key_or_409(instance)
     doc = _get_correspondence_or_404(business_key)
 

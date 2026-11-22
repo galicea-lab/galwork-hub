@@ -1,0 +1,86 @@
+{#-  roczny plan pracy w obszarze cyfryzacji - cele strategiczne, zadania, mierniki, budżet, odniesienia do dokumentów strategicznych i podpisy zatwierdzające. -#}
+{#- Obieg: cyfryzacja/strategia/definicja-planu-rocznego | krok: Task_02 "Końcowy (pozytywny)" | formularz: definicja-planu-rocznego-fplan-schema.json | priorytet: C #}
+{% extends "_wzory/karta.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set dane = f if (f is defined and f) else {} -%}
+
+{%- set dzial = m.w(dane, "Dane identyfikacyjne", "Dział") | trim -%}
+{%- set rok = m.w(dane, "Dane identyfikacyjne", "Rok") | trim -%}
+
+{%- set plan = [] -%}
+{%- for pozycja in (dane.get("Plan pracy") or []) -%}
+{%- if pozycja is mapping -%}
+{%- set wiersz = {"Lp": loop.index} -%}
+{%- for klucz, wartosc in pozycja.items() -%}
+{%- set _ = wiersz.update({klucz: wartosc if wartosc is not none else ''}) -%}
+{%- endfor -%}
+{%- set _ = plan.append(wiersz) -%}
+{%- endif -%}
+{%- endfor -%}
+
+{%- set tytul = "PLAN ROCZNY" -%}
+{%- set podtytul = "plan pracy w obszarze cyfryzacji na rok " ~ (rok or "……") -%}
+{%- set klasa = "karta" -%}
+
+{%- set wstep = "Plan roczny na rok " ~ (rok or "……")
+     ~ (" dla jednostki " ~ dzial if dzial else "")
+     ~ " określa cele strategiczne i operacyjne w obszarze cyfryzacji Uczelni, zadania służące ich realizacji, mierniki stopnia osiągnięcia celów oraz planowane koszty. Plan sporządzono w nawiązaniu do dokumentów strategicznych Uczelni i zadań ujętych w planie rzeczowo-finansowym." -%}
+
+{%- set dane_identyfikacyjne = [
+     ("Dane identyfikacyjne", "Dział", "Jednostka opracowująca plan"),
+     ("Dane identyfikacyjne", "Rok", "Rok planu")] -%}
+
+{%- set dane_formalne = [
+     ("Plan przekazany do zaopiniowania w dniu", ''),
+     ("Plan zatwierdzony w dniu", ''),
+     ("Numer rejestru planów rocznych", '')] -%}
+
+{% block tresc_karty %}
+{{ m.sekcja("Cel i zakres planu") }}
+<p>Celem planu rocznego jest zaplanowanie działań Uczelni w obszarze cyfryzacji, w tym rozwoju systemów informatycznych, bezpieczeństwa informacji, infrastruktury teleinformatycznej oraz kompetencji cyfrowych pracowników. Plan obejmuje zadania finansowane ze środków własnych Uczelni oraz zadania współfinansowane ze źródeł zewnętrznych, dla których wskazano odrębne elementy planu (PSP).</p>
+<p>Plan jest dokumentem wewnętrznym Uczelni, służącym monitorowaniu realizacji celów strategicznych oraz ocenie efektywności wydatkowanych środków w cyklu rocznym. Realizacja planu podlega przeglądowi po zakończeniu każdego kwartału.</p>
+
+{{ m.sekcja("Cele, zadania i mierniki") }}
+{{ m.tabela_pol(plan, [
+     ("Lp", "Lp"),
+     ("Cel strategiczny / cele operacyjne", "Cel strategiczny / cele operacyjne"),
+     ("Najważniejsze zadania służące realizacji celu", "Najważniejsze zadania służące realizacji celu"),
+     ("Wskaźnik określający stopień osiągnięcia celu", "Wskaźnik osiągnięcia celu"),
+     ("Planowana wartość wskaźnika na koniec okresu", "Planowana wartość wskaźnika na koniec okresu")], 'kompaktowa') }}
+
+{{ m.sekcja("Budżet i realizacja") }}
+{{ m.tabela_pol(plan, [
+     ("Lp", "Lp"),
+     ("Cel strategiczny / cele operacyjne", "Cel strategiczny / cele operacyjne"),
+     ("Planowane koszty w zł", "Planowane koszty (w zł)"),
+     ("Element PSP", "Element PSP"),
+     ("Realizacja", "Realizacja"),
+     ("Uwagi", "Uwagi")], 'kompaktowa') }}
+<p class="drobny">Koszty planowane wykazuje się w złotych. Zadania, dla których wskazano element PSP, są ewidencjonowane w planie rzeczowo-finansowym Uczelni w odpowiedniej kategorii księgowej.</p>
+
+{{ m.sekcja("Odniesienia do dokumentów strategicznych") }}
+{{ m.tabela_pol(plan, [
+     ("Lp", "Lp"),
+     ("Cel strategiczny / cele operacyjne", "Cel strategiczny / cele operacyjne"),
+     ("Odniesienia do dokumentu/ów o charakterze strategi", "Odniesienie do dokumentu o charakterze strategicznym"),
+     ("Realizacja", "Realizacja")], 'kompaktowa') }}
+{% endblock %}
+
+{% block podsumowanie %}
+{{ m.sekcja("Podsumowanie planu") }}
+<p>Plan roczny obejmuje {{ plan | length }} pozycji planu pracy, dla których wskazano cel strategiczny lub operacyjny, zadania służące jego realizacji, miernik osiągnięcia celu oraz planowaną wartość miernika na koniec okresu. Dla każdej pozycji wskazano planowane koszty w złotych oraz – w uzasadnionych przypadkach – element planu (PSP), w którym wydatek jest ewidencjonowany.</p>
+<p>Realizację planu ocenia się na koniec okresu planowania przez porównanie osiągniętych wartości mierników z wartościami planowanymi oraz przez porównanie poniesionych kosztów z kosztami planowanymi.</p>
+{% endblock %}
+
+{% block uwagi %}
+{{ m.sekcja("Monitorowanie i aktualizacja planu") }}
+<p>Monitorowanie realizacji planu prowadzi jednostka wskazana w danych identyfikacyjnych planu, we współpracy z Kwestorem w zakresie zgodności wydatków z planem rzeczowo-finansowym. Ocena realizacji celów następuje na podstawie wartości mierników osiągniętych na koniec okresu planowania.</p>
+<p>Aktualizacja planu rocznego jest dopuszczalna w przypadku zmiany priorytetów strategicznych Uczelni, zmiany wysokości środków przeznaczonych na zadania oraz wystąpienia okoliczności niezależnych od Uczelni, które uniemożliwiają realizację zaplanowanych zadań. Aktualizacja wymaga zatwierdzenia przez Rektora.</p>
+{% endblock %}
+
+{% block podpisy %}
+{{ m.podpisy([
+     ("Sporządził – kierownik jednostki", '', data),
+     ("Zaopiniował – Kwestor", '', data),
+     ("Zatwierdził – Rektor", '', data)]) }}
+{% endblock %}

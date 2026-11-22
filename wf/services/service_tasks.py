@@ -28,7 +28,13 @@ from wf.schemas.wf_schemas import CurrentUser
 DEFAULT_RETRY = timedelta(minutes=15)
 
 # moduły z wbudowaną obsługą - importowane leniwie (bez cyklu importów)
-_BUILTIN_MODULES = ('wf.services.signing_service', 'wf.services.edu_service_tasks')
+_BUILTIN_MODULES = ('wf.services.signing_service', 'wf.services.edu_service_tasks',
+                    'wf.services.seal_service_tasks',  # pieczec.dokument
+                    'wf.services.legal_acts',  # akty.*
+                    'wf.services.rollouts',  # obiegi.wdrozenie
+                    'wf.services.purchase_invoice_flow',  # 2026-11-22: erpnext.faktura_*
+                    # 2026-11-21: pm.week_snapshot, pm.apply_triage, erpnext.timesheet_submit
+                    'pm.integrations.taiga.process_tasks')
 
 
 class ServiceTaskError(RuntimeError):

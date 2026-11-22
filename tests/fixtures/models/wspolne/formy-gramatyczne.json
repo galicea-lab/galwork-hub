@@ -1,0 +1,213 @@
+{
+  "opis": "formy słów do pism dla pola \"Forma gramatyczna\" (K/M), które zastąpiło osobne pola wyboru formy. Klucz = tytuł dawnego pola; stare_kody = dawne wartości const tego pola -> K/M (do przepisania zapisanych danych).",
+  "pola": {
+    "Pan/Pani": {
+      "K": "Pani",
+      "M": "Pan",
+      "stare_kody": {
+        "0": "K",
+        "1": "M"
+      }
+    },
+    "Student/Studentka": {
+      "K": "Studentka",
+      "M": "Student",
+      "stare_kody": {
+        "1": "K",
+        "2": "M"
+      }
+    },
+    "Pana/Pani": {
+      "K": "Pani",
+      "M": "Pan",
+      "stare_kody": {
+        "0": "K",
+        "1": "M"
+      }
+    },
+    "Zamieszkałego/ą": {
+      "K": "zamieszkałą",
+      "M": "zamieszkałego",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Pana/Panią": {
+      "K": "Panią",
+      "M": "Pana",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Dostarczył/a": {
+      "K": "dostarczyła",
+      "M": "dostarczył",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Uczestniczył/a": {
+      "K": "uczestniczyła",
+      "M": "uczestniczył",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Złożył/a": {
+      "K": "złożyłam",
+      "M": "złożyłem",
+      "stare_kody": {
+        "0": "M",
+        "1": "K"
+      }
+    },
+    "Uzyskał/a": {
+      "K": "uzyskała",
+      "M": "uzyskał",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Zobowiązał/a": {
+      "K": "zobowiązała",
+      "M": "zobowiązał",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Zaliczył/a": {
+      "K": "zaliczyła",
+      "M": "zaliczył",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Zgłosił/a": {
+      "K": "zgłosiła",
+      "M": "zgłosił",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Otrzymał/otrzymała": {
+      "K": "otrzymała",
+      "M": "otrzymał",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Wywiązał/a": {
+      "K": "wywiązała",
+      "M": "wywiązał",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Podejmował/a": {
+      "K": "podejmowała",
+      "M": "podejmował",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Składał/a": {
+      "K": "składała",
+      "M": "składał",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Przystąpił/a": {
+      "K": "przystąpiła",
+      "M": "przystąpił",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Został/a": {
+      "K": "została",
+      "M": "został",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Panu/Pani": {
+      "K": "Pani",
+      "M": "Panu",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Urodzona/y": {
+      "K": "urodzona",
+      "M": "urodzony",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Szanowny(a)": {
+      "K": "Szanowna Pani",
+      "M": "Szanowny Panie",
+      "stare_kody": {
+        "0": "K",
+        "1": "M"
+      }
+    },
+    "Złożyłem/am": {
+      "K": "złożyłam",
+      "M": "złożyłem",
+      "stare_kody": {
+        "0": "M",
+        "1": "K"
+      }
+    },
+    "Skreślony/skreślona": {
+      "K": "skreślona",
+      "M": "skreślony",
+      "stare_kody": {
+        "0": "M",
+        "1": "K"
+      }
+    },
+    "Uzyskałem/-am": {
+      "K": "uzyskała",
+      "M": "uzyskał",
+      "stare_kody": {
+        "1": "M",
+        "2": "K"
+      }
+    },
+    "Jest studentem/studentką": {
+      "K": "studentką",
+      "M": "studentem",
+      "stare_kody": {
+        "0": "M",
+        "1": "K"
+      }
+    },
+    "Zostałem/zostałam": {
+      "K": "zostałam",
+      "M": "zostałem",
+      "stare_kody": {
+        "0": "M",
+        "1": "K"
+      }
+    }
+  }
+}

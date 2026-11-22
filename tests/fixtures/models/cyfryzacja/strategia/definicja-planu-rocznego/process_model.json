@@ -1,0 +1,9 @@
+{
+    "description": "Definicja Planu Rocznego",
+    "display_name": "Definicja Planu Rocznego",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "definicja-planu-rocznego.bpmn",
+    "primary_process_id": "Process_Definicja_Planu_Rocznego"
+}

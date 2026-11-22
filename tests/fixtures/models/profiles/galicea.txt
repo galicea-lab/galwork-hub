@@ -1,0 +1,17 @@
+# Profil obiegów Fundacji Galicea ([wf] process_profile=galicea).
+# Wiersze według faz sekcji (galwork-dev-jw/wdrozenia/galicea/SCENARIUSZE.md):
+# kolejna faza dopisuje swoje modele pod nagłówkiem fazy. Jeden wzorzec na
+# wiersz: ścieżka względna do katalogu obiegów, glob (*), "katalog/**".
+
+# IT.1 Inwentaryzacja systemów i usług (sekcja /it)
+it/zarzadzanie-it/rejestr-systemow
+slowniki/it/domeny
+
+# REG.1 Repozytorium aktów (sekcja /regulations) - uchwały Zarządu
+regulacje/dokumenty
+
+# PRJ.1 Rozliczanie pracy (galwork-pm) - przegląd tygodnia
+projekty/przeglad-tygodnia
+
+# ZAK.1 KSeF i faktura zakupu (sekcja /zakupy) - obieg uruchamiany informacją z ERPNext
+zakupy/faktura-zakupu

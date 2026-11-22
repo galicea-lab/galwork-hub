@@ -1,0 +1,68 @@
+{#- Wzorzec: decyzja administracyjna (rektor, dziekan, dyrektor instytutu). -#}
+{#-  wspólny układ decyzji: podstawa prawna, formuła rozstrzygająca,
+    uzasadnienie, pouczenie, podpis organu, klauzula RODO. -#}
+{% extends "_base/strona.html.j2" %}
+{% import "_base/makra.j2" as m %}
+{%- set klasa = klasa | default('decyzja', true) -%}
+{%- set organ = organ | default('Rektor', true) -%}
+{%- set organ_dop = organ_dop | default('Rektora', true) -%}
+{%- set tytul = tytul | default('DECYZJA', true) -%}
+{%- set pouczenie_typ = pouczenie_typ | default('rektor', true) -%}
+
+{% block adresat %}
+{%- if adresat_linie %}
+{{ m.adresat(adresat_linie) }}
+{%- endif %}
+{% endblock %}
+
+{% block lead %}
+<p class="lead">{% block podstawa %}Na podstawie art. 104 ustawy z dnia 14 czerwca 1960 r. – Kodeks postępowania administracyjnego (Dz. U. z 2024 r. poz. 572 z późn. zm.) oraz Regulaminu studiów obowiązującego w Uczelni, po rozpatrzeniu wniosku strony,{% endblock %}</p>
+{% endblock %}
+
+{% block tresc %}
+{{ self.rozstrzygniecie() }}
+{{ m.sekcja("Uzasadnienie") }}
+{{ self.uzasadnienie() }}
+{% endblock %}
+
+{% block rozstrzygniecie %}
+{{ m.formula(formula | default('o r z e k a m')) }}
+{{ subject | default('') }}
+{% endblock %}
+
+{% block uzasadnienie %}
+<p>{{ uzasadnienie | default('') }}</p>
+{% endblock %}
+
+{% block pouczenie %}
+<section class="pouczenie">
+{{ m.sekcja("Pouczenie") }}
+{%- if pouczenie_typ == 'dziekan' %}
+<p>Od niniejszej decyzji służy stronie odwołanie do Rektora za pośrednictwem Dziekana Wydziału, w terminie 14 dni od dnia doręczenia decyzji stronie (art. 127 § 1 i 2 ustawy – Kodeks postępowania administracyjnego). Odwołanie wnosi się w formie pisemnej lub w formie dokumentu elektronicznego.</p>
+{%- else %}
+<p>Od niniejszej decyzji stronie służy prawo złożenia wniosku o ponowne rozpatrzenie sprawy do {{ organ_dop }} w terminie 14 dni od dnia jej doręczenia (art. 127 § 3 ustawy – Kodeks postępowania administracyjnego). Jeżeli strona nie złoży wniosku o ponowne rozpatrzenie sprawy, może wnieść skargę do Wojewódzkiego Sądu Administracyjnego w terminie 30 dni od dnia doręczenia decyzji, za pośrednictwem {{ organ_dop }} (art. 53 § 1 ustawy – Prawo o postępowaniu przed sądami administracyjnymi).</p>
+{%- endif %}
+<p>Zgodnie z art. 130 § 1 i 2 k.p.a. decyzja podlega wykonaniu po upływie terminu do wniesienia odwołania (wniosku o ponowne rozpatrzenie sprawy) albo po jego bezskutecznym upływie. W trakcie biegu terminu do wniesienia odwołania strona może zrzec się prawa do odwołania.</p>
+<p>Decyzję uważa się za doręczoną w dniu wskazanym w dowodzie doręczenia. Datę otrzymania decyzji strona potwierdza własnoręcznym podpisem w przeznaczonym do tego miejscu.</p>
+</section>
+{% endblock %}
+
+{% block adnotacje %}
+{{ m.adnotacje([
+  ("Data doręczenia decyzji stronie", doręczenie_data | default('')),
+  ("Potwierdzenie odbioru (podpis strony)", ''),
+]) }}
+{% endblock %}
+
+{% block podpisy %}
+{{ m.podpisy([(organ | default('Rektor'), osoba_podpisujaca | default(''), data | default(''))], 'pionowo') }}
+<p class="pieczec">(pieczęć urzędowa i podpis {{ organ | lower }})</p>
+{% endblock %}
+
+{% block rodo %}
+{{ m.klauzula_rodo(uczelnia, miejscowosc_m,
+   cel=rodo_cel | default('rozpatrzenie sprawy i wydanie decyzji administracyjnej w sprawach studenckich oraz prowadzenie dokumentacji przebiegu studiów'),
+   podstawa=rodo_podstawa | default('art. 6 ust. 1 lit. c i e RODO w związku z ustawą – Prawo o szkolnictwie wyższym i nauce oraz Regulaminem studiów obowiązującym w Uczelni'),
+   iod=iod | default('iod@uczelnia.pl'),
+   dobrowolnosc=rodo_dobrowolnosc | default('podanie danych jest dobrowolne, jednak niezbędne do rozpatrzenia sprawy; niepodanie danych uniemożliwi wydanie decyzji')) }}
+{% endblock %}

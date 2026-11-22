@@ -1,0 +1,150 @@
+{
+  "ui:order": [
+    "Data rejestracji",
+    "Kto zarejestrował",
+    "Szczegóły dokumentu",
+    "Dystrybucja",
+    "Analiza prawna"
+  ],
+  "Data rejestracji": {
+    "ui:readonly": true
+  },
+  "Kto zarejestrował": {
+    "ui:readonly": true,
+    "ui:widget": "AsyncSelectWidget",
+    "ui:options": {
+      "endpoint": "/v1/wf/users",
+      "sourceName": "<Użytkownicy i grupy>",
+      "sourceType": "Kartoteka Użytkowników"
+    }
+  },
+  "Szczegóły dokumentu": {
+    "ui:order": [
+      "Tytuł",
+      "Kto redaguje",
+      "Kogo obowiązuje",
+      "Od kiedy obowiązuje",
+      "Zmienia akty",
+      "Uchyla akty",
+      "Termin do",
+      "Opinia merytoryczna",
+      "Data wydania",
+      "Dział",
+      "Nr dokumentu",
+      "Słowa kluczowe",
+      "Status",
+      "Typ dokumentu",
+      "Uwagi",
+      "Wybór osoby"
+    ],
+    "Tytuł": {
+      "ui:widget": "textarea"
+    },
+    "Uwagi": {
+      "ui:widget": "textarea"
+    },
+    "Kto redaguje": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Kogo obowiązuje": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Opinia merytoryczna": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Słowa kluczowe": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/slowa-kluczowe",
+        "sourceName": "Słowa kluczowe dokumentów"
+      }
+    },
+    "Typ dokumentu": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/dictionaries/typ-dokumentu",
+        "sourceName": "Typ dokumentu",
+        "sourceType": "Baza MSSQL"
+      }
+    },
+    "Wybór osoby": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    },
+    "Zmienia akty": {
+      "items": {
+        "ui:widget": "AsyncSelectWidget",
+        "ui:options": {
+          "endpoint": "/v1/wf/acts",
+          "sourceName": "Akty wewnętrzne",
+          "sourceType": "Repozytorium dokumentów"
+        }
+      },
+      "ui:options": {
+        "addable": true
+      }
+    },
+    "Uchyla akty": {
+      "items": {
+        "ui:widget": "AsyncSelectWidget",
+        "ui:options": {
+          "endpoint": "/v1/wf/acts",
+          "sourceName": "Akty wewnętrzne",
+          "sourceType": "Repozytorium dokumentów"
+        }
+      },
+      "ui:options": {
+        "addable": true
+      }
+    },
+    "Od kiedy obowiązuje": {
+      "ui:help": "Data wejścia w życie - od niej obowiązuje treść aktu oraz zmiany i uchylenia wskazanych aktów"
+    }
+  },
+  "Dystrybucja": {
+    "ui:order": [
+      "Powiadom osoby"
+    ],
+    "Powiadom osoby": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  },
+  "Analiza prawna": {
+    "ui:order": [
+      "Akceptacja pod względem prawnym",
+      "Data akceptacji prawnej"
+    ],
+    "Akceptacja pod względem prawnym": {
+      "ui:widget": "AsyncSelectWidget",
+      "ui:options": {
+        "endpoint": "/v1/wf/users",
+        "sourceName": "<Użytkownicy i grupy>",
+        "sourceType": "Kartoteka Użytkowników"
+      }
+    }
+  }
+}

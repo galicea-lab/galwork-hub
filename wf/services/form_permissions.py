@@ -294,3 +294,152 @@ def filter_form_for_step(schema: Mapping[str, Any], ui_schema: Mapping[str, Any]
         else:
             filtered_schema.pop(DEFS_KEY)
     return filtered_schema or {"type": "object", "properties": {}}, filtered_ui
+
+
+# -BEGIN 2026-11-19
+# Dane formularza wg kroku. Filtr wyżej przycina tylko schemat, a dane
+# zadania (`form_data`) zawierają wartości wszystkich pól procesu. Pole
+# ukryte w kroku (`none`) nie może trafić do przeglądarki, a pola ukrytego
+# albo tylko do odczytu (`readonly`) nie może nadpisać wysłany formularz.
+#
+# Porównujemy schemat pełny z przefiltrowanym dla kroku: pole opisane
+# w pełnym schemacie, którego nie ma w przefiltrowanym, jest ukryte.
+# Klucze, których schemat w ogóle nie opisuje (zmienne procesu spoza
+# formularza, np. `chosen_path`), przechodzą bez zmian.
+
+
+def _resolve_node(node: Any, defs: Mapping[str, Any]) -> Mapping[str, Any]:
+    """Węzeł albo definicja z `$defs`, którą wskazuje jego `$ref`."""
+    if not isinstance(node, Mapping):
+        return {}
+    ref = node.get("$ref")
+    if isinstance(ref, str) and ref.startswith(_DEFS_PREFIX):
+        target = defs.get(ref[len(_DEFS_PREFIX):])
+        if isinstance(target, Mapping):
+            return target
+    return node
+
+
+def _level_properties(node: Any, defs: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
+    """Pola danego poziomu: `properties` węzła, elementów `allOf` i gałęzi
+    warunkowych. Przy powtórzonej nazwie wygrywa pierwsze wystąpienie."""
+    resolved = _resolve_node(node, defs)
+    holders = [resolved]
+    holders += [sub for sub in (resolved.get("allOf") or ()) if isinstance(sub, Mapping)]
+    holders += _conditional_branches(resolved)
+    result: dict[str, Mapping[str, Any]] = {}
+    for holder in holders:
+        holder = _resolve_node(holder, defs)
+        for name, child in (holder.get("properties") or {}).items():
+            if isinstance(child, Mapping):
+                result.setdefault(name, child)
+    return result
+
+
+def _items_node(node: Any, defs: Mapping[str, Any]) -> Mapping[str, Any] | None:
+    items = _resolve_node(node, defs).get("items")
+    return items if isinstance(items, Mapping) else None
+
+
+def _is_read_only(node: Any, defs: Mapping[str, Any]) -> bool:
+    return bool(isinstance(node, Mapping)
+                and (node.get("readOnly") or _resolve_node(node, defs).get("readOnly")))
+
+
+@dataclass
+class _StepSchemas:
+    full_defs: Mapping[str, Any]
+    step_defs: Mapping[str, Any]
+
+
+def _defs_of(schema: Mapping[str, Any]) -> Mapping[str, Any]:
+    defs = schema.get(DEFS_KEY)
+    return defs if isinstance(defs, Mapping) else {}
+
+
+def _prune(full: Any, step: Any, value: Any, ctx: _StepSchemas) -> Any:
+    if isinstance(value, Mapping):
+        full_props = _level_properties(full, ctx.full_defs)
+        if not full_props:
+            return value
+        step_props = _level_properties(step, ctx.step_defs)
+        result: dict[str, Any] = {}
+        for name, child_value in value.items():
+            if name not in full_props:
+                result[name] = child_value
+            elif name in step_props:
+                result[name] = _prune(full_props[name], step_props[name], child_value, ctx)
+        return result
+    if isinstance(value, list):
+        full_items = _items_node(full, ctx.full_defs)
+        if full_items is None:
+            return value
+        step_items = _items_node(step, ctx.step_defs) or {}
+        return [_prune(full_items, step_items, item, ctx) for item in value]
+    return value
+
+
+def prune_data_for_step(schema: Mapping[str, Any], step_schema: Mapping[str, Any],
+                        data: Mapping[str, Any]) -> dict[str, Any]:
+    """Dane formularza bez wartości pól ukrytych w kroku.
+
+    `schema` to pełny schemat (z `x-permissions`), `step_schema` - wynik
+    `filter_form_for_step` dla kroku. Wynik trafia do przeglądarki."""
+    ctx = _StepSchemas(full_defs=_defs_of(schema), step_defs=_defs_of(step_schema))
+    return dict(_prune(schema, step_schema, dict(data or {}), ctx))
+
+
+def _protect(full: Any, step: Any, submitted: Any, current: Any,
+             ctx: _StepSchemas, top: bool) -> Any:
+    if isinstance(submitted, Mapping):
+        full_props = _level_properties(full, ctx.full_defs)
+        if not full_props:
+            return submitted
+        step_props = _level_properties(step, ctx.step_defs)
+        current_map = current if isinstance(current, Mapping) else {}
+        result = dict(submitted)
+        for name, full_child in full_props.items():
+            step_child = step_props.get(name)
+            hidden = step_child is None
+            # `readOnly` nadany przez `x-permissions`, a nie wpisany w schemat
+            # na stałe (pole wyliczane w przeglądarce zostaje edytowalne).
+            locked = (not hidden and _is_read_only(step_child, ctx.step_defs)
+                      and not _is_read_only(full_child, ctx.full_defs))
+            if hidden or locked:
+                # Na najwyższym poziomie wystarczy pominąć klucz - dane zadania
+                # są aktualizowane płytko. Niżej wysłana sekcja zastępuje całą
+                # sekcję, więc wartość trzeba odtworzyć z bieżących danych.
+                if not top and name in current_map:
+                    result[name] = current_map[name]
+                else:
+                    result.pop(name, None)
+            elif name in result:
+                result[name] = _protect(full_child, step_child, result[name],
+                                        current_map.get(name), ctx, top=False)
+        return result
+    if isinstance(submitted, list):
+        full_items = _items_node(full, ctx.full_defs)
+        if full_items is None:
+            return submitted
+        step_items = _items_node(step, ctx.step_defs) or {}
+        current_list = current if isinstance(current, list) else []
+        # Elementy tablicy dopasowujemy po indeksie - przy zmianie kolejności
+        # albo usunięciu elementu wartości ukrytych pól mogą się przesunąć.
+        return [_protect(full_items, step_items, item,
+                         current_list[index] if index < len(current_list) else None,
+                         ctx, top=False)
+                for index, item in enumerate(submitted)]
+    return submitted
+
+
+def protect_submitted_data(schema: Mapping[str, Any], step_schema: Mapping[str, Any],
+                           submitted: Mapping[str, Any],
+                           current: Mapping[str, Any] | None) -> dict[str, Any]:
+    """Wysłane dane formularza bez zmian w polach ukrytych i tylko do odczytu.
+
+    Wartości takich pól są pomijane (najwyższy poziom) albo odtwarzane
+    z `current` - bieżących danych zadania (wewnątrz sekcji i tablic)."""
+    ctx = _StepSchemas(full_defs=_defs_of(schema), step_defs=_defs_of(step_schema))
+    return dict(_protect(schema, step_schema, dict(submitted or {}), current or {},
+                         ctx, top=True))
+# -END

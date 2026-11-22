@@ -1,8 +1,8 @@
 # wf/services/purchase_request_service.py
 # coding: utf-8
 """
-Wniosek zakupowy (`PurchaseRequest`, zob. wf/models/wf.py) - implementacja
-projektu z galwork-book, czesc-3-obszary/dzialy/zakupy.md.
+2026-11-18: Wniosek zakupowy (`PurchaseRequest`, zob. wf/models/wf.py) - implementacja
+projektu z galwork-models-book, obszary/dzialy/zakupy.md.
 
 Reguły akceptacji ("Reguły akceptacji" w zakupy.md) są wyliczane TU, przy
 złożeniu wniosku - nie w BPMN. Silnik w tym hubie nie ma scriptTasków

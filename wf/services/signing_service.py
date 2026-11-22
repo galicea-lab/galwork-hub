@@ -14,7 +14,7 @@ import uuid
 
 from connector.paperless.connector import get_connector as get_paperless_connector
 from connector.signius.connector import get_connector as get_signius_connector
-from wf.models import Document, DocumentVersion
+from wf.models import Document, DocumentVersion, ProcessInstanceDocument
 from wf.schemas.wf_schemas import DocumentLinkRole, EventType
 from wf.services import service_tasks
 from wf.services.service_tasks import ServiceContext, ServiceResult, ServiceTaskError
@@ -56,11 +56,21 @@ def main_document(ctx: ServiceContext) -> ServiceResult:
   Brak dokumentu - ponowienie (dodaj dokument i "Sprawdź teraz")."""
   if ctx.data.get('dokument_id'):
     document = _document(ctx)
+    # dokument przekazany z innej sprawy (np. zarządzenie
+    # z `przygotuj-zarzadzenie` do repozytorium `regulacje/dokumenty`)
+    # zostaje dołączony do tej sprawy jako główny - ta sama treść i wersje,
+    # bez kopiowania pliku.
+    if ctx.db.get(ProcessInstanceDocument, (ctx.instance.id, document.id)) is None:
+      ctx.db.add(ProcessInstanceDocument(process_instance_id=ctx.instance.id,
+                                         document_id=document.id, role=DocumentLinkRole.MAIN))
+      ctx.db.flush()
+      _event(ctx, EventType.DOCUMENT_ADDED, {'document_id': str(document.id), 'role': 'main',
+                                             'linked': True})
   else:
     links = sorted(ctx.instance.document_links,
                    key=lambda link: (link.role != DocumentLinkRole.MAIN, -link.added_at.timestamp()))
     if not links:
-      raise ServiceTaskError("Sprawa nie ma dołączonego dokumentu do podpisu - dodaj dokument")
+      raise ServiceTaskError("Sprawa nie ma dołączonego dokumentu - dodaj dokument i użyj „Sprawdź teraz”")
     document = links[0].document
   return service_tasks.done({'dokument_id': str(document.id), 'dokument_tytul': document.title})
 
