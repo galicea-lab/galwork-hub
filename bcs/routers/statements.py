@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from api.dependencies import get_db
+from api.security import CurrentPrincipal, get_current_principal
+from bcs.api.access import ensure_member_access, require_staff
 from bcs.api.lookups import get_cycle_or_404, get_member_or_404
 from bcs.schemas.statement import CycleStatementOut, MemberStatementOut
 from bcs.services import statement_service
@@ -9,7 +11,8 @@ from bcs.services import statement_service
 router = APIRouter(tags=["statements"])
 
 
-@router.get("/api/cycles/{cycle_id}/statement", response_model=CycleStatementOut)
+@router.get("/api/cycles/{cycle_id}/statement", response_model=CycleStatementOut,
+            dependencies=[Depends(require_staff)])
 def get_cycle_statement(cycle_id: str, db: Session = Depends(get_db)):
     """Statement sieci za cykl (§15.2)."""
     cycle = get_cycle_or_404(db, cycle_id)
@@ -20,10 +23,12 @@ def get_cycle_statement(cycle_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/api/members/{member_id}/statement", response_model=MemberStatementOut)
-def get_member_statement(member_id: str, cycle_id: str | None = None, db: Session = Depends(get_db)):
+def get_member_statement(member_id: str, cycle_id: str | None = None, db: Session = Depends(get_db),
+                         principal: CurrentPrincipal = Depends(get_current_principal)):
     """Statement uczestnika (§15.1) za `cycle_id`, domyślnie za ostatni
     cykl z policzonym nettingiem."""
     member = get_member_or_404(db, member_id)
+    ensure_member_access(db, principal, member_id)
     if cycle_id:
         cycle = get_cycle_or_404(db, cycle_id)
         if cycle.network_id != member.network_id:

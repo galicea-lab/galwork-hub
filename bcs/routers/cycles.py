@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 
 from api.dependencies import get_db
 from bcs.api.lookups import get_cycle_or_404 as _get_cycle_or_404, get_network_or_404
-from api.security import require_operator
+from api.security import CurrentPrincipal, get_current_principal, require_operator
+from bcs.api.access import ensure_network_access, is_staff, own_member_ids, require_staff
 from bcs.models.cycle import ClearingCycle, NetPosition
 from bcs.models.settlement import SettlementBatch
 from bcs.schemas.cycle import CycleCreate, CycleOut, NetPositionOut
@@ -28,8 +29,10 @@ def open_cycle(network_id: str, payload: CycleCreate, db: Session = Depends(get_
 
 
 @router.get("/api/networks/{network_id}/cycles", response_model=list[CycleOut])
-def list_cycles(network_id: str, db: Session = Depends(get_db)):
+def list_cycles(network_id: str, db: Session = Depends(get_db),
+                principal: CurrentPrincipal = Depends(get_current_principal)):
     get_network_or_404(db, network_id)
+    ensure_network_access(db, principal, network_id)
     return db.execute(
         select(ClearingCycle)
         .where(ClearingCycle.network_id == network_id)
@@ -38,8 +41,11 @@ def list_cycles(network_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/api/cycles/{cycle_id}", response_model=CycleOut)
-def get_cycle(cycle_id: str, db: Session = Depends(get_db)):
-    return _get_cycle_or_404(db, cycle_id)
+def get_cycle(cycle_id: str, db: Session = Depends(get_db),
+              principal: CurrentPrincipal = Depends(get_current_principal)):
+    cycle = _get_cycle_or_404(db, cycle_id)
+    ensure_network_access(db, principal, cycle.network_id)
+    return cycle
 
 
 @router.post("/api/cycles/{cycle_id}/close", response_model=CycleOut, dependencies=[Depends(require_operator)])
@@ -64,12 +70,19 @@ def net_cycle(cycle_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/api/cycles/{cycle_id}/positions", response_model=list[NetPositionOut])
-def get_positions(cycle_id: str, db: Session = Depends(get_db)):
-    _get_cycle_or_404(db, cycle_id)
-    return db.execute(select(NetPosition).where(NetPosition.cycle_id == cycle_id)).scalars().all()
+def get_positions(cycle_id: str, db: Session = Depends(get_db),
+                  principal: CurrentPrincipal = Depends(get_current_principal)):
+    cycle = _get_cycle_or_404(db, cycle_id)
+    ensure_network_access(db, principal, cycle.network_id)
+    query = select(NetPosition).where(NetPosition.cycle_id == cycle_id)
+    # 2026-11-24: uczestnik widzi tylko pozycje własnych uczestników
+    if not is_staff(principal):
+        query = query.where(NetPosition.member_id.in_(own_member_ids(db, principal)))
+    return db.execute(query).scalars().all()
 
 
-@router.get("/api/cycles/{cycle_id}/batches", response_model=list[SettlementBatchOut])
+@router.get("/api/cycles/{cycle_id}/batches", response_model=list[SettlementBatchOut],
+            dependencies=[Depends(require_staff)])
 def get_cycle_batches(cycle_id: str, db: Session = Depends(get_db)):
     """Batche settlementowe cyklu, najnowszy pierwszy."""
     _get_cycle_or_404(db, cycle_id)

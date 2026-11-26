@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from api.dependencies import get_db
 from bcs.api.lookups import get_cycle_or_404
 from api.security import require_operator
+from bcs.api.access import require_staff
 from connector.base import ConnectorError
 from bcs.models.cycle import NetPosition
 from bcs.models.settlement import SettlementBatch
@@ -46,7 +47,7 @@ def settle_cycle(cycle_id: str, db: Session = Depends(get_db)):
     return batch
 
 
-@router.get("/api/batches/{batch_id}", response_model=SettlementBatchOut)
+@router.get("/api/batches/{batch_id}", response_model=SettlementBatchOut, dependencies=[Depends(require_staff)])
 def get_batch(batch_id: str, db: Session = Depends(get_db)):
     batch = db.get(SettlementBatch, batch_id)
     if batch is None:

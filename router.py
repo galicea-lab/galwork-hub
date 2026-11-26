@@ -4,6 +4,7 @@
 from fastapi import FastAPI, APIRouter
 from fastapi import Depends
 from api.auth import router as router_auth
+from api.security import get_current_principal
 
 from config.config import settings
 
@@ -122,7 +123,9 @@ app_wf.include_router(router_wf_contacts)
 app_wf.include_router(router_wf_purchase_requests)
 v1router.mount("/wf", app_wf)
 
-app_bcs = FastAPI()
+# 2026-11-24: każde żądanie do bcs wymaga tokenu Keycloak; autoryzacja per
+# zasób w bcs/api/access.py (operator / audytor / uczestnik).
+app_bcs = FastAPI(dependencies=[Depends(get_current_principal)])
 app_bcs.include_router(router_cycle)
 app_bcs.include_router(router_disputes)
 app_bcs.include_router(router_members)

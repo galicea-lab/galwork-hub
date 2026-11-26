@@ -90,16 +90,24 @@ def _validate_and_build(db: Session, network_id: str, source_system_id: str, ite
     )
 
 
-def import_obligations(db: Session, network_id: str, payload: ObligationBatchIn) -> ObligationBatchResult:
+def import_obligations(db: Session, network_id: str, payload: ObligationBatchIn, *,
+                       party_member_id: str | None = None) -> ObligationBatchResult:
     """Odpowiedź w kształcie §7.3 - `accepted`/`rejected` per pozycja,
     import jest best-effort (jedna błędna pozycja nie blokuje reszty
-    batcha), inaczej niż SettlementBatch, który jest all-or-nothing."""
+    batcha), inaczej niż SettlementBatch, który jest all-or-nothing.
+
+    `party_member_id` (2026-11-24, import przez uczestnika): pozycje, w których
+    ten uczestnik nie jest dłużnikiem ani wierzycielem, są odrzucane (NOT_A_PARTY)."""
     obligation_ids: list[str] = []
     rejections: list[dict] = []
 
     for item in payload.obligations:
         try:
             obligation = _validate_and_build(db, network_id, payload.source_system_id, item)
+            if party_member_id is not None and party_member_id not in (
+                    obligation.debtor_member_id, obligation.creditor_member_id):
+                raise ObligationRejected(item.external_id, "NOT_A_PARTY",
+                                         "Uczestnik importujący nie jest stroną dokumentu")
         except ObligationRejected as exc:
             rejections.append({"external_id": exc.external_id, "code": exc.code, "detail": exc.detail})
             continue

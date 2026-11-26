@@ -109,8 +109,12 @@ def form_key(file_name: str) -> str:
 
 # 2026-11-22: blok `galwork` w process_model.json (zob. custom_dashboard2.md §3).
 #   `visibility`: "participants" (domyślnie) - sprawę widzą uczestnicy;
-#                 "all" - każdy zalogowany może ją czytać (lista, szczegóły,
-#                 komentarze); działania i dokumenty nadal tylko uczestnicy.
+#                 "all" - każdy pracownik (2026-11-25: `[wf] staff_groups`)
+#                 może ją czytać (lista, szczegóły, komentarze); działania
+#                 i dokumenty nadal tylko uczestnicy.
+#   2026-11-25: `start_groups`: lista grup Keycloak, które mogą uruchomić
+#                 obieg (np. ["student"]); bez niej - pracownicy
+#                 (wf/services/start_access.py). Administrator zawsze.
 MODEL_META_FILE = 'process_model.json'
 VISIBILITY_VALUES = ('participants', 'all')
 
@@ -149,6 +153,11 @@ def read_model_meta(content: str) -> dict[str, Any]:
                           f'dozwolone: {", ".join(VISIBILITY_VALUES)}')
   if 'dictionary' in galwork:
     _check_register_dictionary(galwork['dictionary'])
+  # 2026-11-25: grupy uprawnione do startu obiegu
+  start_groups = galwork.get('start_groups')
+  if start_groups is not None and not (
+      isinstance(start_groups, list) and all(isinstance(g, str) and g.strip() for g in start_groups)):
+    raise FormRenderError(f'{MODEL_META_FILE}: galwork.start_groups musi być listą nazw grup')
   return dict(galwork)
 
 
@@ -1081,7 +1090,15 @@ class ProcessService:
       # kandydatów zapisanych przy sync_tasks.
       assignment = self._stored_assignment(human_task)
     groups = frozenset(actor.groups) | frozenset(actor.roles)
-    if not assignment.allows(actor.username, groups):
+    # 2026-11-25: zadanie bez przypisania - tylko administrator, inicjator
+    # sprawy albo redaktor aktów (wf/services/task_access.py)
+    if assignment.is_unassigned:
+      from wf.services.task_access import may_act_on_unassigned
+      if not may_act_on_unassigned(human_task, actor):
+        raise NotAuthorizedError(
+          f"Zadanie '{human_task.name}' nie ma przypisania w modelu procesu - może je "
+          "wykonać inicjator sprawy albo administrator procesów")
+    elif not assignment.allows(actor.username, groups):
       raise NotAuthorizedError(
         f"Zadanie '{human_task.name}' nie jest przypisane do użytkownika "
         f"'{actor.username}' ani do jego grup")

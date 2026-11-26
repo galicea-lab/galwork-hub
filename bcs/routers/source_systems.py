@@ -3,6 +3,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from api.dependencies import get_db
+from api.security import CurrentPrincipal, get_current_principal, require_operator
+from bcs.api.access import ensure_member_access, require_staff
 from bcs.api.lookups import get_member_or_404, get_network_or_404
 from bcs.models.member import NetworkMember
 from bcs.models.source_system import SourceSystem
@@ -20,20 +22,25 @@ def _register(db: Session, member_id: str, payload: SourceSystemCreate) -> Sourc
 
 
 @router.get("/api/members/{member_id}/source-systems", response_model=list[SourceSystemOut])
-def list_source_systems(member_id: str, db: Session = Depends(get_db)):
+def list_source_systems(member_id: str, db: Session = Depends(get_db),
+                        principal: CurrentPrincipal = Depends(get_current_principal)):
     get_member_or_404(db, member_id)
+    ensure_member_access(db, principal, member_id)
     return db.execute(select(SourceSystem).where(SourceSystem.member_id == member_id)).scalars().all()
 
 
 @router.post("/api/members/{member_id}/source-systems", response_model=SourceSystemOut, status_code=201)
-def register_source_system(member_id: str, payload: SourceSystemCreate, db: Session = Depends(get_db)):
+def register_source_system(member_id: str, payload: SourceSystemCreate, db: Session = Depends(get_db),
+                           principal: CurrentPrincipal = Depends(get_current_principal)):
     """Rejestracja integracji ERP uczestnika (§7.1). `source_system_id`
     z odpowiedzi jest wymagany przy imporcie zobowiązań."""
     get_member_or_404(db, member_id)
+    ensure_member_access(db, principal, member_id, write=True)
     return _register(db, member_id, payload)
 
 
-@router.get("/api/networks/{network_id}/source-systems", response_model=list[SourceSystemOut])
+@router.get("/api/networks/{network_id}/source-systems", response_model=list[SourceSystemOut],
+            dependencies=[Depends(require_staff)])
 def list_network_source_systems(network_id: str, db: Session = Depends(get_db)):
     get_network_or_404(db, network_id)
     return db.execute(
@@ -43,7 +50,8 @@ def list_network_source_systems(network_id: str, db: Session = Depends(get_db)):
     ).scalars().all()
 
 
-@router.post("/api/networks/{network_id}/source-systems", response_model=SourceSystemOut, status_code=201)
+@router.post("/api/networks/{network_id}/source-systems", response_model=SourceSystemOut, status_code=201,
+             dependencies=[Depends(require_operator)])
 def register_network_source_system(network_id: str, payload: NetworkSourceSystemCreate, db: Session = Depends(get_db)):
     """Adres z barter.md §7.6 - uczestnik wskazany w body."""
     get_member_or_404(db, payload.member_id, network_id)

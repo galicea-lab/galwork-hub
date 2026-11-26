@@ -23,11 +23,16 @@ def database_url() -> str:
 
 
 # Tworzymy silnik bazy danych - JEDEN RAZ na całe życie aplikacji
+# 2026-11-25: parametry puli z [db] (pool_size, max_overflow, pool_recycle,
+# pool_timeout; zmienne DB_POOL_SIZE itd.) - domyślnie 2 stałe połączenia na
+# proces zamiast 5 (dashboard wysyła po zalogowaniu kilka żądań naraz, a pula
+# zatrzymywała po nich 5 bezczynnych połączeń na każdy proces uvicorn).
 engine = create_engine(
   database_url(),
   connect_args=_connect_args(),
   echo=settings.db.echo,
   pool_pre_ping=True,
+  **settings.db.pool_options(),
 )
 
 # Tworzymy fabrykę sesji - JEDEN RAZ na całe życie aplikacji

@@ -79,6 +79,26 @@ class DBSettings(BaseModel):
   password: str = ''
   url: str = ''
   echo: bool = False
+  # 2026-11-25: pula połączeń SQLAlchemy (db/session.py) - na proces uvicorn.
+  # pool_size - połączenia trzymane otwarte po szczycie ruchu; max_overflow -
+  # dodatkowe na czas szczytu (zamykane po oddaniu); pool_recycle - wiek [s],
+  # po którym połączenie jest odnawiane (zarządzane bazy zrywają bezczynne);
+  # pool_timeout - czas [s] oczekiwania na wolne połączenie. Nie dotyczy SQLite.
+  pool_size: int = Field(default=2, ge=1)
+  max_overflow: int = Field(default=8, ge=0)
+  pool_recycle: int = 1800
+  pool_timeout: int = Field(default=30, ge=1)
+
+  def pool_options(self) -> dict:
+    """Argumenty puli dla `create_engine` (puste dla SQLite)."""
+    if self.connection_string().startswith('sqlite'):
+      return {}
+    return {
+      'pool_size': self.pool_size,
+      'max_overflow': self.max_overflow,
+      'pool_recycle': self.pool_recycle,
+      'pool_timeout': self.pool_timeout,
+    }
 
   def connection_string(self) -> str:
     """Buduje connection string dla SQLAlchemy (zob. TODO.md pkt 7)."""
@@ -118,6 +138,9 @@ class KeycloakSettings(BaseModel):
   # grupy/role Keycloak uprawnione do administracji definicjami
   # procesów (wf/dependencies.py: require_process_admin). Lista po przecinku.
   admin_groups: list[str] = Field(default_factory=lambda: ['galwork-admin', 'wf-admin'])
+  # 2026-11-24: POST /auth/register zakłada konto przez API admina Keycloak -
+  # z pominięciem `registrationAllowed` realmu. Domyślnie wyłączone.
+  allow_self_registration: bool = False
   model_config = SettingsConfigDict(extra='ignore')
 
 class EtalarSettings(BaseModel):

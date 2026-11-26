@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 
 from ..calculators import ccpm, cpm, dpci, emv_ryzyko, evm, pert, roi_npv
@@ -16,7 +16,9 @@ from ..schemas.calc import (
     RoiNpvRequest,
 )
 
-router = APIRouter(prefix="/api/calc", tags=["calc"])
+from pm.access import require_pm_user
+# 2026-11-24: wymagane logowanie (pm/access.py) - obliczenia bez zapisu.
+router = APIRouter(prefix="/api/calc", tags=["calc"], dependencies=[Depends(require_pm_user)])
 
 
 @router.post("/roi-npv")

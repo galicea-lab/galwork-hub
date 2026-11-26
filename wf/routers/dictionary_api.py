@@ -19,13 +19,15 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from api.dependencies import get_db
-from wf.dependencies import get_current_wf_user
+from wf.dependencies import can_read_contacts, config_groups, get_current_wf_user, is_edr_operator, is_staff
 from wf.schemas.wf_schemas import CurrentUser, OptionRead
 from wf.services.dictionary_service import (
     DictionaryError,
     DictionaryNotConnectedError,
     DictionaryNotFoundError,
+    CONTACT_ADDRESS_DICTIONARIES,
     DictionaryNotSeededError,
+    available_externally,
     list_options,
 )
 
@@ -50,6 +52,16 @@ def get_dictionary_options(
 ):
     """`GET /v1/wf/dictionaries/{slug}?q=...` - opcje dla jednego pola
     `AsyncSelectWidget` (`ui:options.endpoint` w `*-uischema.json`)."""
+    # 2026-11-25: użytkownik spoza organizacji - tylko słowniki bez danych
+    # wewnętrznych (dictionary_service.available_externally)
+    if not is_staff(current_user) and not available_externally(
+            slug, config_groups('wf', 'external_dictionaries')):
+        raise HTTPException(status_code=403, detail=f"Słownik '{slug}' jest dostępny tylko dla pracowników")
+    # 2026-11-25: kontrahenci z adresami e-Doręczeń - jak pełny widok
+    # GET /contacts albo obsługa e-Doręczeń
+    if slug in CONTACT_ADDRESS_DICTIONARIES and not (
+            can_read_contacts(current_user) or is_edr_operator(current_user)):
+        raise HTTPException(status_code=403, detail=f"Brak uprawnień do słownika '{slug}'")
     try:
         params = {name: value for name, value in (
             ("department", department), ("designation", designation),

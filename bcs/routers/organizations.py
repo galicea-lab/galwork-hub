@@ -5,13 +5,14 @@ from sqlalchemy.orm import Session
 from api.dependencies import get_db
 from bcs.api.lookups import get_organization_or_404
 from api.security import require_operator
+from bcs.api.access import require_staff
 from bcs.models.member import Organization
 from bcs.schemas.member import OrganizationCreate, OrganizationOut, OrganizationUpdate
 
 router = APIRouter(prefix="/api/organizations", tags=["organizations"])
 
 
-@router.get("", response_model=list[OrganizationOut])
+@router.get("", response_model=list[OrganizationOut], dependencies=[Depends(require_staff)])
 def list_organizations(tax_id: str | None = None, db: Session = Depends(get_db)):
     query = select(Organization).order_by(Organization.legal_name)
     if tax_id:
@@ -19,7 +20,7 @@ def list_organizations(tax_id: str | None = None, db: Session = Depends(get_db))
     return db.execute(query).scalars().all()
 
 
-@router.post("", response_model=OrganizationOut, status_code=201)
+@router.post("", response_model=OrganizationOut, status_code=201, dependencies=[Depends(require_operator)])
 def create_organization(payload: OrganizationCreate, db: Session = Depends(get_db)):
     """Rejestracja podmiotu prawnego - BCS jest tu źródłem prawdy (zob.
     models/member.py - Organization NIE istnieje jeszcze ani w galwork-hub,
@@ -31,7 +32,7 @@ def create_organization(payload: OrganizationCreate, db: Session = Depends(get_d
     return org
 
 
-@router.get("/{organization_id}", response_model=OrganizationOut)
+@router.get("/{organization_id}", response_model=OrganizationOut, dependencies=[Depends(require_staff)])
 def get_organization(organization_id: str, db: Session = Depends(get_db)):
     return get_organization_or_404(db, organization_id)
 

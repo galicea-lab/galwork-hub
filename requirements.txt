@@ -28,7 +28,7 @@ pydantic-settings
 pydantic_core
 PyJWT==2.10.1
 PyMySQL
-psycopg2-binary
+psycopg[binary]
 python-dotenv==1.1.1
 python-multipart==0.0.20
 requests

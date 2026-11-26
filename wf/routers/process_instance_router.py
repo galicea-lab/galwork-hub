@@ -18,7 +18,7 @@ from __future__ import annotations
 
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import String, cast, func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
@@ -29,6 +29,7 @@ from wf.schemas.wf_schemas import (
     CurrentUser,
     Page,
     ProcessInstanceAction,
+    ProcessInstanceCounts,
     ProcessInstanceCreate,
     ProcessInstanceRead,
     ProcessInstanceRecordRead,
@@ -142,6 +143,37 @@ def list_process_instances(
     return Page(items=items, total=total, limit=limit, offset=offset)
 
 
+# 2026-11-25: liczba spraw widocznych dla użytkownika w kilku obiegach naraz
+# (dashboard: sekcje z pracą) - zamiast osobnego GET /process-instances?limit=1
+# dla każdego modelu. Te same reguły widoczności co lista.
+MAX_COUNT_KEYS = 50
+
+
+@router.get("/counts", response_model=ProcessInstanceCounts)
+def count_process_instances(
+    process_model_key: list[str] = Query(...),
+    status: ProcessInstanceStatus | None = None,
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(get_current_wf_user),
+):
+    keys = list(dict.fromkeys(k for k in process_model_key if k))
+    if len(keys) > MAX_COUNT_KEYS:
+        raise HTTPException(status_code=422, detail=f'Najwyżej {MAX_COUNT_KEYS} kluczy modeli')
+    stmt = (select(ProcessModel.key, func.count(ProcessInstance.id))
+            .join(ProcessModelVersion, ProcessModelVersion.id == ProcessInstance.process_model_version_id)
+            .join(ProcessModel, ProcessModel.id == ProcessModelVersion.process_model_id)
+            .where(ProcessModel.key.in_(keys))
+            .group_by(ProcessModel.key))
+    visible = instance_access.visible_clause(current_user)
+    if visible is not None:
+        stmt = stmt.where(visible)
+    if status is not None:
+        stmt = stmt.where(ProcessInstance.status == status)
+    counts = {key: 0 for key in keys}
+    counts.update({key: n for key, n in db.execute(stmt).all()})
+    return ProcessInstanceCounts(counts=counts)
+
+
 @router.post("", response_model=ProcessInstanceRead, status_code=201)
 def start_process_instance(payload: ProcessInstanceCreate,
                            db: Session = Depends(get_db),
@@ -154,6 +186,10 @@ def start_process_instance(payload: ProcessInstanceCreate,
     service = get_service()
     try:
         version = service.published_version(db, payload.process_model_key)
+        # 2026-11-25: galwork.start_groups albo pracownik (wf/services/start_access.py)
+        from wf.services.start_access import can_start
+        if not can_start(version, current_user):
+            raise HTTPException(status_code=403, detail='Brak uprawnień do uruchomienia tego obiegu')
         # 2026-11-13: dane z formularza startowego (startEvent) - walidacja
         # jak przy wykonaniu zadania; wewnętrzne starty (edr, instancje
         # potomne) idą bez niej przez ProcessService.start_instance.

@@ -5,9 +5,9 @@ Widget "Faktury do zatwierdzenia" (galwork-dashboard) - faktury zakupu z
 ERPNext w stanie(-ach) workflow poprzedzających "Zatwierdź", plus akcja
 wywołująca samo "Zatwierdź" (2026-10-18).
 
-Odczyt (`GET .../pending-approval`) jest dostępny dla każdego zalogowanego
-(ten sam `get_current_wf_user` co reszta modułu wf - widoczność "mam coś do
-zrobienia" nie jest tu niczym chronionym). Akcja (`POST .../approve`)
+Odczyt (`GET .../pending-approval`) - 2026-11-25: tylko grupy
+`[erpnext] approver_groups` i `invoice_describer_group` oraz administratorzy
+procesów (lista zawiera kontrahentów i kwoty; dawniej każdy zalogowany). Akcja (`POST .../approve`)
 wymaga dodatkowo `require_invoice_approver`: połączenie z ERPNext idzie na
 koncie serwisowym (`[erpnext] api_key`/`api_secret`), więc Frappe sprawdzi
 uprawnienia TEGO konta, nie klikającego w galwork człowieka - musimy więc
@@ -35,7 +35,7 @@ from api.dependencies import get_db
 
 from connector.base import ConnectorConfigError, ConnectorError
 from connector.erpnext import get_connector
-from wf.dependencies import get_current_wf_user
+from wf.dependencies import get_current_wf_user, in_groups, is_process_admin
 from wf.schemas.wf_schemas import CurrentUser, PurchaseInvoicePendingApprovalPage, PurchaseInvoiceSummary
 from wf.services import erpnext_invoice_service
 
@@ -64,10 +64,21 @@ def require_invoice_approver(current_user: CurrentUser = Depends(get_current_wf_
     return current_user
 
 
+# 2026-11-25: odczyt listy faktur - akceptujący, opisujący i administratorzy
+def require_invoice_reader(current_user: CurrentUser = Depends(get_current_wf_user)) -> CurrentUser:
+    config = get_connector().config
+    groups = {g.strip().lstrip("/").split("/")[-1].lower()
+              for key in ("approver_groups", "invoice_describer_group")
+              for g in (config.get(key) or "").split(",") if g.strip()}
+    if is_process_admin(current_user) or in_groups(current_user, frozenset(groups)):
+        return current_user
+    raise HTTPException(status_code=403, detail="Brak uprawnień do faktur zakupu")
+
+
 @router.get("/purchase-invoices/pending-approval", response_model=PurchaseInvoicePendingApprovalPage)
 def get_pending_approval_invoices(
     limit: int = Query(default=20, ge=1, le=100),
-    _current_user: CurrentUser = Depends(get_current_wf_user),
+    _current_user: CurrentUser = Depends(require_invoice_reader),
 ):
     """`GET /v1/wf/erpnext/purchase-invoices/pending-approval?limit=...`"""
     try:

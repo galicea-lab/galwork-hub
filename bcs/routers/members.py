@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 
 from api.dependencies import get_db
 from bcs.api.lookups import get_member_or_404, get_network_or_404, get_organization_or_404
-from api.security import require_operator
+from api.security import CurrentPrincipal, get_current_principal, require_operator
+from bcs.api.access import ensure_member_access, is_staff, own_member_ids
 from bcs.models.member import MemberUser, NetworkMember
 from bcs.schemas.member import (
     MemberUserCreate, MemberUserOut, NetworkMemberCreate, NetworkMemberOut, NetworkMemberUpdate,
@@ -16,11 +17,13 @@ router = APIRouter(prefix="/api/networks/{network_id}/members", tags=["members"]
 
 
 @router.get("", response_model=list[NetworkMemberOut])
-def list_members(network_id: str, db: Session = Depends(get_db)):
+def list_members(network_id: str, db: Session = Depends(get_db),
+                 principal: CurrentPrincipal = Depends(get_current_principal)):
     get_network_or_404(db, network_id)
-    return db.execute(
-        select(NetworkMember).where(NetworkMember.network_id == network_id).order_by(NetworkMember.member_code)
-    ).scalars().all()
+    query = select(NetworkMember).where(NetworkMember.network_id == network_id)
+    if not is_staff(principal):
+        query = query.where(NetworkMember.id.in_(own_member_ids(db, principal)))
+    return db.execute(query.order_by(NetworkMember.member_code)).scalars().all()
 
 
 @router.post("", response_model=NetworkMemberOut, status_code=201, dependencies=[Depends(require_operator)])
@@ -46,8 +49,11 @@ def add_member(network_id: str, payload: NetworkMemberCreate, db: Session = Depe
 
 
 @router.get("/{member_id}", response_model=NetworkMemberOut)
-def get_member(network_id: str, member_id: str, db: Session = Depends(get_db)):
-    return get_member_or_404(db, member_id, network_id)
+def get_member(network_id: str, member_id: str, db: Session = Depends(get_db),
+               principal: CurrentPrincipal = Depends(get_current_principal)):
+    member = get_member_or_404(db, member_id, network_id)
+    ensure_member_access(db, principal, member_id)
+    return member
 
 
 @router.patch("/{member_id}", response_model=NetworkMemberOut, dependencies=[Depends(require_operator)])
@@ -82,8 +88,10 @@ def suspend_member(network_id: str, member_id: str, db: Session = Depends(get_db
 
 
 @router.get("/{member_id}/users", response_model=list[MemberUserOut])
-def list_member_users(network_id: str, member_id: str, db: Session = Depends(get_db)):
+def list_member_users(network_id: str, member_id: str, db: Session = Depends(get_db),
+                      principal: CurrentPrincipal = Depends(get_current_principal)):
     get_member_or_404(db, member_id, network_id)
+    ensure_member_access(db, principal, member_id)
     return db.execute(select(MemberUser).where(MemberUser.member_id == member_id)).scalars().all()
 
 

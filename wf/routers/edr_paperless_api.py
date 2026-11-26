@@ -30,7 +30,7 @@ from connector.base import ConnectorConfigError, ConnectorError
 from connector.edoreczenia import ade_search, edr_paperless
 from connector.edoreczenia.edr_connector import EdrConnector
 from connector.paperless.connector import get_connector as get_paperless_connector
-from wf.dependencies import get_current_wf_user
+from wf.dependencies import get_current_wf_user, require_edr_operator
 from wf.models import ProcessInstance
 from wf.schemas.wf_schemas import (
     CurrentUser,
@@ -51,10 +51,13 @@ def _get_instance_or_404(db: Session, instance_id: UUID, user: CurrentUser) -> P
 
 @router.post("/sync-inbox", response_model=EdrSyncInboxResponse)
 def sync_inbox(test: bool = False, db: Session = Depends(get_db),
-               current_user: CurrentUser = Depends(get_current_wf_user)):
+               current_user: CurrentUser = Depends(require_edr_operator)):
     """Pobiera nowe wiadomości z EDR i startuje dla nich instancje procesu
     `edr-korespondencja` (musi być opublikowana - zob.
-    `scripts/seed_edr_process.py`)."""
+    `scripts/seed_edr_process.py`).
+
+    2026-11-25: tylko `[edr] operator_groups` (domyślnie kancelaria,
+    edr-system) albo administrator procesów - wcześniej każdy zalogowany."""
     try:
         instances = edr_paperless.sync_inbox(
             db, get_paperless_connector(), actor=current_user, test=test)
@@ -133,9 +136,11 @@ def _ade_call(fn, *args, test: bool = False, **kwargs):
         raise HTTPException(status_code=502, detail=f"EDR: {exc}")
 
 
+# 2026-11-25: wyszukiwarka BAE (zapytania na koncie organizacji, dane osób)
+# - jak sync-inbox: `[edr] operator_groups` albo administrator procesów
 @router.get("/ade", response_model=dict)
 def find_by_ade(ade: str = Query(..., min_length=1), test: bool = False,
-                _current_user: CurrentUser = Depends(get_current_wf_user)):
+                _current_user: CurrentUser = Depends(require_edr_operator)):
     """Dane podmiotu o podanym adresie do doręczeń elektronicznych."""
     return _ade_call(ade_search.find_by_ade, ade, test=test)
 
@@ -143,7 +148,7 @@ def find_by_ade(ade: str = Query(..., min_length=1), test: bool = False,
 @router.get("/ade/person", response_model=list[dict])
 def find_person(firstname: str = Query(..., min_length=1), surname: str = Query(..., min_length=1),
                 pesel: str = '', city: str = '', buildingNumber: str = '', test: bool = False,
-                _current_user: CurrentUser = Depends(get_current_wf_user)):
+                _current_user: CurrentUser = Depends(require_edr_operator)):
     """Osoby fizyczne po imieniu i nazwisku (opcjonalnie PESEL/adres)."""
     return _ade_call(ade_search.find_person, firstname, surname, pesel, city,
                      buildingNumber, test=test)
@@ -152,7 +157,7 @@ def find_person(firstname: str = Query(..., min_length=1), surname: str = Query(
 @router.get("/ade/inst", response_model=dict)
 def find_institution_by_id(pesel: str = '', nip: str = '', regon: str = '', krs: str = '',
                            test: bool = False,
-                           _current_user: CurrentUser = Depends(get_current_wf_user)):
+                           _current_user: CurrentUser = Depends(require_edr_operator)):
     """Instytucja po identyfikatorze urzędowym (NIP, REGON, KRS, PESEL)."""
     return _ade_call(ade_search.find_institution_by_id, pesel=pesel, nip=nip, regon=regon,
                      krs=krs, test=test)
@@ -162,7 +167,7 @@ def find_institution_by_id(pesel: str = '', nip: str = '', regon: str = '', krs:
 def find_institution_by_address(name: str = '', city: str = '', buildingNumber: str = '',
                                 street: str = '', flatNumber: str = '', postalCode: str = '',
                                 test: bool = False,
-                                _current_user: CurrentUser = Depends(get_current_wf_user)):
+                                _current_user: CurrentUser = Depends(require_edr_operator)):
     """Instytucja po nazwie i adresie."""
     return _ade_call(ade_search.find_institution_by_address, name=name, city=city,
                      building_number=buildingNumber, street=street, flat_number=flatNumber,

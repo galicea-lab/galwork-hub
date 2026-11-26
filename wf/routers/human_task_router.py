@@ -33,19 +33,21 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import and_, or_, select
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from api.dependencies import get_db
 from wf.dependencies import get_current_wf_user
-from wf.models import Document, DocumentVersion, HumanTask, HumanTaskCandidate, ProcessInstance, ProcessModelVersion
+from wf.models import (Document, DocumentVersion, HumanTask, HumanTaskCandidate, ProcessInstance, ProcessModel,
+                       ProcessModelVersion)
 from wf.schemas.wf_schemas import (
     CurrentUser,
     DocumentRead,
     HumanTaskRead,
     HumanTaskStatus,
     MyTaskItem,
+    MyTaskSummary,
     Page,
     ProcessInstanceRead,
     TaskClaimRequest,
@@ -59,6 +61,8 @@ from wf.services.process_service import (
     ProcessServiceError,
     get_service,
 )
+# 2026-11-25: reguła zadań bez przypisania
+from wf.services.task_access import unassigned_visible_clause
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -96,43 +100,68 @@ def _task_documents(db: Session, task: HumanTask) -> list[DocumentRead]:
             for document in db.execute(stmt).scalars().all()]
 
 
+# 2026-11-25: zapytanie skrzynki zadań wspólne dla listy i podsumowania
+def _my_tasks_stmt(current_user: CurrentUser, *, only_claimed: bool = False, overdue: bool = False,
+                   process_model_keys: list[str] | None = None):
+    acting_ids = current_user.acting_user_ids
+    principals = (tuple({current_user.username}
+                        | set(current_user.groups)
+                        | set(current_user.roles)) or ('',))
+
+    stmt = select(HumanTask)
+    # 2026-10-05: widoczność liczona w SQL (a nie po pobraniu listy), żeby
+    # `total` zgadzało się z `items` mimo limit/offset.
+    # 2026-11-25: zadanie bez kandydatów widzi ten, kto może je wykonać
+    # (wf/services/task_access.py, ta sama reguła co ProcessService.authorize).
+    candidate_match = HumanTask.candidates.any(
+        HumanTaskCandidate.principal_value.in_(principals))
+    unassigned_match = and_(~HumanTask.candidates.any(),
+                            unassigned_visible_clause(current_user))
+    stmt = stmt.where(
+        or_(
+            HumanTask.claimed_by_id.in_(acting_ids or (0,)),
+            and_(HumanTask.status == HumanTaskStatus.OPEN,
+                 or_(candidate_match, unassigned_match)),
+        )
+    )
+    if only_claimed:
+        stmt = stmt.where(HumanTask.claimed_by_id.in_(acting_ids or (0,)))
+    if overdue:
+        stmt = stmt.where(_overdue_clause())
+    if process_model_keys:
+        stmt = stmt.where(HumanTask.process_instance.has(ProcessInstance.version.has(
+            ProcessModelVersion.process_model.has(ProcessModel.key.in_(process_model_keys)))))
+    return stmt
+
+
+def _overdue_clause():
+    return and_(HumanTask.due_at.is_not(None), HumanTask.due_at < datetime.now(UTC))
+
+
+def _count(db: Session, stmt) -> int:
+    return db.execute(select(func.count()).select_from(stmt.order_by(None).subquery())).scalar_one()
+
+
 @router.get("/my", response_model=Page[MyTaskItem])
 def list_my_tasks(
     limit: int = 50,
     offset: int = 0,
     only_claimed: bool = False,
     overdue: bool = False,
+    # 2026-11-25: zawężenie do obiegów (parametr można powtórzyć)
+    process_model_key: list[str] | None = Query(default=None),
     db: Session = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_wf_user),
 ):
     """Skrzynka zadań: podjęte przez użytkownika (lub osobę, którą zastępuje)
     oraz otwarte, do których ma prawo (kandydaci/grupy/role z BPMN)."""
     acting_ids = current_user.acting_user_ids
-    principals = (tuple({current_user.username}
-                        | set(current_user.groups)
-                        | set(current_user.roles)) or ('',))
-
-    stmt = select(HumanTask).options(*_WITH_CONTEXT)
-    # 2026-10-05: widoczność liczona w SQL (a nie po pobraniu listy), żeby
-    # `total` zgadzało się z `items` mimo limit/offset. Zadanie bez kandydatów
-    # jest widoczne dla każdego - tak samo decyduje TaskAssignment.allows()
-    # w wf/engine.py.
-    candidate_match = HumanTask.candidates.any(
-        HumanTaskCandidate.principal_value.in_(principals))
-    stmt = stmt.where(
-        or_(
-            HumanTask.claimed_by_id.in_(acting_ids or (0,)),
-            and_(HumanTask.status == HumanTaskStatus.OPEN,
-                 or_(candidate_match, ~HumanTask.candidates.any())),
-        )
-    )
-    if only_claimed:
-        stmt = stmt.where(HumanTask.claimed_by_id.in_(acting_ids or (0,)))
-    if overdue:
-        stmt = stmt.where(HumanTask.due_at.is_not(None), HumanTask.due_at < datetime.now(UTC))
-
-    total = len(db.execute(stmt).scalars().all())
-    stmt = stmt.order_by(HumanTask.priority.desc(), HumanTask.created_at).limit(limit).offset(offset)
+    stmt = _my_tasks_stmt(current_user, only_claimed=only_claimed, overdue=overdue,
+                          process_model_keys=process_model_key)
+    # 2026-11-25: liczba wierszy w SQL zamiast pobierania wszystkich zadań
+    total = _count(db, stmt)
+    stmt = (stmt.options(*_WITH_CONTEXT)
+            .order_by(HumanTask.priority.desc(), HumanTask.created_at).limit(limit).offset(offset))
     tasks = db.execute(stmt).scalars().all()
 
     items = [
@@ -148,6 +177,7 @@ def list_my_tasks(
             process_instance_id=t.process_instance_id,
             process_title=t.process_instance.title,
             process_model_name=t.process_instance.version.process_model.name,
+            process_model_key=t.process_instance.version.process_model.key,
             business_key=t.process_instance.business_key,
             process_instance_lock_version=t.process_instance.lock_version,
         )
@@ -156,11 +186,44 @@ def list_my_tasks(
     return Page(items=items, total=total, limit=limit, offset=offset)
 
 
+# 2026-11-25: liczniki skrzynki w jednym żądaniu - liczba zadań, po terminie
+# i według obiegów (te same zadania co GET /tasks/my)
+@router.get("/my/summary", response_model=MyTaskSummary)
+def my_tasks_summary(db: Session = Depends(get_db),
+                     current_user: CurrentUser = Depends(get_current_wf_user)):
+    task_ids = _my_tasks_stmt(current_user).with_only_columns(HumanTask.id).subquery()
+    rows = db.execute(
+        select(ProcessModel.key, func.count(HumanTask.id),
+               func.count(HumanTask.id).filter(_overdue_clause()))
+        .join(task_ids, task_ids.c.id == HumanTask.id)
+        .join(ProcessInstance, ProcessInstance.id == HumanTask.process_instance_id)
+        .join(ProcessModelVersion, ProcessModelVersion.id == ProcessInstance.process_model_version_id)
+        .join(ProcessModel, ProcessModel.id == ProcessModelVersion.process_model_id)
+        .group_by(ProcessModel.key)
+    ).all()
+    return MyTaskSummary(total=sum(r[1] for r in rows), overdue=sum(r[2] for r in rows),
+                         by_process_model={r[0]: r[1] for r in rows})
+
+
 @router.get("/{task_id}", response_model=HumanTaskRead)
 def get_task(task_id: UUID,
              db: Session = Depends(get_db),
              current_user: CurrentUser = Depends(get_current_wf_user)):
-    return _get_task_or_404(db, task_id)
+    # 2026-11-25: szczegóły zadania - tylko dla tego, kto widzi sprawę
+    # (instance_access.can_view) albo może wykonać zadanie (authorize)
+    task = _get_task_or_404(db, task_id)
+    from wf.services.instance_access import can_view
+    if can_view(task.process_instance, current_user):
+        return task
+    service = get_service()
+    try:
+        _, process_spec = service.load_workflow(task.process_instance)
+        service.authorize(task, process_spec, current_user)
+    except NotAuthorizedError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+    except ProcessServiceError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return task
 
 
 @router.get("/{task_id}/form", response_model=TaskFormRead)

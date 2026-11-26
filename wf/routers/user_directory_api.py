@@ -23,7 +23,7 @@ from sqlalchemy.orm import Session
 
 from api.dependencies import get_db
 from models.user import User
-from wf.dependencies import get_current_wf_user
+from wf.dependencies import require_staff
 from wf.models import OrgUnit
 from wf.schemas.wf_schemas import CurrentUser, OptionRead
 
@@ -35,7 +35,8 @@ def list_user_options(
     q: str | None = Query(default=None, max_length=200),
     limit: int = Query(default=50, ge=1, le=500),
     db: Session = Depends(get_db),
-    current_user: CurrentUser = Depends(get_current_wf_user),
+    # 2026-11-25: katalog osób (imiona, e-maile) tylko dla pracowników
+    current_user: CurrentUser = Depends(require_staff),
 ):
     """`GET /v1/wf/users?q=...` - opcje dla pól "Osoba lub grupa" (łączy
     konta użytkowników i jednostki/grupy organizacyjne; `limit` jest

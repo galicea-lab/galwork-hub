@@ -601,6 +601,31 @@ def _register_options(db: Session, version: ProcessModelVersion, config: dict, q
 # -END
 
 
+# 2026-11-25: słowniki dostępne dla użytkownika spoza organizacji (student,
+# kandydat - `wf.dependencies.is_staff` = False). Pozostałe - słowniki z rejestrów
+# i obiegów, kontrahenci, ERPNext, osoby z Frappe - tylko dla pracowników.
+# Płaskie (`TABLE_DICTIONARIES`) są kodami i etykietami, poza kilkoma, które
+# opisują osoby, zbiory danych albo infrastrukturę.
+STAFF_ONLY_TABLES = frozenset({
+    "grupy-ad", "zbiory-rodo", "lista-pojazdow", "wykaz-osob-wykonujacych-przeglad",
+})
+EXTERNAL_FRAPPE = frozenset({
+    "rok-akademicki", "semestr-akademicki", "przedmioty", "ogloszenia-rekrutacji",
+})
+EXTERNAL_INTERNAL = frozenset({"instytuty", "instytuty-uczelni", "kierunki"})
+
+
+def available_externally(slug: str, extra: frozenset[str] = frozenset()) -> bool:
+    """Czy słownik `slug` może czytać użytkownik spoza organizacji.
+
+    `extra` - dodatkowe słowniki z `[wf] external_dictionaries`."""
+    if slug in extra:
+        return True
+    if slug in TABLE_DICTIONARIES:
+        return slug not in STAFF_ONLY_TABLES
+    return slug in EXTERNAL_FRAPPE or slug in EXTERNAL_INTERNAL
+
+
 def list_options(db: Session, slug: str, q: str | None = None, limit: int = 50,
                  params: dict[str, str] | None = None, value: str | None = None) -> list[OptionRead]:
     """Opcje {value, label} dla jednego pola `AsyncSelectWidget`/

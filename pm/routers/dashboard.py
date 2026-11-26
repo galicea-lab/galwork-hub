@@ -21,7 +21,9 @@ from ..forms.registry import FormNotFoundError, get_form
 from ..services.form_data import load_form_sections
 from ..services.report_export import render_form_html
 
-router = APIRouter(prefix="/api/projects", tags=["dashboard"])
+from pm.access import require_pm_user
+# 2026-11-24: wymagane logowanie (pm/access.py).
+router = APIRouter(prefix="/api/projects", tags=["dashboard"], dependencies=[Depends(require_pm_user)])
 
 
 @router.get("/{project_id}/dashboard")

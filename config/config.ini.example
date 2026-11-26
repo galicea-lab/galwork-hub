@@ -16,13 +16,20 @@ cors_allow_credentials=true
 
 # [db] - connection string - z tych parametrów korzysta db/session.py, alembic/env.py 
 [db]
-driver=postgresql+psycopg2
+driver=postgresql+psycopg
 name=galwork
 host=localhost
 port=5432
 user=
 password=
 echo=false
+# pula połączeń na proces uvicorn (obraz: --workers 2, więc
+# maksymalnie 2 x (pool_size + max_overflow) połączeń na instancję huba).
+# Przy wielu instancjach na jednym klastrze PostgreSQL rozważ PgBouncer.
+pool_size=2
+max_overflow=8
+pool_recycle=1800
+pool_timeout=30
 
 [db-test]
 driver=sqlite
@@ -38,17 +45,15 @@ level=DEBUG
 file=ds.log
 
 [keycloak]
-certs_url=https://login.example.com/realms/example/protocol/openid-connect/certs
+certs_url=https://login.galwork.net/realms/galwork/protocol/openid-connect/certs
 audience=account
-client_id=example
-client_secret=xxxxxxxxxxxxxxxxxxxx
+client_id=galwork
+client_secret=
 admin=jurekw
-admin_password=xxxxxxxxxx
-server_url=https://login.example.com
-
-# grupy Keycloak uprawnione do zarządzania
+admin_password=
+server_url=https://login.galwork.net
 admin_groups=wf-admin,galwork-admin
-realm_name=example
+realm_name=galwork
 
 [Ms365]
 TENANT_ID=xxxxxxx
@@ -93,6 +98,26 @@ sender=xxxxx<xxxxx@xxxxxxxxxx.pl>
 # cron (domyślnie [edr] system_user).
 [wf]
 system_user=
+# 2026-11-25: zadania BPMN bez przypisania (bez assignee/candidateUsers/
+# candidateGroups) - wf/services/task_access.py. restricted (domyślnie):
+# administrator procesów, inicjator sprawy (także zastępca) i - w repozytorium
+# aktów `dokumenty` - redaktor aktów. open: każdy zalogowany (dawne
+# zachowanie, tylko przejściowo, do czasu przejrzenia modeli).
+unassigned_tasks=restricted
+# 2026-11-25: grupy pracowników (po przecinku). Tylko pracownik (albo
+# administrator procesów) widzi katalog osób (/users), słowniki z rejestrów,
+# ERPNext i osób z Frappe, archiwum Paperless, rejestry `visibility: "all"`,
+# może składać wnioski zakupowe i uruchamiać obiegi bez `galwork.start_groups`.
+# Student i kandydat logują się przez ten sam realm - nie wpisuj ich grup.
+# Pusta lista = każdy zalogowany jest pracownikiem (dawne zachowanie).
+staff_groups=
+# 2026-11-25: dodatkowe słowniki dostępne dla użytkowników spoza organizacji
+# (oprócz płaskich i dictionary_service.EXTERNAL_*), slugi po przecinku
+external_dictionaries=
+# 2026-11-25: grupy z pełnym odczytem kontrahentów (PESEL, adresy, osoby
+# fizyczne) w GET /v1/wf/contacts, oprócz administratorów procesów. Pozostali
+# zalogowani widzą tylko firmy (nazwa albo NIP) bez PESEL i adresów.
+contact_groups=
 
 # pliki obiegów edytowane w arenie (wf/services/process_files.py).
 # process_files_dir - katalog obiegów; pusty = spiffworkflow/ w katalogu huba
@@ -133,6 +158,9 @@ library_dir=wspolne/druki
 
 [edr]
 test_db=false
+# 2026-11-25: grupy uprawnione do POST /v1/wf/edr/sync-inbox (pobranie
+# skrzynki i założenie spraw), oprócz administratorów procesów.
+operator_groups=kancelaria,edr-system
 # adresy usług e-Doręczeń i dane rejestracyjne systemu
 address=AE:PL-xxxxxxxxxx
 key=secret/edr/edr_key.pem
@@ -316,6 +344,9 @@ retry_delay=30
 # PAPERLESS_TIMEOUT, PAPERLESS_VERIFY_TLS, PAPERLESS_STAGING_DIR,
 # PAPERLESS_API_VERSION.
 [paperless]
+# 2026-11-25: grupy z dostępem do listy dokumentów (GET /v1/wf/paperless/documents);
+# puste = każdy pracownik ([wf] staff_groups)
+reader_groups=
 base_url=
 token=
 timeout=30

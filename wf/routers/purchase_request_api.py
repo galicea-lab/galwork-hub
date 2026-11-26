@@ -5,8 +5,11 @@
 wf/services/purchase_request_service.py) - galwork-models-book,
 obszary/dzialy/zakupy.md.
 
-Tworzenie wniosku (`POST /purchase-requests`) wymaga tylko zalogowania -
-każdy pracownik może złożyć wniosek. Dalszy przebieg (akceptacje) idzie
+Tworzenie wniosku (`POST /purchase-requests`) - każdy pracownik
+(2026-11-25: `require_staff`, wcześniej każdy zalogowany). Listę
+i szczegóły widzi dział zamówień i administrator procesów w całości,
+a pozostali - wnioski, których sprawę widzą (instance_access: własne,
+w których uczestniczą). Dalszy przebieg (akceptacje) idzie
 przez generyczny `wf/routers/human_task_router.py` (`GET/POST
 /tasks/...`) - nie ma tu osobnych endpointów na "zatwierdź"/"odrzuć",
 bo `wniosek-zakupowy.bpmn` wstrzykuje te decyzje automatycznie (zob.
@@ -21,7 +24,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from api.dependencies import get_db
-from wf.dependencies import get_current_wf_user
+from wf.dependencies import get_current_wf_user, in_groups, is_process_admin, require_staff
 from wf.schemas.wf_schemas import CurrentUser, PurchaseRequestCreate, PurchaseRequestPage, PurchaseRequestRead
 from wf.services import purchase_request_service as service
 from wf.services.process_service import ProcessServiceError
@@ -34,6 +37,11 @@ router = APIRouter(tags=["purchase-requests"])
 # startowanie procedury PZP jest decyzją działu zamówień, nie każdego
 # zalogowanego (wzorowane na require_invoice_approver w erpnext_invoice_api.py).
 _DZIAL_ZAKUPOW_GROUP = "dzial_zakupow"
+
+
+# 2026-11-25: dział zamówień i administratorzy widzą wszystkie wnioski
+def _sees_all(current_user: CurrentUser) -> bool:
+    return is_process_admin(current_user) or in_groups(current_user, frozenset({_DZIAL_ZAKUPOW_GROUP}))
 
 
 def require_dzial_zakupow(current_user: CurrentUser = Depends(get_current_wf_user)) -> CurrentUser:
@@ -52,9 +60,12 @@ def list_purchase_requests(
     limit: int = Query(default=50, ge=1, le=200),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
-    _current_user: CurrentUser = Depends(get_current_wf_user),
+    current_user: CurrentUser = Depends(require_staff),
 ):
-    rows, total = service.list_purchase_requests(db, contact_id=contact_id, limit=limit, offset=offset)
+    from wf.services.instance_access import visible_clause
+    visible = None if _sees_all(current_user) else visible_clause(current_user)
+    rows, total = service.list_purchase_requests(db, contact_id=contact_id, limit=limit, offset=offset,
+                                                 visible_instances=visible)
     return PurchaseRequestPage(items=rows, total=total)
 
 
@@ -62,7 +73,7 @@ def list_purchase_requests(
 def create_purchase_request(
     payload: PurchaseRequestCreate,
     db: Session = Depends(get_db),
-    current_user: CurrentUser = Depends(get_current_wf_user),
+    current_user: CurrentUser = Depends(require_staff),
 ):
     try:
         return service.create_and_start(db, payload, actor=current_user)
@@ -78,12 +89,17 @@ def create_purchase_request(
 def get_purchase_request(
     purchase_request_id: UUID,
     db: Session = Depends(get_db),
-    _current_user: CurrentUser = Depends(get_current_wf_user),
+    current_user: CurrentUser = Depends(require_staff),
 ):
     try:
-        return service.get_purchase_request(db, purchase_request_id)
+        row = service.get_purchase_request(db, purchase_request_id)
     except PurchaseRequestNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    if not _sees_all(current_user):
+        from wf.services.instance_access import can_view
+        if row.process_instance is None or not can_view(row.process_instance, current_user):
+            raise HTTPException(status_code=403, detail="Brak uprawnień do tego wniosku")
+    return row
 
 
 @router.post("/purchase-requests/{purchase_request_id}/start-tender", response_model=PurchaseRequestRead)

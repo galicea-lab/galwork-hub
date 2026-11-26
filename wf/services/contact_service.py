@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from uuid import UUID
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
 
@@ -50,23 +50,38 @@ def _with_addresses(stmt):
     return stmt.options(selectinload(Contact.addresses))
 
 
+# 2026-11-25: kontrahent "firmowy" - ma nazwę firmy albo NIP. Tylko takich
+# widzi użytkownik bez pełnego dostępu (wf/routers/contact_api.py).
+def _is_business():
+    return or_(and_(Contact.company_name.is_not(None), Contact.company_name != ''),
+               and_(Contact.nip.is_not(None), Contact.nip != ''))
+
+
+def is_business_contact(contact: Contact) -> bool:
+    return bool((contact.company_name or '').strip() or (contact.nip or '').strip())
+
+
 def list_contacts(
-    db: Session, *, q: str | None = None, active_only: bool = False, limit: int = 50, offset: int = 0
+    db: Session, *, q: str | None = None, active_only: bool = False, limit: int = 50, offset: int = 0,
+    business_only: bool = False,
 ) -> tuple[list[Contact], int]:
     stmt = select(Contact)
     if active_only:
         stmt = stmt.where(Contact.is_active.is_(True))
+    # 2026-11-25: business_only - bez osób fizycznych i bez szukania po PESEL
+    if business_only:
+        stmt = stmt.where(_is_business())
     if q:
         pattern = f"%{q}%"
-        stmt = stmt.where(
-            or_(
-                Contact.company_name.ilike(pattern),
-                Contact.last_name.ilike(pattern),
-                Contact.first_name.ilike(pattern),
-                Contact.nip.ilike(pattern),
-                Contact.pesel.ilike(pattern),
-            )
-        )
+        searched = [
+            Contact.company_name.ilike(pattern),
+            Contact.last_name.ilike(pattern),
+            Contact.first_name.ilike(pattern),
+            Contact.nip.ilike(pattern),
+        ]
+        if not business_only:
+            searched.append(Contact.pesel.ilike(pattern))
+        stmt = stmt.where(or_(*searched))
     total = db.execute(select(func.count()).select_from(stmt.order_by(None).subquery())).scalar_one()
     rows = (
         db.execute(

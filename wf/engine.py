@@ -102,17 +102,23 @@ class TaskAssignment:
   form_key: str | None = None
 
   def allows(self, username: str, groups: Iterable[str]) -> bool:
-    """Czy uzytkownik moze wykonac zadanie.
+    """Czy uzytkownik moze wykonac zadanie na podstawie przypisania z BPMN.
 
-    Brak jakichkolwiek atrybutow przypisania = zadanie dostepne dla kazdego
-    uwierzytelnionego uzytkownika (czesc modeli procesow tak projektowano).
-    W realnym wdrozeniu to nalezy ograniczyc rolami z Keycloak.
+    2026-11-25: brak przypisania nie oznacza już "dla każdego" - zwraca
+    False. O zadaniach bez przypisania decyduje
+    wf/services/task_access.py::may_act_on_unassigned (administrator,
+    inicjator sprawy, redaktor aktów w repozytorium `dokumenty`).
     """
     if self.assignee:
       return username == self.assignee
-    if not self.candidate_users and not self.candidate_groups:
-      return True
+    if self.is_unassigned:
+      return False
     return username in self.candidate_users or bool(set(groups) & set(self.candidate_groups))
+
+  # 2026-11-25: zadanie bez assignee, candidateUsers i candidateGroups
+  @property
+  def is_unassigned(self) -> bool:
+    return not self.assignee and not self.candidate_users and not self.candidate_groups
 
   @property
   def is_dynamic(self) -> bool:

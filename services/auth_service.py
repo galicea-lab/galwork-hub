@@ -11,6 +11,7 @@ from typing import Any
 import bcrypt
 import requests
 from keycloak import KeycloakAdmin, KeycloakError
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from core.config import settings
@@ -126,24 +127,48 @@ def get_or_create_local_user(db: Session, email: str, username: str, sub: str | 
 
   Kolejność: keycloak_sub (stabilny identyfikator) -> email (zgodność
   z dotychczasowymi rekordami) -> nowy rekord.
+
+  2026-11-25: odporne na równoległe żądania tej samej osoby przy pierwszym
+  logowaniu (dashboard wysyła kilka naraz). Gdy inne żądanie założy rekord
+  między wyszukaniem a zapisem, unikalność `email`/`keycloak_sub` kończy zapis
+  błędem IntegrityError - wtedy wycofujemy transakcję i zwracamy rekord, który
+  zapisało tamto żądanie.
   """
+  user = _find_local_user(db, email=email, sub=sub)
+  if user is not None:
+    if sub and not user.keycloak_sub:
+      user.keycloak_sub = sub
+      try:
+        db.commit()
+      except IntegrityError:
+        # równoległe żądanie przypisało już `sub` (temu albo innemu rekordowi)
+        db.rollback()
+        return _find_local_user(db, email=email, sub=sub) or user
+      db.refresh(user)
+    return user
+  try:
+    return crud_user.create_user(db, user_data={
+      'email': email,
+      'name': username,
+      # hasło lokalne nie jest używane - uwierzytelnianiem
+      # zajmuje się Keycloak; znacznik informuje, że to konto SSO.
+      'hashed_password': 'SSO_USER_NO_PASSWORD',
+      **({'keycloak_sub': sub} if sub else {}),
+    })
+  except IntegrityError:
+    db.rollback()
+    user = _find_local_user(db, email=email, sub=sub)
+    if user is None:
+      raise
+    logger.info("Konto %s założone równolegle przez inne żądanie - użyto istniejącego", email)
+    return user
+
+
+# 2026-11-25: wyszukiwanie wspólne dla pierwszej próby i dla ponowienia po wyścigu
+def _find_local_user(db: Session, *, email: str, sub: str | None) -> User | None:
   user = None
   if sub:
     user = db.query(User).filter(User.keycloak_sub == sub).first()
   if user is None:
     user = crud_user.get_user_by_email(db, email=email)
-  if user is not None:
-    if sub and not user.keycloak_sub:
-      user.keycloak_sub = sub
-      db.commit()
-      db.refresh(user)
-    return user
-  db_user = crud_user.create_user(db, user_data={
-    'email': email,
-    'name': username,
-    # hasło lokalne nie jest używane - uwierzytelnianiem
-    # zajmuje się Keycloak; znacznik informuje, że to konto SSO.
-    'hashed_password': 'SSO_USER_NO_PASSWORD',
-    **({'keycloak_sub': sub} if sub else {}),
-  })
-  return db_user
+  return user

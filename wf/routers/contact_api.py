@@ -7,7 +7,13 @@ ContactAddress, wf/services/contact_service.py) - ekran "Kontrahenci" w
 galwork-arena.
 
 Odczyt (`GET`) wymaga tylko zalogowania. Zapis (`POST`/`PATCH`/`DELETE`)
-wymaga `require_process_admin` - tak jak dictionary_entry_api.py."""
+wymaga `require_process_admin` - tak jak dictionary_entry_api.py.
+
+2026-11-25: pełne dane (PESEL, adresy, pola dodatkowe, osoby fizyczne)
+widzą tylko administratorzy procesów i `[wf] contact_groups`. Pozostali
+zalogowani (np. pole "Dostawca" we wniosku zakupowym w galwork-dashboard)
+dostają tylko kontrahentów z nazwą firmy albo NIP, bez PESEL, adresów
+i `extra`, i nie mogą szukać po PESEL."""
 
 from __future__ import annotations
 
@@ -17,7 +23,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from api.dependencies import get_db
-from wf.dependencies import get_current_wf_user, require_process_admin
+from wf.dependencies import can_read_contacts, get_current_wf_user, require_process_admin
 from wf.schemas.wf_schemas import (
     ContactAddressCreate,
     ContactAddressRead,
@@ -46,10 +52,18 @@ def list_contacts(
     limit: int = Query(default=50, ge=1, le=200),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
-    _current_user: CurrentUser = Depends(get_current_wf_user),
+    current_user: CurrentUser = Depends(get_current_wf_user),
 ):
-    rows, total = service.list_contacts(db, q=q, active_only=active_only, limit=limit, offset=offset)
-    return ContactPage(items=rows, total=total)
+    full = can_read_contacts(current_user)
+    rows, total = service.list_contacts(db, q=q, active_only=active_only, limit=limit, offset=offset,
+                                        business_only=not full)
+    items = [ContactRead.model_validate(row) for row in rows]
+    return ContactPage(items=items if full else [_limited(item) for item in items], total=total)
+
+
+# 2026-11-25: widok kontrahenta dla użytkownika bez pełnego dostępu
+def _limited(contact: ContactRead) -> ContactRead:
+    return contact.model_copy(update={'pesel': None, 'extra': {}, 'addresses': []})
 
 
 @router.post("/contacts", response_model=ContactRead, status_code=201)
@@ -68,12 +82,18 @@ def create_contact(
 def get_contact(
     contact_id: UUID,
     db: Session = Depends(get_db),
-    _current_user: CurrentUser = Depends(get_current_wf_user),
+    current_user: CurrentUser = Depends(get_current_wf_user),
 ):
     try:
-        return service.get_contact(db, contact_id)
+        contact = service.get_contact(db, contact_id)
     except ContactNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    if can_read_contacts(current_user):
+        return contact
+    # 2026-11-25: osoby fizyczne bez firmy/NIP - jak nieistniejące
+    if not service.is_business_contact(contact):
+        raise HTTPException(status_code=404, detail=f"Kontrahent {contact_id} nie istnieje")
+    return _limited(ContactRead.model_validate(contact))
 
 
 @router.patch("/contacts/{contact_id}", response_model=ContactRead)

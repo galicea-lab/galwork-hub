@@ -9,14 +9,17 @@ Instancję widzi:
   * osoba, która podjęła albo wykonała którekolwiek zadanie instancji,
   * kandydat zadania instancji (login, grupa albo rola w `human_task_candidate`).
 
-Otwarte zadanie bez kandydatów NIE odsłania instancji: jest w skrzynce każdego
-(`GET /tasks/my`), ale sprawę widać dopiero po jego podjęciu. Inaczej pętla
+Otwarte zadanie bez kandydatów NIE odsłania instancji. 2026-11-25: jest
+w skrzynce inicjatora, administratora i - w repozytorium aktów - redaktora
+(wf/services/task_access.py), a sprawę widać dopiero po jego podjęciu. Inaczej pętla
 rejestru bez kandydatów (np. "Repozytorium dokumentów") ujawniałaby każdemu
 akty z "Ograniczeniami dostępu". Reguła = dawne `instance_print.can_print`.
 
 Rejestry jawne: wersja modelu z `galwork.visibility = "all"` (process_model.json,
-`spec_json['galwork']`) pozwala każdemu zalogowanemu CZYTAĆ sprawę (lista,
-szczegóły, komentarze). Działania na sprawie (`write=True`: budzenie,
+`spec_json['galwork']`) pozwala każdemu pracownikowi CZYTAĆ sprawę (lista,
+szczegóły, komentarze). 2026-11-25: pracownikowi (`is_staff`,
+`[wf] staff_groups`), a nie każdemu zalogowanemu - student i kandydat
+logują się przez ten sam realm. Działania na sprawie (`write=True`: budzenie,
 anulowanie, wstrzymanie, wznowienie, nowy komentarz, EDR, Signius) oraz
 dokumenty, dyskusje i wydruki (`is_participant`, dawne `can_print`) nadal
 wymagają uczestnictwa - akty z "Ograniczeniami dostępu" pozostają chronione.
@@ -35,7 +38,7 @@ from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.elements import ColumnElement
 
-from wf.dependencies import is_process_admin
+from wf.dependencies import is_process_admin, is_staff
 from wf.models import HumanTask, HumanTaskCandidate, ProcessInstance, ProcessModelVersion
 from wf.schemas.wf_schemas import CurrentUser
 
@@ -64,15 +67,18 @@ def visible_clause(user: CurrentUser) -> ColumnElement[bool] | None:
         HumanTask.completed_by_id.in_(acting),
         HumanTask.candidates.any(HumanTaskCandidate.principal_value.in_(principals(user))),
     )
-    public = ProcessInstance.version.has(
-        ProcessModelVersion.spec_json['galwork']['visibility'].as_string() == PUBLIC)
-    return or_(ProcessInstance.started_by_id.in_(acting), ProcessInstance.tasks.any(task_rule), public)
+    rules = [ProcessInstance.started_by_id.in_(acting), ProcessInstance.tasks.any(task_rule)]
+    # 2026-11-25: rejestr jawny tylko dla pracowników
+    if is_staff(user):
+        rules.append(ProcessInstance.version.has(
+            ProcessModelVersion.spec_json['galwork']['visibility'].as_string() == PUBLIC))
+    return or_(*rules)
 
 
 def can_view(instance: ProcessInstance, user: CurrentUser, *, write: bool = False) -> bool:
     """`visible_clause` dla jednej instancji; `write=True` - działanie na sprawie
     (rejestr jawny nie wystarcza, potrzebne uczestnictwo)."""
-    if not write and is_public(instance):
+    if not write and is_public(instance) and is_staff(user):
         return True
     return is_participant(instance, user)
 

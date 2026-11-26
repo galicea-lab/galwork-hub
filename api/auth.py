@@ -19,6 +19,7 @@ from services.auth_service import (
 from .security import get_current_user
 from models.user import User
 from api.dependencies import get_db
+from core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -32,6 +33,10 @@ def _user_schema(user: User) -> UserSchema:
 @router.post("/register", response_model=AccessTokenResponse, status_code=201)
 def register(data: RegisterRequest, db: Session = Depends(get_db)):
   """Zakłada konto w Keycloaku i od razu zwraca token (grant_type=password)."""
+  # 2026-11-24: endpoint bez logowania zakładający konta przez API admina -
+  # tylko przy jawnym `[keycloak] allow_self_registration=true`.
+  if not settings.keycloak.allow_self_registration:
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Rejestracja kont jest wyłączona")
   if crud_user.get_user_by_email(db, email=data.email):
     raise HTTPException(status_code=400, detail="Użytkownik o tym adresie e-mail już istnieje")
 

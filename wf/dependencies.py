@@ -136,3 +136,74 @@ def require_process_admin(
       detail='Brak uprawnień do administracji procesami '
              f'(wymagana grupa: {", ".join(sorted(ADMIN_GROUPS))})')
   return current_user
+
+
+# 2026-11-25: grupy uprawnione z listy w konfiguracji (`[sekcja] klucz`,
+# po przecinku, dopasowanie po liściu ścieżki grupy - jak admin_groups).
+def config_groups(section_name: str, key: str, default: str = '') -> frozenset[str]:
+  raw = section(section_name).get(key)
+  if raw is None:
+    raw = default
+  return frozenset(
+    group.strip().lstrip('/').split('/')[-1].lower()
+    for group in str(raw).split(',') if group.strip()
+  )
+
+
+def in_groups(current_user: CurrentUser, groups: frozenset[str]) -> bool:
+  """Czy użytkownik należy do którejś z `groups` (grupy albo role Keycloak)."""
+  principals = {value.lstrip('/').split('/')[-1].lower()
+                for value in current_user.groups | current_user.roles}
+  return bool(groups & principals)
+
+
+# 2026-11-25: obsługa skrzynki e-Doręczeń (pobieranie wiadomości i zakładanie
+# spraw) - kancelaria i użytkownik systemowy EDR (kandydaci zadań w BPMN
+# edr-korespondencja/edr-wysylka) oraz administratorzy procesów.
+EDR_OPERATOR_GROUPS_DEFAULT = 'kancelaria,edr-system'
+
+
+def is_edr_operator(current_user: CurrentUser) -> bool:
+  groups = config_groups('edr', 'operator_groups', EDR_OPERATOR_GROUPS_DEFAULT)
+  return is_process_admin(current_user) or in_groups(current_user, groups)
+
+
+def require_edr_operator(
+  current_user: CurrentUser = Depends(get_current_wf_user),
+) -> CurrentUser:
+  """Zależność FastAPI: użytkownik z `[edr] operator_groups` albo administrator."""
+  groups = config_groups('edr', 'operator_groups', EDR_OPERATOR_GROUPS_DEFAULT)
+  if is_edr_operator(current_user):
+    return current_user
+  raise HTTPException(
+    status_code=403,
+    detail='Brak uprawnień do skrzynki e-Doręczeń'
+           + (f' (wymagana grupa: {", ".join(sorted(groups))})' if groups else ''))
+
+
+# 2026-11-25: pełne dane kontrahentów (PESEL, adresy, pola dodatkowe) -
+# `[wf] contact_groups` i administratorzy; pozostali widzą tylko firmy
+# (wf/routers/contact_api.py).
+def can_read_contacts(current_user: CurrentUser) -> bool:
+  return is_process_admin(current_user) or in_groups(
+    current_user, config_groups('wf', 'contact_groups'))
+
+
+# 2026-11-25: "pracownik" - użytkownik z grupy `[wf] staff_groups` (albo
+# administrator procesów). Student, kandydat i inne konta spoza organizacji
+# logują się przez ten sam realm i klienta, więc samo zalogowanie nie
+# wystarcza do danych wewnętrznych (katalog osób, słowniki z rejestrów,
+# archiwum Paperless, rejestry `visibility: "all"`, start obiegów).
+# Pusta lista = każdy zalogowany jest pracownikiem (dawne zachowanie).
+def is_staff(current_user: CurrentUser) -> bool:
+  groups = config_groups('wf', 'staff_groups')
+  return not groups or is_process_admin(current_user) or in_groups(current_user, groups)
+
+
+def require_staff(
+  current_user: CurrentUser = Depends(get_current_wf_user),
+) -> CurrentUser:
+  """Zależność FastAPI: zalogowany pracownik (`is_staff`)."""
+  if not is_staff(current_user):
+    raise HTTPException(status_code=403, detail='Zasób dostępny tylko dla pracowników')
+  return current_user

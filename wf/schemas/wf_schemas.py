@@ -517,9 +517,24 @@ class MyTaskItem(ReadModel):
     process_instance_id: UUID
     process_title: str
     process_model_name: str
+    # 2026-11-25: klucz modelu (dashboard grupuje zadania wg obiegów i sekcji)
+    process_model_key: str
     business_key: str | None
     # 2026-10-20: zob. HumanTaskRead.process_instance_lock_version.
     process_instance_lock_version: int
+
+
+# 2026-11-25: liczniki skrzynki zadań w jednym żądaniu (kafelki i sekcje
+# dashboardu zamiast kilku wywołań GET /tasks/my)
+class MyTaskSummary(BaseModel):
+    total: int
+    overdue: int
+    by_process_model: dict[str, int]
+
+
+# 2026-11-25: liczba widocznych spraw dla wielu modeli naraz
+class ProcessInstanceCounts(BaseModel):
+    counts: dict[str, int]
 
 
 class MyTaskFilter(Pagination):

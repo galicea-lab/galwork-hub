@@ -7,7 +7,9 @@ from ..forms.registry import FormNotFoundError, get_form, list_forms
 from ..schemas.form_instance import FormDataResponse, FormSaveRequest
 from ..services.form_data import load_form_sections, save_form_sections
 
-router = APIRouter(prefix="/api", tags=["forms"])
+from pm.access import require_pm_editor, require_pm_user
+# 2026-11-24: wymagane logowanie (pm/access.py); zapis - administrator PM.
+router = APIRouter(prefix="/api", tags=["forms"], dependencies=[Depends(require_pm_user)])
 
 
 @router.get("/forms")
@@ -34,7 +36,8 @@ def get_project_form(project_id: int, slug: str, db: Session = Depends(get_db)):
     return FormDataResponse(slug=slug, status="draft", version=1, sections=sections)
 
 
-@router.put("/projects/{project_id}/forms/{slug}", response_model=FormDataResponse)
+@router.put("/projects/{project_id}/forms/{slug}", response_model=FormDataResponse,
+            dependencies=[Depends(require_pm_editor)])
 def save_project_form(
     project_id: int, slug: str, payload: FormSaveRequest, db: Session = Depends(get_db)
 ):

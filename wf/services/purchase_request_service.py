@@ -132,9 +132,15 @@ def get_purchase_request(db: Session, purchase_request_id: UUID) -> PurchaseRequ
 
 
 def list_purchase_requests(
-    db: Session, *, contact_id: UUID | None = None, limit: int = 50, offset: int = 0
+    db: Session, *, contact_id: UUID | None = None, limit: int = 50, offset: int = 0,
+    visible_instances=None,
 ) -> tuple[list[PurchaseRequest], int]:
+    """2026-11-25: `visible_instances` - warunek SQL na `ProcessInstance`
+    (instance_access.visible_clause); wniosek widać, gdy widać jego sprawę."""
     stmt = select(PurchaseRequest)
+    if visible_instances is not None:
+        stmt = stmt.where(PurchaseRequest.process_instance_id.in_(
+            select(ProcessInstance.id).where(visible_instances)))
     if contact_id is not None:
         stmt = stmt.where(PurchaseRequest.contact_id == contact_id)
     total = db.execute(select(func.count()).select_from(stmt.order_by(None).subquery())).scalar_one()
